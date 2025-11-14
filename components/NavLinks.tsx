@@ -13,12 +13,12 @@ import Link from "next/link"
 function NavLinks() {
   return (
     <div className="relative grow-0">
-      <NavigationMenu viewport={false}>
+      <NavigationMenu viewport={false} className="text-foreground">
         <NavigationMenuList>
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item One</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px]">
+            <NavigationMenuContent className="absolute min-w-[200px] z-10">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
@@ -39,7 +39,7 @@ function NavLinks() {
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item Two</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px]">
+            <NavigationMenuContent className="absolute min-w-[200px] z-10">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
@@ -58,7 +58,7 @@ function NavLinks() {
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item Two</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px]">
+            <NavigationMenuContent className="absolute min-w-[200px] z-10">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
@@ -77,7 +77,7 @@ function NavLinks() {
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item Two</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px]">
+            <NavigationMenuContent className="absolute min-w-[200px] z-10">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>

@@ -1,6 +1,8 @@
 import logo from "./logo.svg";
-import search_icon from "./search_icon.svg";
-import user_icon from "./user_icon.svg";
+import logo_white from "./logo-white.svg";
+
+// import search_icon from "./search_icon.svg";
+// import user_icon from "./user_icon.svg";
 import cart_icon from "./cart_icon.svg";
 import add_icon from "./add_icon.svg";
 import order_icon from "./order_icon.svg";
@@ -49,8 +51,9 @@ import product_details_page_apple_earphone_image5 from "./product_details_page_a
 
 export const assets = {
   logo,
-  search_icon,
-  user_icon,
+  logo_white,
+  // search_icon,
+  // user_icon,
   cart_icon,
   add_icon,
   order_icon,

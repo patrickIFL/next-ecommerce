@@ -1,14 +1,15 @@
+import HeaderSlider from "@/components/HeaderSlider";
+import HomeProducts from "@/components/HomeProducts";
 import NavBar from "@/components/NavBar";
-import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <>
       <NavBar />
-
-      <Button>
-        Press Button
-      </Button>
+      <div className="px-6 md:px-16 lg:px-32">
+        <HeaderSlider />
+        <HomeProducts />
+      </div>
     </>
   );
 }
