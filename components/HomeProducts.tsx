@@ -15,7 +15,7 @@ const HomeProducts = () => {
         {products.map((product, index) => <ProductCard key={index} product={product} />)}
       </div>
 
-      <button onClick={() => { router.push('/all-products') }} className="px-12 py-2.5 border rounded text-gray-500/70 hover:bg-slate-50/90 transition">
+      <button onClick={() => { router.push('/all-products') }} className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition cursor-pointer">
         See more
       </button>
     </div>

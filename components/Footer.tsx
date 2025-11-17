@@ -1,53 +1,87 @@
-import React from "react";
+"use client";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { useTheme } from "./theme-provider";
 
 const Footer = () => {
+  const { isDark } = useTheme();
+
+  const menus = [
+    {
+      title: "Company",
+      list: [
+        { name: "Home", link: "#" },
+        { name: "About Us", link: "#" },
+        { name: "Contact Us", link: "#" },
+        { name: "Privacy Policy", link: "#" },
+      ],
+    },
+  ];
+
+  const contactNumber = "+1-234-567-890";
+  const contactEmail = "contact@greatstack.dev";
+
   return (
     <footer>
       <div className="flex flex-col md:flex-row items-start justify-center px-6 md:px-16 lg:px-32 gap-10 py-14 border-b border-gray-500/30 text-gray-500">
+
+        {/* Logo + Description */}
         <div className="w-4/5">
-          <Image className="w-28 md:w-32" src={assets.logo} alt="logo" />
-          <p className="mt-6 text-sm">
+          <Image
+            className="cursor-pointer w-28 md:w-32"
+            onClick={() => {}}
+            src={isDark ? assets.logo_white : assets.logo}
+            alt="logo"
+          />
+
+          <p className="mt-6 text-sm text-foreground">
             Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
+            industry. Lorem Ipsum has been the {"industry's"} standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
             and scrambled it to make a type specimen book.
           </p>
         </div>
 
-        <div className="w-1/2 flex items-center justify-start md:justify-center">
+        {/* Menu Section */}
+        <div className="w-1/2 text-foreground flex items-center justify-start md:justify-center">
           <div>
-            <h2 className="font-medium text-gray-900 mb-5">Company</h2>
-            <ul className="text-sm space-y-2">
-              <li>
-                <a className="hover:underline transition" href="#">Home</a>
-              </li>
-              <li>
-                <a className="hover:underline transition" href="#">About us</a>
-              </li>
-              <li>
-                <a className="hover:underline transition" href="#">Contact us</a>
-              </li>
-              <li>
-                <a className="hover:underline transition" href="#">Privacy policy</a>
-              </li>
-            </ul>
+            {menus.map((menu, index) => (
+              <div key={index}>
+                <h2 className="font-medium mb-5">
+                  {menu.title}
+                </h2>
+                <ul className="text-sm space-y-2">
+                  {menu.list.map((item, idx) => (
+                    <li key={idx}>
+                      <a
+                        className="hover:underline transition"
+                        href={item.link}
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
+        {/* Contact Section */}
         <div className="w-1/2 flex items-start justify-start md:justify-center">
           <div>
-            <h2 className="font-medium text-gray-900 mb-5">Get in touch</h2>
-            <div className="text-sm space-y-2">
-              <p>+1-234-567-890</p>
-              <p>contact@greatstack.dev</p>
+            <h2 className="font-medium text-foreground mb-5">Get in touch</h2>
+            <div className="text-sm space-y-2 text-foreground">
+              <p>{contactNumber}</p>
+              <p>{contactEmail}</p>
             </div>
           </div>
         </div>
+
       </div>
+
       <p className="py-4 text-center text-xs md:text-sm">
-        Copyright 2025 © GreatStack.dev All Right Reserved.
+        Copyright 2025 © GreatStack.dev All Rights Reserved.
       </p>
     </footer>
   );

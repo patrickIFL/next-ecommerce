@@ -18,7 +18,7 @@ function NavLinks() {
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item One</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px] z-10">
+            <NavigationMenuContent className="absolute min-w-[200px] z-50">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
@@ -39,7 +39,7 @@ function NavLinks() {
 
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-md font-normal">Item Two</NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute min-w-[200px] z-10">
+            <NavigationMenuContent className="absolute min-w-[200px] z-50">
               <ul className="grid w-[200px] gap-4">
                 <li>
                   <NavigationMenuLink asChild>
