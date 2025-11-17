@@ -34,11 +34,12 @@ const HeaderSlider = () => {
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderDuration = 1000 * 5//seconds
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderData.length);
-    }, 3000);
+    }, sliderDuration);
     return () => clearInterval(interval);
   }, [sliderData.length]);
 
@@ -65,13 +66,13 @@ const HeaderSlider = () => {
                 {slide.title}
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">
-                <button className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium">
+                <button className="cursor-pointer md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium">
                   {slide.buttonText1}
                 </button>
-                <button className="group flex items-center gap-2 px-6 py-2.5 font-medium">
+                <button className="cursor-pointer group flex items-center gap-2 px-6 py-2.5 font-medium">
                   {slide.buttonText2}
                   {/* <Image className="group-hover:translate-x-1 transition" src={assets.arrow_icon} alt="arrow_icon" /> */}
-                  <MoveRight color={"var(--color-foreground)"} />
+                  <MoveRight className="group-hover:translate-x-1 transition" color={"var(--color-foreground)"} />
                 </button>
               </div>
             </div>
