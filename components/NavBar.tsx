@@ -8,6 +8,7 @@ import { Menu, Search, User, X } from 'lucide-react'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from './ui/navigation-menu'
 
 
 function NavBar() {
@@ -76,15 +77,50 @@ function NavBar() {
 
           </button>
 
-      <ul className="hidden md:flex items-center gap-4 ">
-        <AnimatedThemeToggler />
-        <Search color={"var(--color-foreground)"} size={18} />
-        <button className="flex cursor-pointer items-center gap-2 text-foreground transition">
-          <User color={"var(--color-foreground)"} size={18} />
-          Account
-        </button>
-      </ul>
+      <NavigationMenu viewport={false} className="text-foreground hidden md:flex items-center h-full">
+      <NavigationMenuList className='flex gap-2'>
 
+              <NavigationMenuItem className='flex items-center rounded-full'>
+
+        <AnimatedThemeToggler className='m-2 cursor-pointer'/>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem className='flex items-center p-2 rounded-full'>
+
+        <Search color={"var(--color-foreground)"} size={18} />
+              </NavigationMenuItem>
+
+        
+          
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="text-md font-normal flex gap-1">
+          <User color={"var(--color-foreground)"} size={18} />
+              <span>
+
+              Account
+              </span>
+              </NavigationMenuTrigger>
+            <NavigationMenuContent className="absolute min-w-[200px] z-50">
+              <ul className="grid w-[200px] gap-4">
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link href="#">My Orders</Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link href="#">Preferences</Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link href="#">Logout</Link>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+      </NavigationMenuList>
+      </NavigationMenu>
+  
+       
+     
     </nav>
 
     {/* Mobile Menu */}
