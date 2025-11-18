@@ -10,43 +10,47 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import {
   NavigationMenu,
-  NavigationMenuContent,
+  // NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
+  // NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
+  // NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import AccordionMenu from "./AccordionMenu";
+import { useAppContext } from "@/context/AppContext";
+import { useClerk } from "@clerk/nextjs";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const {isSeller, router} = useAppContext();
+  
+  const {openSignIn} = useClerk();
 
   // Account Dropdown
-  const accountMenu = {
-    mainText: "Account",
-    links: [
-      {
-        linkText: "Seller Dashboard",
-        linkFunction: () => {
-          alert("seller Dash")
-        }
-      },
-      {
-        linkText: "Preferences",
-        linkFunction: () => {
-          alert("preferences")
-        }
-      },
-      {
-        linkText: "Logout",
-        linkFunction: () => {
-          alert("logout")
-        }
-      },
-    ]
-  }
-  
+  // const accountMenu = {
+  //   mainText: "Account",
+  //   links: [
+  //     {
+  //       linkText: "Seller Dashboard",
+  //       linkFunction: () => {
+  //         alert("seller Dash")
+  //       }
+  //     },
+  //     {
+  //       linkText: "Preferences",
+  //       linkFunction: () => {
+  //         alert("preferences")
+  //       }
+  //     },
+  //     {
+  //       linkText: "Logout",
+  //       linkFunction: () => {
+  //         alert("logout")
+  //       }
+  //     },
+  //   ]
+  // }
 
   // For the Nav links
   const menus = [
@@ -179,18 +183,25 @@ function NavBar() {
           viewport={false}
           className="text-foreground hidden md:flex items-center h-full"
         >
-          <NavigationMenuList className="flex gap-2">
-            <NavigationMenuItem className="flex items-center rounded-full">
+          <NavigationMenuList className="flex gap-1">
+            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center rounded-full">
               <AnimatedThemeToggler className="m-2 cursor-pointer" />
             </NavigationMenuItem>
 
-            <NavigationMenuItem className="flex items-center p-2 rounded-full">
+            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
               <Search color={"var(--color-foreground)"} size={18} />
+            </NavigationMenuItem>
+            
+            <NavigationMenuItem className="flex items-center p-2 rounded-full">
+              <button onClick={openSignIn} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
+                <User color={"var(--color-foreground)"} size={18} />
+                <span>Account</span>
+              </button>
             </NavigationMenuItem>
 
 
-            {/* Account Dropdown - Desktop */}
-            <NavigationMenuItem>
+            {/* Account Dropdown - Desktop - trial only */}
+            {/* <NavigationMenuItem>
               <NavigationMenuTrigger className="text-md font-normal flex gap-1">
                 <User color={"var(--color-foreground)"} size={18} />
                 <span>{accountMenu.mainText}</span>
@@ -211,7 +222,8 @@ function NavBar() {
                   )}
                 </ul>
               </NavigationMenuContent>
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
+
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
@@ -221,7 +233,8 @@ function NavBar() {
         isDark={isDark} 
         isOpen={isOpen} 
         menus={menus}
-        accountMenu={accountMenu}
+        openSignIn={openSignIn}
+        // accountMenu={accountMenu}
       />
 
     </>

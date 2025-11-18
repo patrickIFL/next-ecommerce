@@ -8,18 +8,20 @@ import {
 } from "./ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 
 function AccordionMenu({
   isOpen,
   isDark,
   menus,
-  accountMenu
+  openSignIn
+  // accountMenu
 }: {
   isOpen: boolean;
   isDark: boolean;
   menus: any;
-  accountMenu: any;
+  openSignIn: any;
+  // accountMenu: any;
 }) {
   const menuItemClass =
     "hover:bg-accent transition py-2 flex rounded-sm text-left w-full !text-md";
@@ -45,18 +47,10 @@ function AccordionMenu({
             className="w-full"
             defaultValue="account"
           >
-            {/* Dark mode and Search */}
-            <AccordionItem className="border-none" value="theme-search">
-              <div className="flex justify-end gap-3">
-                <AnimatedThemeToggler className="p-2 cursor-pointer border rounded-full" />
-                <div className="border rounded-full">
-                  <Search color={"var(--color-foreground)"} size={18} className="m-2"/>
-                </div>
-              </div>
-            </AccordionItem>
+           
 
             {/* Account */}
-            <AccordionItem value="account">
+            {/* <AccordionItem value="account">
               <AccordionTrigger>{accountMenu.mainText}</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
                   {accountMenu.links.length > 0 
@@ -69,7 +63,7 @@ function AccordionMenu({
                     ))
                   )}
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem> */}
 
             {/* Dynamic Menus */}
             {menus.map((menu: any, i: number) => {
@@ -104,7 +98,21 @@ function AccordionMenu({
                   </AccordionContent>
                 </AccordionItem>
               );
-            })}
+            })
+            }
+             {/* Dark mode and Search */}
+            <AccordionItem className="border-none pt-3" value="theme-search">
+              <div className="flex justify-end gap-3">
+                <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
+                <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
+                  <Search color={"var(--color-foreground)"} size={18} className="m-2"/>
+                </div>
+                <button onClick={openSignIn} className="w-full cursor-pointer hover:bg-accent rounded-md py-2 flex items-center justify-center gap-2 transition border">
+                <User color={"var(--color-foreground)"} size={18} />
+                <span className="text-sm ml-0.5">Account</span>
+              </button>
+              </div>
+            </AccordionItem>
           </Accordion>
         </motion.div>
       )}
