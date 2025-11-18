@@ -16,21 +16,36 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import AccordionMenu from "./AccordionMenu";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const isSeller = true;
 
   // Account Dropdown
+  const accountMenu = {
+    mainText: "Account",
+    links: [
+      {
+        linkText: "Seller Dashboard",
+        linkFunction: () => {
+          alert("seller Dash")
+        }
+      },
+      {
+        linkText: "Preferences",
+        linkFunction: () => {
+          alert("preferences")
+        }
+      },
+      {
+        linkText: "Logout",
+        linkFunction: () => {
+          alert("logout")
+        }
+      },
+    ]
+  }
   
 
   // For the Nav links
@@ -126,7 +141,7 @@ function NavBar() {
           <NavLinks menus={menus}/>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger/Accordion Trigger */}
         <button
           className="flex md:hidden text-foreground relative w-8 h-8 items-center justify-center cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
@@ -158,6 +173,8 @@ function NavBar() {
           </AnimatePresence>
         </button>
 
+
+       
         <NavigationMenu
           viewport={false}
           className="text-foreground hidden md:flex items-center h-full"
@@ -171,35 +188,27 @@ function NavBar() {
               <Search color={"var(--color-foreground)"} size={18} />
             </NavigationMenuItem>
 
+
+            {/* Account Dropdown - Desktop */}
             <NavigationMenuItem>
               <NavigationMenuTrigger className="text-md font-normal flex gap-1">
                 <User color={"var(--color-foreground)"} size={18} />
-                <span>Account</span>
+                <span>{accountMenu.mainText}</span>
               </NavigationMenuTrigger>
               <NavigationMenuContent className="absolute min-w-[200px] z-50">
-                <ul className="grid w-[200px] gap-4">
-                  <li>
-                    {
-                      isSeller 
-                      ? (
-                        <NavigationMenuLink asChild>
-                          <Link href="/seller">Seller Dashboard</Link>
+                <ul className="grid w-[200px] gap-1">
+                  {accountMenu.links.length > 0 
+                  && (
+                    accountMenu.links.map((link, i)=>(
+                      <li key={i}>
+                        <NavigationMenuLink className="cursor-pointer" onClick={link.linkFunction} asChild>
+                          <div>
+                            {link.linkText}
+                            </div>
                         </NavigationMenuLink>
-                      ) 
-                      : (
-                        <NavigationMenuLink asChild>
-                          <Link href="#">My Orders</Link>
-                        </NavigationMenuLink>
-                      )
-                    }
-                    
-                    <NavigationMenuLink asChild>
-                      <Link href="#">Preferences</Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link href="#">Logout</Link>
-                    </NavigationMenuLink>
-                  </li>
+                      </li>
+                    ))
+                  )}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -211,9 +220,10 @@ function NavBar() {
       <AccordionMenu 
         isDark={isDark} 
         isOpen={isOpen} 
-        menus={menus} 
+        menus={menus}
+        accountMenu={accountMenu}
       />
-      
+
     </>
   );
 }

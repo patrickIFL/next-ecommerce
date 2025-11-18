@@ -15,7 +15,6 @@ function NavLinks({ menus }: { menus: any }) {
     <div className="relative grow-0">
       <NavigationMenu viewport={false} className="text-foreground">
         <NavigationMenuList>
-
           {menus.map((menu: any, i: number) => {
             const isDirectLink =
               menu.mainLink !== "" && menu.menuLinks.length === 0
@@ -36,7 +35,7 @@ function NavLinks({ menus }: { menus: any }) {
     </NavigationMenuTrigger>
 
     <NavigationMenuContent className="absolute min-w-[200px] z-50">
-      <ul className="grid w-[200px] gap-4">
+      <ul className="grid w-[200px] gap-1">
         {menu.menuLinks.map((link: any, j: number) => (
           <li key={j}>
             <NavigationMenuLink asChild>
@@ -51,7 +50,6 @@ function NavLinks({ menus }: { menus: any }) {
   </NavigationMenuItem>
 );
           })}
-
         </NavigationMenuList>
       </NavigationMenu>
     </div>
