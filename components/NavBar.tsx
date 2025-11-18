@@ -29,6 +29,68 @@ function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const isSeller = true;
 
+  const menus = [
+    {
+      mainTitle: "Item One",
+      mainLink: "#",
+      menuLinks : []
+    },
+    {
+      mainTitle: "Item One",
+      mainLink: "",
+      menuLinks : [
+        {
+          linkName: "Components",
+          linkRef: "#"
+        },
+        {
+          linkName: "Documentation",
+          linkRef: "#"
+        },
+        {
+          linkName: "Blocks",
+          linkRef: "#"
+        },
+      ]
+    },
+    {
+      mainTitle: "Item Three",
+      mainLink: "",
+      menuLinks : [
+        {
+          linkName: "Components",
+          linkRef: "#"
+        },
+        {
+          linkName: "Documentation",
+          linkRef: "#"
+        },
+        {
+          linkName: "Blocks",
+          linkRef: "#"
+        },
+      ]
+    },
+    {
+      mainTitle: "Item Four",
+      mainLink: "",
+      menuLinks : [
+        {
+          linkName: "Components",
+          linkRef: "#"
+        },
+        {
+          linkName: "Documentation",
+          linkRef: "#"
+        },
+        {
+          linkName: "Blocks",
+          linkRef: "#"
+        },
+      ]
+    },
+  ]
+
   return (
     <>
       <nav
@@ -56,7 +118,7 @@ function NavBar() {
           )}
         </Link>
         <div className="relative hidden md:block">
-          <NavLinks />
+          <NavLinks menus={menus}/>
         </div>
 
         {/* Mobile Hamburger */}
