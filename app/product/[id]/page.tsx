@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useAppContext } from "@/context/AppContext";
-import React from "react";
 
 const Product = () => {
 
@@ -16,6 +15,7 @@ const Product = () => {
 
     const [mainImage, setMainImage] = useState(null);
     const [productData, setProductData] = useState(null);
+    const {currency} = useAppContext();
 
     const fetchProductData = async () => {
         const product = products.find(product => product._id === id);
@@ -34,7 +34,7 @@ const Product = () => {
                         <Image
                             src={mainImage || productData.image[0]}
                             alt="alt"
-                            className="w-full h-auto object-cover mix-blend-multiply"
+                            className="w-full h-auto object-cover"
                             width={1280}
                             height={720}
                         />
@@ -50,7 +50,7 @@ const Product = () => {
                                 <Image
                                     src={image}
                                     alt="alt"
-                                    className="w-full h-auto object-cover mix-blend-multiply"
+                                    className="w-full h-auto object-cover"
                                     width={1280}
                                     height={720}
                                 />
@@ -61,7 +61,7 @@ const Product = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <h1 className="text-3xl font-medium text-gray-800/90 mb-4">
+                    <h1 className="text-3xl font-medium text-foreground mb-4">
                         {productData.name}
                     </h1>
                     <div className="flex items-center gap-2">
@@ -78,13 +78,13 @@ const Product = () => {
                         </div>
                         <p>(4.5)</p>
                     </div>
-                    <p className="text-gray-600 mt-3">
+                    <p className="text-foreground/80 mt-3">
                         {productData.description}
                     </p>
                     <p className="text-3xl font-medium mt-6">
-                        ${productData.offerPrice}
-                        <span className="text-base font-normal text-gray-800/60 line-through ml-2">
-                            ${productData.price}
+                        {currency}{productData.offerPrice}
+                        <span className="text-base font-normal text-foreground/50 line-through ml-2">
+                            {currency}{productData.price}
                         </span>
                     </p>
                     <hr className="bg-gray-600 my-6" />
@@ -92,16 +92,16 @@ const Product = () => {
                         <table className="table-auto border-collapse w-full max-w-72">
                             <tbody>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Brand</td>
-                                    <td className="text-gray-800/50 ">Generic</td>
+                                    <td className="text-foreground font-medium">Brand</td>
+                                    <td className="text-foreground/80 ">Generic</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Color</td>
-                                    <td className="text-gray-800/50 ">Multi</td>
+                                    <td className="text-foreground font-medium">Color</td>
+                                    <td className="text-foreground/80 ">Multi</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Category</td>
-                                    <td className="text-gray-800/50">
+                                    <td className="text-foreground font-medium">Category</td>
+                                    <td className="text-foreground/80">
                                         {productData.category}
                                     </td>
                                 </tr>
@@ -110,10 +110,10 @@ const Product = () => {
                     </div>
 
                     <div className="flex items-center mt-10 gap-4">
-                        <button onClick={() => addToCart(productData._id)} className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition">
+                        <button onClick={() => addToCart(productData._id)} className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition cursor-pointer">
                             Add to Cart
                         </button>
-                        <button onClick={() => { addToCart(productData._id); router.push('/cart') }} className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition">
+                        <button onClick={() => { addToCart(productData._id); router.push('/cart') }} className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition cursor-pointer">
                             Buy now
                         </button>
                     </div>
@@ -127,9 +127,11 @@ const Product = () => {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
                     {products.slice(0, 5).map((product, index) => <ProductCard key={index} product={product} />)}
                 </div>
-                <button className="px-8 py-2 mb-16 border rounded text-gray-500/70 hover:bg-slate-50/90 transition">
-                    See more
-                </button>
+              
+
+                <button onClick={() => { router.push('/all-products') }} className="px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition cursor-pointer">
+        See more
+      </button>
             </div>
         </div>
     </>
