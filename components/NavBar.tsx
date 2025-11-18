@@ -23,12 +23,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import AccordionMenu from "./AccordionMenu";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const isSeller = true;
 
+  // Account Dropdown
+  
+
+  // For the Nav links
   const menus = [
     {
       mainTitle: "Item One",
@@ -203,71 +208,12 @@ function NavBar() {
       </nav>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ y: "-100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className={`fixed top-13 right-0 w-64 md:hidden px-6 py-6 text-foreground 
-              font-medium text-center rounded-bl-md z-40 bg-background
-              flex flex-col items-center justify-start 
-              ${isDark ? "border border-gray-700" : "border border-gray-300"}`}
-            style={{ backdropFilter: "blur(8px)" }}
-          >
-            <Accordion
-              type="single"
-              collapsible
-              className="w-full"
-              defaultValue="item-1"
-            >
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Product Information</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
-                  <Link href="#">
-                      <div className="hover:bg-accent transition p-2 flex rounded-sm">
-                        Components
-                      </div>
-                    </Link>
-
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Shipping Details</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <p>
-                    We offer worldwide shipping through trusted courier
-                    partners. Standard delivery takes 3-5 business days, while
-                    express shipping ensures delivery within 1-2 business days.
-                  </p>
-                  <p>
-                    All orders are carefully packaged and fully insured. Track
-                    your shipment in real-time through our dedicated tracking
-                    portal.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Return Policy</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <p>
-                    We stand behind our products with a comprehensive 30-day
-                    return policy. If you&apos;re not completely satisfied,
-                    simply return the item in its original condition.
-                  </p>
-                  <p>
-                    Our hassle-free return process includes free return shipping
-                    and full refunds processed within 48 hours of receiving the
-                    returned item.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AccordionMenu 
+        isDark={isDark} 
+        isOpen={isOpen} 
+        menus={menus} 
+      />
+      
     </>
   );
 }
