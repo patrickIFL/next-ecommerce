@@ -8,7 +8,10 @@ import {
 } from "./ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
-import { Search, User } from "lucide-react";
+import { Search, ShoppingCart, User } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
+import { UserButton } from "@clerk/nextjs";
+import ClerkUserButton from "./ClerkUserButton";
 
 function AccordionMenu({
   isOpen,
@@ -23,6 +26,7 @@ function AccordionMenu({
   openSignIn: any;
   // accountMenu: any;
 }) {
+  const {user, router} = useAppContext();
   const menuItemClass =
     "hover:bg-accent transition py-2 flex rounded-sm text-left w-full !text-md";
 
@@ -102,15 +106,25 @@ function AccordionMenu({
             }
              {/* Dark mode and Search */}
             <AccordionItem className="border-none pt-3" value="theme-search">
-              <div className="flex justify-end gap-3">
-                <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
-                <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
-                  <Search color={"var(--color-foreground)"} size={18} className="m-2"/>
+              <div className="flex justify-between">
+                <div className="flex gap-2">
+                  <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
+                  <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
+                    <Search color={"var(--color-foreground)"} size={18} className="m-2"/>
+                  </div>
                 </div>
-                <button onClick={openSignIn} className="w-full cursor-pointer hover:bg-accent rounded-md py-2 flex items-center justify-center gap-2 transition border">
-                <User color={"var(--color-foreground)"} size={18} />
-                <span className="text-sm ml-0.5">Account</span>
-              </button>
+                <div>
+                  {user 
+                  ? 
+                  <ClerkUserButton />
+                  :
+                    <button onClick={openSignIn} className="w-full cursor-pointer hover:bg-accent rounded-md py-2 px-3 flex items-center justify-center gap-2 transition border">
+                    <User color={"var(--color-foreground)"} size={18} />
+                    <span className="text-sm ml-0.5">Account</span>
+                  </button>
+                  }
+                </div>
+
               </div>
             </AccordionItem>
           </Accordion>

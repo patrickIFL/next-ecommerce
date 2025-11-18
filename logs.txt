@@ -6,3 +6,148 @@ import {
   ClerkProvider,
 } from '@clerk/nextjs'
 then wrap the whole html with ClerkProvider
+
+-- Clerk Hooks Learned
+useClerk() - contains the openLogin see Navbar
+useUser() - contains the User Object refer to AppContext
+
+user Object from 
+const {user} = useUser():
+{
+    "id": "user_35dqmAjB7yvkmJsCPt4uUshzcCW",
+    "pathRoot": "/me",
+    "externalId": null,
+    "username": "xephere",
+    "emailAddresses": [
+        {
+            "id": "idn_35dqiVe0iVh9KcOhjEyeyor1PHs",
+            "pathRoot": "/me/email_addresses",
+            "emailAddress": "patrickperez.iformatlogic@gmail.com",
+            "matchesSsoConnection": false,
+            "linkedTo": [
+                {
+                    "id": "idn_35dqiWM7LTtWJjoQ9wtOPA1USx5",
+                    "pathRoot": "",
+                    "type": "oauth_google"
+                }
+            ],
+            "verification": {
+                "pathRoot": "",
+                "status": "verified",
+                "strategy": "from_oauth_google",
+                "nonce": null,
+                "message": null,
+                "externalVerificationRedirectURL": null,
+                "attempts": null,
+                "expireAt": "2025-11-18T08:12:21.954Z",
+                "error": null
+            }
+        }
+    ],
+    "phoneNumbers": [],
+    "web3Wallets": [],
+    "externalAccounts": [
+        {
+            "id": "eac_35dqiZpwrWy68SYt9g3ITvwaKjv",
+            "pathRoot": "/me/external_accounts",
+            "identificationId": "idn_35dqiWM7LTtWJjoQ9wtOPA1USx5",
+            "provider": "google",
+            "providerUserId": "111907132999216830871",
+            "emailAddress": "patrickperez.iformatlogic@gmail.com",
+            "approvedScopes": "email https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid profile",
+            "firstName": "Patrick Royce",
+            "lastName": "Perez",
+            "imageUrl": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJS1lHRm96X1QyVEV4MDNjaUtVM3llankyNW82aVlVNmZxM2JNd01lTlhuVEE3bWtNPXMxMDAwLWMiLCJzIjoia21ZN1dFdDB6NmZNdjNiaVRhZDNSM012Wm5nOXRpM0tRKzJLMmgzaTR3YyJ9",
+            "username": "",
+            "phoneNumber": "",
+            "publicMetadata": {},
+            "label": null,
+            "verification": {
+                "pathRoot": "",
+                "status": "verified",
+                "strategy": "oauth_google",
+                "nonce": null,
+                "message": null,
+                "externalVerificationRedirectURL": null,
+                "attempts": null,
+                "expireAt": "2025-11-18T07:30:16.314Z",
+                "error": null
+            }
+        }
+    ],
+    "enterpriseAccounts": [],
+    "passkeys": [],
+    "samlAccounts": [],
+    "organizationMemberships": [],
+    "passwordEnabled": false,
+    "firstName": "Patrick Royce",
+    "lastName": "Perez",
+    "fullName": "Patrick Royce Perez",
+    "primaryEmailAddressId": "idn_35dqiVe0iVh9KcOhjEyeyor1PHs",
+    "primaryEmailAddress": {
+        "id": "idn_35dqiVe0iVh9KcOhjEyeyor1PHs",
+        "pathRoot": "/me/email_addresses",
+        "emailAddress": "patrickperez.iformatlogic@gmail.com",
+        "matchesSsoConnection": false,
+        "linkedTo": [
+            {
+                "id": "idn_35dqiWM7LTtWJjoQ9wtOPA1USx5",
+                "pathRoot": "",
+                "type": "oauth_google"
+            }
+        ],
+        "verification": {
+            "pathRoot": "",
+            "status": "verified",
+            "strategy": "from_oauth_google",
+            "nonce": null,
+            "message": null,
+            "externalVerificationRedirectURL": null,
+            "attempts": null,
+            "expireAt": "2025-11-18T08:12:21.954Z",
+            "error": null
+        }
+    },
+    "primaryPhoneNumberId": null,
+    "primaryPhoneNumber": null,
+    "primaryWeb3WalletId": null,
+    "primaryWeb3Wallet": null,
+    "imageUrl": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18zNWRxbUJGekhPdzFvclhyaldHZ3BOdDZOSjYifQ",
+    "hasImage": true,
+    "twoFactorEnabled": false,
+    "totpEnabled": false,
+    "backupCodeEnabled": false,
+    "publicMetadata": {},
+    "unsafeMetadata": {},
+    "createOrganizationEnabled": true,
+    "createOrganizationsLimit": null,
+    "deleteSelfEnabled": true,
+    "lastSignInAt": "2025-11-18T07:45:07.313Z",
+    "legalAcceptedAt": null,
+    "updatedAt": "2025-11-18T07:45:07.338Z",
+    "createdAt": "2025-11-18T07:20:52.713Z",
+    "cachedSessionsWithActivities": null
+}
+
+-- Creating another Tab in the User Button refer to navbar
+<UserButton>
+<UserButton.MenuItems> 
+    <UserButton.Action 
+    label="Cart"
+    labelIcon={<ShoppingCart size={16}/>}
+    onClick={() => {}}
+    />
+</UserButton.MenuItems> 
+</UserButton> 
+
+you can make your own custom icons using SVG code then import it as a component. see assets.js for reference.
+
+You can also use this feature to replace the burger icon
+
+install clerk themes then import shadcn theme, modify the User button
+<UserButton
+      appearance={{
+    baseTheme: shadcn, // use any base theme
+  }}
+
+  change the logged out button also.

@@ -4,7 +4,7 @@ import Image from "next/image";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
-import { Menu, Search, User, X } from "lucide-react";
+import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -18,13 +18,14 @@ import {
 } from "./ui/navigation-menu";
 import AccordionMenu from "./AccordionMenu";
 import { useAppContext } from "@/context/AppContext";
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, UserButton } from "@clerk/nextjs";
+import ClerkUserButton from "./ClerkUserButton";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const {isSeller, router} = useAppContext();
-  
+  const {isSeller, router, user} = useAppContext();
+  console.log(user);
   const {openSignIn} = useClerk();
 
   // Account Dropdown
@@ -118,11 +119,10 @@ function NavBar() {
   return (
     <>
       <nav
-        className={`flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b 
-      ${
-        isDark ? "border-gray-700" : "border-gray-300"
-      } z-50 relative bg-background`}
-      >
+  className={`fixed top-0 left-0 w-full h-16 flex items-center justify-between 
+  px-6 md:px-16 lg:px-32 border-b z-50 bg-background
+  ${isDark ? "border-gray-700" : "border-gray-300"}`}
+>
         {/* Logo will Change Depending on Theme. */}
         <Link href={'/'}>
           {isDark ? (
@@ -193,10 +193,17 @@ function NavBar() {
             </NavigationMenuItem>
             
             <NavigationMenuItem className="flex items-center p-2 rounded-full">
-              <button onClick={openSignIn} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
-                <User color={"var(--color-foreground)"} size={18} />
-                <span>Account</span>
-              </button>
+              {user 
+                ? (
+                  <ClerkUserButton />
+                ) 
+                : 
+                (<button onClick={openSignIn} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
+                  <User color={"var(--color-foreground)"} size={18} />
+                  <span>Account</span>
+                </button>)
+              }
+              
             </NavigationMenuItem>
 
 
