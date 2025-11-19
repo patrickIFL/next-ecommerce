@@ -183,3 +183,5 @@ inngest passes that webhook event to your app via the .env var
 => npm install inngest
 => create the inngest client
 => connect clerk webhook to inngest
+
+deploy your app to vercel
