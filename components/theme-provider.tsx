@@ -13,12 +13,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    // Initialize from DOM or localStorage
+    // Load theme from localStorage *first*
+    const stored = localStorage.getItem("theme")
+
+    if (stored === "dark") {
+      document.documentElement.classList.add("dark")
+      setIsDark(true)
+    } else if (stored === "light") {
+      document.documentElement.classList.remove("dark")
+      setIsDark(false)
+    } else {
+      // No stored value → fallback to system theme
+      // this is an api that checks the values of the preferences of the device.
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      document.documentElement.classList.toggle("dark", prefersDark)
+      setIsDark(prefersDark)
+    }
+
+    // Watch for manual DOM changes (still useful)
     const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains("dark"))
     }
-
-    updateTheme()
 
     const observer = new MutationObserver(updateTheme)
     observer.observe(document.documentElement, {

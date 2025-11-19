@@ -151,3 +151,18 @@ install clerk themes then import shadcn theme, modify the User button
   }}
 
   change the logged out button also.
+
+
+# Public Environment Variables
+NEXT_PUBLIC_CURRENCY=PHP
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_dW5pdGVkLXJhcHRvci00NC5jbGVyay5hY2NvdW50cy5kZXYk
+
+# Private Environment Variables
+CLERK_SECRET_KEY=sk_test_aJ8aJMo6RUPGcSKVYfZZQdFcbJHY4TODcZsTehoFc4
+
+# Prisma connection string
+DATABASE_URL='postgresql://neondb_owner:npg_4PRkSJlDsHo7@ep-still-waterfall-a4seb2um-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+
+CLOUDINARY_CLOUD_NAME=dlgc8nx7r 
+CLOUDINARY_API_KEY=798229333128363 
+CLOUDINARY_API_SECRET=zj7HMYqB9FkRocFTUo4pA6yyKx8

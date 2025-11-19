@@ -21,14 +21,17 @@ export const AppContextProvider = (props) => {
     const [isSeller, setIsSeller] = useState(true)
     const [cartItems, setCartItems] = useState({})
 
+    // put this in a zustand store
     const fetchProductData = async () => {
         setProducts(productsDummyData)
     }
 
+    // user data must be in tanstack
     const fetchUserData = async () => {
         setUserData(userDummyData)
     }
 
+    // put this in zustand then mutations should be in tanstack
     const addToCart = async (itemId) => {
 
         let cartData = structuredClone(cartItems);
@@ -39,7 +42,6 @@ export const AppContextProvider = (props) => {
             cartData[itemId] = 1;
         }
         setCartItems(cartData);
-
     }
 
     const updateCartQuantity = async (itemId, quantity) => {

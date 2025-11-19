@@ -5,11 +5,8 @@ import "./globals.css";
 import { AppContextProvider } from "@/context/AppContext";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
-
+import { shadcn } from "@clerk/themes";
+import {ClerkProvider} from '@clerk/nextjs'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,8 +28,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{
+    baseTheme: shadcn, // use any base theme
+  }}>
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { CldUploadWidget, CloudinaryUploadWidgetInfo } from 'next-cloudinary';
 
 const AddProduct = () => {
 
@@ -11,10 +12,19 @@ const AddProduct = () => {
   const [category, setCategory] = useState('Earphone');
   const [price, setPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
+  // since you can give 4 pictures, initialize the state with 4 null values
+  const [mediaUrl, setMediaUrl] = useState([null, null, null, null]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  };
 
+  const handleUpload = (result, index) => {
+    if (result?.info?.secure_url) {
+      const updated = [...files];
+      updated[index] = result.info.secure_url;
+      setFiles(updated);
+    }
   };
 
   return (
@@ -24,23 +34,42 @@ const AddProduct = () => {
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
 
-            {[...Array(4)].map((_, index) => (
-              <label key={index} htmlFor={`image${index}`}>
-                <input onChange={(e) => {
-                  const updatedFiles = [...files];
-                  updatedFiles[index] = e.target.files[0];
-                  setFiles(updatedFiles);
-                }} type="file" id={`image${index}`} hidden />
-                <Image
-                  key={index}
-                  className="max-w-24 cursor-pointer"
-                  src={files[index] ? URL.createObjectURL(files[index]) : assets.upload_area}
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </label>
-            ))}
+       {[...Array(4)].map((_, index) => (
+  <CldUploadWidget
+  key={index}
+  signatureEndpoint="/api/sign-image"
+  onSuccess={(result, { widget }) => {
+    const url = (result.info as CloudinaryUploadWidgetInfo).secure_url;
+
+    setMediaUrl(prev => {
+      const updated = [...prev];
+      updated[index] = url;
+      console.log(updated); // correct new array
+      return updated;
+    });
+
+    widget.close();
+  }}
+>
+
+    {({ open }) => (
+      <div
+        onClick={() => open()}
+        className="overflow-hidden cursor-pointer w-24 h-24 border rounded flex items-center justify-center bg-gray-100"
+      >
+        <Image
+  src={mediaUrl[index] ? mediaUrl[index] : assets.upload_area}
+  alt=""
+  width={100}
+  height={100}
+  className="object-cover rounded"
+/>
+
+      </div>
+    )}
+  </CldUploadWidget>
+))}
+
 
           </div>
         </div>

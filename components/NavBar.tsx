@@ -18,7 +18,7 @@ import {
 } from "./ui/navigation-menu";
 import AccordionMenu from "./AccordionMenu";
 import { useAppContext } from "@/context/AppContext";
-import { useClerk, UserButton } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 
 function NavBar() {
