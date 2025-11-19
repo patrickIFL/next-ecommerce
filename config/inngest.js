@@ -1,9 +1,7 @@
 import { Inngest } from "inngest";
-import { prisma } from "../src/generated/prisma";
+import { prisma } from "@/src/generated/prisma";
 
 export const inngest = new Inngest({ id: "next-ecommerce" });
-
-
 //
 // USER CREATED
 //
