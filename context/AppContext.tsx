@@ -87,13 +87,20 @@ export const AppContextProvider = (props) => {
 
     const value = {
         user,
-        currency, router,
-        isSeller, setIsSeller,
-        userData, fetchUserData,
-        products, fetchProductData,
-        cartItems, setCartItems,
-        addToCart, updateCartQuantity,
-        getCartCount, getCartAmount
+        currency, 
+        router,
+        isSeller, 
+        setIsSeller,
+        userData, 
+        fetchUserData,
+        products, 
+        fetchProductData,
+        cartItems, 
+        setCartItems,
+        addToCart, 
+        updateCartQuantity,
+        getCartCount,
+        getCartAmount
     }
 
     return (

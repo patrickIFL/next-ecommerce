@@ -7,10 +7,10 @@ function page() {
   const [address, setAddress] = useState({
         fullName: '',
         phoneNumber: '',
-        pincode: '',
+        zipcode: '',
         area: '',
         city: '',
-        state: '',
+        province: '',
     })
 
     const onSubmitHandler = async (e) => {
@@ -42,9 +42,9 @@ function page() {
                         <input
                             className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
                             type="text"
-                            placeholder="Pin code"
-                            onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
-                            value={address.pincode}
+                            placeholder="Zip code"
+                            onChange={(e) => setAddress({ ...address, zipcode: e.target.value })}
+                            value={address.zipcode}
                         />
                         <textarea
                             className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground resize-none placeholder:text-foreground/50"
@@ -65,9 +65,9 @@ function page() {
                             <input
                                 className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
                                 type="text"
-                                placeholder="State"
-                                onChange={(e) => setAddress({ ...address, state: e.target.value })}
-                                value={address.state}
+                                placeholder="Province"
+                                onChange={(e) => setAddress({ ...address, province: e.target.value })}
+                                value={address.province}
                             />
                         </div>
                     </div>

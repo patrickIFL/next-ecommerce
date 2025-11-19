@@ -9,34 +9,61 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
+  id           String          @id @default(cuid())
+  email        String          @unique
   name         String
   image        String?
-  customerId   String?       @unique
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  products     Product[]
   orders       Order[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  addresses    ShippingAddress[]
+  cartItems    CartItem[]
 }
 
 model Product {
-  id         String  @id @default(cuid())
-  name       String
-  image      String
-  price      Int
-  isArchived Boolean @default(false)
-  orders     Order[]
+  id          String     @id @default(cuid())
+  userId      String
+
+  name        String
+  description String
+  category    String
+  images      String[]   // array of image URLs
+  price       Int
+  offerPrice  Int
+
+  orders      Order[]
+  user        User       @relation(fields: [userId], references: [id])
+  cartItems   CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([userId])
+  @@index([productId])
 }
 
 model Order {
   id                String           @id @default(cuid())
   userId            String
   productId         String
+
   price             Int
   isPaid            Boolean          @default(false)
-  size              String
+  shippingMethod    String
   orderDate         DateTime         @default(now())
   shippingAddressId String?
+
   user              User             @relation(fields: [userId], references: [id])
   product           Product          @relation(fields: [productId], references: [id])
   shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
@@ -46,11 +73,18 @@ model Order {
 }
 
 model ShippingAddress {
-  id         String  @id @default(cuid())
-  address    String
-  city       String
-  state      String
-  postalCode String
-  country    String
-  orders     Order[]
+  id          String  @id @default(cuid())
+  userId      String
+
+  fullName    String
+  phoneNumber String
+  zipcode     String
+  address     String
+  city        String
+  province    String
+
+  orders      Order[]
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }

@@ -126,17 +126,26 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   image: 'image',
-  customerId: 'customerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
-  image: 'image',
+  description: 'description',
+  category: 'category',
+  images: 'images',
   price: 'price',
-  isArchived: 'isArchived'
+  offerPrice: 'offerPrice'
+};
+
+exports.Prisma.CartItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  quantity: 'quantity'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
@@ -145,18 +154,20 @@ exports.Prisma.OrderScalarFieldEnum = {
   productId: 'productId',
   price: 'price',
   isPaid: 'isPaid',
-  size: 'size',
+  shippingMethod: 'shippingMethod',
   orderDate: 'orderDate',
   shippingAddressId: 'shippingAddressId'
 };
 
 exports.Prisma.ShippingAddressScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
+  fullName: 'fullName',
+  phoneNumber: 'phoneNumber',
+  zipcode: 'zipcode',
   address: 'address',
   city: 'city',
-  state: 'state',
-  postalCode: 'postalCode',
-  country: 'country'
+  province: 'province'
 };
 
 exports.Prisma.SortOrder = {
@@ -178,6 +189,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   Product: 'Product',
+  CartItem: 'CartItem',
   Order: 'Order',
   ShippingAddress: 'ShippingAddress'
 };

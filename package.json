@@ -20,14 +20,14 @@
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.24",
+    "inngest": "^3.45.1",
     "lucide-react": "^0.552.0",
     "next": "16.0.1",
     "next-cloudinary": "^6.17.5",
     "prisma": "^6.19.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "tailwind-merge": "^3.3.1",
-    "zustand": "^5.0.8"
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

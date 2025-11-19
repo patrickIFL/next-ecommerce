@@ -166,3 +166,20 @@ DATABASE_URL='postgresql://neondb_owner:npg_4PRkSJlDsHo7@ep-still-waterfall-a4se
 CLOUDINARY_CLOUD_NAME=dlgc8nx7r 
 CLOUDINARY_API_KEY=798229333128363 
 CLOUDINARY_API_SECRET=zj7HMYqB9FkRocFTUo4pA6yyKx8
+
+INNGEST_EVENT_KEY='inZdO8qaK37ZojnTURo7Ns8GX8_zVF-4dyzWYaY_oCOzUvRcsNV8fiqBMjkEjz_LAGIti9pNHqGiwOwQaXIlFA'
+INNGEST_SIGNING_KEY='signkey-prod-0ba6770c588d8ca5f03e4daea1b0291bfdf35f46b3b8eb4767d61754a7cbc9a4'
+
+currently studying inngest.
+refer to this guide:
+https://www.inngest.com/docs/getting-started/nextjs-quick-start?ref=docs-home
+
+Inngest is the platform clerk uses to handle webhooks from clerk.
+clerk events eg. user signs in, clerk passes a webhook to inngest,
+inngest passes that webhook event to your app via the .env var
+
+=> create your inngest account,
+=> add your env vars
+=> npm install inngest
+=> create the inngest client
+=> connect clerk webhook to inngest
