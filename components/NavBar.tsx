@@ -92,7 +92,7 @@ function NavBar() {
   return (
     <>
       <nav
-        className={`overflow-x-hiddenfixed top-0 left-0 w-full h-16 flex items-center justify-between 
+        className={`overflow-x-hidden fixed top-0 left-0 w-full h-16 flex items-center justify-between 
   px-6 md:px-16 lg:px-32 border-b z-50 bg-background
   ${isDark ? "border-gray-700" : "border-gray-300"}`}
       >
