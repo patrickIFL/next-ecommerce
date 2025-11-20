@@ -185,3 +185,8 @@ inngest passes that webhook event to your app via the .env var
 => connect clerk webhook to inngest
 
 deploy your app to vercel
+
+Encountered lots of errors during deployment. (typescript) 
+It is better to fix it all first before deployment
+
+installed a folder markdown plugin 

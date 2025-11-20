@@ -1,7 +1,8 @@
 import SideBar from '@/components/seller/Sidebar'
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 
-function layout({children}) {
+
+function layout({children}:{children:any}) {
   return (
     <div className='flex w-full overflow-hidden'>
       <SideBar />

@@ -1,9 +1,9 @@
-import { useAppContext } from '@/context/AppContext'
 import { UserButton } from '@clerk/nextjs'
 import { ShoppingBag, ShoppingCart } from 'lucide-react'
+import { useRouter } from 'next/navigation';
 
 function ClerkUserButton() {
-  const { router } = useAppContext();
+  const router = useRouter();
 
   return (
     <UserButton>

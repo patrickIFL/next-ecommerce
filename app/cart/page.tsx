@@ -1,14 +1,14 @@
 'use client'
-import React from "react";
 import { assets } from "@/assets/assets";
 import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
+import {useRouter} from "next/navigation";
 
 const Cart = () => {
 
-  const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
-
+  const { products, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
+  const router = useRouter();
   return (
       <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
         <div className="flex-1">
@@ -38,7 +38,7 @@ const Cart = () => {
               </thead>
               <tbody>
                 {Object.keys(cartItems).map((itemId) => {
-                  const product = products.find(product => product._id === itemId);
+                  const product = products?.find(product => product._id === itemId);
 
                   if (!product || cartItems[itemId] <= 0) return null;
 
@@ -48,7 +48,7 @@ const Cart = () => {
                         <div>
                           <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
                             <Image
-                              src={product.image[0]}
+                              src={product.image[0] || "/placeholder.png"}
                               alt={product.name}
                               className="w-16 h-auto object-cover mix-blend-multiply"
                               width={1280}

@@ -1,13 +1,15 @@
 "use-client"
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
+import { useRouter } from 'next/navigation';
 
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product }:{ product:any }) => {
 
-    const { currency, router } = useAppContext()
+    const { currency } = useAppContext()
+    const router = useRouter();
 
     return (
         <div

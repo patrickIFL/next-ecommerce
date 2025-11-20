@@ -2,10 +2,12 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
 const HomeProducts = () => {
 
-  const { products, router } = useAppContext()
+  const { products } = useAppContext()
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center pt-14">

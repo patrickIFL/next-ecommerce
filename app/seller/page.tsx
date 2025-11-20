@@ -1,25 +1,30 @@
-'use client'
+'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any*/
+
 import React, { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { CldUploadWidget, CloudinaryUploadWidgetInfo } from 'next-cloudinary';
+import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 
 const AddProduct = () => {
 
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<string[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Earphone');
   const [price, setPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
-  // since you can give 4 pictures, initialize the state with 4 null values
-  const [mediaUrl, setMediaUrl] = useState([null, null, null, null]);
 
-  const handleSubmit = async (e) => {
+  // FIX: Add proper type (string | null)[]
+  const [mediaUrl, setMediaUrl] = useState<(string | null)[]>([
+    null, null, null, null
+  ]);
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
   };
 
-  const handleUpload = (result, index) => {
+  const handleUpload = (result: any, index: number) => {
     if (result?.info?.secure_url) {
       const updated = [...files];
       updated[index] = result.info.secure_url;
@@ -34,45 +39,42 @@ const AddProduct = () => {
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
 
-       {[...Array(4)].map((_, index) => (
-  <CldUploadWidget
-  key={index}
-  signatureEndpoint="/api/sign-image"
-  onSuccess={(result, { widget }) => {
-    const url = (result.info as CloudinaryUploadWidgetInfo).secure_url;
+            {[...Array(4)].map((_, index) => (
+              <CldUploadWidget
+                key={index}
+                signatureEndpoint="/api/sign-image"
+                onSuccess={(result, { widget }) => {
+                  const url = (result.info as CloudinaryUploadWidgetInfo).secure_url;
 
-    setMediaUrl(prev => {
-      const updated = [...prev];
-      updated[index] = url;
-      console.log(updated); // correct new array
-      return updated;
-    });
+                  setMediaUrl(prev => {
+                    const updated = [...prev];
+                    updated[index] = url;
+                    return updated;
+                  });
 
-    widget.close();
-  }}
->
-
-    {({ open }) => (
-      <div
-        onClick={() => open()}
-        className="overflow-hidden cursor-pointer w-24 h-24 border rounded flex items-center justify-center bg-gray-100"
-      >
-        <Image
-  src={mediaUrl[index] ? mediaUrl[index] : assets.upload_area}
-  alt=""
-  width={100}
-  height={100}
-  className="object-cover rounded"
-/>
-
-      </div>
-    )}
-  </CldUploadWidget>
-))}
-
+                  widget.close();
+                }}
+              >
+                {({ open }) => (
+                  <div
+                    onClick={() => open()}
+                    className="overflow-hidden cursor-pointer w-24 h-24 border rounded flex items-center justify-center bg-gray-100"
+                  >
+                    <Image
+                      src={mediaUrl[index] ? mediaUrl[index]! : assets.upload_area}
+                      alt=""
+                      width={100}
+                      height={100}
+                      className="object-cover rounded"
+                    />
+                  </div>
+                )}
+              </CldUploadWidget>
+            ))}
 
           </div>
         </div>
+
         <div className="flex flex-col gap-1 max-w-md">
           <label className="text-base font-medium" htmlFor="product-name">
             Product Name
@@ -87,11 +89,9 @@ const AddProduct = () => {
             required
           />
         </div>
+
         <div className="flex flex-col gap-1 max-w-md">
-          <label
-            className="text-base font-medium"
-            htmlFor="product-description"
-          >
+          <label className="text-base font-medium" htmlFor="product-description">
             Product Description
           </label>
           <textarea
@@ -104,7 +104,9 @@ const AddProduct = () => {
             required
           ></textarea>
         </div>
+
         <div className="flex items-center gap-5 flex-wrap">
+
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="category">
               Category
@@ -124,6 +126,7 @@ const AddProduct = () => {
               <option value="Accessories">Accessories</option>
             </select>
           </div>
+
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
@@ -138,6 +141,7 @@ const AddProduct = () => {
               required
             />
           </div>
+
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="offer-price">
               Offer Price
@@ -152,12 +156,13 @@ const AddProduct = () => {
               required
             />
           </div>
+
         </div>
+
         <button type="submit" className="px-8 py-2.5 bg-orange-600 text-white font-medium rounded">
           ADD
         </button>
       </form>
-      {/* <Footer /> */}
     </div>
   );
 };

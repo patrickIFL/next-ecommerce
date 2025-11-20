@@ -41,9 +41,9 @@ const HeaderSlider = () => {
       setCurrentSlide((prev) => (prev + 1) % sliderData.length);
     }, sliderDuration);
     return () => clearInterval(interval);
-  }, [sliderData.length]);
+  }, [sliderData.length, sliderDuration]);
 
-  const handleSlideChange = (index) => {
+  const handleSlideChange = (index:number) => {
     setCurrentSlide(index);
   };
 
@@ -62,7 +62,7 @@ const HeaderSlider = () => {
           >
             <div className="md:pl-8 mt-10 md:mt-0">
               <p className="md:text-base text-orange-600 pb-1">{slide.offer}</p>
-              <h1 className="max-w-lg md:text-[40px] md:leading-[48px] text-2xl font-semibold">
+              <h1 className="max-w-lg md:text-[40px] md:leading-12 text-2xl font-semibold">
                 {slide.title}
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">

@@ -8,9 +8,9 @@ import {
 } from "./ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
-import { Search, ShoppingCart, User } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
-import { UserButton } from "@clerk/nextjs";
+// import { UserButton } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 
 function AccordionMenu({
@@ -26,7 +26,7 @@ function AccordionMenu({
   openSignIn: any;
   // accountMenu: any;
 }) {
-  const {user, router} = useAppContext();
+  const { user } = useAppContext();
   const menuItemClass =
     "hover:bg-accent transition py-2 flex rounded-sm text-left w-full !text-md";
 
