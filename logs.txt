@@ -197,3 +197,9 @@ deployed the app to vercel
 https://next-ecommerce-silk-rho.vercel.app/
 
 after successful deployment, add the domain to the webhook of inngest
+
+remember to always create the helper function.
+add this to your schema.prisma
+binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
+
+everything in the appcontext becomes stale. even the user.metadata. so always access it inside the clerk itself.

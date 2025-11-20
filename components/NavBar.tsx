@@ -4,7 +4,7 @@ import Image from "next/image";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
-import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -17,14 +17,13 @@ import {
   // NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import AccordionMenu from "./AccordionMenu";
-import { useAppContext } from "@/context/AppContext";
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const {isSeller, user} = useAppContext();
+  const { user } = useUser();
   const {openSignIn} = useClerk();
 
   // Account Dropdown

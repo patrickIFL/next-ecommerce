@@ -12,14 +12,10 @@ interface ClerkUserEvent {
   image_url?: string | null;
 }
 
-// ==========================
 // Inngest client
-// ==========================
 export const inngest = new Inngest({ id: "next-ecommerce" });
 
-// ==========================
 // USER CREATED
-// ==========================
 export const syncUserCreation = inngest.createFunction(
   { id: "sync-user-from-clerk" },
   { event: "clerk/user.created" },
@@ -53,9 +49,7 @@ export const syncUserCreation = inngest.createFunction(
   }
 );
 
-// ==========================
 // USER UPDATED
-// ==========================
 export const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
   { event: "clerk/user.updated" },
@@ -89,9 +83,7 @@ export const syncUserUpdation = inngest.createFunction(
   }
 );
 
-// ==========================
 // USER DELETED
-// ==========================
 export const syncUserDeletion = inngest.createFunction(
   { id: "delete-user-with-clerk" },
   { event: "clerk/user.deleted" },

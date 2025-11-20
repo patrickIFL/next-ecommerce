@@ -1,12 +1,24 @@
-import { UserButton } from '@clerk/nextjs'
-import { ShoppingBag, ShoppingCart } from 'lucide-react'
+import { useClerk, UserButton } from '@clerk/nextjs'
+import { LayoutDashboard, ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 
 function ClerkUserButton() {
   const router = useRouter();
+  const { user } = useClerk();
+  const isSeller = user?.publicMetadata?.role === "seller";
 
   return (
     <UserButton>
+        {isSeller && (
+          <UserButton.MenuItems>
+            <UserButton.Action
+              label="Seller Dashboard"
+              labelIcon={<LayoutDashboard size={16}/>}
+              onClick={() => router.push("/seller")}
+            />
+          </UserButton.MenuItems>
+        )}
+
       <UserButton.MenuItems>
         <UserButton.Action
           label="Cart"

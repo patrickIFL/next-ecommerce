@@ -3,6 +3,7 @@
 
 import { productsDummyData, userDummyData } from "@/assets/assets";
 import { useUser } from "@clerk/nextjs";
+
 import {
   createContext,
   useContext,
@@ -93,7 +94,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isSeller, setIsSeller] = useState<boolean>(true);
+  const [isSeller, setIsSeller] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItems>({});
 
   /* ---------------------------
@@ -103,9 +104,10 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     setProducts(productsDummyData as Product[]);
   };
 
-  const fetchUserData = async () => {
+ const fetchUserData = async () => {
     setUserData(userDummyData as UserData);
-  };
+}
+
 
   /* ---------------------------
       CART FUNCTIONS
@@ -152,7 +154,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     ]);
   };
   load();
-}, []);
+}, [user]);
 
 
 /* ---------------------------
