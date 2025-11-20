@@ -24,44 +24,19 @@ function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
-  const {openSignIn} = useClerk();
-
-  // Account Dropdown
-  // const accountMenu = {
-  //   mainText: "Account",
-  //   links: [
-  //     {
-  //       linkText: "Seller Dashboard",
-  //       linkFunction: () => {
-  //         alert("seller Dash")
-  //       }
-  //     },
-  //     {
-  //       linkText: "Preferences",
-  //       linkFunction: () => {
-  //         alert("preferences")
-  //       }
-  //     },
-  //     {
-  //       linkText: "Logout",
-  //       linkFunction: () => {
-  //         alert("logout")
-  //       }
-  //     },
-  //   ]
-  // }
+  const { openSignIn } = useClerk();
 
   // For the Nav links
   const menus = [
     {
       mainTitle: "Item One",
       mainLink: "#",
-      menuLinks : []
+      menuLinks: []
     },
     {
       mainTitle: "Item One",
       mainLink: "",
-      menuLinks : [
+      menuLinks: [
         {
           linkName: "Components",
           linkRef: "#"
@@ -79,7 +54,7 @@ function NavBar() {
     {
       mainTitle: "Item Three",
       mainLink: "",
-      menuLinks : [
+      menuLinks: [
         {
           linkName: "Components",
           linkRef: "#"
@@ -97,7 +72,7 @@ function NavBar() {
     {
       mainTitle: "Item Four",
       mainLink: "",
-      menuLinks : [
+      menuLinks: [
         {
           linkName: "Components",
           linkRef: "#"
@@ -117,30 +92,30 @@ function NavBar() {
   return (
     <>
       <nav
-  className={`fixed top-0 left-0 w-full h-16 flex items-center justify-between 
+        className={`overflow-x-hiddenfixed top-0 left-0 w-full h-16 flex items-center justify-between 
   px-6 md:px-16 lg:px-32 border-b z-50 bg-background
   ${isDark ? "border-gray-700" : "border-gray-300"}`}
->
+      >
         {/* Logo will Change Depending on Theme. */}
         <Link href={'/'}>
           {isDark ? (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => {}}
+              onClick={() => { }}
               src={assets.logo_white}
               alt="logo"
             />
           ) : (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => {}}
+              onClick={() => { }}
               src={assets.logo}
               alt="logo"
             />
           )}
         </Link>
         <div className="relative hidden md:block">
-          <NavLinks menus={menus}/>
+          <NavLinks menus={menus} />
         </div>
 
         {/* Mobile Hamburger/Accordion Trigger */}
@@ -176,7 +151,7 @@ function NavBar() {
         </button>
 
 
-       
+
         <NavigationMenu
           viewport={false}
           className="text-foreground hidden md:flex items-center h-full"
@@ -189,57 +164,32 @@ function NavBar() {
             <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
               <Search color={"var(--color-foreground)"} size={18} />
             </NavigationMenuItem>
-            
+
             <NavigationMenuItem className="flex items-center p-2 rounded-full">
-              {user 
+              {user
                 ? (
                   <ClerkUserButton />
-                ) 
-                : 
+                )
+                :
                 (<button onClick={() => openSignIn()} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
                   <User color={"var(--color-foreground)"} size={18} />
                   <span>Account</span>
                 </button>)
               }
-              
+
             </NavigationMenuItem>
-
-
-            {/* Account Dropdown - Desktop - trial only */}
-            {/* <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-md font-normal flex gap-1">
-                <User color={"var(--color-foreground)"} size={18} />
-                <span>{accountMenu.mainText}</span>
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="absolute min-w-[200px] z-50">
-                <ul className="grid w-[200px] gap-1">
-                  {accountMenu.links.length > 0 
-                  && (
-                    accountMenu.links.map((link, i)=>(
-                      <li key={i}>
-                        <NavigationMenuLink className="cursor-pointer" onClick={link.linkFunction} asChild>
-                          <div>
-                            {link.linkText}
-                            </div>
-                        </NavigationMenuLink>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem> */}
 
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
 
       {/* Mobile Menu */}
-      <AccordionMenu 
-        isDark={isDark} 
-        isOpen={isOpen} 
+      <AccordionMenu
+        isDark={isDark}
+        isOpen={isOpen}
         menus={menus}
         openSignIn={openSignIn}
-        // accountMenu={accountMenu}
+      // accountMenu={accountMenu}
       />
 
     </>
