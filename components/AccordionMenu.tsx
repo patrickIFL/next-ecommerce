@@ -51,23 +51,6 @@ function AccordionMenu({
             className="w-full"
             defaultValue="account"
           >
-           
-
-            {/* Account */}
-            {/* <AccordionItem value="account">
-              <AccordionTrigger>{accountMenu.mainText}</AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
-                  {accountMenu.links.length > 0 
-                    && (accountMenu.links.map((link:any, i:number)=>(
-                          <div onClick={link.linkFunction} key={i} className="cursor-pointer">
-                            <div className={`${menuItemClass} px-4`}>
-                              {link.linkText}
-                            </div>
-                          </div>
-                    ))
-                  )}
-              </AccordionContent>
-            </AccordionItem> */}
 
             {/* Dynamic Menus */}
             {menus.map((menu: any, i: number) => {

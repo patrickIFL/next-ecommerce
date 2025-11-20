@@ -203,3 +203,9 @@ add this to your schema.prisma
 binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
 
 everything in the appcontext becomes stale. even the user.metadata. so always access it inside the clerk itself.
+
+import { useAuth } from "@clerk/nextjs"
+const {getToken} = useAuth();
+
+learned that you can immediately destructure your axios call.
+const {data} = await axios.get("/api/user/data")

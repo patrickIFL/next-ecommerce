@@ -4,6 +4,7 @@ import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import {useRouter} from "next/navigation";
+import { StepBack, StepForward } from "lucide-react";
 
 const Cart = () => {
 
@@ -50,7 +51,7 @@ const Cart = () => {
                             <Image
                               src={product.image[0] || "/placeholder.png"}
                               alt={product.name}
-                              className="w-16 h-auto object-cover mix-blend-multiply"
+                              className="w-16 h-auto object-cover"
                               width={1280}
                               height={720}
                             />
@@ -63,7 +64,7 @@ const Cart = () => {
                           </button>
                         </div>
                         <div className="text-sm hidden md:block">
-                          <p className="text-gray-800">{product.name}</p>
+                          <p className="text-foreground">{product.name}</p>
                           <button
                             className="text-xs text-orange-600 mt-1"
                             onClick={() => updateCartQuantity(product._id, 0)}
@@ -72,27 +73,20 @@ const Cart = () => {
                           </button>
                         </div>
                       </td>
-                      <td className="py-4 md:px-4 px-1 text-gray-600">${product.offerPrice}</td>
+                      <td className="py-4 md:px-4 px-1 text-foreground/80">${product.offerPrice}</td>
                       <td className="py-4 md:px-4 px-1">
                         <div className="flex items-center md:gap-2 gap-1">
                           <button onClick={() => updateCartQuantity(product._id, cartItems[itemId] - 1)}>
-                            <Image
-                              src={assets.decrease_arrow}
-                              alt="decrease_arrow"
-                              className="w-4 h-4"
-                            />
+                            <StepBack fill={"var(--color-foreground)"} size={16} color={"var(--color-foreground)"} />
                           </button>
                           <input onChange={e => updateCartQuantity(product._id, Number(e.target.value))} type="number" value={cartItems[itemId]} className="w-8 border text-center appearance-none"></input>
                           <button onClick={() => addToCart(product._id)}>
-                            <Image
-                              src={assets.increase_arrow}
-                              alt="increase_arrow"
-                              className="w-4 h-4"
-                            />
+                            <StepForward fill={"var(--color-foreground)"} size={16} color={"var(--color-foreground)"} />
+
                           </button>
                         </div>
                       </td>
-                      <td className="py-4 md:px-4 px-1 text-gray-600">${(product.offerPrice * cartItems[itemId]).toFixed(2)}</td>
+                      <td className="py-4 md:px-4 px-1 text-foreground">${(product.offerPrice * cartItems[itemId]).toFixed(2)}</td>
                     </tr>
                   );
                 })}

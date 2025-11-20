@@ -1,9 +1,9 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 
-import { productsDummyData, userDummyData } from "@/assets/assets";
-import { useUser } from "@clerk/nextjs";
-
+import { productsDummyData} from "@/assets/assets";
+import { useAuth, useUser } from "@clerk/nextjs";
+import axios from 'axios';
 import {
   createContext,
   useContext,
@@ -43,6 +43,7 @@ export type CartItems = Record<string, number>;
 
 export interface AppContextType {
   user: any;
+  getToken: any;
   currency: string;
 
   isSeller: boolean;
@@ -88,6 +89,7 @@ interface ProviderProps {
 
 export const AppContextProvider = ({ children }: ProviderProps) => {
   const { user } = useUser();
+  const { getToken } = useAuth();
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -105,9 +107,31 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   };
 
  const fetchUserData = async () => {
-    setUserData(userDummyData as UserData);
-}
+    const token = await getToken();
+    try {
+      const { data } = await axios.get("/api/user/data", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
+      if(data.success){
+        setUserData(data.user);
+        setCartItems(data.user.cartItems);
+        console.log(data.user)
+      }
+      else{
+        // change to shadcn toast
+        console.log(data.message)
+      }
+    // fix tanstack functions
+    // currently, it runs on use effect
+
+    } catch (error:any) {
+      // change to shadcn toast
+      console.log(error.message)
+    }
+}
 
   /* ---------------------------
       CART FUNCTIONS
@@ -161,7 +185,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       CONTEXT VALUE
    ----------------------------*/
   const value: AppContextType = {
-    user,
+    user, getToken,
     currency,
 
     isSeller,
