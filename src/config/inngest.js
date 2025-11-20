@@ -6,12 +6,12 @@ import {prisma} from '@/src/generated/prisma';
 // ==========================
 // Inngest client
 // ==========================
-const inngest = new Inngest({ id: "next-ecommerce" });
+export const inngest = new Inngest({ id: "next-ecommerce" });
 
 // ==========================
 // USER CREATED
 // ==========================
-const syncUserCreation = inngest.createFunction(
+export const syncUserCreation = inngest.createFunction(
   { id: "sync-user-from-clerk" },
   { event: "clerk/user.created" },
   async ({ event }) => {
@@ -48,7 +48,7 @@ const syncUserCreation = inngest.createFunction(
 // ==========================
 // USER UPDATED
 // ==========================
-const syncUserUpdation = inngest.createFunction(
+export const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
   { event: "clerk/user.updated" },
   async ({ event }) => {
@@ -85,7 +85,7 @@ const syncUserUpdation = inngest.createFunction(
 // ==========================
 // USER DELETED
 // ==========================
-const syncUserDeletion = inngest.createFunction(
+export const syncUserDeletion = inngest.createFunction(
   { id: "delete-user-with-clerk" },
   { event: "clerk/user.deleted" },
   async ({ event }) => {
@@ -107,10 +107,3 @@ const syncUserDeletion = inngest.createFunction(
     }
   }
 );
-
-module.exports = {
-  inngest,
-  syncUserCreation,
-  syncUserUpdation,
-  syncUserDeletion,
-};
