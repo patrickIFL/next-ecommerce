@@ -1,5 +1,3 @@
-'use server';
-
 import { Inngest } from 'inngest'
 import {prisma} from '@/src/generated/prisma'; 
 
