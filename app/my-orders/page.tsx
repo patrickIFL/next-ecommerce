@@ -10,7 +10,16 @@ import Loading from "@/components/Loading";
 // Types
 // =======================
 interface Product {
+  _id: string;
+  userId: string;
   name: string;
+  description: string;
+  price: number;
+  offerPrice: number;
+  image: string[];
+  category: string;
+  date: number;
+  __v: number;
 }
 
 interface OrderItem {
@@ -20,17 +29,22 @@ interface OrderItem {
 
 interface OrderAddress {
   fullName: string;
+  phoneNumber: string;
+  zipcode: number;
   area: string;
   city: string;
-  state: string;
-  phoneNumber: string;
+  province: string;
 }
 
 interface OrderType {
+  _id: string;
+  userId: string;
   items: OrderItem[];
   address: OrderAddress;
   amount: number;
-  date: string;
+  date: number | string;
+  status: string;
+  __v: number;
 }
 
 const MyOrders: React.FC = () => {
@@ -40,7 +54,7 @@ const MyOrders: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchOrders = async (): Promise<void> => {
-    setOrders(orderDummyData as OrderType[]); // cast if needed
+    setOrders(orderDummyData);
     setLoading(false);
   };
 
@@ -91,7 +105,7 @@ const MyOrders: React.FC = () => {
                     <br />
                     <span>{order.address.area}</span>
                     <br />
-                    <span>{`${order.address.city}, ${order.address.state}`}</span>
+                    <span>{`${order.address.city}, ${order.address.province}`}</span>
                     <br />
                     <span>{order.address.phoneNumber}</span>
                   </p>
