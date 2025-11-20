@@ -45,9 +45,7 @@ export default function RootLayout({
           <AppContextProvider>
             <ThemeProvider>
               <NavBar />
-              <div className="mt-16">
-                {children}
-              </div>
+              {children}
               <Footer />
             </ThemeProvider>
           </AppContextProvider>
