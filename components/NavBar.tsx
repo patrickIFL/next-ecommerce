@@ -24,8 +24,7 @@ import ClerkUserButton from "./ClerkUserButton";
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const {isSeller, router, user} = useAppContext();
-  console.log(user);
+  const {isSeller, user} = useAppContext();
   const {openSignIn} = useClerk();
 
   // Account Dropdown
