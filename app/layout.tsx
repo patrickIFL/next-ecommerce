@@ -6,7 +6,7 @@ import { AppContextProvider } from "@/context/AppContext";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { shadcn } from "@clerk/themes";
-import {ClerkProvider} from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,22 +32,25 @@ export default function RootLayout({
 
   return (
     <ClerkProvider appearance={{
-    baseTheme: shadcn, // use any base theme
-  }}>
+      baseTheme: shadcn, // use any base theme
+    }}>
       <html lang="en">
-
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-            <AppContextProvider>
-              <ThemeProvider>
-                <NavBar />
-                <div className="mt-16">
-                  {children}
-                </div>
-                <Footer />
-              </ThemeProvider>
-            </AppContextProvider>
+          <AppContextProvider>
+            <ThemeProvider>
+              <NavBar />
+              <div className="mt-16">
+                {children}
+              </div>
+              <Footer />
+            </ThemeProvider>
+          </AppContextProvider>
         </body>
       </html>
     </ClerkProvider>
