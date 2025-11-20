@@ -1,25 +1,27 @@
-import React from 'react'
+import React from "react";
 
-function Newsletter() {
+const NewsLetter = () => {
   return (
-    <div className='pt-32 pb-56'>
-      <div className='flex flex-col items-center gap-7'>
-        <div className='text-center flex flex-col gap-2'>
-            <h2 className='font-semibold text-3xl text-foreground'>Subscribe now & get 20% off</h2>
-            <p className='text-foreground'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-        </div>
-
-        <div className='flex max max-w-2xl w-full mx-auto'>
-            <input 
-            type="text" 
-            className='p-3 outline-none flex-1 border rounded-l-sm'
-            placeholder='Enter your email ID'
-            />
-            <button className='cursor-pointer bg-orange-600 text-white px-8 lg:px-15 py-4 rounded-md rounded-l-none font-semibold'>Subscribe</button>
-        </div>
+    <div className="flex flex-col items-center justify-center text-center space-y-2 pt-8 pb-14">
+      <h1 className="md:text-4xl text-2xl font-medium">
+        Subscribe now & get 20% off
+      </h1>
+      <p className="md:text-base text-gray-500/80 pb-8">
+        Lorem Ipsum is simply dummy text of the printing and typesetting
+        industry.
+      </p>
+      <div className="flex items-center justify-between max-w-2xl w-full md:h-14 h-12">
+        <input
+          className="border border-gray-500/30 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500"
+          type="text"
+          placeholder="Enter your email id"
+        />
+        <button className="md:px-12 px-8 h-full text-white bg-orange-600 rounded-md rounded-l-none">
+          Subscribe
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Newsletter
+export default NewsLetter;
