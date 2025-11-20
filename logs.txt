@@ -190,3 +190,10 @@ Encountered lots of errors during deployment. (typescript)
 It is better to fix it all first before deployment
 
 installed a folder markdown plugin 
+
+fixed all the typescript errors
+
+deployed the app to vercel
+https://next-ecommerce-silk-rho.vercel.app/
+
+after successful deployment, add the domain to the webhook of inngest
