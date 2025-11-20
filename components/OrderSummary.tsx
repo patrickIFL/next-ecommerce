@@ -8,10 +8,13 @@ import React, { useEffect, useState } from "react";
 // ------------------------
 interface Address {
   fullName: string;
+  phoneNumber: string;
+  zipcode: number;
   area: string;
   city: string;
-  state: string;
+  province: string;
 }
+
 
 const OrderSummary: React.FC = () => {
   const { currency, getCartCount, getCartAmount } = useAppContext();
@@ -66,7 +69,7 @@ const OrderSummary: React.FC = () => {
             >
               <span>
                 {selectedAddress
-                  ? `${selectedAddress.fullName}, ${selectedAddress.area}, ${selectedAddress.city}, ${selectedAddress.state}`
+                  ? `${selectedAddress.fullName}, ${selectedAddress.area}, ${selectedAddress.city}, ${selectedAddress.province}`
                   : "Select Address"}
               </span>
 
@@ -97,7 +100,7 @@ const OrderSummary: React.FC = () => {
                     onClick={() => handleAddressSelect(address)}
                   >
                     {address.fullName}, {address.area}, {address.city},{" "}
-                    {address.state}
+                    {address.province}
                   </li>
                 ))}
 
@@ -122,7 +125,7 @@ const OrderSummary: React.FC = () => {
             <input
               type="text"
               placeholder="Enter promo code"
-              className="flex-grow w-full outline-none p-2.5 text-foreground border"
+              className="grow w-full outline-none p-2.5 text-foreground border"
             />
             <button className="bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
