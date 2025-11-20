@@ -123,8 +123,8 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  email: 'email',
   name: 'name',
+  email: 'email',
   image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -136,7 +136,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   name: 'name',
   description: 'description',
   category: 'category',
-  images: 'images',
+  image: 'image',
   price: 'price',
   offerPrice: 'offerPrice'
 };
@@ -151,12 +151,18 @@ exports.Prisma.CartItemScalarFieldEnum = {
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  productId: 'productId',
-  price: 'price',
+  shippingAddressId: 'shippingAddressId',
+  amount: 'amount',
   isPaid: 'isPaid',
   shippingMethod: 'shippingMethod',
-  orderDate: 'orderDate',
-  shippingAddressId: 'shippingAddressId'
+  orderDate: 'orderDate'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  quantity: 'quantity'
 };
 
 exports.Prisma.ShippingAddressScalarFieldEnum = {
@@ -165,8 +171,9 @@ exports.Prisma.ShippingAddressScalarFieldEnum = {
   fullName: 'fullName',
   phoneNumber: 'phoneNumber',
   zipcode: 'zipcode',
-  address: 'address',
+  area: 'area',
   city: 'city',
+  state: 'state',
   province: 'province'
 };
 
@@ -191,6 +198,7 @@ exports.Prisma.ModelName = {
   Product: 'Product',
   CartItem: 'CartItem',
   Order: 'Order',
+  OrderItem: 'OrderItem',
   ShippingAddress: 'ShippingAddress'
 };
 
