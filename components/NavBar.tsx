@@ -197,7 +197,7 @@ function NavBar() {
                   <ClerkUserButton />
                 ) 
                 : 
-                (<button onClick={openSignIn} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
+                (<button onClick={() => openSignIn()} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
                   <User color={"var(--color-foreground)"} size={18} />
                   <span>Account</span>
                 </button>)
