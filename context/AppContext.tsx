@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 
-import { productsDummyData} from "@/assets/assets";
+import { productsDummyData } from "@/assets/assets";
 import { useAuth, useUser } from "@clerk/nextjs";
 import axios from 'axios';
 import {
@@ -11,6 +11,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { useToast } from '@/components/ui/use-toast'
 
 /* ---------------------------
    TYPES
@@ -43,7 +44,6 @@ export type CartItems = Record<string, number>;
 
 export interface AppContextType {
   user: any;
-  getToken: any;
   currency: string;
 
   isSeller: boolean;
@@ -90,6 +90,7 @@ interface ProviderProps {
 export const AppContextProvider = ({ children }: ProviderProps) => {
   const { user } = useUser();
   const { getToken } = useAuth();
+  const { toast } = useToast()
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -106,7 +107,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     setProducts(productsDummyData as Product[]);
   };
 
- const fetchUserData = async () => {
+  const fetchUserData = async () => {
     const token = await getToken();
     try {
       const { data } = await axios.get("/api/user/data", {
@@ -115,23 +116,34 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
         }
       });
 
-      if(data.success){
+      if (data.success) {
         setUserData(data.user);
         setCartItems(data.user.cartItems);
-        console.log(data.user)
+        console.log('toast should come out')
+        toast({
+          title: 'Welcome',
+          description: `Hello, ${data.user.name}`,
+          variant: 'default'
+        })
       }
-      else{
-        // change to shadcn toast
-        console.log(data.message)
+      else {
+        toast({
+          title: 'Error',
+          description: data.message,
+          variant: 'destructive'
+        })
       }
-    // fix tanstack functions
-    // currently, it runs on use effect
+      // fix tanstack functions
+      // currently, it runs on use effect
 
-    } catch (error:any) {
-      // change to shadcn toast
-      console.log(error.message)
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive'
+      })
     }
-}
+  }
 
   /* ---------------------------
       CART FUNCTIONS
@@ -171,21 +183,21 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       EFFECTS
    ----------------------------*/
   useEffect(() => {
-  const load = async () => {
-    await Promise.all([
-      fetchProductData(),
-      fetchUserData()
-    ]);
-  };
-  load();
-}, [user]);
+    const load = async () => {
+      await Promise.all([
+        fetchProductData(),
+        fetchUserData()
+      ]);
+    };
+    load();
+  }, [user]);
 
 
-/* ---------------------------
-      CONTEXT VALUE
-   ----------------------------*/
+  /* ---------------------------
+        CONTEXT VALUE
+     ----------------------------*/
   const value: AppContextType = {
-    user, getToken,
+    user,
     currency,
 
     isSeller,
