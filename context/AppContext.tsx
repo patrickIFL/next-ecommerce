@@ -104,7 +104,25 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       DATA FETCHING
    ----------------------------*/
   const fetchProductData = async () => {
-    setProducts(productsDummyData as Product[]);
+    try {
+      const { data } = await axios.get("/api/product/list");
+      if (data.success) {
+        setProducts(data.products as Product[]);
+      }
+      else {
+        toast({
+          title: 'Error',
+          description: data.message,
+          variant: 'destructive'
+        })
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive'
+      })
+    }
   };
 
   const fetchUserData = async () => {

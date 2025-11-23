@@ -1,9 +1,14 @@
 'use client'
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any*/
+import { useEffect, useState } from "react";
 import { assets, productsDummyData } from "@/assets/assets";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { useAuth } from "@clerk/nextjs";
+import { useAppContext } from "@/context/AppContext";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 // ------------------------------
 // Product TYPE (Very Important)
@@ -18,28 +23,49 @@ interface ProductType {
 
 const ProductList = () => {
   const router = useRouter();
+  const { getToken } = useAuth();
+  const { user } = useAppContext();
 
-  // ------------------------------
-  // Typed states
-  // ------------------------------
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // ------------------------------
-  // Load dummy data
-  // ------------------------------
   const fetchSellerProduct = async () => {
-    setProducts(productsDummyData as ProductType[]);
-    setLoading(false);
+    // setProducts(productsDummyData as ProductType[]);
+    try {
+      const token = await getToken();
+      const { data } = await axios.get("/api/product/seller-list", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (data.success) {
+        setProducts(data.products);
+        setLoading(false);
+      }
+      else {
+        toast({
+          title: 'Error',
+          description: data.message,
+          variant: 'destructive'
+        })
+      }
+
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive'
+      })
+    }
   };
 
   useEffect(() => {
+    if (user === undefined) return; // still loading Clerk auth
+    if (user === null) return;      // not logged in
     fetchSellerProduct();
-  }, []);
+  }, [user]);
 
-  // ------------------------------
-  // Render
-  // ------------------------------
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
       {loading ? (
@@ -60,8 +86,8 @@ const ProductList = () => {
               </thead>
 
               <tbody className="text-sm text-foreground">
-                {products.map((product) => (
-                  <tr key={product._id} className="border-t border-gray-500/20">
+                {products.map((product, i) => (
+                  <tr key={i} className="border-t border-gray-500/20">
                     <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                       <div className="bg-gray-500/10 rounded p-2">
                         <Image

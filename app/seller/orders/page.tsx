@@ -66,9 +66,9 @@ const Orders: React.FC = () => {
         <div className="md:p-10 p-4 space-y-5">
           <h2 className="text-lg font-medium">Orders</h2>
           <div className="max-w-4xl rounded-md">
-            {orders.map((order) => (
+            {orders.map((order, i) => (
               <div
-                key={order._id}
+                key={i}
                 className="flex flex-col md:flex-row gap-5 justify-between p-5 border-t border-gray-300"
               >
                 <div className="flex-1 flex gap-5 max-w-80">

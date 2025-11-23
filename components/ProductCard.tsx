@@ -6,14 +6,14 @@ import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
 
 
-const ProductCard = ({ product }:{ product:any }) => {
+const ProductCard = ({ product }: { product: any }) => {
 
     const { currency } = useAppContext()
     const router = useRouter();
 
     return (
         <div
-            onClick={() => { router.push('/product/' + product._id); scrollTo(0, 0) }}
+            onClick={() => { router.push('/product/' + product.id); scrollTo(0, 0) }}
             className="flex flex-col items-start gap-0.5 max-w-[200px] w-full"
         >
             <div className="overflow-hidden group relative bg-gray-500/10 rounded-lg rounded-b-none w-full h-52 flex items-center justify-center">
