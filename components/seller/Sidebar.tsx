@@ -6,28 +6,28 @@ import { CirclePlus, PackageCheck, ClipboardList } from 'lucide-react';
 const SideBar = () => {
     const pathname = usePathname()
     const menuItems = [
-        { 
-            name: 'Add Product', 
-            path: '/seller', 
-            icon: CirclePlus 
+        {
+            name: 'Add Product',
+            path: '/seller',
+            icon: CirclePlus
         },
-        
-        
-        { 
-            name: 'Product List', 
-            path: '/seller/product-list', 
-            icon: ClipboardList 
+
+
+        {
+            name: 'Product List',
+            path: '/seller/product-list',
+            icon: ClipboardList
         },
-        
-        { 
-            name: 'Orders', 
-            path: '/seller/orders', 
-            icon: PackageCheck 
+
+        {
+            name: 'Orders',
+            path: '/seller/orders',
+            icon: PackageCheck
         },
     ];
 
     return (
-        <div className='md:w-64 w-16 border-r min-h-screen text-base border-gray-500/30 py-2 flex flex-col'>
+        <div className='mt-16 md:w-64 w-16 border-r min-h-screen text-base border-gray-500/30 py-2 flex flex-col'>
             {menuItems.map((item) => {
 
                 const isActive = pathname === item.path;
@@ -42,7 +42,7 @@ const SideBar = () => {
                                 }`
                             }
                         >
-                            <item.icon size={25} strokeWidth={1.5}/>
+                            <item.icon size={25} strokeWidth={1.5} />
                             <p className='md:block hidden text-center'>{item.name}</p>
                         </div>
                     </Link>

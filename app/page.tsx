@@ -6,7 +6,7 @@ import Newsletter from "@/components/Newsletter";
 
 export default function Home() {
   return (
-    <div className="px-6 md:px-16 lg:px-32 flex flex-col justify-center">
+    <div className="px-6 md:px-16 lg:px-32 flex flex-col justify-center mt-16">
       <HeaderSlider />
       <HomeProducts />
       <FeaturedProduct />

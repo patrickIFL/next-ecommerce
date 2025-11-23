@@ -119,9 +119,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       if (data.success) {
         setUserData(data.user);
         setCartItems(data.user.cartItems);
-        console.log('toast should come out')
         toast({
-          title: 'Welcome',
+          title: '👋 Welcome',
           description: `Hello, ${data.user.name}`,
           variant: 'default'
         })

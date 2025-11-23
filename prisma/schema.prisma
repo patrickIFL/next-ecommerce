@@ -1,8 +1,9 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
-  output   = "../src/generated/prisma"
+  output        = "../src/generated/prisma"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -12,35 +13,35 @@ datasource db {
 // User
 // =======================
 model User {
-  id        String           @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
-  email     String           @unique
+  email     String   @unique
   image     String?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  products     Product[]
-  orders       Order[]
-  addresses    ShippingAddress[]
-  cartItems    CartItem[]
+  products  Product[]
+  orders    Order[]
+  addresses ShippingAddress[]
+  cartItems CartItem[]
 }
 
 // =======================
 // Product
 // =======================
 model Product {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   userId      String
   name        String
   description String
   category    String
-  image       String[]   // matches TS: product.image
+  image       String[] // matches TS: product.image
   price       Int
   offerPrice  Int
 
-  orders      OrderItem[]
-  user        User       @relation(fields: [userId], references: [id])
-  cartItems   CartItem[]
+  orders    OrderItem[]
+  user      User        @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
 
   @@index([userId])
 }
@@ -49,13 +50,13 @@ model Product {
 // CartItem
 // =======================
 model CartItem {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   userId    String
   productId String
-  quantity  Int      @default(1)
+  quantity  Int    @default(1)
 
-  user      User     @relation(fields: [userId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@index([userId])
   @@index([productId])
@@ -65,18 +66,18 @@ model CartItem {
 // Order
 // =======================
 model Order {
-  id                String           @id @default(cuid())
+  id                String  @id @default(cuid())
   userId            String
   shippingAddressId String?
 
-  amount            Int
-  isPaid            Boolean          @default(false)
-  shippingMethod    String
-  orderDate         DateTime         @default(now())
+  amount         Int
+  isPaid         Boolean  @default(false)
+  shippingMethod String
+  orderDate      DateTime @default(now())
 
-  user              User             @relation(fields: [userId], references: [id])
-  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
-  items             OrderItem[]
+  user            User             @relation(fields: [userId], references: [id])
+  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  items           OrderItem[]
 
   @@index([userId])
 }
@@ -85,13 +86,13 @@ model Order {
 // OrderItem (for multiple products per order)
 // =======================
 model OrderItem {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   orderId   String
   productId String
   quantity  Int
 
-  order     Order    @relation(fields: [orderId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@index([orderId])
   @@index([productId])
@@ -101,19 +102,19 @@ model OrderItem {
 // ShippingAddress
 // =======================
 model ShippingAddress {
-  id          String  @id @default(cuid())
-  userId      String
+  id     String @id @default(cuid())
+  userId String
 
   fullName    String
   phoneNumber String
   zipcode     String
   area        String
   city        String
-  state       String   // matches TS Address
-  province    String?  // optional for extra info
+  state       String // matches TS Address
+  province    String? // optional for extra info
 
-  orders      Order[]
-  user        User     @relation(fields: [userId], references: [id])
+  orders Order[]
+  user   User    @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

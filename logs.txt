@@ -209,3 +209,10 @@ const {getToken} = useAuth();
 
 learned that you can immediately destructure your axios call.
 const {data} = await axios.get("/api/user/data")
+
+the useClerk is a client version of the data. it can be tampered and is public. 
+the authseller code in the lib is server code. used for access control.
+
+solved the authUser error. seller can now create products
+
+useAuth and getAuth is different. useAuth is for client, getAuth is for server. need to pass an request in getAuth
