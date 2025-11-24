@@ -1,15 +1,46 @@
-"use-client"
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
-
+import { useAuth } from "@clerk/nextjs";
 
 const ProductCard = ({ product }: { product: any }) => {
-
-    const { currency } = useAppContext()
+    const { currency } = useAppContext();
     const router = useRouter();
+    const { getToken } = useAuth(); // ⭐ get Clerk session token
+
+    const handleAddToCart = async () => {
+        try {
+            const token = await getToken();
+
+            const res = await fetch("/api/cart/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    productId: product.id,
+                    quantity: 1
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.error("Add to cart error:", data);
+                alert("Something went wrong adding to cart.");
+                return;
+            }
+
+            router.push("/cart");
+
+        } catch (err) {
+            console.error("Add to cart failed:", err);
+        }
+    };
 
     return (
         <div
@@ -55,12 +86,18 @@ const ProductCard = ({ product }: { product: any }) => {
 
             <div className="flex items-end justify-between w-full mt-1">
                 <p className="text-base font-medium">{currency}{product.offerPrice}</p>
-                <button className=" max-sm:hidden px-4 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer">
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();  // prevent navigation
+                        handleAddToCart();
+                    }}
+                    className="max-sm:hidden px-4 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
+                >
                     Buy now
                 </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ProductCard
+export default ProductCard;

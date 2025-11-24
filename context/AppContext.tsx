@@ -1,7 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 
-import { productsDummyData } from "@/assets/assets";
 import { useAuth, useUser } from "@clerk/nextjs";
 import axios from 'axios';
 import {
@@ -55,14 +54,11 @@ export interface AppContextType {
   userData: UserData | null;
   fetchUserData: () => Promise<void>;
 
-  cartItems: CartItems;
-  setCartItems: (items: CartItems) => void;
+  // addToCart: (id: string) => Promise<void>;
+  // updateCartQuantity: (id: string, quantity: number) => Promise<void>;
 
-  addToCart: (id: string) => Promise<void>;
-  updateCartQuantity: (id: string, quantity: number) => Promise<void>;
-
-  getCartCount: () => number;
-  getCartAmount: () => number;
+  // getCartCount: () => number;
+  // getCartAmount: () => number;
 }
 
 /* ---------------------------
@@ -98,7 +94,6 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSeller, setIsSeller] = useState<boolean>(false);
-  const [cartItems, setCartItems] = useState<CartItems>({});
 
   /* ---------------------------
       DATA FETCHING
@@ -136,7 +131,6 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
       if (data.success) {
         setUserData(data.user);
-        setCartItems(data.user.cartItems);
         toast({
           title: '👋 Welcome',
           description: `Hello, ${data.user.name}`,
@@ -162,39 +156,20 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     }
   }
 
-  /* ---------------------------
-      CART FUNCTIONS
-   ----------------------------*/
+  // const getCartCount = () => {
+  //   return Object.values(cartItems).reduce((acc, qty) => acc + qty, 0);
+  // };
 
-  const addToCart = async (itemId: string) => {
-    const cart = { ...cartItems };
-    cart[itemId] = (cart[itemId] || 0) + 1;
-    setCartItems(cart);
-  };
-
-  const updateCartQuantity = async (itemId: string, quantity: number) => {
-    const cart = { ...cartItems };
-
-    if (quantity === 0) delete cart[itemId];
-    else cart[itemId] = quantity;
-
-    setCartItems(cart);
-  };
-
-  const getCartCount = () => {
-    return Object.values(cartItems).reduce((acc, qty) => acc + qty, 0);
-  };
-
-  const getCartAmount = () => {
-    let total = 0;
-    for (const id in cartItems) {
-      const product = products.find((p) => p.id === id);
-      if (product) {
-        total += product.offerPrice * cartItems[id];
-      }
-    }
-    return Number(total.toFixed(2));
-  };
+  // const getCartAmount = () => {
+  //   let total = 0;
+  //   for (const id in cartItems) {
+  //     const product = products.find((p) => p.id === id);
+  //     if (product) {
+  //       total += product.offerPrice * cartItems[id];
+  //     }
+  //   }
+  //   return Number(total.toFixed(2));
+  // };
 
   /* ---------------------------
       EFFECTS
@@ -203,7 +178,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     const load = async () => {
       await Promise.all([
         fetchProductData(),
-        fetchUserData()
+        fetchUserData(),
+        // fetchCartData()
       ]);
     };
     load();
@@ -226,14 +202,14 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     userData,
     fetchUserData,
 
-    cartItems,
-    setCartItems,
+    // cartItems,
+    // setCartItems,
 
-    addToCart,
-    updateCartQuantity,
+    // addToCart,
+    // updateCartQuantity,
 
-    getCartCount,
-    getCartAmount,
+    // getCartCount,
+    // getCartAmount,
   };
 
   return (

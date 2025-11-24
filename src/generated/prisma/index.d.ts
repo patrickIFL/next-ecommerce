@@ -8673,6 +8673,7 @@ export namespace Prisma {
 
   export type CartItemWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId_productId?: CartItemUserIdProductIdCompoundUniqueInput
     AND?: CartItemWhereInput | CartItemWhereInput[]
     OR?: CartItemWhereInput[]
     NOT?: CartItemWhereInput | CartItemWhereInput[]
@@ -8681,7 +8682,7 @@ export namespace Prisma {
     quantity?: IntFilter<"CartItem"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-  }, "id">
+  }, "id" | "userId_productId">
 
   export type CartItemOrderByWithAggregationInput = {
     id?: SortOrder
@@ -9584,6 +9585,11 @@ export namespace Prisma {
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
+  }
+
+  export type CartItemUserIdProductIdCompoundUniqueInput = {
+    userId: string
+    productId: string
   }
 
   export type CartItemCountOrderByAggregateInput = {

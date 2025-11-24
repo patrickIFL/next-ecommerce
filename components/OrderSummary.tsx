@@ -17,7 +17,9 @@ interface Address {
 
 
 const OrderSummary: React.FC = () => {
-  const { currency, getCartCount, getCartAmount } = useAppContext();
+  const { currency,
+    // getCartCount, getCartAmount
+  } = useAppContext();
 
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -74,9 +76,8 @@ const OrderSummary: React.FC = () => {
               </span>
 
               <svg
-                className={`w-5 h-5 inline float-right transition-transform duration-200 ${
-                  isDropdownOpen ? "rotate-0" : "-rotate-90"
-                }`}
+                className={`w-5 h-5 inline float-right transition-transform duration-200 ${isDropdownOpen ? "rotate-0" : "-rotate-90"
+                  }`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -138,10 +139,10 @@ const OrderSummary: React.FC = () => {
         {/* Summary */}
         <div className="space-y-4">
           <div className="flex justify-between text-base font-medium">
-            <p className="uppercase text-foreground">Items {getCartCount()}</p>
+            <p className="uppercase text-foreground">Items {/*getCartCount()*/}10</p>
             <p className="text-foreground">
               {currency}
-              {getCartAmount()}
+              {/*getCartAmount()*/}100
             </p>
           </div>
 
@@ -154,7 +155,8 @@ const OrderSummary: React.FC = () => {
             <p className="text-foreground/80">Tax (2%)</p>
             <p className="font-medium text-foreground">
               {currency}
-              {Math.floor(getCartAmount() * 0.02)}
+              {/* {Math.floor(getCartAmount() * 0.02)} */}
+              100
             </p>
           </div>
 
@@ -162,7 +164,8 @@ const OrderSummary: React.FC = () => {
             <p>Total</p>
             <p>
               {currency}
-              {getCartAmount() + Math.floor(getCartAmount() * 0.02)}
+              {/* {getCartAmount() + Math.floor(getCartAmount() * 0.02)} */}
+              100
             </p>
           </div>
         </div>

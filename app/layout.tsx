@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { shadcn } from "@clerk/themes";
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from "@/components/ui/toaster";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,13 +44,15 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <AppContextProvider>
-            <ThemeProvider>
-              <NavBar />
-              {children}
-              <Footer />
-            </ThemeProvider>
-          </AppContextProvider>
+          <ReactQueryProvider>
+            <AppContextProvider>
+              <ThemeProvider>
+                <NavBar />
+                {children}
+                <Footer />
+              </ThemeProvider>
+            </AppContextProvider>
+          </ReactQueryProvider>
           <Toaster />
 
         </body>
