@@ -64,6 +64,16 @@ const Cart = () => {
     },
   });
 
+  const getCartTotal = (items: any[]) => {
+    if (!items) return 0;
+
+    return items.reduce((total, item) => {
+      const price = item.product.offerPrice ?? 0;
+      const qty = item.quantity ?? 0;
+      return total + price * qty;
+    }, 0);
+  };
+
 
   const router = useRouter();
 
@@ -184,8 +194,11 @@ const Cart = () => {
           Continue Shopping
         </button>
       </div>
-
-      <OrderSummary />
+      {/* pass cart count, cart total */}
+      <OrderSummary
+        cartCount={cartItems?.reduce((a, i) => a + i.quantity, 0) ?? 0}
+        cartAmount={getCartTotal(cartItems)}
+      />
     </div>
   );
 };

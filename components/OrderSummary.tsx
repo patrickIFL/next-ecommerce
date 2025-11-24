@@ -16,7 +16,7 @@ interface Address {
 }
 
 
-const OrderSummary: React.FC = () => {
+const OrderSummary: React.FC = ({ cartCount, cartAmount }) => {
   const { currency,
     // getCartCount, getCartAmount
   } = useAppContext();
@@ -139,10 +139,10 @@ const OrderSummary: React.FC = () => {
         {/* Summary */}
         <div className="space-y-4">
           <div className="flex justify-between text-base font-medium">
-            <p className="uppercase text-foreground">Items {/*getCartCount()*/}10</p>
+            <p className="uppercase text-foreground">Items {cartCount}</p>
             <p className="text-foreground">
               {currency}
-              {/*getCartAmount()*/}100
+              {cartAmount}
             </p>
           </div>
 
@@ -155,8 +155,8 @@ const OrderSummary: React.FC = () => {
             <p className="text-foreground/80">Tax (2%)</p>
             <p className="font-medium text-foreground">
               {currency}
-              {/* {Math.floor(getCartAmount() * 0.02)} */}
-              100
+              {Math.floor(cartAmount * 0.02)}
+
             </p>
           </div>
 
@@ -164,8 +164,8 @@ const OrderSummary: React.FC = () => {
             <p>Total</p>
             <p>
               {currency}
-              {/* {getCartAmount() + Math.floor(getCartAmount() * 0.02)} */}
-              100
+              {cartAmount + Math.floor(cartAmount * 0.02)}
+
             </p>
           </div>
         </div>
