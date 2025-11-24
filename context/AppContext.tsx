@@ -19,7 +19,7 @@ import { useToast } from '@/components/ui/use-toast'
 
 // Product type (adjust fields to match your dummy data)
 export interface Product {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   category: string;
@@ -188,7 +188,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const getCartAmount = () => {
     let total = 0;
     for (const id in cartItems) {
-      const product = products.find((p) => p._id === id);
+      const product = products.find((p) => p.id === id);
       if (product) {
         total += product.offerPrice * cartItems[id];
       }

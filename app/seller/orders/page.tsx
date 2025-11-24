@@ -6,7 +6,7 @@ import { useAppContext } from "@/context/AppContext";
 import Loading from "@/components/Loading";
 
 interface Product {
-  _id: string;
+  id: string;
   userId: string;
   name: string;
   description: string;
@@ -19,7 +19,7 @@ interface Product {
 }
 
 interface OrderItem {
-  _id: string;
+  id: string;
   quantity: number;
   product: Product;
 }
@@ -34,7 +34,7 @@ interface OrderAddress {
 }
 
 interface OrderType {
-  _id: string;
+  id: string;
   userId: string;
   items: OrderItem[];
   address: OrderAddress;

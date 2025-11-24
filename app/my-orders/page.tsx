@@ -10,7 +10,7 @@ import Loading from "@/components/Loading";
 // Types
 // =======================
 interface Product {
-  _id: string;
+  id: string;
   userId: string;
   name: string;
   description: string;
@@ -37,7 +37,7 @@ interface OrderAddress {
 }
 
 interface OrderType {
-  _id: string;
+  id: string;
   userId: string;
   items: OrderItem[];
   address: OrderAddress;
