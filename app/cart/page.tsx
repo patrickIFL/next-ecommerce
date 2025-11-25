@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { StepBack, StepForward } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTheme } from "@/components/theme-provider";
 
 type Product = {
   id: string;
@@ -25,7 +24,6 @@ const Cart = () => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const {colors} = useTheme();
 
   const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ['cartItems'],
