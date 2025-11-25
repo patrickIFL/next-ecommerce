@@ -22,7 +22,7 @@ const Product = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
 
-  const { products, addToCart } = useAppContext();
+  const { products, handleAddToCart } = useAppContext();
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
@@ -142,7 +142,7 @@ const Product = () => {
           {/* BUTTONS */}
           <div className="flex items-center mt-10 gap-4">
             <button
-              onClick={() => addToCart(productData.id)}
+              onClick={() => handleAddToCart(productData.id)}
               className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition"
             >
               Add to Cart
@@ -150,7 +150,7 @@ const Product = () => {
 
             <button
               onClick={() => {
-                addToCart(productData.id);
+                handleAddToCart(productData.id);
                 router.push("/cart");
               }}
               className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition"

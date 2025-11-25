@@ -11,6 +11,7 @@ import {
   ReactNode,
 } from "react";
 import { useToast } from '@/components/ui/use-toast'
+import { useRouter } from "next/navigation";
 
 /* ---------------------------
    TYPES
@@ -53,6 +54,7 @@ export interface AppContextType {
 
   userData: UserData | null;
   fetchUserData: () => Promise<void>;
+  handleAddToCart: (productId: string) => Promise<void>;
 
   // addToCart: (id: string) => Promise<void>;
   // updateCartQuantity: (id: string, quantity: number) => Promise<void>;
@@ -87,6 +89,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const { user } = useUser();
   const { getToken } = useAuth();
   const { toast } = useToast()
+  const router = useRouter();
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -98,6 +101,37 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   /* ---------------------------
       DATA FETCHING
    ----------------------------*/
+
+     const handleAddToCart = async (productId:string) => {
+      try {
+          const token = await getToken();
+
+          const res = await fetch("/api/cart/add", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  productId: productId,
+                  quantity: 1
+              }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+              console.error("Add to cart error:", data);
+              return;
+          }
+
+          router.push("/cart");
+
+      } catch (err) {
+          console.error("Add to cart failed:", err);
+      }
+  };
+
   const fetchProductData = async () => {
     try {
       const { data } = await axios.get("/api/product/list");
@@ -201,15 +235,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
     userData,
     fetchUserData,
+    handleAddToCart,
 
-    // cartItems,
-    // setCartItems,
-
-    // addToCart,
-    // updateCartQuantity,
-
-    // getCartCount,
-    // getCartAmount,
   };
 
   return (

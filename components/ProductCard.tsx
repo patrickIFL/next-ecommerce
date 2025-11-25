@@ -4,42 +4,11 @@ import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
-import { useAuth } from "@clerk/nextjs";
 
 const ProductCard = ({ product }: { product: any }) => {
-    const { currency } = useAppContext();
+    const { currency, handleAddToCart } = useAppContext();
     const router = useRouter();
-    const { getToken } = useAuth(); // ⭐ get Clerk session token
-
-    const handleAddToCart = async () => {
-        try {
-            const token = await getToken();
-
-            const res = await fetch("/api/cart/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    productId: product.id,
-                    quantity: 1
-                }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                console.error("Add to cart error:", data);
-                return;
-            }
-
-            router.push("/cart");
-
-        } catch (err) {
-            console.error("Add to cart failed:", err);
-        }
-    };
+    
 
     return (
         <div
@@ -88,7 +57,7 @@ const ProductCard = ({ product }: { product: any }) => {
                 <button
                     onClick={(e) => {
                         e.stopPropagation();  // prevent navigation
-                        handleAddToCart();
+                        handleAddToCart(product);
                     }}
                     className="max-sm:hidden px-4 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
                 >
