@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { StepBack, StepForward } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTheme } from "@/components/theme-provider";
 
 type Product = {
   id: string;
@@ -24,6 +25,7 @@ const Cart = () => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const {colors} = useTheme();
 
   const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ['cartItems'],
@@ -144,7 +146,7 @@ const Cart = () => {
                             })
                           }
                         >
-                          <StepBack size={16} />
+                          <StepBack size={16} fill={"var(--color-foreground)"} color={"var(--color-foreground)"} />
                         </button>
 
                         <p className="text-foreground">{item.quantity}</p>
@@ -157,7 +159,7 @@ const Cart = () => {
                             })
                           }
                         >
-                          <StepForward size={16} />
+                          <StepForward size={16} fill={"var(--color-foreground)"} color={"var(--color-foreground)"} />
                         </button>
                       </div>
                     </td>

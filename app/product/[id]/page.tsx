@@ -75,7 +75,7 @@ const Product = () => {
                 <Image
                   src={img}
                   alt="thumbnail"
-                  className="w-full h-auto object-cover mix-blend-multiply"
+                  className="w-full h-auto object-cover"
                   width={1280}
                   height={720}
                 />

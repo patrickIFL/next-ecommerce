@@ -57,7 +57,7 @@ const ProductCard = ({ product }: { product: any }) => {
                 <button
                     onClick={(e) => {
                         e.stopPropagation();  // prevent navigation
-                        handleAddToCart(product);
+                        handleAddToCart(product.id);
                     }}
                     className="max-sm:hidden px-4 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
                 >
