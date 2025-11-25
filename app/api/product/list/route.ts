@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request:NextRequest) {
   try {
-    const products = await prisma.product.findMany({});
+    const products = await prisma.product.findMany({orderBy: {createdAt: 'desc'}});
     return NextResponse.json({ success: true, products });
     
   } catch (error:any) {
