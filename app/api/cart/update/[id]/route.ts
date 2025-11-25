@@ -1,7 +1,8 @@
+import { NextRequest } from "next/server";
 import prisma from "@/app/db/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     // 1. Auth
     const { userId } = getAuth(request);

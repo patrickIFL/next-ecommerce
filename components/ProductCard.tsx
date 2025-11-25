@@ -31,7 +31,6 @@ const ProductCard = ({ product }: { product: any }) => {
 
             if (!res.ok) {
                 console.error("Add to cart error:", data);
-                alert("Something went wrong adding to cart.");
                 return;
             }
 

@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import authSeller from '@/lib/authSeller'
+import { NextRequest } from "next/server";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -10,7 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(request) { 
+export async function POST(request:NextRequest) { 
   try {
     const { userId } = getAuth(request);
     const isSeller = await authSeller(userId);
