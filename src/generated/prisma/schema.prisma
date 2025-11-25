@@ -111,11 +111,9 @@ model ShippingAddress {
   zipcode     String
   area        String
   city        String
-  state       String // matches TS Address
-  province    String? // optional for extra info
-
-  orders Order[]
-  user   User    @relation(fields: [userId], references: [id])
+  province    String
+  orders      Order[]
+  user        User    @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

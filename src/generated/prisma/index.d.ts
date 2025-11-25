@@ -7198,7 +7198,6 @@ export namespace Prisma {
     zipcode: string | null
     area: string | null
     city: string | null
-    state: string | null
     province: string | null
   }
 
@@ -7210,7 +7209,6 @@ export namespace Prisma {
     zipcode: string | null
     area: string | null
     city: string | null
-    state: string | null
     province: string | null
   }
 
@@ -7222,7 +7220,6 @@ export namespace Prisma {
     zipcode: number
     area: number
     city: number
-    state: number
     province: number
     _all: number
   }
@@ -7236,7 +7233,6 @@ export namespace Prisma {
     zipcode?: true
     area?: true
     city?: true
-    state?: true
     province?: true
   }
 
@@ -7248,7 +7244,6 @@ export namespace Prisma {
     zipcode?: true
     area?: true
     city?: true
-    state?: true
     province?: true
   }
 
@@ -7260,7 +7255,6 @@ export namespace Prisma {
     zipcode?: true
     area?: true
     city?: true
-    state?: true
     province?: true
     _all?: true
   }
@@ -7345,8 +7339,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province: string | null
+    province: string
     _count: ShippingAddressCountAggregateOutputType | null
     _min: ShippingAddressMinAggregateOutputType | null
     _max: ShippingAddressMaxAggregateOutputType | null
@@ -7374,7 +7367,6 @@ export namespace Prisma {
     zipcode?: boolean
     area?: boolean
     city?: boolean
-    state?: boolean
     province?: boolean
     orders?: boolean | ShippingAddress$ordersArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7389,7 +7381,6 @@ export namespace Prisma {
     zipcode?: boolean
     area?: boolean
     city?: boolean
-    state?: boolean
     province?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["shippingAddress"]>
@@ -7402,7 +7393,6 @@ export namespace Prisma {
     zipcode?: boolean
     area?: boolean
     city?: boolean
-    state?: boolean
     province?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["shippingAddress"]>
@@ -7415,11 +7405,10 @@ export namespace Prisma {
     zipcode?: boolean
     area?: boolean
     city?: boolean
-    state?: boolean
     province?: boolean
   }
 
-  export type ShippingAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "phoneNumber" | "zipcode" | "area" | "city" | "state" | "province", ExtArgs["result"]["shippingAddress"]>
+  export type ShippingAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fullName" | "phoneNumber" | "zipcode" | "area" | "city" | "province", ExtArgs["result"]["shippingAddress"]>
   export type ShippingAddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | ShippingAddress$ordersArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7446,8 +7435,7 @@ export namespace Prisma {
       zipcode: string
       area: string
       city: string
-      state: string
-      province: string | null
+      province: string
     }, ExtArgs["result"]["shippingAddress"]>
     composites: {}
   }
@@ -7880,7 +7868,6 @@ export namespace Prisma {
     readonly zipcode: FieldRef<"ShippingAddress", 'String'>
     readonly area: FieldRef<"ShippingAddress", 'String'>
     readonly city: FieldRef<"ShippingAddress", 'String'>
-    readonly state: FieldRef<"ShippingAddress", 'String'>
     readonly province: FieldRef<"ShippingAddress", 'String'>
   }
     
@@ -8401,7 +8388,6 @@ export namespace Prisma {
     zipcode: 'zipcode',
     area: 'area',
     city: 'city',
-    state: 'state',
     province: 'province'
   };
 
@@ -8845,8 +8831,7 @@ export namespace Prisma {
     zipcode?: StringFilter<"ShippingAddress"> | string
     area?: StringFilter<"ShippingAddress"> | string
     city?: StringFilter<"ShippingAddress"> | string
-    state?: StringFilter<"ShippingAddress"> | string
-    province?: StringNullableFilter<"ShippingAddress"> | string | null
+    province?: StringFilter<"ShippingAddress"> | string
     orders?: OrderListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -8859,8 +8844,7 @@ export namespace Prisma {
     zipcode?: SortOrder
     area?: SortOrder
     city?: SortOrder
-    state?: SortOrder
-    province?: SortOrderInput | SortOrder
+    province?: SortOrder
     orders?: OrderOrderByRelationAggregateInput
     user?: UserOrderByWithRelationInput
   }
@@ -8876,8 +8860,7 @@ export namespace Prisma {
     zipcode?: StringFilter<"ShippingAddress"> | string
     area?: StringFilter<"ShippingAddress"> | string
     city?: StringFilter<"ShippingAddress"> | string
-    state?: StringFilter<"ShippingAddress"> | string
-    province?: StringNullableFilter<"ShippingAddress"> | string | null
+    province?: StringFilter<"ShippingAddress"> | string
     orders?: OrderListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -8890,8 +8873,7 @@ export namespace Prisma {
     zipcode?: SortOrder
     area?: SortOrder
     city?: SortOrder
-    state?: SortOrder
-    province?: SortOrderInput | SortOrder
+    province?: SortOrder
     _count?: ShippingAddressCountOrderByAggregateInput
     _max?: ShippingAddressMaxOrderByAggregateInput
     _min?: ShippingAddressMinOrderByAggregateInput
@@ -8908,8 +8890,7 @@ export namespace Prisma {
     zipcode?: StringWithAggregatesFilter<"ShippingAddress"> | string
     area?: StringWithAggregatesFilter<"ShippingAddress"> | string
     city?: StringWithAggregatesFilter<"ShippingAddress"> | string
-    state?: StringWithAggregatesFilter<"ShippingAddress"> | string
-    province?: StringNullableWithAggregatesFilter<"ShippingAddress"> | string | null
+    province?: StringWithAggregatesFilter<"ShippingAddress"> | string
   }
 
   export type UserCreateInput = {
@@ -9248,8 +9229,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
     orders?: OrderCreateNestedManyWithoutShippingAddressInput
     user: UserCreateNestedOneWithoutAddressesInput
   }
@@ -9262,8 +9242,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
     orders?: OrderUncheckedCreateNestedManyWithoutShippingAddressInput
   }
 
@@ -9274,8 +9253,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
     orders?: OrderUpdateManyWithoutShippingAddressNestedInput
     user?: UserUpdateOneRequiredWithoutAddressesNestedInput
   }
@@ -9288,8 +9266,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
     orders?: OrderUncheckedUpdateManyWithoutShippingAddressNestedInput
   }
 
@@ -9301,8 +9278,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
   }
 
   export type ShippingAddressUpdateManyMutationInput = {
@@ -9312,8 +9288,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
   }
 
   export type ShippingAddressUncheckedUpdateManyInput = {
@@ -9324,8 +9299,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -9719,7 +9693,6 @@ export namespace Prisma {
     zipcode?: SortOrder
     area?: SortOrder
     city?: SortOrder
-    state?: SortOrder
     province?: SortOrder
   }
 
@@ -9731,7 +9704,6 @@ export namespace Prisma {
     zipcode?: SortOrder
     area?: SortOrder
     city?: SortOrder
-    state?: SortOrder
     province?: SortOrder
   }
 
@@ -9743,7 +9715,6 @@ export namespace Prisma {
     zipcode?: SortOrder
     area?: SortOrder
     city?: SortOrder
-    state?: SortOrder
     province?: SortOrder
   }
 
@@ -10450,8 +10421,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
     orders?: OrderCreateNestedManyWithoutShippingAddressInput
   }
 
@@ -10462,8 +10432,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
     orders?: OrderUncheckedCreateNestedManyWithoutShippingAddressInput
   }
 
@@ -10585,8 +10554,7 @@ export namespace Prisma {
     zipcode?: StringFilter<"ShippingAddress"> | string
     area?: StringFilter<"ShippingAddress"> | string
     city?: StringFilter<"ShippingAddress"> | string
-    state?: StringFilter<"ShippingAddress"> | string
-    province?: StringNullableFilter<"ShippingAddress"> | string | null
+    province?: StringFilter<"ShippingAddress"> | string
   }
 
   export type CartItemUpsertWithWhereUniqueWithoutUserInput = {
@@ -10929,8 +10897,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
     user: UserCreateNestedOneWithoutAddressesInput
   }
 
@@ -10942,8 +10909,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
   }
 
   export type ShippingAddressCreateOrConnectWithoutOrdersInput = {
@@ -11026,8 +10992,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutAddressesNestedInput
   }
 
@@ -11039,8 +11004,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -11315,8 +11279,7 @@ export namespace Prisma {
     zipcode: string
     area: string
     city: string
-    state: string
-    province?: string | null
+    province: string
   }
 
   export type CartItemCreateManyUserInput = {
@@ -11395,8 +11358,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
     orders?: OrderUpdateManyWithoutShippingAddressNestedInput
   }
 
@@ -11407,8 +11369,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
     orders?: OrderUncheckedUpdateManyWithoutShippingAddressNestedInput
   }
 
@@ -11419,8 +11380,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     area?: StringFieldUpdateOperationsInput | string
     city?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    province?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: StringFieldUpdateOperationsInput | string
   }
 
   export type CartItemUpdateWithoutUserInput = {

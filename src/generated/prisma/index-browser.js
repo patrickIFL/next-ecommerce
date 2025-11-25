@@ -173,7 +173,6 @@ exports.Prisma.ShippingAddressScalarFieldEnum = {
   zipcode: 'zipcode',
   area: 'area',
   city: 'city',
-  state: 'state',
   province: 'province'
 };
 

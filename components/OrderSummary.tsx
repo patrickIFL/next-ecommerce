@@ -65,7 +65,7 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
           <label className="text-base font-medium uppercase text-text-foreground/80 block mb-2">
             Address
           </label>
-        <AddressComboBox className="w-full"/>
+        <AddressComboBox link={'/add-address'} className="w-full font-normal bg-accent"/>
         </div>
     
 
