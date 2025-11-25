@@ -3,6 +3,8 @@ import { addressDummyData } from "@/assets/assets";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import AddressComboBox from "@/components/AddressComboBox"
+import { Input } from "./ui/input";
 
 // ------------------------
 // Types
@@ -58,64 +60,14 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
       <hr className="border-gray-500/30 my-5" />
 
       <div className="space-y-6">
-        {/* Address Selector */}
+
         <div>
-          <label className="text-base font-medium uppercase text-foreground block mb-2">
-            Select Address
+          <label className="text-base font-medium uppercase text-text-foreground/80 block mb-2">
+            Address
           </label>
-
-          <div className="relative inline-block w-full text-sm border">
-            <button
-              type="button"
-              className="peer w-full text-left px-4 pr-2 py-2 bg-white text-gray-700 focus:outline-none"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <span>
-                {selectedAddress
-                  ? `${selectedAddress.fullName}, ${selectedAddress.area}, ${selectedAddress.city}, ${selectedAddress.province}`
-                  : "Select Address"}
-              </span>
-
-              <svg
-                className={`w-5 h-5 inline float-right transition-transform duration-200 ${isDropdownOpen ? "rotate-0" : "-rotate-90"
-                  }`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="#6B7280"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {isDropdownOpen && (
-              <ul className="absolute w-full bg-white border shadow-md mt-1 z-10 py-1.5">
-                {userAddresses.map((address, index) => (
-                  <li
-                    key={index}
-                    className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
-                    onClick={() => handleAddressSelect(address)}
-                  >
-                    {address.fullName}, {address.area}, {address.city},{" "}
-                    {address.province}
-                  </li>
-                ))}
-
-                <li
-                  onClick={() => router.push("/add-address")}
-                  className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-center"
-                >
-                  + Add New Address
-                </li>
-              </ul>
-            )}
-          </div>
+        <AddressComboBox className="w-full"/>
         </div>
+    
 
         {/* Promo Code */}
         <div>
@@ -124,11 +76,10 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
           </label>
 
           <div className="flex flex-col items-start gap-3">
-            <input
-              type="text"
+            
+            <Input type="text"
               placeholder="Enter promo code"
-              className="grow w-full outline-none p-2.5 text-foreground border"
-            />
+              className="grow w-full outline-none p-2.5"/>
             <button className="bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
             </button>
