@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { addressDummyData } from "@/assets/assets";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
@@ -16,7 +17,7 @@ interface Address {
 }
 
 
-const OrderSummary: React.FC = ({ cartCount, cartAmount }) => {
+const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}) => {
   const { currency,
     // getCartCount, getCartAmount
   } = useAppContext();

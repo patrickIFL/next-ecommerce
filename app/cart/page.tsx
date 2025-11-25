@@ -1,46 +1,46 @@
-'use client'
+'use client';
 import { assets } from "@/assets/assets";
 import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
-import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 import { StepBack, StepForward } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+type Product = {
+  id: string;
+  name: string;
+  image: string[];
+  offerPrice: number;
+};
+
+type CartItem = {
+  id: string;
+  quantity: number;
+  product: Product;
+};
+
 const Cart = () => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  // todo: add a validation that all cart items are still in stock/available 
-
-  const { data: cartItems, isLoading } = useQuery({
+  const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ['cartItems'],
     queryFn: async () => {
-      try {
-        const token = await getToken();
+      const token = await getToken();
+      const res = await fetch("/api/cart/get", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const res = await fetch("/api/cart/get", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          }
-        });
-
-        const data = await res.json();
-        console.log("API response:", data);
-
-        if (!res.ok) {
-          console.error("Cart fetch error:", data);
-          return;
-        }
-
-        return data.cartItems;
-      } catch (err) {
-        console.error("Fetch cart failed:", err);
-      }
-    }
+      const data = await res.json();
+      if (!res.ok) return [];
+      return data.cartItems as CartItem[];
+    },
   });
 
   const { mutate: updateCartQuantity } = useMutation({
@@ -60,24 +60,17 @@ const Cart = () => {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["cartItems"]);
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
     },
   });
 
-  const getCartTotal = (items: any[]) => {
-    if (!items) return 0;
-
+  const getCartTotal = (items: CartItem[]) => {
     return items.reduce((total, item) => {
       const price = item.product.offerPrice ?? 0;
       const qty = item.quantity ?? 0;
       return total + price * qty;
     }, 0);
   };
-
-
-  const router = useRouter();
-
-  console.log("Cart items:", cartItems);
 
   return (
     <div className="mt-16 flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
@@ -87,7 +80,7 @@ const Cart = () => {
             Your <span className="font-medium text-orange-600">Cart</span>
           </p>
           <p className="text-lg md:text-xl text-foreground/80">
-            {cartItems?.reduce((a, i) => a + i.quantity, 0) ?? 0} Items
+            {cartItems.reduce((a, i) => a + i.quantity, 0)} Items
           </p>
         </div>
 
@@ -95,7 +88,9 @@ const Cart = () => {
           <table className="min-w-full table-auto">
             <thead className="text-left">
               <tr>
-                <th className="text-nowrap pb-6 md:px-4 px-1 text-foreground font-medium">Product Details</th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium">
+                  Product Details
+                </th>
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Price</th>
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Quantity</th>
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Subtotal</th>
@@ -103,24 +98,20 @@ const Cart = () => {
             </thead>
 
             <tbody>
-              {cartItems?.map((item) => {
+              {cartItems.map((item) => {
                 const product = item.product;
 
                 return (
                   <tr key={item.id}>
                     <td className="flex items-center gap-4 py-4 md:px-4 px-1">
-                      <div>
-                        <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
-                          <Image
-                            src={product.image[0] || "/placeholder.png"}
-                            alt={product.name}
-                            className="w-16 h-auto object-cover"
-                            width={1280}
-                            height={720}
-                          />
-                        </div>
-
-
+                      <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
+                        <Image
+                          src={product.image?.[0] ?? "/placeholder.png"}
+                          alt={product.name}
+                          className="w-16 h-auto object-cover"
+                          width={1280}
+                          height={720}
+                        />
                       </div>
 
                       <div className="text-sm hidden md:block">
@@ -144,9 +135,8 @@ const Cart = () => {
                     </td>
 
                     <td className="py-4 md:px-4 px-1">
-                      <div className="flex items-center md:gap-2 gap-1">
+                      <div className="flex items-center gap-2">
                         <button
-                          className="cursor-pointer"
                           onClick={() =>
                             updateCartQuantity({
                               cartItemId: item.id,
@@ -154,24 +144,21 @@ const Cart = () => {
                             })
                           }
                         >
-                          <StepBack size={16} fill="var(--color-foreground)" />
+                          <StepBack size={16} />
                         </button>
-
 
                         <p className="text-foreground">{item.quantity}</p>
 
                         <button
-                          className="cursor-pointer"
                           onClick={() =>
                             updateCartQuantity({
                               cartItemId: item.id,
-                              quantity: Math.max(0, item.quantity + 1),
+                              quantity: item.quantity + 1,
                             })
                           }
                         >
-                          <StepForward size={16} fill="var(--color-foreground)" />
+                          <StepForward size={16} />
                         </button>
-
                       </div>
                     </td>
 
@@ -182,21 +169,24 @@ const Cart = () => {
                 );
               })}
             </tbody>
-
           </table>
         </div>
 
-        <button onClick={() => router.push('/all-products')}
-          className="group flex items-center mt-6 gap-2 text-orange-600">
-          <Image className="group-hover:-translate-x-1 transition"
+        <button
+          onClick={() => router.push("/all-products")}
+          className="group flex items-center mt-6 gap-2 text-orange-600"
+        >
+          <Image
+            className="group-hover:-translate-x-1 transition"
             src={assets.arrow_right_icon_colored}
-            alt="arrow_right_icon_colored" />
+            alt="arrow_right_icon_colored"
+          />
           Continue Shopping
         </button>
       </div>
-      {/* pass cart count, cart total */}
+
       <OrderSummary
-        cartCount={cartItems?.reduce((a, i) => a + i.quantity, 0) ?? 0}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         cartAmount={getCartTotal(cartItems)}
       />
     </div>
