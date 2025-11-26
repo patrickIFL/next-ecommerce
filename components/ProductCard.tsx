@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 const ProductCard = ({ product }: { product: any }) => {
     const { currency, handleAddToCart } = useAppContext();
     const router = useRouter();
-    
 
     return (
         <div

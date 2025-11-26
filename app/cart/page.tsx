@@ -3,7 +3,7 @@ import { assets } from "@/assets/assets";
 import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { StepBack, StepForward } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -144,7 +144,7 @@ const Cart = () => {
                             })
                           }
                         >
-                          <StepBack size={16} fill={"var(--color-foreground)"} color={"var(--color-foreground)"} />
+                          <ChevronLeft size={20} color={"var(--color-foreground)"} />
                         </button>
 
                         <p className="text-foreground">{item.quantity}</p>
@@ -157,7 +157,7 @@ const Cart = () => {
                             })
                           }
                         >
-                          <StepForward size={16} fill={"var(--color-foreground)"} color={"var(--color-foreground)"} />
+                          <ChevronRight size={20} color={"var(--color-foreground)"} />
                         </button>
                       </div>
                     </td>

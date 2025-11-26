@@ -1,23 +1,16 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-
 import { useAuth, useUser } from "@clerk/nextjs";
-import axios from 'axios';
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
   ReactNode,
 } from "react";
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-/* ---------------------------
-   TYPES
-----------------------------*/
-
-// Product type (adjust fields to match your dummy data)
 export interface Product {
   id: string;
   name: string;
@@ -28,19 +21,13 @@ export interface Product {
   image: string[];
 }
 
-// User type (adjust as needed)
 export interface UserData {
   name: string;
   email: string;
   image?: string;
 }
 
-// Cart: itemId -> quantity
 export type CartItems = Record<string, number>;
-
-/* ---------------------------
-   CONTEXT VALUE TYPE
-----------------------------*/
 
 export interface AppContextType {
   user: any;
@@ -50,22 +37,11 @@ export interface AppContextType {
   setIsSeller: (value: boolean) => void;
 
   products: Product[];
-  fetchProductData: () => Promise<void>;
-
   userData: UserData | null;
-  fetchUserData: () => Promise<void>;
+
   handleAddToCart: (productId: string) => Promise<void>;
-
-  // addToCart: (id: string) => Promise<void>;
-  // updateCartQuantity: (id: string, quantity: number) => Promise<void>;
-
-  // getCartCount: () => number;
-  // getCartAmount: () => number;
+  handleBuyNow: (productId: string) => Promise<void>;
 }
-
-/* ---------------------------
-   CREATE CONTEXT
-----------------------------*/
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -77,10 +53,6 @@ export const useAppContext = () => {
   return ctx;
 };
 
-/* ---------------------------
-   PROVIDER
-----------------------------*/
-
 interface ProviderProps {
   children: ReactNode;
 }
@@ -88,141 +60,96 @@ interface ProviderProps {
 export const AppContextProvider = ({ children }: ProviderProps) => {
   const { user } = useUser();
   const { getToken } = useAuth();
-  const { toast } = useToast()
+  const { toast } = useToast();
   const router = useRouter();
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [isSeller, setIsSeller] = useState<boolean>(false);
 
-  /* ---------------------------
-      DATA FETCHING
-   ----------------------------*/
-
-     const handleAddToCart = async (productId:string) => {
-      try {
-          const token = await getToken();
-
-          const res = await fetch("/api/cart/add", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                  productId: productId,
-                  quantity: 1
-              }),
-          });
-
-          const data = await res.json();
-
-          if (!res.ok) {
-              console.error("Add to cart error:", data);
-              return;
-          }
-
-          router.push("/cart");
-
-      } catch (err) {
-          console.error("Add to cart failed:", err);
-      }
-  };
-
-  const fetchProductData = async () => {
-    try {
-      const { data } = await axios.get("/api/product/list");
-      if (data.success) {
-        setProducts(data.products as Product[]);
-      }
-      else {
-        toast({
-          title: 'Error',
-          description: data.message,
-          variant: 'destructive'
-        })
-      }
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive'
-      })
-    }
-  };
-
-  const fetchUserData = async () => {
-    const token = await getToken();
-    try {
-      const { data } = await axios.get("/api/user/data", {
+  const { mutateAsync: handleAddToCart } = useMutation({
+    mutationFn: async (productId: string) => {
+      const token = await getToken();
+      const res = await fetch("/api/cart/add", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
       });
 
-      if (data.success) {
-        setUserData(data.user);
-        toast({
-          title: '👋 Welcome',
-          description: `Hello, ${data.user.name}`,
-          variant: 'default'
-        })
-      }
-      else {
-        toast({
-          title: 'Error',
-          description: data.message,
-          variant: 'destructive'
-        })
-      }
-      // fix tanstack functions
-      // currently, it runs on use effect
-
-    } catch (error: any) {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to add to cart");
+      return data;
+    },
+    onSuccess: () => {
       toast({
-        title: 'Error',
+        title: "Added to Cart",
+        description: "Product successfully added to cart.",
+      });
+    },
+    onError: (error: any) =>
+      toast({
+        title: "Error",
         description: error.message,
-        variant: 'destructive'
-      })
-    }
-  }
+        variant: "destructive",
+      }),
+  });
 
-  // const getCartCount = () => {
-  //   return Object.values(cartItems).reduce((acc, qty) => acc + qty, 0);
-  // };
+  const { mutateAsync: handleBuyNow } = useMutation({
+    mutationFn: async (productId: string) => {
+      await handleAddToCart(productId);
+    },
+    onSuccess: () => router.push("/checkout"),
+    onError: (error: any) =>
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      }),
+  });
 
-  // const getCartAmount = () => {
-  //   let total = 0;
-  //   for (const id in cartItems) {
-  //     const product = products.find((p) => p.id === id);
-  //     if (product) {
-  //       total += product.offerPrice * cartItems[id];
-  //     }
-  //   }
-  //   return Number(total.toFixed(2));
-  // };
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const res = await fetch("/api/product/list");
+      const data = await res.json();
 
-  /* ---------------------------
-      EFFECTS
-   ----------------------------*/
-  useEffect(() => {
-    const load = async () => {
-      await Promise.all([
-        fetchProductData(),
-        fetchUserData(),
-        // fetchCartData()
-      ]);
-    };
-    load();
-  }, [user]);
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to load products");
+      }
+      return data.products as Product[];
+    },
+  });
 
 
-  /* ---------------------------
-        CONTEXT VALUE
-     ----------------------------*/
+  const { data: userData } = useQuery({
+    queryKey: ["userData", user?.id],
+    enabled: !!user, // prevents running before login
+    queryFn: async () => {
+      const token = await getToken();
+      const res = await fetch("/api/user/data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to load user data");
+      }
+
+      toast({
+        title: "👋 Welcome",
+        description: `Hello, ${data.user.name}`,
+      });
+
+      return data.user as UserData;
+    },
+  });
+
   const value: AppContextType = {
     user,
     currency,
@@ -231,12 +158,10 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     setIsSeller,
 
     products,
-    fetchProductData,
+    userData: userData ?? null,
 
-    userData,
-    fetchUserData,
     handleAddToCart,
-
+    handleBuyNow,
   };
 
   return (
