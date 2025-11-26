@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface Product {
   id: string;
@@ -27,6 +27,19 @@ export interface UserData {
   image?: string;
 }
 
+type CartProduct = {
+  id: string;
+  name: string;
+  image: string[];
+  offerPrice: number;
+};
+
+type CartItem = {
+  id: string;
+  quantity: number;
+  product: CartProduct;
+};
+
 export type CartItems = Record<string, number>;
 
 export interface AppContextType {
@@ -41,7 +54,15 @@ export interface AppContextType {
 
   handleAddToCart: (productId: string) => Promise<void>;
   handleBuyNow: (productId: string) => Promise<void>;
+
+  cartItems: CartItem[];
+  refetchCart: () => void;
+
+  isLoading: boolean;
+  updateCartQuantity: (data: { cartItemId: string; quantity: number }) => void;
+  getCartTotal: (items: CartItem[]) => number;
 }
+
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -62,6 +83,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const { getToken } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -86,7 +108,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
     onSuccess: () => {
       toast({
-        title: "Added to Cart",
+        title: "✅ Added to Cart",
         description: "Product successfully added to cart.",
       });
     },
@@ -124,7 +146,6 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
   });
 
-
   const { data: userData } = useQuery({
     queryKey: ["userData", user?.id],
     enabled: !!user, // prevents running before login
@@ -150,6 +171,53 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
   });
 
+  const { data: cartItems = [], isLoading, refetch: refetchCart } = useQuery<CartItem[]>({
+    queryKey: ['cartItems'],
+    queryFn: async () => {
+      const token = await getToken();
+      const res = await fetch("/api/cart/get", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) return [];
+      return data.cartItems as CartItem[];
+    },
+  });
+
+  const { mutate: updateCartQuantity } = useMutation({
+    mutationFn: async (data: { cartItemId: string; quantity: number }) => {
+      const token = await getToken();
+
+      const res = await fetch(`/api/cart/update/${data.cartItemId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ quantity: data.quantity }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update quantity");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+    },
+  });
+
+  const getCartTotal: any = (items: CartItem[]) => {
+    return items.reduce((total, item) => {
+      const price = item.product.offerPrice ?? 0;
+      const qty = item.quantity ?? 0;
+      return total + price * qty;
+    }, 0);
+  };
+
   const value: AppContextType = {
     user,
     currency,
@@ -162,6 +230,12 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
     handleAddToCart,
     handleBuyNow,
+
+    getCartTotal,
+    cartItems,
+    refetchCart,
+    isLoading,
+    updateCartQuantity,
   };
 
   return (
