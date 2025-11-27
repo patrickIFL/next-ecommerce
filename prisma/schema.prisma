@@ -9,9 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// =======================
 // User
-// =======================
 model User {
   id        String   @id @default(cuid())
   name      String
@@ -26,9 +24,7 @@ model User {
   cartItems CartItem[]
 }
 
-// =======================
 // Product
-// =======================
 model Product {
   id          String   @id @default(cuid())
   userId      String
@@ -48,9 +44,7 @@ model Product {
   @@index([userId])
 }
 
-// =======================
 // CartItem
-// =======================
 model CartItem {
   id        String @id @default(cuid())
   userId    String
@@ -67,9 +61,7 @@ model CartItem {
   @@index([productId])
 }
 
-// =======================
 // Order
-// =======================
 model Order {
   id                String  @id @default(cuid())
   userId            String
@@ -87,9 +79,7 @@ model Order {
   @@index([userId])
 }
 
-// =======================
 // OrderItem (for multiple products per order)
-// =======================
 model OrderItem {
   id        String @id @default(cuid())
   orderId   String
@@ -103,9 +93,7 @@ model OrderItem {
   @@index([productId])
 }
 
-// =======================
 // ShippingAddress
-// =======================
 model ShippingAddress {
   id     String @id @default(cuid())
   userId String

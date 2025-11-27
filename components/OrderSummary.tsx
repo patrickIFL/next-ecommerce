@@ -1,55 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addressDummyData } from "@/assets/assets";
 import { useAppContext } from "@/context/AppContext";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import AddressComboBox from "@/components/AddressComboBox"
 import { Input } from "./ui/input";
 
-// ------------------------
-// Types
-// ------------------------
-interface Address {
-  fullName: string;
-  phoneNumber: string;
-  zipcode: number;
-  area: string;
-  city: string;
-  province: string;
-}
+const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: any }) => {
 
-
-const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}) => {
-  const { currency,
-    // getCartCount, getCartAmount
-  } = useAppContext();
-
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [userAddresses, setUserAddresses] = useState<Address[]>([]);
-
-  const router = useRouter();
-
-  // ------------------------
-  // Fetch addresses
-  // ------------------------
-  const fetchUserAddresses = async (): Promise<void> => {
-    // If addressDummyData is typed correctly in assets, no cast needed
-    setUserAddresses(addressDummyData as Address[]);
-  };
-
-  const handleAddressSelect = (address: Address): void => {
-    setSelectedAddress(address);
-    setIsDropdownOpen(false);
-  };
-
-  const createOrder = async (): Promise<void> => {
-    // TODO: your order logic here
-  };
-
-  useEffect(() => {
-    fetchUserAddresses();
-  }, []);
+  const { currency } = useAppContext();
 
   return (
     <div className="w-full md:w-96 bg-accent p-5">
@@ -65,9 +21,9 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
           <label className="text-base font-medium uppercase text-text-foreground/80 block mb-2">
             Address
           </label>
-        <AddressComboBox link={'/add-address'} className="w-full font-normal bg-accent"/>
+          <AddressComboBox link={'/add-address'} className="w-full font-normal bg-accent" />
         </div>
-    
+
 
         {/* Promo Code */}
         <div>
@@ -76,10 +32,10 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
           </label>
 
           <div className="flex flex-col items-start gap-3">
-            
+
             <Input type="text"
               placeholder="Enter promo code"
-              className="grow w-full outline-none p-2.5"/>
+              className="grow w-full outline-none p-2.5" />
             <button className="bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
             </button>
@@ -124,7 +80,6 @@ const OrderSummary = ({ cartCount, cartAmount }: {cartCount:any, cartAmount:any}
       </div>
 
       <button
-        onClick={createOrder}
         className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
       >
         Place Order

@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Check, ChevronDown, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,48 +18,23 @@ import {
 } from "@/components/ui/popover";
 
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useAuth } from "@clerk/nextjs";
+import { useAppContext } from "@/context/AppContext";
+import { useEffect, useState } from "react";
 
 interface AddressComboBoxProps {
   className?: string;
   link: string;
 }
 
-interface Address {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  addressLine1: string;
-  addressLine2?: string;
-  region: string;
-  province: string;
-  city: string;
-  area: string;
-  zipcode: string;
-}
-
 export default function AddressComboBox({ className, link }: AddressComboBoxProps) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
   const router = useRouter();
-  const { getToken } = useAuth();
+  const { addresses, addressesLoading: isLoading, setSelectedAddressId, refetchAddress } = useAppContext();
 
-  const { data: addresses, isLoading } = useQuery({
-    queryKey: ["addresses"],
-    queryFn: async () => {
-      const token = await getToken();
-
-      const { data } = await axios.get("/api/user/get-address", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return data.addresses as Address[];
-    },
-  });
+  useEffect(() => {
+    refetchAddress()
+  }, [refetchAddress])
 
   const selectedAddress = addresses?.find((a) => a.id === value);
 
@@ -74,10 +48,10 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
           className={`w-[260px] justify-between ${className ?? ""}`}
         >
           <span className="truncate max-w-[250px]">
-  {selectedAddress
-    ? `${selectedAddress.area}, ${selectedAddress.city}`
-    : "Select address..."}
-</span>
+            {selectedAddress
+              ? `${selectedAddress.area}, ${selectedAddress.city}`
+              : "Select address..."}
+          </span>
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -106,6 +80,7 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
                     value={address.id}
                     onSelect={(currentValue) => {
                       setValue(currentValue === value ? "" : currentValue);
+                      setSelectedAddressId(address.id);
                       setOpen(false);
                     }}
                     className="py-3"
@@ -124,9 +99,8 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
                     </div>
 
                     <Check
-                      className={`ml-auto ${
-                        value === address.id ? "opacity-100" : "opacity-0"
-                      }`}
+                      className={`ml-auto ${value === address.id ? "opacity-100" : "opacity-0"
+                        }`}
                     />
                   </CommandItem>
                 ))}

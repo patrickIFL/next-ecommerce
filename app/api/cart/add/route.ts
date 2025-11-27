@@ -38,6 +38,9 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Upsert Cart Item (create or update)
+    // if the item exists in the cart, increment the quantity
+    // if the item does not exist in the cart, create it
+    
     const cartItem = await prisma.cartItem.upsert({
       where: {
         userId_productId: {

@@ -40,6 +40,19 @@ type CartItem = {
   product: CartProduct;
 };
 
+interface Address {
+  id: string;
+  fullName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2?: string;
+  region: string;
+  province: string;
+  city: string;
+  area: string;
+  zipcode: string;
+}
+
 export type CartItems = Record<string, number>;
 
 export interface AppContextType {
@@ -61,8 +74,13 @@ export interface AppContextType {
   isLoading: boolean;
   updateCartQuantity: (data: { cartItemId: string; quantity: number }) => void;
   getCartTotal: (items: CartItem[]) => number;
-  addAddress:(address:any) => void,
-  addAddressLoading:boolean,
+  addAddress: (address: any) => void,
+  addAddressLoading: boolean,
+
+  addresses: Address[];
+  addressesLoading: boolean,
+  setSelectedAddressId: (id: string | null) => void
+  refetchAddress: () => void
 }
 
 
@@ -86,6 +104,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -148,38 +167,57 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
   });
 
-  const {mutate:addAddress, isPending:addAddressLoading} = useMutation({
-    mutationFn: async(address) => {
+  const { mutate: addAddress, isPending: addAddressLoading } = useMutation({
+    mutationFn: async (address) => {
       const token = await getToken()
-      const res = await fetch("/api/user/add-address",{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(address),
-        });
-      
+      const res = await fetch("/api/user/add-address", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(address),
+      });
+
       if (!res.ok) throw new Error("Failed to update quantity");
       return res.json();
-    }, 
+    },
     onSuccess: (data) => {
       console.log(data.message)
       toast({
-          title: "✅ Success",
-          description: data.message,
-          variant: "default",
-        });
+        title: "✅ Success",
+        description: data.message,
+        variant: "default",
+      });
     },
     onError: (error) => {
       console.log(error.message)
       toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   });
+
+  const { data: addresses = [], refetch: refetchAddress, isRefetching: addressesLoading }
+    = useQuery({
+      queryKey: ["addresses"],
+      queryFn: async () => {
+        const token = await getToken();
+        const res = await fetch("/api/user/get-address", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Failed to load user data");
+        }
+
+        return data.addresses as Address[];
+      },
+    });
 
   const { data: userData } = useQuery({
     queryKey: ["userData", user?.id],
@@ -227,7 +265,6 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const { mutate: updateCartQuantity } = useMutation({
     mutationFn: async (data: { cartItemId: string; quantity: number }) => {
       const token = await getToken();
-
       const res = await fetch(`/api/cart/update/${data.cartItemId}`, {
         method: "PATCH",
         headers: {
@@ -244,6 +281,41 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
     },
   });
+
+  const { mutate: placeOrder } = useMutation({
+    mutationFn: async () => {
+      if (!selectedAddressId) {
+        throw new Error("No address selected");
+      }
+
+      const token = await getToken();
+
+      const res = await fetch("/api/order/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ selectedAddressId }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || "Failed to create order");
+      }
+
+      return res.json();
+    },
+
+    onSuccess: (data) => {
+      console.log("Order created:", data);
+    },
+
+    onError: (error) => {
+      console.error("Error creating order:", error);
+    },
+  });
+
 
   const getCartTotal: any = (items: CartItem[]) => {
     return items.reduce((total, item) => {
@@ -273,6 +345,12 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     updateCartQuantity,
     addAddress,
     addAddressLoading,
+
+    addresses,
+    addressesLoading,
+    setSelectedAddressId,
+    refetchAddress
+
   };
 
   return (
