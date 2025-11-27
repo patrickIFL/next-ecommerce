@@ -2,9 +2,6 @@
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useState } from "react";
-import { useAuth } from "@clerk/nextjs";
-import { toast } from "@/components/ui/use-toast";
-import { useMutation } from "@tanstack/react-query";
 import { useAppContext } from "@/context/AppContext";
 
 // ------------------
