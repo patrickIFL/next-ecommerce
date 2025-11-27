@@ -14,14 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const formData = await request.formData();
+    const address = await request.json();
 
-    const fullName = formData.get("fullName") as string;
-    const phoneNumber = formData.get("phoneNumber") as string;
-    const zipcode = formData.get("zipcode") as string;
-    const area = formData.get("area") as string;
-    const city = formData.get("city") as string;
-    const province = formData.get("province") as string;
+    const { fullName, phoneNumber, zipcode, area, city, province } = address;
 
     const newAddress = await prisma.shippingAddress.create({
       data: {
@@ -33,7 +28,7 @@ export async function POST(request: NextRequest) {
         province,
         user: {
           connect: {
-            id: userId, // <- REQUIRED for Prisma
+            id: userId,
           },
         },
       },

@@ -61,6 +61,8 @@ export interface AppContextType {
   isLoading: boolean;
   updateCartQuantity: (data: { cartItemId: string; quantity: number }) => void;
   getCartTotal: (items: CartItem[]) => number;
+  addAddress:(address:any) => void,
+  addAddressLoading:boolean,
 }
 
 
@@ -144,6 +146,39 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       }
       return data.products as Product[];
     },
+  });
+
+  const {mutate:addAddress, isPending:addAddressLoading} = useMutation({
+    mutationFn: async(address) => {
+      const token = await getToken()
+      const res = await fetch("/api/user/add-address",{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(address),
+        });
+      
+      if (!res.ok) throw new Error("Failed to update quantity");
+      return res.json();
+    }, 
+    onSuccess: (data) => {
+      console.log(data.message)
+      toast({
+          title: "✅ Success",
+          description: data.message,
+          variant: "default",
+        });
+    },
+    onError: (error) => {
+      console.log(error.message)
+      toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+    }
   });
 
   const { data: userData } = useQuery({
@@ -236,6 +271,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     refetchCart,
     isLoading,
     updateCartQuantity,
+    addAddress,
+    addAddressLoading,
   };
 
   return (

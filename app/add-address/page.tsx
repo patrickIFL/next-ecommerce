@@ -1,11 +1,11 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
-import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { useAppContext } from "@/context/AppContext";
 
 // ------------------
 // Address Type
@@ -29,62 +29,16 @@ export default function Page() {
     province: "",
   });
 
-  const { getToken } = useAuth();
-  const [loading, setLoading] = useState<boolean>(false);
+  const {addAddress,addAddressLoading:isPending} = useAppContext()
 
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddAddress = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    formData.append("fullName", address.fullName);
-    formData.append("phoneNumber", address.phoneNumber);
-    formData.append("zipcode", address.zipcode);
-    formData.append("area", address.area);
-    formData.append("city", address.city);
-    formData.append("province", address.province);
-
-    try {
-      const token = await getToken();
-      setLoading(true);
-      const { data } = await axios.post("/api/user/add-address", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (data.success) {
-        setLoading(false);
-        toast({
-          title: "✅ Success",
-          description: data.message,
-          variant: "default",
-        });
-        setAddress({
-          fullName: "",
-          phoneNumber: "",
-          zipcode: "",
-          area: "",
-          city: "",
-          province: "",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
+    addAddress(address);
+  }
+  
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-between">
-      <form onSubmit={onSubmitHandler} className="w-full">
+      <form onSubmit={handleAddAddress} className="w-full">
         <p className="text-2xl md:text-3xl text-foreground/80">
           Add Shipping{" "}
           <span className="font-semibold text-orange-600">Address</span>
@@ -156,9 +110,15 @@ export default function Page() {
 
         <button
           type="submit"
-          className="cursor-pointer max-w-sm w-full mt-6 bg-orange-600 text-white py-3 hover:bg-orange-700 uppercase"
+          className={`max-w-sm w-full mt-6 text-white py-3 uppercase 
+            ${isPending 
+            ? "bg-orange-900 cursor-not-allowed"
+            : "bg-orange-600 cursor-pointer hover:bg-orange-700"}`}
         >
-          Save address
+          {
+            isPending ? "Loading..." : "Save address"
+          }
+          
         </button>
       </form>
 
