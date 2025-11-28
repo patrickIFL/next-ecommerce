@@ -10,3 +10,13 @@ export const { POST } = serve({
     createUserOrder
   ],
 });
+
+export const { PUT } = serve({
+  client: inngest,
+  functions: [
+    syncUserCreation,
+    syncUserUpdation,
+    syncUserDeletion,
+    createUserOrder
+  ],
+});
