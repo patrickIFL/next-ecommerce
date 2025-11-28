@@ -11,11 +11,11 @@ const OrderPlaced = () => {
   useEffect(() => {
     setTimeout(() => {
       router.push('/my-orders')
-    }, 5000)
+    }, 3000)
   }, [router])
 
   return (
-    <div className='h-screen flex flex-col justify-center items-center gap-5 mt-16'>
+    <div className='h-screen flex flex-col justify-center items-center gap-5 mt-16 bg-background'>
       <div className="flex justify-center items-center relative">
         <Image className="absolute p-5" src={assets.checkmark} alt='' />
         <div className="animate-spin rounded-full h-24 w-24 border-4 border-t-green-300 border-gray-200"></div>

@@ -1,16 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Inngest } from "inngest";
 import prisma from "@/app/db/prisma";
 
-// ==========================
 // Types
-// ==========================
 interface ClerkUserEvent {
   id: string;
   first_name?: string;
   last_name?: string;
   email_addresses: { email_address: string }[];
   image_url?: string | null;
+}
+
+interface OrderCreatedEventData {
+  userId: string;
+  items: { productId: string; quantity: number }[];
+  amount: number;
+  shippingAddressId: string;
+  orderDate: Date;
+  shippingMethod: string;
 }
 
 // Inngest client
@@ -111,22 +117,25 @@ export const syncUserDeletion = inngest.createFunction(
 export const createUserOrder = inngest.createFunction(
   {
     id: "create-user-order",
-    batchEvents: {
-      maxSize: 25,
-      timeout: "5s",
-    },
+    batchEvents: { maxSize: 5, timeout: "5s" },
   },
   { event: "order/created" },
-  async ({events}) => {
-    const orders:any = events.map((event) => {
-      return {
-        userId: event.data.userId,
-        items: event.data.items,
-        amount: event.data.amount,
-        address: event.data.address,
-        date: event.data.date
-      }
-    });
-    await prisma.order.createMany(orders);
+  async ({ events }) => {
+    for (const event of events) {
+      const data: OrderCreatedEventData = event.data;
+
+      await prisma.order.create({
+        data: {
+          userId: data.userId,
+          shippingAddressId: data.shippingAddressId,
+          amount: data.amount,
+          orderDate: data.orderDate,
+          shippingMethod: data.shippingMethod,
+          items: {
+            create: data.items
+          },
+      }});
+    }
   }
 );
+

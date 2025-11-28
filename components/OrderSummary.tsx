@@ -1,11 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAppContext } from "@/context/AppContext";
-import AddressComboBox from "@/components/AddressComboBox"
+import AddressComboBox from "@/components/AddressComboBox";
 import { Input } from "./ui/input";
 
-const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: any }) => {
+const OrderSummary = ({
+  cartCount,
+  cartAmount,
+}: {
+  cartCount: any;
+  cartAmount: any;
+}) => {
+  const { currency, placeOrder, tax, shipping } = useAppContext();
 
-  const { currency } = useAppContext();
+  const handlePlaceOrder = () => {
+    placeOrder();
+  };
 
   return (
     <div className="w-full md:w-96 bg-accent p-5">
@@ -16,14 +25,15 @@ const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: a
       <hr className="border-gray-500/30 my-5" />
 
       <div className="space-y-6">
-
         <div>
           <label className="text-base font-medium uppercase text-text-foreground/80 block mb-2">
             Address
           </label>
-          <AddressComboBox link={'/add-address'} className="w-full font-normal bg-accent" />
+          <AddressComboBox
+            link={"/add-address"}
+            className="w-full font-normal bg-accent"
+          />
         </div>
-
 
         {/* Promo Code */}
         <div>
@@ -32,10 +42,11 @@ const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: a
           </label>
 
           <div className="flex flex-col items-start gap-3">
-
-            <Input type="text"
+            <Input
+              type="text"
               placeholder="Enter promo code"
-              className="grow w-full outline-none p-2.5" />
+              className="grow w-full outline-none p-2.5"
+            />
             <button className="bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
             </button>
@@ -56,15 +67,16 @@ const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: a
 
           <div className="flex justify-between">
             <p className="text-foreground/80">Shipping Fee</p>
-            <p className="font-medium text-foreground">Free</p>
+            <p className="font-medium text-foreground">
+              {shipping > 0 ? `₱${shipping}` : "Free"}
+            </p>
           </div>
 
           <div className="flex justify-between">
-            <p className="text-foreground/80">Tax (2%)</p>
+            <p className="text-foreground/80">Tax ({tax}%)</p>
             <p className="font-medium text-foreground">
               {currency}
-              {Math.floor(cartAmount * 0.02)}
-
+              {Math.floor(cartAmount * (tax / 100))}
             </p>
           </div>
 
@@ -73,13 +85,13 @@ const OrderSummary = ({ cartCount, cartAmount }: { cartCount: any, cartAmount: a
             <p>
               {currency}
               {cartAmount + Math.floor(cartAmount * 0.02)}
-
             </p>
           </div>
         </div>
       </div>
 
       <button
+        onClick={handlePlaceOrder}
         className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
       >
         Place Order

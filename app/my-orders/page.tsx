@@ -1,73 +1,30 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from "react";
-import { assets, orderDummyData } from "@/assets/assets";
+import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext, OrderItem } from "@/context/AppContext";
 import Loading from "@/components/Loading";
-
-// =======================
-// Types
-// =======================
-interface Product {
-  id: string;
-  userId: string;
-  name: string;
-  description: string;
-  price: number;
-  offerPrice: number;
-  image: string[];
-  category: string;
-  date: number;
-  __v: number;
-}
-
-interface OrderItem {
-  product: Product;
-  quantity: number;
-}
-
-interface OrderAddress {
-  fullName: string;
-  phoneNumber: string;
-  zipcode: number;
-  area: string;
-  city: string;
-  province: string;
-}
-
-interface OrderType {
-  id: string;
-  userId: string;
-  items: OrderItem[];
-  address: OrderAddress;
-  amount: number;
-  date: number | string;
-  status: string;
-  __v: number;
-}
+import { useEffect } from "react";
 
 const MyOrders: React.FC = () => {
-  const { currency } = useAppContext();
-
-  const [orders, setOrders] = useState<OrderType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchOrders = async (): Promise<void> => {
-    setOrders(orderDummyData);
-    setLoading(false);
-  };
+  const {
+    currency,
+    myOrders: orders,
+    myOrdersLoading: loading,
+    refetchMyOrders,
+    isRefetchingMyOrders: refetching
+  } = useAppContext();
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    refetchMyOrders()
+  }, [refetchMyOrders]);
 
   return (
     <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen mt-16">
       <div className="space-y-5">
         <h2 className="text-lg font-medium mt-6">My Orders</h2>
 
-        {loading ? (
+        {loading || refetching ? (
           <Loading />
         ) : (
           <div className="max-w-5xl border-t border-gray-300 text-sm">
@@ -100,14 +57,14 @@ const MyOrders: React.FC = () => {
                 <div>
                   <p>
                     <span className="font-medium">
-                      {order.address.fullName}
+                      {order.shippingAddress?.fullName}
                     </span>
                     <br />
-                    <span>{order.address.area}</span>
+                    <span>{order.shippingAddress?.area}</span>
                     <br />
-                    <span>{`${order.address.city}, ${order.address.province}`}</span>
+                    <span>{`${order.shippingAddress?.city}, ${order.shippingAddress?.province}`}</span>
                     <br />
-                    <span>{order.address.phoneNumber}</span>
+                    <span>{order.shippingAddress?.phoneNumber}</span>
                   </p>
                 </div>
 
@@ -120,7 +77,7 @@ const MyOrders: React.FC = () => {
                   <p className="flex flex-col">
                     <span>Method : COD</span>
                     <span>
-                      Date : {new Date(order.date).toLocaleDateString()}
+                      Date : {new Date(order.orderDate).toLocaleDateString()}
                     </span>
                     <span>Payment : Pending</span>
                   </p>

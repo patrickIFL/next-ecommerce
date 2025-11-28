@@ -53,6 +53,30 @@ interface Address {
   zipcode: string;
 }
 
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  product: Product;
+}
+
+
+export interface Order {
+  id: string;
+  userId: string;
+  shippingAddressId: string | null;
+
+  amount: number;
+  isPaid: boolean;
+  shippingMethod: string;
+  orderDate: string; // ISO date string returned by Prisma
+
+  user: UserData;
+  shippingAddress: Address | null;
+  items: OrderItem[];
+}
+
 export type CartItems = Record<string, number>;
 
 export interface AppContextType {
@@ -80,7 +104,15 @@ export interface AppContextType {
   addresses: Address[];
   addressesLoading: boolean,
   setSelectedAddressId: (id: string | null) => void
-  refetchAddress: () => void
+  refetchAddress: () => void,
+  placeOrder: () => void,
+  tax:number, 
+  shipping:number
+
+  myOrders: Order[],
+  myOrdersLoading:boolean,
+  refetchMyOrders: () => void,
+  isRefetchingMyOrders: boolean
 }
 
 
@@ -105,6 +137,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const tax = Number(process.env.NEXT_PUBLIC_TAX);
+  const shipping = Number(process.env.NEXT_PUBLIC_SHIPPING);
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -284,8 +318,13 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
   const { mutate: placeOrder } = useMutation({
     mutationFn: async () => {
+     
+      if (!cartItems || cartItems.length === 0) {
+        throw new Error("Cart Empty");
+      }
+
       if (!selectedAddressId) {
-        throw new Error("No address selected");
+        throw new Error("Undefined Address");
       }
 
       const token = await getToken();
@@ -296,7 +335,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ selectedAddressId }),
+        body: JSON.stringify({ selectedAddressId })
       });
 
       if (!res.ok) {
@@ -307,14 +346,34 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       return res.json();
     },
 
-    onSuccess: (data) => {
-      console.log("Order created:", data);
+    onSuccess: () => {
+      router.push("/order-placed")
     },
 
     onError: (error) => {
-      console.error("Error creating order:", error);
+      let message:string = "";
+      if (error.message === "Cart Empty") {message = "Your Cart is empty."}
+      else if (error.message === "Undefined Address") {message = "Select address or add a new one to proceed"}
+      toast({
+        title: error.message,
+        description: message,
+        variant: "destructive",
+      });
     },
   });
+
+  const {data:myOrders, isLoading:myOrdersLoading, refetch:refetchMyOrders, isRefetching:isRefetchingMyOrders} = useQuery({
+    queryKey: ["myOrders"],
+    queryFn: async () => {
+      const res = await fetch("/api/order/fetch")
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to load orders");
+      }
+      return data.orders;
+    }
+  })
 
 
   const getCartTotal: any = (items: CartItem[]) => {
@@ -349,7 +408,16 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     addresses,
     addressesLoading,
     setSelectedAddressId,
-    refetchAddress
+    refetchAddress,
+
+    placeOrder,
+    tax, 
+    shipping,
+
+    myOrders,
+    myOrdersLoading,
+    refetchMyOrders,
+    isRefetchingMyOrders
 
   };
 

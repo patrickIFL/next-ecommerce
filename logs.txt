@@ -216,3 +216,82 @@ the authseller code in the lib is server code. used for access control.
 solved the authUser error. seller can now create products
 
 useAuth and getAuth is different. useAuth is for client, getAuth is for server. need to pass an request in getAuth
+
+================ cartItems ================
+[
+  {
+    id: 'cmigljwao000dubzkzk531eng',
+    userId: 'user_362FdVsKPrpI75Pzg7B4fEzNUYu',
+    productId: 'cmiglf7ai0003ubzka8xpjtfk',
+    quantity: 3,
+    createdAt: 2025-11-26T22:49:11.233Z,
+    updatedAt: 2025-11-26T23:18:51.596Z,
+    product: {
+      id: 'cmiglf7ai0003ubzka8xpjtfk',
+      userId: 'user_362FdVsKPrpI75Pzg7B4fEzNUYu',
+      name: 'Acer Chromebook R11',
+      description: 'The Acer R11 is an 11.6″ convertible Chromebook with a touchscreen and a 360° fold-over hinge. It runs Chrome OS and typically comes with an Intel Celeron processor, 4 GB RAM, and 32 GB eMMC storage. Its compact size, convertible/touch design, and portability make it ideal for light computing — browsing, documents, streaming — as a budget-friendly everyday laptop/tablet hybrid.',
+      category: 'Earphone',
+      image: [Array],
+      price: 2500,
+      offerPrice: 2499,
+      createdAt: 2025-11-26T22:45:30.665Z,
+      updatedAt: 2025-11-26T22:45:30.665Z
+    }
+  },
+  {
+    id: 'cmigmo4y60003jj04082zm20r',
+    userId: 'user_362FdVsKPrpI75Pzg7B4fEzNUYu',
+    productId: 'cmiglfyox0005ubzkd4gs490s',
+    quantity: 1,
+    createdAt: 2025-11-26T23:20:28.687Z,
+    updatedAt: 2025-11-26T23:20:28.687Z,
+    product: {
+      id: 'cmiglfyox0005ubzkd4gs490s',
+      userId: 'user_362FdVsKPrpI75Pzg7B4fEzNUYu',
+      name: 'Acer Chromebook N19Q3',
+      description: 'The Acer Chromebook N19Q3 (also sold as the Acer Chromebook 315 CB315-3H) is a 15.6″ Chromebook running ChromeOS. It typically comes with an Intel Celeron N-series processor (e.g. N4020 or N4120), 4 GB RAM, and ~64 – 128 GB of eMMC/SSD storage.',
+      category: 'Earphone',
+      image: [Array],
+      price: 2500,
+      offerPrice: 499,
+      createdAt: 2025-11-26T22:46:07.498Z,
+      updatedAt: 2025-11-26T22:46:07.498Z
+    }
+  },
+  ...
+]
+
+================ ORDER MODEL ================
+
+model Order {
+  id                String  @id @default(cuid())
+  userId            String
+  shippingAddressId String?
+
+  amount         Int
+  isPaid         Boolean  @default(false)
+  shippingMethod String
+  orderDate      DateTime @default(now())
+
+  user            User             @relation(fields: [userId], references: [id])
+  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  items           OrderItem[]
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+*/
