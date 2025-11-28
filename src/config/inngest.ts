@@ -15,7 +15,8 @@ interface OrderCreatedEventData {
   items: { productId: string; quantity: number }[];
   amount: number;
   shippingAddressId: string;
-  date: string | number; // ISO string or timestamp
+  orderDate: Date;
+  shippingMethod: string;
 }
 
 // Inngest client
@@ -128,16 +129,12 @@ export const createUserOrder = inngest.createFunction(
           userId: data.userId,
           shippingAddressId: data.shippingAddressId,
           amount: data.amount,
-          orderDate: new Date(data.date),
-          shippingMethod: "standard",
+          orderDate: data.orderDate,
+          shippingMethod: data.shippingMethod,
           items: {
-            create: data.items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            })),
+            create: data.items
           },
-        },
-      });
+      }});
     }
   }
 );
