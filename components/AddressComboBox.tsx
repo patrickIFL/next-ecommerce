@@ -80,7 +80,7 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
                     value={address.id}
                     onSelect={(currentValue) => {
                       setValue(currentValue === value ? "" : currentValue);
-                      setSelectedAddressId(address.id);
+                      setSelectedAddressId(currentValue === value ? null : currentValue);
                       setOpen(false);
                     }}
                     className="py-3"
