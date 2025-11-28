@@ -80,7 +80,10 @@ export interface AppContextType {
   addresses: Address[];
   addressesLoading: boolean,
   setSelectedAddressId: (id: string | null) => void
-  refetchAddress: () => void
+  refetchAddress: () => void,
+  placeOrder: () => void,
+  tax:number, 
+  shipping:number
 }
 
 
@@ -105,6 +108,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const tax = Number(process.env.NEXT_PUBLIC_TAX);
+  const shipping = Number(process.env.NEXT_PUBLIC_SHIPPING);
 
   const currency =
     process.env.NEXT_PUBLIC_CURRENCY === "PHP" ? "₱" : "";
@@ -349,7 +354,11 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     addresses,
     addressesLoading,
     setSelectedAddressId,
-    refetchAddress
+    refetchAddress,
+
+    placeOrder,
+    tax, 
+    shipping
 
   };
 
