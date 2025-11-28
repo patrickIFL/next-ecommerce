@@ -1,9 +1,7 @@
 import { Inngest } from "inngest";
 import prisma from "@/app/db/prisma";
 
-// ==========================
 // Types
-// ==========================
 interface ClerkUserEvent {
   id: string;
   first_name?: string;
@@ -143,3 +141,4 @@ export const createUserOrder = inngest.createFunction(
     }
   }
 );
+
