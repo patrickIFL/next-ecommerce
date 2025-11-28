@@ -313,11 +313,20 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
 
     onSuccess: (data) => {
-      console.log("Order created:", data);
+      queryClient.invalidateQueries({ queryKey: ["cartItems"]})
+      toast({
+        title: "✅ Order Placed",
+        description: data.message,
+        variant: "default",
+      });
     },
 
     onError: (error) => {
-      console.error("Error creating order:", error);
+      toast({
+        title: "Something went wrong",
+        description: error.message,
+        variant: "default",
+      });
     },
   });
 

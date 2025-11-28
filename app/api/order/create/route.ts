@@ -54,26 +54,11 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     }));
 
-    // 4️⃣ Create Order + OrderItems
-    // const newOrder = await prisma.order.create({
-    //   data: {
-    //     userId,
-    //     shippingAddressId: selectedAddressId,
-    //     amount: total,
-    //     orderDate: new Date(),
-    //     shippingMethod: "standard",
-
-    //     items: {
-    //       create: items,
-    //     },
-    //   },
-    // });
-
     await inngest.send({
       name: "order/created",
       data: {
         userId,
-        address: selectedAddressId,
+        shippingAddressId: selectedAddressId,
         amount: total,
         orderDate: new Date(),
         shippingMethod: "standard",
