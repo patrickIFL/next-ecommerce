@@ -4,20 +4,15 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useAppContext, OrderItem } from "@/context/AppContext";
 import Loading from "@/components/Loading";
-import { useEffect } from "react";
 
 const MyOrders: React.FC = () => {
   const {
     currency,
     myOrders: orders,
     myOrdersLoading: loading,
-    refetchMyOrders,
     isRefetchingMyOrders: refetching
   } = useAppContext();
 
-  useEffect(() => {
-    refetchMyOrders()
-  }, [refetchMyOrders]);
 
   return (
     <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen mt-16">

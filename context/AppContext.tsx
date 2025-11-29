@@ -106,11 +106,11 @@ export interface AppContextType {
   setSelectedAddressId: (id: string | null) => void
   refetchAddress: () => void,
   placeOrder: () => void,
-  tax:number, 
-  shipping:number
+  tax: number,
+  shipping: number
 
   myOrders: Order[],
-  myOrdersLoading:boolean,
+  myOrdersLoading: boolean,
   refetchMyOrders: () => void,
   isRefetchingMyOrders: boolean
 }
@@ -318,7 +318,6 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
 
   const { mutate: placeOrder } = useMutation({
     mutationFn: async () => {
-     
       if (!cartItems || cartItems.length === 0) {
         throw new Error("Cart Empty");
       }
@@ -335,25 +334,35 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ selectedAddressId })
+        body: JSON.stringify({ selectedAddressId }),
       });
 
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || "Failed to create order");
+        let errorJson: any = null;
+        try {
+          errorJson = await res.json();
+        } catch { }
+
+        throw new Error(errorJson?.message || "Failed to create order");
       }
+      const data = await res.json();
 
-      return res.json();
+      return data;
     },
-
-    onSuccess: () => {
-      router.push("/order-placed")
+    onSuccess: (data) => {
+      const { checkoutUrl } = data;
+      if (checkoutUrl) {
+        router.push(checkoutUrl);
+      }
+      else {
+        throw new Error("Invalid Checkout URL");
+      }
     },
 
     onError: (error) => {
-      let message:string = "";
-      if (error.message === "Cart Empty") {message = "Your Cart is empty."}
-      else if (error.message === "Undefined Address") {message = "Select address or add a new one to proceed"}
+      let message: string = "";
+      if (error.message === "Cart Empty") { message = "Your Cart is empty." }
+      else if (error.message === "Undefined Address") { message = "Select address or add a new one to proceed" }
       toast({
         title: error.message,
         description: message,
@@ -362,7 +371,8 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     },
   });
 
-  const {data:myOrders, isLoading:myOrdersLoading, refetch:refetchMyOrders, isRefetching:isRefetchingMyOrders} = useQuery({
+
+  const { data: myOrders, isLoading: myOrdersLoading, refetch: refetchMyOrders, isRefetching: isRefetchingMyOrders } = useQuery({
     queryKey: ["myOrders"],
     queryFn: async () => {
       const res = await fetch("/api/order/fetch")
@@ -411,7 +421,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     refetchAddress,
 
     placeOrder,
-    tax, 
+    tax,
     shipping,
 
     myOrders,
