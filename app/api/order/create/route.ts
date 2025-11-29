@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       {
         name: "Tax",
         quantity: 1,
-        amount: taxValue, // Remove if no tax
+        amount: (taxValue*100), // Remove if no tax
         currency: "PHP"
       },
       {
