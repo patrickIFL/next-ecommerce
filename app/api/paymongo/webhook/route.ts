@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
     console.log("🔔 Event type:", eventType);
 
     // Match the correct PayMongo event
-    if (eventType === "checkout_session.payment.paid") {
+    if (eventType === "payment.paid") {
       const session = body.data.attributes.data; // checkout_session object
       const payment = session.attributes.payments[0]; // first payment
 
