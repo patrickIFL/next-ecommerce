@@ -1,18 +1,24 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAppContext, OrderItem } from "@/context/AppContext";
+import { useAppContext } from "@/context/AppContext";
 import Loading from "@/components/Loading";
+import { useEffect } from "react";
 
 const MyOrders: React.FC = () => {
   const {
     currency,
     myOrders: orders,
     myOrdersLoading: loading,
+    refetchMyOrders,
     isRefetchingMyOrders: refetching
   } = useAppContext();
 
+  useEffect(() => {
+    refetchMyOrders();
+  }, [refetchMyOrders]);
 
   return (
     <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen mt-16">
@@ -22,64 +28,72 @@ const MyOrders: React.FC = () => {
         {loading || refetching ? (
           <Loading />
         ) : (
-          <div className="max-w-5xl border-t border-gray-300 text-sm">
-            {orders.map((order, index) => (
-              <div
-                key={index}
-                className="flex flex-col md:flex-row gap-5 justify-between p-5 border-b border-gray-300"
-              >
-                <div className="flex-1 flex gap-5 max-w-80">
-                  <Image
-                    className="max-w-16 max-h-16 object-cover"
-                    src={assets.box_icon}
-                    alt="box_icon"
-                  />
+          <>
+            <div className="max-w-6xl mx-auto overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-accent bg-accent text-foreground">
+                    <th className="p-3">Product</th>
+                    <th className="p-3">Shipping Details</th>
+                    <th className="p-3">Amount</th>
+                    <th className="p-3">Info</th>
+                  </tr>
+                </thead>
 
-                  <p className="flex flex-col gap-3">
-                    <span className="font-medium text-base">
-                      {order.items
-                        .map(
-                          (item: OrderItem) =>
-                            `${item.product.name} x ${item.quantity}`
-                        )
-                        .join(", ")}
-                    </span>
+                <tbody>
+                  {orders.map((order: any, i: number) => (
+                    <tr key={i} className="border-b border-accent">
+                      {/* PRODUCT */}
+                      <td className="p-3 align-top">
+                        <div className="flex gap-3">
+                          <Image
+                            className="w-16 h-16 object-cover"
+                            src={assets.box_icon}
+                            alt="box_icon"
+                          />
+                          <div className="flex flex-col gap-2">
+                            <span className="font-medium">
+                              {order.items
+                                .map((item: any) => `${item.product.name} x ${item.quantity}`)
+                                .join(", ")}
+                            </span>
+                            <span>Items: {order.items.length}</span>
+                          </div>
+                        </div>
+                      </td>
 
-                    <span>Items : {order.items.length}</span>
-                  </p>
-                </div>
+                      {/* SHIPPING ADDRESS */}
+                      <td className="p-3 align-top">
+                        <p>
+                          <span className="font-medium">{order.shippingAddress?.fullName}</span>
+                          <br />
+                          {order.shippingAddress?.area}
+                          <br />
+                          {order.shippingAddress?.city}, {order.shippingAddress?.province}
+                          <br />
+                          {order.shippingAddress?.phoneNumber}
+                        </p>
+                      </td>
 
-                <div>
-                  <p>
-                    <span className="font-medium">
-                      {order.shippingAddress?.fullName}
-                    </span>
-                    <br />
-                    <span>{order.shippingAddress?.area}</span>
-                    <br />
-                    <span>{`${order.shippingAddress?.city}, ${order.shippingAddress?.province}`}</span>
-                    <br />
-                    <span>{order.shippingAddress?.phoneNumber}</span>
-                  </p>
-                </div>
+                      {/* AMOUNT */}
+                      <td className="p-3 align-top font-medium">
+                        {currency}{order.amount}
+                      </td>
 
-                <p className="font-medium my-auto">
-                  {currency}
-                  {order.amount}
-                </p>
-
-                <div>
-                  <p className="flex flex-col">
-                    <span>Method : COD</span>
-                    <span>
-                      Date : {new Date(order.orderDate).toLocaleDateString()}
-                    </span>
-                    <span>Payment : Pending</span>
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+                      {/* INFO */}
+                      <td className="p-3 align-top">
+                        <p className="flex flex-col">
+                          <span>Method: COD</span>
+                          <span>Date: {new Date(order.orderDate).toLocaleDateString()}</span>
+                          <span>Payment: Pending</span>
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

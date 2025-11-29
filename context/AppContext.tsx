@@ -21,11 +21,11 @@ export interface Product {
   image: string[];
 }
 
-export interface UserData {
-  name: string;
-  email: string;
-  image?: string;
-}
+// export interface UserData {
+//   name: string;
+//   email: string;
+//   image?: string;
+// }
 
 type CartProduct = {
   id: string;
@@ -72,7 +72,7 @@ export interface Order {
   shippingMethod: string;
   orderDate: string; // ISO date string returned by Prisma
 
-  user: UserData;
+  // user: UserData;
   shippingAddress: Address | null;
   items: OrderItem[];
 }
@@ -87,7 +87,7 @@ export interface AppContextType {
   setIsSeller: (value: boolean) => void;
 
   products: Product[];
-  userData: UserData | null;
+  // userData: UserData | null;
 
   handleAddToCart: (productId: string) => Promise<void>;
   handleBuyNow: (productId: string) => Promise<void>;
@@ -253,30 +253,30 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
       },
     });
 
-  const { data: userData } = useQuery({
-    queryKey: ["userData", user?.id],
-    enabled: !!user, // prevents running before login
-    queryFn: async () => {
-      const token = await getToken();
-      const res = await fetch("/api/user/data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  // const { data: userData } = useQuery({
+  //   queryKey: ["userData", user?.id],
+  //   enabled: !!user, // prevents running before login
+  //   queryFn: async () => {
+  //     const token = await getToken();
+  //     const res = await fetch("/api/user/data", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to load user data");
-      }
+  //     const data = await res.json();
+  //     if (!res.ok || !data.success) {
+  //       throw new Error(data.message || "Failed to load user data");
+  //     }
 
-      toast({
-        title: "👋 Welcome",
-        description: `Hello, ${data.user.name}`,
-      });
+  //     // toast({
+  //     //   title: "👋 Welcome",
+  //     //   description: `Hello, ${data.user.name}`,
+  //     // });
 
-      return data.user as UserData;
-    },
-  });
+  //     return data.user as UserData;
+  //   },
+  // });
 
   const { data: cartItems = [], isLoading, refetch: refetchCart } = useQuery<CartItem[]>({
     queryKey: ['cartItems'],
@@ -402,7 +402,7 @@ export const AppContextProvider = ({ children }: ProviderProps) => {
     setIsSeller,
 
     products,
-    userData: userData ?? null,
+    // userData: userData ?? null,
 
     handleAddToCart,
     handleBuyNow,

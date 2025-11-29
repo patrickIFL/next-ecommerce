@@ -16,32 +16,32 @@ export async function POST(req: NextRequest) {
 
       const session = body.data.attributes.data; 
       const payment = session.attributes.payments[0];
-      const payment_intent = session.attributes.payment_intent; 
-      const payment_intent_id = payment_intent.id; 
-      const payment_id = payment.id;
-      const customer_name = payment.attributes.billing.name;
-      const customer_email = payment.attributes.billing.email;
-      const customer_phone = payment.attributes.billing.phone;
-      const payment_method = payment.attributes.source.type;
-      const payment_date = payment.attributes.paid_at;
+      // const payment_intent = session.attributes.payment_intent; 
+      // const payment_intent_id = payment_intent.id; 
+      // const payment_id = payment.id;
+      // const customer_name = payment.attributes.billing.name;
+      // const customer_email = payment.attributes.billing.email;
+      // const customer_phone = payment.attributes.billing.phone;
+      // const payment_method = payment.attributes.source.type;
+      // const payment_date = payment.attributes.paid_at;
 
       const metadata = session.attributes.metadata;
       const amount = payment.attributes.amount / 100;
-      const status = payment.attributes.status;
+      // const status = payment.attributes.status;
 
-      console.log("🎉 PAYMENT PAID EVENT");
-      console.log("Paid at:", payment_date);
-      console.log("UserID:", metadata.userId);
-      console.log("Selected Address:", metadata.selectedAddressId);
-      console.log("Customer Name:", customer_name);
-      console.log("Customer Email:", customer_email);
-      console.log("Customer Phone:", customer_phone);
-      console.log("Payment Intent ID:", payment_intent_id);
-      console.log("Payment ID:", payment_id);
-      console.log("Raw Items:", metadata.cartItems);
-      console.log("Amount:", amount);
-      console.log("Payment Method:", payment_method);
-      console.log("Status:", status);
+      // console.log("🎉 PAYMENT PAID EVENT");
+      // console.log("Paid at:", payment_date);
+      // console.log("UserID:", metadata.userId);
+      // console.log("Selected Address:", metadata.selectedAddressId);
+      // console.log("Customer Name:", customer_name);
+      // console.log("Customer Email:", customer_email);
+      // console.log("Customer Phone:", customer_phone);
+      // console.log("Payment Intent ID:", payment_intent_id);
+      // console.log("Payment ID:", payment_id);
+      // console.log("Raw Items:", metadata.cartItems);
+      // console.log("Amount:", amount);
+      // console.log("Payment Method:", payment_method);
+      // console.log("Status:", status);
 
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
