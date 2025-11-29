@@ -56,15 +56,6 @@ export async function POST(req: NextRequest) {
       currency: "PHP",
     }));
 
-    // =================================================================
-
-
-    // 3️⃣ Prepare items for nested create
-    // const items = cartItems.map((item) => ({
-    //   productId: item.productId,
-    //   quantity: item.quantity,
-    // }));
-
     const checkoutSession = await paymongo.post("/checkout_sessions", {
   data: {
     attributes: {
@@ -75,32 +66,14 @@ export async function POST(req: NextRequest) {
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
       metadata: {
         userId,
-        items: cartItems.map((item) => ({
-          id: item.productId,
-          quantity: item.quantity,
-        })),
+        selectedAddressId,
+        cartItems
       },
     },
   },
 });
 
-
     const session = checkoutSession.data.data;
-
-    // await inngest.send({
-    //   name: "order/created",
-    //   data: {
-    //     userId,
-    //     shippingAddressId: selectedAddressId,
-    //     amount: total,
-    //     orderDate: new Date(),
-    //     shippingMethod: "standard",
-    //     items,
-    //   },
-    // });
-
-    // // 5️⃣ Clear cart
-    // await prisma.cartItem.deleteMany({ where: { userId } });
 
     return NextResponse.json({
       checkoutUrl: session.attributes.checkout_url,

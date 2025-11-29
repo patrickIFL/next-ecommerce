@@ -1,53 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import prisma from "@/app/db/prisma";
+import { inngest } from "@/src/config/inngest";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // console.log("✅ Webhook received:", JSON.stringify(body, null, 2));
-
     const eventType = body.data?.attributes?.type;
     console.log("🔔 Event type:", eventType);
 
-//     x const session = body.data.attributes.data; // checkout_session object
-// x const payment = session.attributes.payments[0]; // first payment
-// x const payment_intent = session.attributes.payment_intent; 
-// x const payment_intent_id = payment_intent.id; 
-
-// x session.id = "cs_q4K8gkCdvxwJVhopxxrnZTLZ",
-// x session.line_items = [
-//              {
-//                "amount": 49900,
-//                "currency": "PHP",
-//               "description": null,
-//                "images": [],
-//                "name": "Acer Chromebook 14",
-//                "quantity": 1
-//              },
-//              {
-//                "amount": 49900,
-//                "currency": "PHP",
-//                "description": null,
-//                "images": [],
-//                "name": "Acer Chromebook N19Q3",
-//                "quantity": 1
-//              }
-//            ],
-
-// x payment.id = "pay_sQECs2XnoZqWkp5J8uSNtWjd",
-
-// VALUES YOU ENTERED DURING CHECKOUT SESSION
-// x payment.attributes.billing.email = "patrickperez0530@gmail.com",
-// x payment.attributes.billing.name = "Patrick Royce Perez",
-// x payment.attributes.billing.phone = "09270523253"
-// x payment.attributes.currency = "PHP"
-// x payment.attributes.source.type = "gcash"
-
-// x session.attributes.metadata
-
-
-    // Match the correct PayMongo event
     if (eventType === "checkout_session.payment.paid") {
+
+      // For Future Optimizations
+
       const session = body.data.attributes.data; 
       const payment = session.attributes.payments[0];
       const payment_intent = session.attributes.payment_intent; 
@@ -57,31 +23,50 @@ export async function POST(req: NextRequest) {
       const customer_email = payment.attributes.billing.email;
       const customer_phone = payment.attributes.billing.phone;
       const payment_method = payment.attributes.source.type;
+      const payment_date = payment.attributes.paid_at;
 
       const metadata = session.attributes.metadata;
       const amount = payment.attributes.amount / 100;
       const status = payment.attributes.status;
 
       console.log("🎉 PAYMENT PAID EVENT");
-      console.log("User:", metadata.userId);
+      console.log("Paid at:", payment_date);
+      console.log("UserID:", metadata.userId);
+      console.log("Selected Address:", metadata.selectedAddressId);
       console.log("Customer Name:", customer_name);
       console.log("Customer Email:", customer_email);
       console.log("Customer Phone:", customer_phone);
       console.log("Payment Intent ID:", payment_intent_id);
       console.log("Payment ID:", payment_id);
-      console.log("Raw Items:", metadata.items);
-
-      // let items = [];
-      // try {
-      //   items = JSON.parse(metadata.items); // works if you store valid JSON
-      // } catch (err) {
-      //   console.log("⚠ Items are NOT JSON. Must fix metadata format.");
-      // }
-
-      // console.log("Parsed Items:", items);
+      console.log("Raw Items:", metadata.cartItems);
       console.log("Amount:", amount);
       console.log("Payment Method:", payment_method);
       console.log("Status:", status);
+
+      const userId = metadata.userId;
+      const selectedAddressId = metadata.selectedAddressId;
+      const cartItems = metadata.cartItems;
+      
+    // Prepare items for nested create
+    const items = cartItems.map((item: any) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      }));
+      
+      await inngest.send({
+      name: "order/created",
+      data: {
+        userId,
+        shippingAddressId: selectedAddressId,
+        amount,
+        orderDate: new Date(),
+        shippingMethod: "standard",
+        items,
+      },
+    });
+
+    // 5️⃣ Clear cart
+    await prisma.cartItem.deleteMany({ where: { userId } });
 
       return NextResponse.json({ success: true });
     }
