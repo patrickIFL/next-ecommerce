@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
-      const cartItems = metadata.cartItems;
+      const cartItems = JSON.parse(metadata.cartItems);
       
     // Prepare items for nested create
     const items = cartItems.map((item: any) => ({

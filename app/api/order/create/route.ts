@@ -56,18 +56,23 @@ export async function POST(req: NextRequest) {
       currency: "PHP",
     }));
 
-    const checkoutSession = await paymongo.post("/checkout_sessions", {
+const checkoutSession = await paymongo.post("/checkout_sessions", {
   data: {
     attributes: {
       line_items: lineItems,
-      payment_method_types: ["gcash", "card"], // valid only
+      payment_method_types: ["gcash", "card"],
       description: "Next-Ecommerce",
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
       metadata: {
         userId,
         selectedAddressId,
-        cartItems
+        cartItems: JSON.stringify(
+          cartItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          }))
+        ),
       },
     },
   },
