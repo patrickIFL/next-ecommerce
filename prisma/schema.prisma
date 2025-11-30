@@ -70,6 +70,7 @@ model Order {
   amount         Int
   isPaid         Boolean  @default(false)
   shippingMethod String
+  shippingStatus String?  @default("pending") // new column
   orderDate      DateTime @default(now())
 
   user            User             @relation(fields: [userId], references: [id])
