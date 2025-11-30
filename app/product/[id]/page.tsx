@@ -6,7 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import { assets } from "@/assets/assets";
 import ProductCard from "@/components/ProductCard";
 import Loading from "@/components/Loading";
-import { useAppContext } from "@/context/AppContext";
+import useProductHook from "@/hooks/useProductHook";
+import useCartHook from "@/hooks/useCartHook";
 
 type ProductType = {
   id: string;
@@ -22,7 +23,8 @@ const Product = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
 
-  const { products, handleAddToCart } = useAppContext();
+  const { products } = useProductHook();
+  const { handleAddToCart } = useCartHook();
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);

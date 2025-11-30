@@ -2,7 +2,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AppContextProvider } from "@/context/AppContext";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { shadcn } from "@clerk/themes";
@@ -45,13 +44,11 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ReactQueryProvider>
-            <AppContextProvider>
-              <ThemeProvider>
-                <NavBar />
-                {children}
-                <Footer />
-              </ThemeProvider>
-            </AppContextProvider>
+            <ThemeProvider>
+              <NavBar />
+              {children}
+              <Footer />
+            </ThemeProvider>
           </ReactQueryProvider>
           <Toaster />
 

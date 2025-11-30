@@ -1,4 +1,4 @@
-import { useAppContext } from '@/context/AppContext';
+import useCartHook from '@/hooks/useCartHook';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
@@ -21,7 +21,7 @@ interface CartCardProps {
 }
 
 function CartCard({ item }: CartCardProps) {
-  const { updateCartQuantity } = useAppContext();
+  const { updateCartQuantity } = useCartHook();
   const [quantity, setQuantity] = useState(item.quantity);
 
   // Sync local state if item.quantity changes externally

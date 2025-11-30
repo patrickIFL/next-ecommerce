@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useAppContext } from "@/context/AppContext";
 import AddressComboBox from "@/components/AddressComboBox";
 import { Input } from "./ui/input";
+import useOrderHook from "@/hooks/useOrderHook";
 
 const OrderSummary = ({
   cartCount,
@@ -10,7 +10,10 @@ const OrderSummary = ({
   cartCount: any;
   cartAmount: any;
 }) => {
-  const { currency, placeOrder, tax, shipping } = useAppContext();
+  const { placeOrder } = useOrderHook();
+  const tax = Number(process.env.NEXT_PUBLIC_TAX);
+  const shipping = Number(process.env.NEXT_PUBLIC_SHIPPING);
+  const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   const handlePlaceOrder = () => {
     placeOrder();

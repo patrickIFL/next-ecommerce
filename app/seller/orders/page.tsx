@@ -3,14 +3,11 @@
 import React, { useEffect } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAppContext } from "@/context/AppContext";
 import Loading from "@/components/Loading";
 import { useQuery } from "@tanstack/react-query";
 
-
 const Orders: React.FC = () => {
-  const { currency } = useAppContext();
-
+  const currency = process.env.NEXT_PUBLIC_CURRENCY
   const { data: allOrders, isLoading: allOrdersLoading, refetch: refetchAllOrders, isRefetching: isRefetchingAllOrders } = useQuery({
     queryKey: ["allOrders"],
     queryFn: async () => {

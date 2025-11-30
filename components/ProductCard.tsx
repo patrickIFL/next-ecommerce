@@ -1,13 +1,14 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from '@/assets/assets'
+import useCartHook from '@/hooks/useCartHook';
 import Image from 'next/image';
-import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
 
 const ProductCard = ({ product }: { product: any }) => {
-    const { currency, handleAddToCart } = useAppContext();
+    const { handleAddToCart } = useCartHook();
     const router = useRouter();
+    const currency = process.env.NEXT_PUBLIC_CURRENCY
 
     return (
         <div

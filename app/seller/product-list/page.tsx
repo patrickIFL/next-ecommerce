@@ -1,14 +1,14 @@
 'use client'
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { useEffect, useState } from "react";
-import { assets, productsDummyData } from "@/assets/assets";
+import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useAuth } from "@clerk/nextjs";
-import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import useUserHook from "@/hooks/useUserHook";
 
 // ------------------------------
 // Product TYPE (Very Important)
@@ -24,7 +24,7 @@ interface ProductType {
 const ProductList = () => {
   const router = useRouter();
   const { getToken } = useAuth();
-  const { user } = useAppContext();
+  const { user } = useUserHook();
 
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

@@ -5,12 +5,12 @@ import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CartCard from "@/components/CartCard";
-import { useAppContext } from "@/context/AppContext";
 import { useEffect } from "react";
+import useCartHook from "@/hooks/useCartHook";
 
 const Cart = () => {
   const router = useRouter();
-  const { cartItems, refetchCart, getCartTotal } = useAppContext();
+  const { cartItems, refetchCart, getCartTotal } = useCartHook();
 
   const cartCount = cartItems.reduce((a, i) => a + i.quantity, 0);
   const cartAmount = getCartTotal(cartItems);

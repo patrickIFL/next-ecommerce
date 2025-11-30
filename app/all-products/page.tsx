@@ -1,10 +1,10 @@
 'use client'
 import ProductCard from "@/components/ProductCard";
-import { useAppContext } from "@/context/AppContext";
+import useProductHook from "@/hooks/useProductHook";
 
 const AllProducts = () => {
 
-    const { products } = useAppContext();
+    const { products } = useProductHook();
 
     return (
         <div className="mt-16 flex flex-col items-start px-6 md:px-16 lg:px-32">

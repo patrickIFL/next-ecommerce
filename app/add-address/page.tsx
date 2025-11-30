@@ -1,12 +1,9 @@
 "use client";
 import { assets } from "@/assets/assets";
+import useAddressHook from "@/hooks/useAddressHook";
 import Image from "next/image";
 import { useState } from "react";
-import { useAppContext } from "@/context/AppContext";
 
-// ------------------
-// Address Type
-// ------------------
 interface AddressForm {
   fullName: string;
   phoneNumber: string;
@@ -26,13 +23,13 @@ export default function Page() {
     province: "",
   });
 
-  const {addAddress,addAddressLoading:isPending} = useAppContext()
+  const { addAddress, addAddressLoading: isPending } = useAddressHook()
 
   const handleAddAddress = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addAddress(address);
   }
-  
+
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-between">
       <form onSubmit={handleAddAddress} className="w-full">
@@ -108,14 +105,14 @@ export default function Page() {
         <button
           type="submit"
           className={`max-w-sm w-full mt-6 text-white py-3 uppercase 
-            ${isPending 
-            ? "bg-orange-900 cursor-not-allowed"
-            : "bg-orange-600 cursor-pointer hover:bg-orange-700"}`}
+            ${isPending
+              ? "bg-orange-900 cursor-not-allowed"
+              : "bg-orange-600 cursor-pointer hover:bg-orange-700"}`}
         >
           {
             isPending ? "Loading..." : "Save address"
           }
-          
+
         </button>
       </form>
 

@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/popover";
 
 import { useRouter } from "next/navigation";
-import { useAppContext } from "@/context/AppContext";
 import { useEffect, useState } from "react";
+import useAddressHook from "@/hooks/useAddressHook";
+import useAddressStore from "@/stores/useAddressStore";
 
 interface AddressComboBoxProps {
   className?: string;
@@ -30,7 +31,10 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const router = useRouter();
-  const { addresses, addressesLoading: isLoading, setSelectedAddressId, refetchAddress } = useAppContext();
+
+  const { addresses, addressesLoading: isLoading, refetchAddress } = useAddressHook();
+
+  const { setSelectedAddressId } = useAddressStore();
 
   useEffect(() => {
     refetchAddress()
