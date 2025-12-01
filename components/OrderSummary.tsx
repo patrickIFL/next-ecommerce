@@ -50,7 +50,7 @@ const OrderSummary = ({
               placeholder="Enter promo code"
               className="grow w-full outline-none p-2.5"
             />
-            <button className="bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
+            <button className="cursor-pointer bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
             </button>
           </div>
@@ -95,7 +95,7 @@ const OrderSummary = ({
 
       <button
         onClick={handlePlaceOrder}
-        className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
+        className="cursor-pointer w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
       >
         Place Order
       </button>

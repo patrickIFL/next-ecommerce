@@ -68,8 +68,6 @@ const AddProduct = () => {
         variant: 'destructive'
       });
     }
-
-
   };
 
   return (
@@ -181,7 +179,7 @@ const AddProduct = () => {
         </div>
         <button
           type="submit"
-          className={`px-8 py-2.5 bg-orange-600 text-white font-medium rounded
+          className={`px-8 py-2.5 bg-orange-500 cursor-pointer hover:bg-orange-600 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading} >
           {loading ? 'Loading...' : 'ADD'}
