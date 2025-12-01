@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
   data: {
     attributes: {
       line_items: lineItems,
-      payment_method_types: ["gcash", "card"], // valid only
+      payment_method_types: ["gcash", "card", "paymaya", "grab_pay", "billease"], 
       description: "Next-Ecommerce",
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,

@@ -9,6 +9,7 @@ import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import useUserHook from "@/hooks/useUserHook";
+import { formatMoney } from "@/lib/utils";
 
 // ------------------------------
 // Product TYPE (Very Important)
@@ -25,6 +26,7 @@ const ProductList = () => {
   const router = useRouter();
   const { getToken } = useAuth();
   const { user } = useUserHook();
+  const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -103,7 +105,7 @@ const ProductList = () => {
                     </td>
 
                     <td className="px-4 py-3 max-sm:hidden">{product.category}</td>
-                    <td className="px-4 py-3">${product.offerPrice}</td>
+                    <td className="px-4 py-3">{currency}{formatMoney(product.offerPrice)}</td>
 
                     <td className="px-4 py-3 max-sm:hidden">
                       <button
