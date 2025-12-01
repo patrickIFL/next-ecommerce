@@ -1,7 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { useEffect, useState } from "react";
-import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
@@ -79,9 +78,9 @@ const ProductList = () => {
       ) : (
         <div className="w-full md:p-10 p-4">
           <div className="flex flex-col pt-12 mb-5">
-                <p className="text-2xl font-medium">Products</p>
-                <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
-            </div>
+            <p className="text-2xl font-medium">Products</p>
+            <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+          </div>
 
           <div className="flex flex-col items-center w-full overflow-scroll rounded-md bg-accent border border-gray-500/20">
             <table className="table-fixed w-full">
@@ -130,7 +129,7 @@ const ProductList = () => {
                         <Tooltip>
                           <TooltipTrigger>
                             <button
-                              onClick={() => {}}
+                              onClick={() => { }}
                               className="flex items-center gap-1 p-1.5 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-md"
                             >
                               <SquarePen size={16} />
@@ -144,7 +143,7 @@ const ProductList = () => {
                         <Tooltip>
                           <TooltipTrigger>
                             <button
-                              onClick={() => {}}
+                              onClick={() => { }}
                               className="flex items-center gap-1 p-1.5 bg-green-600 cursor-pointer hover:bg-green-700 text-white rounded-md"
                             >
                               <EyeOff size={16} />
@@ -159,7 +158,7 @@ const ProductList = () => {
                         <Tooltip>
                           <TooltipTrigger>
                             <button
-                              onClick={() => {}}
+                              onClick={() => { }}
                               className="flex items-center gap-1 p-1.5 bg-red-600 cursor-pointer hover:bg-red-700 text-white rounded-md"
                             >
                               <Trash2 size={16} />

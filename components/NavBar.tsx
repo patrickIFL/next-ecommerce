@@ -4,7 +4,12 @@ import Image from "next/image";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
-import { Menu, Search, User, X } from "lucide-react";
+import { Menu, MessageCircleMore, Search, User, X } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -19,6 +24,7 @@ import {
 import AccordionMenu from "./AccordionMenu";
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
+import { Input } from "./ui/input";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -174,31 +180,50 @@ function NavBar() {
           viewport={false}
           className="text-foreground hidden md:flex items-center h-full"
         >
-          <NavigationMenuList className="flex gap-1">
-            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center rounded-full">
-              <AnimatedThemeToggler className="m-2 cursor-pointer" />
+          <NavigationMenuList>
+            <NavigationMenuItem asChild>
+              {/* Modify at the Bottom */}
+              <SearchBar />
             </NavigationMenuItem>
 
-            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
-              <Search color={"var(--color-foreground)"} size={18} />
+            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center rounded-full">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
+                    <AnimatedThemeToggler className="cursor-pointer" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent><p>Toggle Theme</p></TooltipContent>
+              </Tooltip>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
+                    <MessageCircleMore color={"var(--color-foreground)"} size={18} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent><p>Chat</p></TooltipContent>
+              </Tooltip>
             </NavigationMenuItem>
 
             <NavigationMenuItem className="flex items-center p-2 rounded-full">
-              {user
-                ? (
-                  <ClerkUserButton />
-                )
-                :
-                (<button onClick={() => openSignIn()} className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition">
+              {user ? (
+                <ClerkUserButton />
+              ) : (
+                <button
+                  onClick={() => openSignIn()}
+                  className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
+                >
                   <User color={"var(--color-foreground)"} size={18} />
                   <span>Account</span>
-                </button>)
-              }
-
+                </button>
+              )}
             </NavigationMenuItem>
-
           </NavigationMenuList>
         </NavigationMenu>
+
       </nav>
 
       {/* Mobile Menu */}
@@ -215,3 +240,29 @@ function NavBar() {
 }
 
 export default NavBar;
+
+const SearchBar = () => {
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        console.log("Submitting search:", e.currentTarget.search.value)
+      }}
+      className="flex items-center gap-2"
+    >
+      <Input
+        name="search"
+        type="text"
+        placeholder="Search a Product"
+        className="h-8 px-3"
+      />
+
+      <button
+        type="submit"
+        className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full"
+      >
+        <Search color={"var(--color-foreground)"} size={18} />
+      </button>
+    </form>
+  )
+}
