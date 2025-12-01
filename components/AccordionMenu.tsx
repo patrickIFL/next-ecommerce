@@ -76,7 +76,7 @@ function AccordionMenu({
 
                   <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
                     {menu.menuLinks.map((link: any, j: number) => (
-                      <Link key={j} href={link.href || "#"}>
+                      <Link key={j} href={link.linkRef || "#"}>
                         <div className={`${menuItemClass} px-4`}>
                           {link.linkName}
                         </div>

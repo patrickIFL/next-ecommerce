@@ -39,7 +39,7 @@ function NavLinks({ menus }: { menus: any }) {
         {menu.menuLinks.map((link: any, j: number) => (
           <li key={j}>
             <NavigationMenuLink asChild>
-              <Link href={link.href || "#"}>
+              <Link href={link.linkRef || "#"}>
                 {link.linkName}
               </Link>
             </NavigationMenuLink>

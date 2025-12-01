@@ -27,7 +27,7 @@ const SideBar = () => {
     ];
 
     return (
-        <div className='mt-16 md:w-64 w-16 border-r min-h-screen text-base border-gray-500/30 py-2 flex flex-col'>
+        <div className='mt-16 lg:w-64 w-16 border-r min-h-screen text-base border-gray-500/30 py-2 flex flex-col'>
             {menuItems.map((item) => {
 
                 const isActive = pathname === item.path;
@@ -37,13 +37,13 @@ const SideBar = () => {
                         <div
                             className={
                                 `flex items-center py-3 px-4 gap-3 ${isActive
-                                    ? "border-r-4 md:border-r-[6px] bg-orange-600/50 border-orange-500"
+                                    ? "border-r-4 lg:border-r-[6px] bg-orange-600/50 border-orange-500"
                                     : "hover:bg-accent border-white"
                                 }`
                             }
                         >
                             <item.icon size={25} strokeWidth={1.5} />
-                            <p className='md:block hidden text-center'>{item.name}</p>
+                            <p className='lg:block hidden text-center'>{item.name}</p>
                         </div>
                     </Link>
                 );

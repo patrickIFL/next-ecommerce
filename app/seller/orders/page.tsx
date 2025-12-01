@@ -6,6 +6,7 @@ import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { formatMoney } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY
@@ -27,12 +28,11 @@ const Orders: React.FC = () => {
   }, [refetchAllOrders]);
 
   return (
-    <div className="flex-1 h-screen overflow-scroll scrollbar-hide flex flex-col justify-between text-sm">
+    <div className="flex-1 h-screen flex flex-col justify-between text-sm">
       {allOrdersLoading || isRefetchingAllOrders ? (
         <Loading />
       ) : (
         <div className="md:p-10 p-4 space-y-5">
-          <h2 className="text-lg font-medium">Orders</h2>
           <div className="flex-1 h-screen overflow-scroll scrollbar-hide flex flex-col text-sm">
             {allOrdersLoading || isRefetchingAllOrders ? (
               <Loading />
@@ -40,9 +40,12 @@ const Orders: React.FC = () => {
 
               <>
 
-                <h2 className="text-lg font-medium">Orders</h2>
+                <div className="flex flex-col pt-12 mb-5">
+                <p className="text-2xl font-medium">Orders</p>
+                <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+            </div>
 
-                <div className="max-w-5xl overflow-x-auto">
+                <ScrollArea className="max-w-5xl overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-accent bg-accent text-foreground">
@@ -105,7 +108,8 @@ const Orders: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                <ScrollBar orientation="vertical" />
+                </ScrollArea>
               </>
             )}
           </div>

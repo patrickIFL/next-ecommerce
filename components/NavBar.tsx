@@ -28,61 +28,79 @@ function NavBar() {
 
   // For the Nav links
   const menus = [
-    {
-      mainTitle: "Item One",
+    { //
+      mainTitle: "Shop",
       mainLink: "#",
-      menuLinks: []
+      menuLinks: [
+        {
+          linkName: "All Products",
+          linkRef: "/all-products"
+        },
+        {
+          linkName: "Categories",
+          linkRef: "#"
+        },
+        {
+          linkName: "Best Sellers",
+          linkRef: "#"
+        },
+        {
+          linkName: "Sale",
+          linkRef: "#"
+        },
+
+      ]
     },
     {
-      mainTitle: "Item One",
+      mainTitle: "About",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Components",
+          linkName: "Our Story",
           linkRef: "#"
         },
         {
-          linkName: "Documentation",
+          linkName: "What we do",
           linkRef: "#"
         },
         {
-          linkName: "Blocks",
+          linkName: "Why choose us",
+          linkRef: "#"
+        },
+        {
+          linkName: "Our Team",
           linkRef: "#"
         },
       ]
     },
     {
-      mainTitle: "Item Three",
+      mainTitle: "Support",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Components",
+          linkName: "Contact Us",
           linkRef: "#"
         },
         {
-          linkName: "Documentation",
-          linkRef: "#"
-        },
-        {
-          linkName: "Blocks",
+          linkName: "FAQs",
           linkRef: "#"
         },
       ]
     },
     {
-      mainTitle: "Item Four",
+      mainTitle: "Guides",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Components",
+          linkName: "Buying Guides",
           linkRef: "#"
         },
         {
-          linkName: "Documentation",
+          linkName: "Product Tips",
           linkRef: "#"
         },
         {
-          linkName: "Blocks",
+          linkName: "Articles",
           linkRef: "#"
         },
       ]
