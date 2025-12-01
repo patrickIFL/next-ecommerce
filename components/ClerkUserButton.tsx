@@ -1,11 +1,11 @@
-import { useClerk, UserButton } from '@clerk/nextjs'
+import useUserHook from '@/hooks/useUserHook';
+import { UserButton } from '@clerk/nextjs'
 import { LayoutDashboard, ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 
 function ClerkUserButton() {
   const router = useRouter();
-  const { user } = useClerk();
-  const isSeller = user?.publicMetadata?.role === "seller";
+  const { isSeller } = useUserHook();
 
   return (
     <UserButton>

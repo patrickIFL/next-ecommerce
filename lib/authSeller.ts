@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 
 const authSeller = async (userId:any) => {
     try {
-
         const client = await clerkClient()
         const user = await client.users.getUser(userId)
 

@@ -1,8 +1,13 @@
 import { create } from "zustand";
 
-const useUserStore = create((set) => ({
-  isSeller,
-  setIsSeller: (isSeller) => set({ isSeller }),;
-}))
+type UserStore = {
+  isSeller: boolean;
+  setIsSeller: (isSeller: boolean) => void;
+};
 
-export default useUserStore
+const useUserStore = create<UserStore>((set) => ({
+  isSeller: false,                   // default value
+  setIsSeller: (isSeller:boolean) => set({ isSeller }),
+}));
+
+export default useUserStore;
