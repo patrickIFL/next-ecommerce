@@ -34,7 +34,7 @@ const FeaturedProduct = () => {
     <div className="mt-14">
       <div className="flex flex-col items-center">
         <p className="text-3xl font-medium">Featured Products</p>
-        <div className="w-28 h-0.5 bg-orange-500 cursor-pointer hover:bg-orange-600 my-5"></div>
+        <div className="w-28 h-0.5 bg-orange-600 cursor-pointer hover:bg-orange-700 my-5"></div>
       </div>
 
       <div className="flex overflow-x-scroll scrollbar-hide gap-8 lg:gap-14">

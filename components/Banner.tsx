@@ -18,7 +18,7 @@ const Banner = () => {
         <p className="max-w-[343px] font-normal text-foreground ">
           From immersive sound to precise controls—everything you need to win
         </p>
-        <button className="cursor-pointer group flex items-center justify-center gap-1 px-12 py-2.5 bg-orange-500 hover:bg-orange-600 rounded text-white">
+        <button className="cursor-pointer group flex items-center justify-center gap-1 px-12 py-2.5 bg-orange-600 hover:bg-orange-700 rounded text-white">
           Buy now
         <MoveRight className="group-hover:translate-x-1 transition" color={"white"} />
           

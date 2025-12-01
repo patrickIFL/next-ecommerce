@@ -5,6 +5,7 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useQuery } from "@tanstack/react-query";
+import { formatMoney } from "@/lib/utils";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY
@@ -89,7 +90,7 @@ const Orders: React.FC = () => {
 
                           {/* AMOUNT */}
                           <td className="p-3 align-top font-medium">
-                            {currency}{order.amount}
+                            {currency}{formatMoney(order.amount)}
                           </td>
 
                           {/* INFO */}

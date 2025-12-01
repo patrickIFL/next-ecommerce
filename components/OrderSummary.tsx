@@ -2,6 +2,7 @@
 import AddressComboBox from "@/components/AddressComboBox";
 import { Input } from "./ui/input";
 import useOrderHook from "@/hooks/useOrderHook";
+import { formatMoney } from "@/lib/utils";
 
 const OrderSummary = ({
   cartCount,
@@ -63,8 +64,7 @@ const OrderSummary = ({
           <div className="flex justify-between text-base font-medium">
             <p className="uppercase text-foreground">Items {cartCount}</p>
             <p className="text-foreground">
-              {currency}
-              {cartAmount}
+              {currency}{formatMoney(cartAmount)}
             </p>
           </div>
 
@@ -78,16 +78,14 @@ const OrderSummary = ({
           <div className="flex justify-between">
             <p className="text-foreground/80">Tax ({tax}%)</p>
             <p className="font-medium text-foreground">
-              {currency}
-              {Math.floor(cartAmount * (tax / 100))}
+              {currency}{formatMoney(Math.floor(cartAmount * (tax / 100)))}
             </p>
           </div>
 
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
-              {currency}
-              {cartAmount + Math.floor(cartAmount * 0.02)}
+              {currency}{formatMoney(cartAmount + Math.floor(cartAmount * 0.02))}
             </p>
           </div>
         </div>

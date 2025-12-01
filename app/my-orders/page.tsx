@@ -6,6 +6,7 @@ import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useEffect } from "react";
 import useOrderHook from "@/hooks/useOrderHook";
+import { formatMoney } from "@/lib/utils";
 
 const MyOrders: React.FC = () => {
   const {
@@ -78,7 +79,7 @@ const MyOrders: React.FC = () => {
 
                       {/* AMOUNT */}
                       <td className="p-3 align-top font-medium">
-                        {currency}{order.amount}
+                        {currency}{formatMoney(order.amount)}
                       </td>
 
                       {/* INFO */}

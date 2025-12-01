@@ -8,6 +8,7 @@ import ProductCard from "@/components/ProductCard";
 import Loading from "@/components/Loading";
 import useProductHook from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
+import { formatMoney } from "@/lib/utils";
 
 type ProductType = {
   id: string;
@@ -113,9 +114,9 @@ const Product = () => {
 
           {/* PRICE */}
           <p className="text-3xl font-medium mt-6">
-            {currency}{productData.offerPrice}
+            {currency}{formatMoney(productData.offerPrice)}
             <span className="text-base font-normal text-foreground/50 line-through ml-2">
-              {currency}{productData.price}
+              {currency}{formatMoney(productData.price)}
             </span>
           </p>
 
@@ -155,7 +156,7 @@ const Product = () => {
                 handleAddToCart(productData.id);
                 router.push("/cart");
               }}
-              className="w-full py-3.5 bg-orange-500 text-white cursor-pointer hover:bg-orange-600 transition"
+              className="w-full py-3.5 bg-orange-600 text-white cursor-pointer hover:bg-orange-700 transition"
             >
               Buy now
             </button>

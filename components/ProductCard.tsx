@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { assets } from '@/assets/assets'
 import useCartHook from '@/hooks/useCartHook';
+import { formatMoney } from '@/lib/utils';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -53,7 +54,7 @@ const ProductCard = ({ product }: { product: any }) => {
             </div>
 
             <div className="flex items-end justify-between w-full mt-1">
-                <p className="text-base font-medium">{currency}{product.offerPrice}</p>
+                <p className="text-base font-medium">{currency}{formatMoney(product.offerPrice)}</p>
                 <button
                     onClick={(e) => {
                         e.stopPropagation();  // prevent navigation
