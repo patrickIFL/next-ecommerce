@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
         : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`
       ,
       cancel_url: platform === "mobile" 
-        ? `${process.env.NEXT_PUBLIC_MOBILE}`
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}`
         : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`
       ,
       metadata: {
