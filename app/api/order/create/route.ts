@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { userId } = getAuth(req);
-  const { selectedAddressId } = await req.json();
+  const { selectedAddressId, platform } = await req.json();
 
   if (!userId) {
     return NextResponse.json(
@@ -78,8 +78,14 @@ export async function POST(req: NextRequest) {
       line_items: lineItems,
       payment_method_types: ["gcash", "card", "paymaya", "grab_pay", "billease"], 
       description: "Next-Ecommerce",
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
+      success_url: platform === "mobile" 
+        ? `${process.env.NEXT_PUBLIC_MOBILE}://(tabs)/account`
+        : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`
+      ,
+      cancel_url: platform === "mobile" 
+        ? `${process.env.NEXT_PUBLIC_MOBILE}://cart`
+        : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`
+      ,
       metadata: {
         userId,
         selectedAddressId,

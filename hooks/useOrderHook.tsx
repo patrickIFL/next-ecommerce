@@ -77,7 +77,7 @@ function useOrderHook() {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ selectedAddressId }),
+        body: JSON.stringify({ selectedAddressId, platform: "web" }),
       });
 
       if (!res.ok) {
