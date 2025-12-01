@@ -190,7 +190,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\patri\\Desktop\\next-ecommerce\\src\\generated\\prisma",
+      "value": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -212,11 +212,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\patri\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../../.env",
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
@@ -226,6 +226,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -234,8 +235,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"rhel-openssl-3.0.x\"]\n  output        = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// =======================\n// User\n// =======================\nmodel User {\n  id        String   @id @default(cuid())\n  name      String\n  email     String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  products  Product[]\n  orders    Order[]\n  addresses ShippingAddress[]\n  cartItems CartItem[]\n}\n\n// =======================\n// Product\n// =======================\nmodel Product {\n  id          String   @id @default(cuid())\n  userId      String\n  name        String\n  description String\n  category    String\n  image       String[] // matches TS: product.image\n  price       Int\n  offerPrice  Int\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  orders    OrderItem[]\n  user      User        @relation(fields: [userId], references: [id])\n  cartItems CartItem[]\n\n  @@index([userId])\n}\n\n// =======================\n// CartItem\n// =======================\nmodel CartItem {\n  id        String @id @default(cuid())\n  userId    String\n  productId String\n  quantity  Int    @default(1)\n\n  user      User     @relation(fields: [userId], references: [id])\n  product   Product  @relation(fields: [productId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, productId])\n  @@index([userId])\n  @@index([productId])\n}\n\n// =======================\n// Order\n// =======================\nmodel Order {\n  id                String  @id @default(cuid())\n  userId            String\n  shippingAddressId String?\n\n  amount         Int\n  isPaid         Boolean  @default(false)\n  shippingMethod String\n  orderDate      DateTime @default(now())\n\n  user            User             @relation(fields: [userId], references: [id])\n  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])\n  items           OrderItem[]\n\n  @@index([userId])\n}\n\n// =======================\n// OrderItem (for multiple products per order)\n// =======================\nmodel OrderItem {\n  id        String @id @default(cuid())\n  orderId   String\n  productId String\n  quantity  Int\n\n  order   Order   @relation(fields: [orderId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([orderId])\n  @@index([productId])\n}\n\n// =======================\n// ShippingAddress\n// =======================\nmodel ShippingAddress {\n  id     String @id @default(cuid())\n  userId String\n\n  fullName    String\n  phoneNumber String\n  zipcode     String\n  area        String\n  city        String\n  province    String\n  orders      Order[]\n  user        User     @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([userId])\n}\n",
-  "inlineSchemaHash": "1e04f775bec6298d3aeb5e2ea5855ac6a5f098d2e0dfe2e67c1a65735322dbe0",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"rhel-openssl-3.0.x\"]\n  output        = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// User\nmodel User {\n  id        String   @id @default(cuid())\n  name      String\n  email     String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  products  Product[]\n  orders    Order[]\n  addresses ShippingAddress[]\n  cartItems CartItem[]\n}\n\n// Product\nmodel Product {\n  id          String   @id @default(cuid())\n  userId      String\n  name        String\n  description String\n  category    String\n  image       String[] // matches TS: product.image\n  price       Int\n  offerPrice  Int\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  orders    OrderItem[]\n  user      User        @relation(fields: [userId], references: [id])\n  cartItems CartItem[]\n\n  @@index([userId])\n}\n\n// CartItem\nmodel CartItem {\n  id        String @id @default(cuid())\n  userId    String\n  productId String\n  quantity  Int    @default(1)\n\n  user      User     @relation(fields: [userId], references: [id])\n  product   Product  @relation(fields: [productId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, productId])\n  @@index([userId])\n  @@index([productId])\n}\n\n// Order\nmodel Order {\n  id                String  @id @default(cuid())\n  userId            String\n  shippingAddressId String?\n\n  amount         Int\n  isPaid         Boolean  @default(false)\n  shippingMethod String\n  // shippingStatus String?  @default(\"pending\") // new column\n  orderDate      DateTime @default(now())\n\n  user            User             @relation(fields: [userId], references: [id])\n  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])\n  items           OrderItem[]\n\n  @@index([userId])\n}\n\n// OrderItem (for multiple products per order)\nmodel OrderItem {\n  id        String @id @default(cuid())\n  orderId   String\n  productId String\n  quantity  Int\n\n  order   Order   @relation(fields: [orderId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([orderId])\n  @@index([productId])\n}\n\n// ShippingAddress\nmodel ShippingAddress {\n  id     String @id @default(cuid())\n  userId String\n\n  fullName    String\n  phoneNumber String\n  zipcode     String\n  area        String\n  city        String\n  province    String\n  orders      Order[]\n  user        User     @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([userId])\n}\n",
+  "inlineSchemaHash": "37903d3a509429aa6e97b8db7ab7bc3eb7a939bed397352f1882c42859e68a2b",
   "copyEngine": true
 }
 

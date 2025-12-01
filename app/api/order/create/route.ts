@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
       payment_method_types: ["gcash", "card", "paymaya", "grab_pay", "billease"], 
       description: "Next-Ecommerce",
       success_url: platform === "mobile" 
-        ? `${process.env.NEXT_PUBLIC_MOBILE}://(tabs)/account`
+        ? `${process.env.NEXT_PUBLIC_MOBILE}://cart`
         : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`
       ,
       cancel_url: platform === "mobile" 
