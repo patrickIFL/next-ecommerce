@@ -12,7 +12,7 @@ export interface Product {
 
 function useProductHook() {
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading:productsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await fetch("/api/product/list");
@@ -26,7 +26,7 @@ function useProductHook() {
   });
 
   return {
-    products,
+    products, productsLoading
   }
 }
 
