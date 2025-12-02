@@ -46,11 +46,9 @@ const Product = () => {
 
   // Product not found
   if (!productData)
-    return (
-      <div className="p-10 text-center text-xl">
-        Product not found.
-      </div>
-    );
+    return <div className="p-10 text-center text-xl">Product not found.</div>;
+
+  const isSale = productData.offerPrice < productData.price;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -114,10 +112,14 @@ const Product = () => {
 
           {/* PRICE */}
           <p className="text-3xl font-medium mt-6">
-            {currency}{formatMoney(productData.offerPrice)}
-            <span className="text-base font-normal text-foreground/50 line-through ml-2">
-              {currency}{formatMoney(productData.price)}
-            </span>
+            {currency}
+            {formatMoney(productData.offerPrice)}
+            {isSale && (
+              <span className="text-base font-normal text-foreground/50 line-through ml-2">
+                {currency}
+                {formatMoney(productData.price)}
+              </span>
+            )}
           </p>
 
           <hr className="bg-gray-600 my-6" />

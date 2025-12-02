@@ -4,7 +4,7 @@ import SideBar from '@/components/seller/Sidebar'
 
 function layout({children}:{children:any}) {
   return (
-    <div className='flex w-full overflow-hidden'>
+    <div className='flex w-full'>
       <SideBar />
     {children}
     </div>

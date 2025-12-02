@@ -11,7 +11,7 @@ export async function GET(request:any) {
     if (!isSeller) { 
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const products = await prisma.product.findMany({});
+    const products = await prisma.product.findMany({orderBy: {createdAt: 'desc'}});
 
     return NextResponse.json({ success: true, products });
     

@@ -26,6 +26,7 @@ export async function PATCH(request: NextRequest) {
 
     // 2. Get product ID
     const productId = request.url.split("/").pop();
+    
     if (!productId) {
       return NextResponse.json(
         { success: false, message: "Product ID is required" },

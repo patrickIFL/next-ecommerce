@@ -12,6 +12,9 @@ import {
   SquarePen,
   Trash2,
 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/nextjs";
+import { useToast } from "./ui/use-toast";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
@@ -19,6 +22,35 @@ function ProductDataRow({ product }: { product: any }) {
   const isSale = product.offerPrice < product.price;
   const [isArchived, setIsArchived] = useState(false);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
+  const { getToken } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: deleteProduct } = useMutation({
+    mutationFn: async (productId: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/delete/${productId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed Delete product");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+    onError: (error: any) =>
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      }),
+  });
 
   return (
     <tr className="border-t border-gray-500/20">
@@ -88,7 +120,9 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => router.push(`/seller/edit-product/${product.id}`)}
+                onClick={() =>
+                  router.push(`/seller/edit-product/${product.id}`)
+                }
                 className="flex items-center gap-1 p-1.5 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-md"
               >
                 <SquarePen size={16} />
@@ -102,7 +136,17 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  const result = confirm(
+                    "Are you sure you want to delete this product?"
+                  );
+                  if (result) {
+                    deleteProduct(product.id)
+                  } else {
+                    // User clicked "Cancel"
+                    console.log("Cancelled");
+                  }
+                }}
                 className="flex items-center gap-1 p-1.5 bg-red-600 cursor-pointer hover:bg-red-700 text-white rounded-md"
               >
                 <Trash2 size={16} />
