@@ -61,7 +61,7 @@ const Product = () => {
             <Image
               src={mainImage || productData.image[0]}
               alt={productData.name}
-              className="w-full h-auto object-cover"
+              className="w-full h-full object-cover"
               width={1280}
               height={720}
             />
@@ -78,7 +78,7 @@ const Product = () => {
                 <Image
                   src={img}
                   alt="thumbnail"
-                  className="w-full h-auto object-cover"
+                  className="w-full h-full object-cover"
                   width={1280}
                   height={720}
                 />

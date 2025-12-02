@@ -121,7 +121,7 @@ function NavBar() {
     <>
       <nav
         className={`fixed top-0 left-0 w-full h-16 flex items-center justify-between 
-  px-6 xl:px-32 border-b z-50 bg-background
+  px-6 xl:px-16 border-b z-50 bg-background
   ${isDark ? "border-gray-700" : "border-gray-300"}`}
       >
         {/* Logo will Change Depending on Theme. */}

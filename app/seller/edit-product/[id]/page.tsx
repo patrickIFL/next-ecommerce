@@ -1,71 +1,112 @@
-'use client'
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAuth } from "@clerk/nextjs"
+import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { useParams, useRouter } from "next/navigation";
+import useProductHook from "@/hooks/useProductHook";
+import Loading from "@/components/Loading";
 
-const AddProduct = () => {
+type ProductType = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  offerPrice: number;
+  category: string;
+  image: string[];
+};
+
+const EditProduct = () => {
   const { getToken } = useAuth();
   const [files, setFiles] = useState([]);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Earphone');
-  const [price, setPrice] = useState('');
-  const [offerPrice, setOfferPrice] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Earphone");
+  const [price, setPrice] = useState("");
+  const [offerPrice, setOfferPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const { id } = useParams() as { id: string };
+  const { products } = useProductHook();
+  const [productData, setProductData] = useState<ProductType | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!products || products.length === 0) return; // still loading
+    const product = products.find((p) => p.id === id) || null;
+    setProductData(product);
+  }, [id, products]);
+
+  useEffect(() => {
+    if (!productData) return;
+
+    setName(productData.name);
+    setDescription(productData.description);
+    setCategory(productData.category);
+    setPrice(String(productData.price));
+    setOfferPrice(String(productData.offerPrice));
+
+    // images
+    setFiles([]);
+  }, [productData]);
+
+  // Global loading state (products not ready yet)
+  if (!products || products.length === 0) return <Loading />;
+
+  // Product not found
+  if (!productData)
+    return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('category', category);
-    formData.append('price', price);
-    formData.append('offerPrice', offerPrice);
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("price", price);
+    formData.append("offerPrice", offerPrice);
 
-    for (let i = 0; i < files.length; i++) {
-      formData.append('images', files[i]);
+    // MUST match backend
+    for (let i = 0; i < 4; i++) {
+      const file = files[i];
+      if (file instanceof File) {
+        formData.append(`images[${i}]`, file);
+      } else {
+        formData.append(`images[${i}]`, "");
+      }
     }
 
     try {
       const token = await getToken();
       setLoading(true);
-      const { data } = await axios.post('/api/product/add', formData, {
+
+      const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
-      if (data.success) {
-        setLoading(false);
-        toast({
-          title: '✅ Success',
-          description: data.message,
-          variant: 'default'
-        });
-        setFiles([]);
-        setName('');
-        setDescription('');
-        setCategory('Earphone');
-        setPrice('');
-        setOfferPrice('');
-      }
-      else {
-        toast({
-          title: 'Error',
-          description: data.message,
-          variant: 'destructive'
-        });
-      }
 
+      setLoading(false);
+
+      if (data.success) {
+        toast({ title: "Success", description: data.message });
+        router.push("/seller/product-list");
+      } else {
+        toast({
+          title: "Error",
+          description: data.message,
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message,
-        variant: 'destructive'
+        variant: "destructive",
       });
     }
   };
@@ -76,25 +117,37 @@ const AddProduct = () => {
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
+            {[...Array(4)].map((_, index) => {
+              const existingImage = productData?.image?.[index]; // may be string or null
+              const previewImage = files[index]
+                ? URL.createObjectURL(files[index])
+                : existingImage
+                ? existingImage
+                : assets.upload_area;
 
-            {[...Array(4)].map((_, index) => (
-              <label key={index} htmlFor={`image${index}`}>
-                <input onChange={(e: any) => {
-                  const updatedFiles: any = [...files];
-                  updatedFiles[index] = e.target.files[0];
-                  setFiles(updatedFiles);
-                }} type="file" id={`image${index}`} hidden />
-                <Image
-                  key={index}
-                  className="max-w-24 h-24 object-cover rounded cursor-pointer"
-                  src={files[index] ? URL.createObjectURL(files[index]) : assets.upload_area}
-                  alt=""
-                  width={100}
-                  height={100}
-                />
-              </label>
-            ))}
+              return (
+                <label key={index} htmlFor={`image${index}`}>
+                  <input
+                    type="file"
+                    id={`image${index}`}
+                    hidden
+                    onChange={(e: any) => {
+                      const updatedFiles: any = [...files];
+                      updatedFiles[index] = e.target.files[0];
+                      setFiles(updatedFiles);
+                    }}
+                  />
 
+                  <Image
+                    src={previewImage}
+                    alt={`image-${index}`}
+                    width={100}
+                    height={100}
+                    className="max-w-24 h-24 object-cover rounded cursor-pointer"
+                  />
+                </label>
+              );
+            })}
           </div>
         </div>
         <div className="flex flex-col gap-1 max-w-md">
@@ -179,10 +232,12 @@ const AddProduct = () => {
         </div>
         <button
           type="submit"
+          onClick={() => {}}
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-          disabled={loading} >
-          {loading ? 'Loading...' : 'ADD'}
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "UPDATE"}
         </button>
       </form>
       {/* <Footer /> */}
@@ -190,4 +245,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

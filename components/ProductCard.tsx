@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: any }) => {
-  const { handleAddToCart } = useCartHook();
+  const { handleBuyNow } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.offerPrice < product.price;
@@ -18,7 +18,7 @@ const ProductCard = ({ product }: { product: any }) => {
         router.push("/product/" + product.id);
         scrollTo(0, 0);
       }}
-      className="flex flex-col items-start gap-0.5 max-w-[200px] w-full"
+      className="flex flex-col items-start shadow-xl rounded-b- gap-0.5 max-w-[200px] w-full"
     >
       <div className="relative w-full">
         <div className="overflow-hidden group relative bg-gray-500/10 rounded-lg rounded-b-none w-full h-52 flex items-center justify-center">
@@ -45,7 +45,10 @@ const ProductCard = ({ product }: { product: any }) => {
         )}
       </div>
 
-      <p className="md:text-base font-medium pt-2 w-full truncate">
+{/* info */}
+    <div className="w-full p-2">
+        
+      <p className="md:text-base font-medium w-full truncate">
         {product.name}
       </p>
       <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
@@ -66,16 +69,16 @@ const ProductCard = ({ product }: { product: any }) => {
           ))}
         </div>
       </div>
-
+      
       <div className="flex items-end justify-between w-full mt-1">
         <p className="text-foreground font-medium">
-        <span className="text-lg">
+        <span className="text-md">
             {currency}
           {formatMoney(product.offerPrice)}{" "}
         </span>
 
         {isSale && 
-        <span className="text-sm text-foreground/40 font-normal line-through">
+        <span className="text-xs text-foreground/40 font-normal line-through">
           {currency}
           {formatMoney(product.price)}
         </span>
@@ -83,16 +86,19 @@ const ProductCard = ({ product }: { product: any }) => {
         
           
         </p>
+        
         <button
           onClick={(e) => {
             e.stopPropagation(); // prevent navigation
-            handleAddToCart(product.id);
+            handleBuyNow(product.id);
           }}
-          className="max-sm:hidden px-4 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
+          className="max-sm:hidden px-3 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
         >
           Buy now
         </button>
       </div>
+    </div>
+
     </div>
   );
 };
