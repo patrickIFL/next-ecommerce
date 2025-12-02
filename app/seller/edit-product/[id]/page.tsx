@@ -72,13 +72,22 @@ const EditProduct = () => {
 
     // MUST match backend
     for (let i = 0; i < 4; i++) {
-      const file = files[i];
-      if (file instanceof File) {
-        formData.append(`images[${i}]`, file);
-      } else {
-        formData.append(`images[${i}]`, "");
-      }
-    }
+  const file = files[i];
+
+  // Safe File detection for Next.js
+  const isRealFile =
+    file &&
+    typeof file === "object" &&
+    "name" in file &&
+    "size" in file;
+
+  if (isRealFile) {
+    formData.append(`images[${i}]`, file as any);
+  } else {
+    formData.append(`images[${i}]`, "");
+  }
+}
+
 
     try {
       const token = await getToken();
