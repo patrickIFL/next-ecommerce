@@ -4,7 +4,13 @@ import Image from "next/image";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
-import { Menu, MessageCircleMore, Search, User, X } from "lucide-react";
+import {
+  Menu,
+  MessageCircleMore,
+  SearchIcon,
+  User,
+  X,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -24,7 +30,6 @@ import {
 import AccordionMenu from "./AccordionMenu";
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
-import { Input } from "./ui/input";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -34,28 +39,27 @@ function NavBar() {
 
   // For the Nav links
   const menus = [
-    { //
+    {
       mainTitle: "Shop",
       mainLink: "#",
       menuLinks: [
         {
           linkName: "All Products",
-          linkRef: "/all-products"
+          linkRef: "/all-products",
         },
         {
           linkName: "Categories",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Best Sellers",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Sale",
-          linkRef: "#"
+          linkRef: "#",
         },
-
-      ]
+      ],
     },
     {
       mainTitle: "About",
@@ -63,21 +67,21 @@ function NavBar() {
       menuLinks: [
         {
           linkName: "Our Story",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "What we do",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Why choose us",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Our Team",
-          linkRef: "#"
+          linkRef: "#",
         },
-      ]
+      ],
     },
     {
       mainTitle: "Support",
@@ -85,13 +89,13 @@ function NavBar() {
       menuLinks: [
         {
           linkName: "Contact Us",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "FAQs",
-          linkRef: "#"
+          linkRef: "#",
         },
-      ]
+      ],
     },
     {
       mainTitle: "Guides",
@@ -99,52 +103,109 @@ function NavBar() {
       menuLinks: [
         {
           linkName: "Buying Guides",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Product Tips",
-          linkRef: "#"
+          linkRef: "#",
         },
         {
           linkName: "Articles",
-          linkRef: "#"
+          linkRef: "#",
         },
-      ]
+      ],
     },
-  ]
+  ];
 
   return (
     <>
       <nav
         className={`fixed top-0 left-0 w-full h-16 flex items-center justify-between 
-  px-6 md:px-16 lg:px-32 border-b z-50 bg-background
+  px-6 xl:px-32 border-b z-50 bg-background
   ${isDark ? "border-gray-700" : "border-gray-300"}`}
       >
         {/* Logo will Change Depending on Theme. */}
-        <Link href={'/'}>
+        <Link href={"/"}>
           {isDark ? (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => { }}
+              onClick={() => {}}
               src={assets.logo_white}
               alt="logo"
             />
           ) : (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => { }}
+              onClick={() => {}}
               src={assets.logo}
               alt="logo"
             />
           )}
         </Link>
-        <div className="relative hidden md:block">
+        <div className="relative hidden lg:block">
           <NavLinks menus={menus} />
         </div>
 
+        
+
+        <NavigationMenu
+          viewport={false}
+          className="text-foreground items-center h-full"
+        >
+          <NavigationMenuList>
+            <NavigationMenuItem asChild>
+              {/* Modify at the Bottom */}
+              <SearchBar />
+            </NavigationMenuItem>
+
+            <NavigationMenuItem className="hidden lg:flex hover:bg-accent cursor-pointer items-center rounded-full">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
+                    <AnimatedThemeToggler className="cursor-pointer" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Toggle Theme</p>
+                </TooltipContent>
+              </Tooltip>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full">
+                    <MessageCircleMore
+                      color={"var(--color-foreground)"}
+                      size={18}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Chat</p>
+                </TooltipContent>
+              </Tooltip>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem className="hidden lg:flex items-center p-2 rounded-full">
+              {user ? (
+                <ClerkUserButton />
+              ) : (
+                <button
+                  onClick={() => openSignIn()}
+                  className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
+                >
+                  <User color={"var(--color-foreground)"} size={18} />
+                  <span>Account</span>
+                </button>
+              )}
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
         {/* Mobile Hamburger/Accordion Trigger */}
         <button
-          className="flex md:hidden text-foreground relative w-8 h-8 items-center justify-center cursor-pointer"
+          className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           <AnimatePresence>
@@ -173,57 +234,6 @@ function NavBar() {
             )}
           </AnimatePresence>
         </button>
-
-
-
-        <NavigationMenu
-          viewport={false}
-          className="text-foreground hidden md:flex items-center h-full"
-        >
-          <NavigationMenuList>
-            <NavigationMenuItem asChild>
-              {/* Modify at the Bottom */}
-              <SearchBar />
-            </NavigationMenuItem>
-
-            <NavigationMenuItem className="hover:bg-accent cursor-pointer flex items-center rounded-full">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
-                    <AnimatedThemeToggler className="cursor-pointer" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent><p>Toggle Theme</p></TooltipContent>
-              </Tooltip>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <Tooltip>
-                <TooltipTrigger>
-                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
-                    <MessageCircleMore color={"var(--color-foreground)"} size={18} />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent><p>Chat</p></TooltipContent>
-              </Tooltip>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem className="flex items-center p-2 rounded-full">
-              {user ? (
-                <ClerkUserButton />
-              ) : (
-                <button
-                  onClick={() => openSignIn()}
-                  className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
-                >
-                  <User color={"var(--color-foreground)"} size={18} />
-                  <span>Account</span>
-                </button>
-              )}
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-
       </nav>
 
       {/* Mobile Menu */}
@@ -232,9 +242,8 @@ function NavBar() {
         isOpen={isOpen}
         menus={menus}
         openSignIn={openSignIn}
-      // accountMenu={accountMenu}
+        // accountMenu={accountMenu}
       />
-
     </>
   );
 }
@@ -243,26 +252,20 @@ export default NavBar;
 
 const SearchBar = () => {
   return (
-    <form
-      onSubmit={(e) => {
+    <form onSubmit={(e) => {
         e.preventDefault()
         console.log("Submitting search:", e.currentTarget.search.value)
-      }}
-      className="flex items-center gap-2"
-    >
-      <Input
-        name="search"
-        type="text"
-        placeholder="Search a Product"
-        className="h-8 px-3"
-      />
-
-      <button
-        type="submit"
-        className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full"
-      >
-        <Search color={"var(--color-foreground)"} size={18} />
-      </button>
+      }}>
+      <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
+        <button type="submit">
+          <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />
+        </button>
+        <input
+          name="search"
+          placeholder="Search a product"
+          className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+        />
+      </div>
     </form>
-  )
-}
+  );
+};

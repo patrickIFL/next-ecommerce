@@ -8,6 +8,7 @@ const products = require("./Product.json");
 const prisma = globalThis.prismaGlobal ?? new PrismaClient();
 globalThis.prismaGlobal = prisma;
 
+// for seeding, remove id, replace userId with the sellerId 
 async function main() {
   for (const prod of products) {
     console.log(`Product Backup Started`);

@@ -39,7 +39,7 @@ function AccordionMenu({
           animate={{ y: 0 }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.2, ease: "easeInOut" }}
-          className={`fixed top-13 right-0 w-64 md:hidden px-6 py-6 text-foreground 
+          className={`fixed top-13 right-0 w-64 lg:hidden px-6 py-6 text-foreground 
             font-medium text-center rounded-bl-md z-40 bg-background
             flex flex-col items-center justify-start 
             ${isDark ? "border border-gray-700" : "border border-gray-300"}`}
