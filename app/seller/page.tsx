@@ -6,6 +6,10 @@ import Image from "next/image";
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import CategoryComboBox from "@/components/CategoryComboBox";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -101,7 +105,7 @@ const AddProduct = () => {
           <label className="text-base font-medium" htmlFor="product-name">
             Product Name
           </label>
-          <input
+          <Input
             id="product-name"
             type="text"
             placeholder="Type here"
@@ -118,7 +122,7 @@ const AddProduct = () => {
           >
             Product Description
           </label>
-          <textarea
+          <Textarea
             id="product-description"
             rows={4}
             className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
@@ -126,33 +130,37 @@ const AddProduct = () => {
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             required
-          ></textarea>
+          ></Textarea>
         </div>
         <div className="flex items-center gap-5 flex-wrap">
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="category">
               Category
             </label>
-            <select
+            <CategoryComboBox
+              value={category}
+              onChange={(val) => setCategory(val)}
+            />
+
+            {/* <select
               id="category"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setCategory(e.target.value)}
               defaultValue={category}
             >
-              <option value="Earphone">Earphone</option>
-              <option value="Headphone">Headphone</option>
-              <option value="Watch">Watch</option>
-              <option value="Smartphone">Smartphone</option>
-              <option value="Laptop">Laptop</option>
-              <option value="Camera">Camera</option>
-              <option value="Accessories">Accessories</option>
-            </select>
+              {categories.map((cat: any) => (
+                <option key={cat.id} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select> */}
+
           </div>
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
             </label>
-            <input
+            <Input
               id="product-price"
               type="number"
               placeholder="0"
@@ -166,7 +174,7 @@ const AddProduct = () => {
             <label className="text-base font-medium" htmlFor="offer-price">
               Offer Price
             </label>
-            <input
+            <Input
               id="offer-price"
               type="number"
               placeholder="0"

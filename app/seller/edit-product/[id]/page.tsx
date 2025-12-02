@@ -35,7 +35,7 @@ const EditProduct = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!products || products.length === 0) return; // still loading
+    // if (!products || products.length === 0) return; // still loading
     const product = products.find((p) => p.id === id) || null;
     setProductData(product);
   }, [id, products]);
@@ -54,7 +54,7 @@ const EditProduct = () => {
   }, [productData]);
 
   // Global loading state (products not ready yet)
-  if (!products || products.length === 0) return <Loading />;
+  // if (!products || products.length === 0) return <Loading />;
 
   // Product not found
   if (!productData)
@@ -72,21 +72,21 @@ const EditProduct = () => {
 
     // MUST match backend
     for (let i = 0; i < 4; i++) {
-  const file = files[i];
+      const file = files[i];
 
-  // Safe File detection for Next.js
-  const isRealFile =
-    file &&
-    typeof file === "object" &&
-    "name" in file &&
-    "size" in file;
+      // Safe File detection for Next.js
+      const isRealFile =
+        file &&
+        typeof file === "object" &&
+        "name" in file &&
+        "size" in file;
 
-  if (isRealFile) {
-    formData.append(`images[${i}]`, file as any);
-  } else {
-    formData.append(`images[${i}]`, "");
-  }
-}
+      if (isRealFile) {
+        formData.append(`images[${i}]`, file as any);
+      } else {
+        formData.append(`images[${i}]`, "");
+      }
+    }
 
 
     try {
@@ -131,8 +131,8 @@ const EditProduct = () => {
               const previewImage = files[index]
                 ? URL.createObjectURL(files[index])
                 : existingImage
-                ? existingImage
-                : assets.upload_area;
+                  ? existingImage
+                  : assets.upload_area;
 
               return (
                 <label key={index} htmlFor={`image${index}`}>
@@ -241,7 +241,7 @@ const EditProduct = () => {
         </div>
         <button
           type="submit"
-          onClick={() => {}}
+          onClick={() => { }}
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading}

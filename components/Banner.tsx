@@ -1,4 +1,3 @@
-import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { MoveRight } from "lucide-react";
@@ -20,11 +19,11 @@ const Banner = () => {
         </p>
         <button className="cursor-pointer group flex items-center justify-center gap-1 px-12 py-2.5 bg-orange-600 hover:bg-orange-700 rounded text-white">
           Buy now
-        <MoveRight className="group-hover:translate-x-1 transition" color={"white"} />
-          
+          <MoveRight className="group-hover:translate-x-1 transition" color={"white"} />
+
         </button>
       </div>
-        <Image
+      <Image
         className="hidden md:block max-w-80"
         src={assets.md_controller_image}
         alt="md_controller_image"

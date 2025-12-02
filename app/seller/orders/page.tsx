@@ -1,6 +1,5 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import React, { useEffect } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import Loading from "@/components/Loading";
@@ -10,7 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY
-  const { data: allOrders, isLoading: allOrdersLoading, refetch: refetchAllOrders, isRefetching: isRefetchingAllOrders } = useQuery({
+  const { data: allOrders, isLoading: allOrdersLoading } = useQuery({
     queryKey: ["allOrders"],
     queryFn: async () => {
       const res = await fetch("/api/order/seller-orders");
@@ -23,27 +22,23 @@ const Orders: React.FC = () => {
     }
   })
 
-  useEffect(() => {
-    refetchAllOrders();
-  }, [refetchAllOrders]);
-
   return (
     <div className="flex-1 h-screen flex flex-col justify-between text-sm">
-      {allOrdersLoading || isRefetchingAllOrders ? (
+      {allOrdersLoading ? (
         <Loading />
       ) : (
         <div className="md:p-10 p-4 space-y-5">
           <div className="flex-1 h-screen overflow-scroll scrollbar-hide flex flex-col text-sm">
-            {allOrdersLoading || isRefetchingAllOrders ? (
+            {allOrdersLoading ? (
               <Loading />
             ) : (
 
               <>
 
                 <div className="flex flex-col pt-12 mb-5">
-                <p className="text-2xl font-medium">Orders</p>
-                <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
-            </div>
+                  <p className="text-2xl font-medium">Orders</p>
+                  <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+                </div>
 
                 <ScrollArea className="max-w-5xl overflow-x-auto">
                   <table className="w-full text-left text-sm">
@@ -108,7 +103,7 @@ const Orders: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                <ScrollBar orientation="vertical" />
+                  <ScrollBar orientation="vertical" />
                 </ScrollArea>
               </>
             )}
