@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 type ProductType = {
   id: string;
@@ -31,6 +33,14 @@ const EditProduct = () => {
   const [category, setCategory] = useState("Earphone");
   const [price, setPrice] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
+
+  // NEW =====================================
+  const [variations, setVariations] = useState('');
+  const [searchKeys, setSearchKeys] = useState('');
+  const [stock, setStock] = useState('');
+  const [sku, setSku] = useState('');
+  // =========================================
+
   const [loading, setLoading] = useState(false);
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
@@ -130,8 +140,8 @@ const EditProduct = () => {
               const previewImage = files[index]
                 ? URL.createObjectURL(files[index])
                 : existingImage
-                ? existingImage
-                : assets.upload_area;
+                  ? existingImage
+                  : assets.upload_area;
 
               return (
                 <label key={index} htmlFor={`image${index}`}>
@@ -172,6 +182,7 @@ const EditProduct = () => {
             required
           />
         </div>
+
         <div className="flex flex-col gap-1 max-w-md">
           <label
             className="text-base font-medium"
@@ -189,8 +200,47 @@ const EditProduct = () => {
             required
           ></Textarea>
         </div>
+
+        {/* // NEW ===================================== */}
+        <div className="flex flex-col gap-1 max-w-md">
+          <label
+            className="text-base font-medium"
+            htmlFor="product-description"
+          >
+            Product Variations
+          </label>
+          <Textarea
+            id="product-description"
+            rows={4}
+            className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+            placeholder="Separate each variation with a comma"
+            onChange={(e) => setVariations(e.target.value)}
+            value={variations}
+            required
+          ></Textarea>
+        </div>
+
+        <div className="flex flex-col gap-1 max-w-md">
+          <label
+            className="text-base font-medium"
+            htmlFor="product-description"
+          >
+            Search keys
+          </label>
+          <Textarea
+            id="product-description"
+            rows={4}
+            className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+            placeholder="Separate each with a comma"
+            onChange={(e) => setSearchKeys(e.target.value)}
+            value={searchKeys}
+            required
+          ></Textarea>
+        </div>
+        {/* ===================================== */}
+
         <div className="flex items-center gap-5 flex-wrap">
-          <div className="flex flex-col gap-1 w-32">
+          <div className="flex flex-col flex-1  gap-1 w-32">
             <label className="text-base font-medium" htmlFor="category">
               Category
             </label>
@@ -199,7 +249,60 @@ const EditProduct = () => {
               onChange={(val) => setCategory(val)}
             />
           </div>
-          <div className="flex flex-col gap-1 w-32">
+
+          {/* // NEW ===================================== */}
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
+            <label className="text-base font-medium" htmlFor="product-price">
+              <div className="flex gap-1.5 items-center">
+                <span>
+                  SKU
+                </span>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info size={12} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Stock Keeping Unit</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </label>
+            <Input
+              id="product-price"
+              type="number"
+              placeholder="0"
+              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+              onChange={(e) => setSku(e.target.value)}
+              value={sku}
+              required
+            />
+          </div>
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
+            <label className="text-base font-medium"
+              htmlFor="offer-price">
+              Stock
+            </label>
+            <Input
+              id="offer-price"
+              type="number"
+              placeholder="0"
+              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+              onChange={(e) => setStock(e.target.value)}
+              value={stock}
+              required
+            />
+          </div>
+
+          {/*  ===================================== */}
+
+        </div>
+
+
+        <div className="flex items-center gap-5 flex-wrap">
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
             </label>
@@ -213,7 +316,8 @@ const EditProduct = () => {
               required
             />
           </div>
-          <div className="flex flex-col gap-1 w-32">
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="offer-price">
               Offer Price
             </label>
@@ -228,9 +332,10 @@ const EditProduct = () => {
             />
           </div>
         </div>
+
         <Button
           type="submit"
-          onClick={() => {}}
+          onClick={() => { }}
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading}

@@ -6,20 +6,30 @@ import Image from "next/image";
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
   const [files, setFiles] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  // NEW =====================================
+  const [variations, setVariations] = useState('');
+  const [searchKeys, setSearchKeys] = useState('');
+  const [stock, setStock] = useState('');
+  const [sku, setSku] = useState('');
+  // =========================================
+
   const [category, setCategory] = useState('Earphone');
   const [price, setPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
@@ -133,8 +143,46 @@ const AddProduct = () => {
             required
           ></Textarea>
         </div>
+        {/* // NEW ===================================== */}
+        <div className="flex flex-col gap-1 max-w-md">
+          <label
+            className="text-base font-medium"
+            htmlFor="product-description"
+          >
+            Product Variations
+          </label>
+          <Textarea
+            id="product-description"
+            rows={4}
+            className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+            placeholder="Separate each variation with a comma"
+            onChange={(e) => setVariations(e.target.value)}
+            value={variations}
+            required
+          ></Textarea>
+        </div>
+
+        <div className="flex flex-col gap-1 max-w-md">
+          <label
+            className="text-base font-medium"
+            htmlFor="product-description"
+          >
+            Search keys
+          </label>
+          <Textarea
+            id="product-description"
+            rows={4}
+            className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+            placeholder="Separate each with a comma"
+            onChange={(e) => setSearchKeys(e.target.value)}
+            value={searchKeys}
+            required
+          ></Textarea>
+        </div>
+        {/* ===================================== */}
+
         <div className="flex items-center gap-5 flex-wrap">
-          <div className="flex flex-col gap-1 w-32">
+          <div className="flex flex-col flex-1  gap-1 w-32">
             <label className="text-base font-medium" htmlFor="category">
               Category
             </label>
@@ -143,7 +191,60 @@ const AddProduct = () => {
               onChange={(val) => setCategory(val)}
             />
           </div>
-          <div className="flex flex-col gap-1 w-32">
+
+          {/* // NEW ===================================== */}
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
+            <label className="text-base font-medium" htmlFor="product-price">
+              <div className="flex gap-1.5 items-center">
+                <span>
+                  SKU
+                </span>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info size={12} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Stock Keeping Unit</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </label>
+            <Input
+              id="product-price"
+              type="number"
+              placeholder="0"
+              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+              onChange={(e) => setSku(e.target.value)}
+              value={sku}
+              required
+            />
+          </div>
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
+            <label className="text-base font-medium"
+              htmlFor="offer-price">
+              Stock
+            </label>
+            <Input
+              id="offer-price"
+              type="number"
+              placeholder="0"
+              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+              onChange={(e) => setStock(e.target.value)}
+              value={stock}
+              required
+            />
+          </div>
+
+          {/*  ===================================== */}
+
+        </div>
+
+
+        <div className="flex items-center gap-5 flex-wrap">
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
             </label>
@@ -157,7 +258,8 @@ const AddProduct = () => {
               required
             />
           </div>
-          <div className="flex flex-col gap-1 w-32">
+
+          <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="offer-price">
               Offer Price
             </label>
@@ -172,6 +274,7 @@ const AddProduct = () => {
             />
           </div>
         </div>
+
         <Button
           type="submit"
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded

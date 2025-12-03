@@ -76,14 +76,14 @@ export default function CategoryComboBox({
       return data;
     },
     onSuccess: () => {
-      setNewCategory({name: "", slug: ""})
+      setNewCategory({ name: "", slug: "" })
     },
     onError: () => {
       toast({
-          title: 'Category Already Exist',
-          description: "Try another one.",
-          variant: 'default'
-        });
+        title: 'Category Already Exist',
+        description: "Try another one.",
+        variant: 'default'
+      });
     }
   });
 
@@ -95,9 +95,8 @@ export default function CategoryComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-[135px] rounded font-normal justify-between ${
-            className ?? ""
-          }`}
+          className={`rounded font-normal justify-between ${className ?? ""
+            }`}
         >
           {selected ? selected.name : "Select category"}
           <ChevronDown className="opacity-50" />
@@ -157,7 +156,7 @@ export default function CategoryComboBox({
             />
 
             <button
-            type="submit"
+              type="submit"
               onClick={async () => {
                 await addCategory(newCategory);
                 queryClient.invalidateQueries({ queryKey: ["categories"] });
