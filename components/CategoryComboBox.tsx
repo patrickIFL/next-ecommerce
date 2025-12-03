@@ -12,7 +12,6 @@ import {
 import { Command, CommandList, CommandItem, CommandEmpty, CommandGroup } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 interface CategoryComboBoxProps {
@@ -29,16 +28,20 @@ export default function CategoryComboBox({
   const [open, setOpen] = useState(false);
 
   // Fetch categories from API
-  const { data: categories = [], isLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await axios.get("/api/product/categories");
-      return data;
-    },
-  });
 
-  const selected = categories.find((c: any) => c.slug === value);
+const { data: categories, isLoading: categoriesLoading } = useQuery({
+  queryKey: ["categories"],
+  queryFn: async () => {
+    const res = await fetch("/api/product/categories");
+    const json = await res.json();
 
+    if (!res.ok || !json.success) {
+      throw new Error(json.message || "Failed to load categories");
+    }
+    return json.data;
+  }
+})
+const selected = categories?.find((c:any) => c.slug === value);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -59,7 +62,7 @@ export default function CategoryComboBox({
             <CommandEmpty>No categories found</CommandEmpty>
 
             <CommandGroup>
-              {!isLoading &&
+              {!categoriesLoading &&
                 categories.map((category: any) => (
                   <CommandItem
                     key={category.id}
