@@ -1,14 +1,15 @@
 "use client";
+import ProductCard from "@/components/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import useProductHook from "@/hooks/useProductHook";
-import ProductCard from "./ProductCard";
-import { useRouter } from "next/navigation";
-import { Skeleton } from "./ui/skeleton";
+import useSearchStore from "@/stores/useSearchStore";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const HomeProducts = () => {
+const DisplayProducts = () => {
   // Variables for skeleton count
   const [count, setCount] = useState(4); // default XS
-
+  const params = useParams();
   const updateCount = () => {
     const width = window.innerWidth;
 
@@ -24,14 +25,27 @@ const HomeProducts = () => {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const { products, productsLoading: loading } = useProductHook();
   // =============================================
 
-  const router = useRouter();
+  const { products, productsLoading: loading } = useProductHook();
+  const { searchQuery } = useSearchStore();
 
   return (
-    <div className="flex flex-col items-center pt-14">
-      <p className="text-2xl font-medium text-left w-full">Popular products</p>
+    <div className="mt-16 flex flex-col items-start px-6 md:px-16 lg:px-32">
+      <div className="flex flex-col pt-12">
+        <p className="text-2xl font-medium">
+          {params.cat === "all" ? (
+            "All Products"
+          ) : (
+            <>
+              Search results for{" "}
+              <span className="italic">{`"${params.cat}"`}</span>
+            </>
+          )}
+        </p>
+
+        <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+      </div>
 
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
@@ -44,23 +58,14 @@ const HomeProducts = () => {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-col items-center gap-6 mt-6 pb-14 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-col items-center gap-6 mt-6 pb-14 w-full">
           {products.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
         </div>
       )}
-
-      <button
-        onClick={() => {
-          router.push("/all/products");
-        }}
-        className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition cursor-pointer"
-      >
-        See more
-      </button>
     </div>
   );
 };
 
-export default HomeProducts;
+export default DisplayProducts;

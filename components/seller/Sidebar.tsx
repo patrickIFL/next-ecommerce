@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CirclePlus, PackageCheck, ClipboardList } from 'lucide-react';
+import { CirclePlus, PackageCheck, ClipboardList, SquareStar } from 'lucide-react';
 
 const SideBar = () => {
     const pathname = usePathname()
@@ -23,6 +23,12 @@ const SideBar = () => {
             name: 'Orders',
             path: '/seller/orders',
             icon: PackageCheck
+        },
+
+        {
+            name: 'Banners',
+            path: '/seller/banner',
+            icon: SquareStar
         },
     ];
 

@@ -30,6 +30,8 @@ import {
 import AccordionMenu from "./AccordionMenu";
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
+import useSearchStore from "@/stores/useSearchStore";
+import { useRouter } from "next/navigation";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -45,7 +47,7 @@ function NavBar() {
       menuLinks: [
         {
           linkName: "All Products",
-          linkRef: "/all-products",
+          linkRef: "/all/products",
         },
         {
           linkName: "Categories",
@@ -251,10 +253,12 @@ function NavBar() {
 export default NavBar;
 
 const SearchBar = () => {
+  const {searchQuery, setSearchQuery} = useSearchStore();
+  const router = useRouter();
   return (
     <form onSubmit={(e) => {
         e.preventDefault()
-        console.log("Submitting search:", e.currentTarget.search.value)
+        router.push(`/${searchQuery}/products`)
       }}>
       <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
         <button type="submit">
@@ -262,8 +266,12 @@ const SearchBar = () => {
         </button>
         <input
           name="search"
+          value={searchQuery}
           placeholder="Search a product"
           className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+          }}
         />
       </div>
     </form>
