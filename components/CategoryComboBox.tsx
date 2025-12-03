@@ -32,7 +32,7 @@ export default function CategoryComboBox({
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const { data } = await axios.get("/api/categories");
+      const { data } = await axios.get("/api/product/categories");
       return data;
     },
   });
