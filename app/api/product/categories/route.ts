@@ -11,8 +11,6 @@ export async function GET() {
   });
 }
 
-
-
 export async function POST() {
   const categories = [
     { id: 1, name: "Shoes", slug: "shoes" },
