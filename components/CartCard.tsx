@@ -1,4 +1,5 @@
 import useCartHook from '@/hooks/useCartHook';
+import { formatMoney } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
@@ -23,6 +24,7 @@ interface CartCardProps {
 function CartCard({ item }: CartCardProps) {
   const { updateCartQuantity } = useCartHook();
   const [quantity, setQuantity] = useState(item.quantity);
+  const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   // Sync local state if item.quantity changes externally
   useEffect(() => {
@@ -41,7 +43,7 @@ function CartCard({ item }: CartCardProps) {
   const decrement = () => updateQuantity(Math.max(0, quantity - 1));
   const remove = () => updateQuantity(0);
 
-  const totalPrice = (item.product.offerPrice * quantity).toFixed(2);
+  const totalPrice = formatMoney(item.product.offerPrice * quantity);
 
   return (
     <tr>
@@ -68,7 +70,7 @@ function CartCard({ item }: CartCardProps) {
       </td>
 
       <td className="py-4 md:px-4 px-1 text-foreground/80">
-        ${item.product.offerPrice}
+        {currency}{formatMoney(item.product.offerPrice)} /pc
       </td>
 
       <td className="py-4 md:px-4 px-1">
@@ -86,7 +88,7 @@ function CartCard({ item }: CartCardProps) {
       </td>
 
       <td className="py-4 md:px-4 px-1 text-foreground">
-        ${totalPrice}
+        {currency}{totalPrice}
       </td>
     </tr>
   );

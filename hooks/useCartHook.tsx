@@ -59,7 +59,7 @@ function useCartHook() {
     mutationFn: async (productId: string) => {
       await handleAddToCart(productId);
     },
-    onSuccess: () => router.push("/checkout"),
+    onSuccess: () => router.push("/cart"),
     onError: (error: any) =>
       toast({
         title: "Error",

@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
       amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
       currency: "PHP",
+      // images: [item.product.image?.[0] ?? null],
+      // description: item.product.description
       })),
       {
         name: "Tax",

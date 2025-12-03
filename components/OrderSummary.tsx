@@ -3,6 +3,7 @@ import AddressComboBox from "@/components/AddressComboBox";
 import { Input } from "./ui/input";
 import useOrderHook from "@/hooks/useOrderHook";
 import { formatMoney } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 const OrderSummary = ({
   cartCount,
@@ -51,9 +52,9 @@ const OrderSummary = ({
               placeholder="Enter promo code"
               className="grow w-full outline-none p-2.5"
             />
-            <button className="cursor-pointer bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
+            <Button className="cursor-pointer bg-orange-600 text-white px-9 py-2 hover:bg-orange-700">
               Apply
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -91,12 +92,12 @@ const OrderSummary = ({
         </div>
       </div>
 
-      <button
+      <Button
         onClick={handlePlaceOrder}
         className="cursor-pointer w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
       >
         Place Order
-      </button>
+      </Button>
     </div>
   );
 };
