@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -141,20 +142,6 @@ const AddProduct = () => {
               value={category}
               onChange={(val) => setCategory(val)}
             />
-
-            {/* <select
-              id="category"
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-              onChange={(e) => setCategory(e.target.value)}
-              defaultValue={category}
-            >
-              {categories.map((cat: any) => (
-                <option key={cat.id} value={cat.slug}>
-                  {cat.name}
-                </option>
-              ))}
-            </select> */}
-
           </div>
           <div className="flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
@@ -185,13 +172,13 @@ const AddProduct = () => {
             />
           </div>
         </div>
-        <button
+        <Button
           type="submit"
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading} >
           {loading ? 'Loading...' : 'ADD'}
-        </button>
+        </Button>
       </form>
       {/* <Footer /> */}
     </div>
