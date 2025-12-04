@@ -255,6 +255,7 @@ export default NavBar;
 const SearchBar = () => {
   const {searchQuery, setSearchQuery} = useSearchStore();
   const router = useRouter();
+
   return (
     <form onSubmit={(e) => {
         e.preventDefault()
