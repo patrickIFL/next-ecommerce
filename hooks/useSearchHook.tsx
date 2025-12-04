@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import useSearchStore from "@/stores/useSearchStore";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -12,7 +13,7 @@ export interface Product {
   image: string[];
 }
 
-function useSearchHook(query?: string) {
+function useSearchHook(query?: any) {
   const router = useRouter();
   const { searchQuery: storeQuery } = useSearchStore();
   const queryParam = query ?? storeQuery;

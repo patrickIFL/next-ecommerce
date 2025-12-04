@@ -16,7 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -31,9 +31,9 @@ import AccordionMenu from "./AccordionMenu";
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 import useSearchStore from "@/stores/useSearchStore";
-import { useRouter } from "next/navigation";
-import { Input } from "./ui/input";
+// import { useRouter } from "next/navigation";
 import useSearchHook from "@/hooks/useSearchHook";
+import { useParams } from "next/navigation";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -257,7 +257,16 @@ export default NavBar;
 const SearchBar = () => {
   const { searchQuery, setSearchQuery } = useSearchStore();
   const { handleSearch } = useSearchHook();
-  const router = useRouter();
+  const params = useParams();
+  console.log(params.cat)
+  // const router = useRouter();
+
+  useEffect(() => {
+    if (params.cat) {
+      setSearchQuery(params.cat);
+    }
+  }, [params.cat, setSearchQuery]);
+
 
   return (
     <form onSubmit={(e) => {

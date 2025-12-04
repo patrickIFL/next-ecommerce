@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 
 type SearchStore = {
-  searchQuery: string;
-  setSearchQuery: (searchQuery: string) => void;
+  searchQuery: any;
+  setSearchQuery: (searchQuery: any) => void;
 };
 
 const useSearchStore = create<SearchStore>((set) => ({
