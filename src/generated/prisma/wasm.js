@@ -111,6 +111,12 @@ exports.Prisma.ProductScalarFieldEnum = {
   image: 'image',
   price: 'price',
   offerPrice: 'offerPrice',
+  search_keys: 'search_keys',
+  sku: 'sku',
+  stock: 'stock',
+  type: 'type',
+  variations: 'variations',
+  isArchived: 'isArchived',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -131,7 +137,27 @@ exports.Prisma.OrderScalarFieldEnum = {
   amount: 'amount',
   isPaid: 'isPaid',
   shippingMethod: 'shippingMethod',
+  shippingStatus: 'shippingStatus',
   orderDate: 'orderDate'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  orderId: 'orderId',
+  paymongo_payment_id: 'paymongo_payment_id',
+  paymongo_checkout_id: 'paymongo_checkout_id',
+  paymongo_payment_intent_id: 'paymongo_payment_intent_id',
+  amount: 'amount',
+  tax: 'tax',
+  shipping: 'shipping',
+  payer_name: 'payer_name',
+  payer_email: 'payer_email',
+  payer_phone: 'payer_phone',
+  date: 'date',
+  method: 'method',
+  currency: 'currency',
+  line_items: 'line_items'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -159,6 +185,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -169,12 +199,22 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.ProductType = exports.$Enums.ProductType = {
+  SIMPLE: 'SIMPLE',
+  VARIATION: 'VARIATION'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Product: 'Product',
   CartItem: 'CartItem',
   Order: 'Order',
+  Payment: 'Payment',
   OrderItem: 'OrderItem',
   ShippingAddress: 'ShippingAddress'
 };
@@ -189,7 +229,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\src\\generated\\prisma",
+      "value": "C:\\Users\\patri\\Desktop\\next-ecommerce\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -211,11 +251,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\patri\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
@@ -225,7 +265,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -234,13 +273,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"rhel-openssl-3.0.x\"]\n  output        = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// User\nmodel User {\n  id        String   @id @default(cuid())\n  name      String\n  email     String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  products  Product[]\n  orders    Order[]\n  addresses ShippingAddress[]\n  cartItems CartItem[]\n}\n\n// Product\nmodel Product {\n  id          String   @id @default(cuid())\n  userId      String\n  name        String\n  description String\n  category    String\n  image       String[] // matches TS: product.image\n  price       Int\n  offerPrice  Int\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  orders    OrderItem[]\n  user      User        @relation(fields: [userId], references: [id])\n  cartItems CartItem[]\n\n  @@index([userId])\n}\n\n// CartItem\nmodel CartItem {\n  id        String @id @default(cuid())\n  userId    String\n  productId String\n  quantity  Int    @default(1)\n\n  user      User     @relation(fields: [userId], references: [id])\n  product   Product  @relation(fields: [productId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, productId])\n  @@index([userId])\n  @@index([productId])\n}\n\n// Order\nmodel Order {\n  id                String  @id @default(cuid())\n  userId            String\n  shippingAddressId String?\n\n  amount         Int\n  isPaid         Boolean  @default(false)\n  shippingMethod String\n  // shippingStatus String?  @default(\"pending\") // new column\n  orderDate      DateTime @default(now())\n\n  user            User             @relation(fields: [userId], references: [id])\n  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])\n  items           OrderItem[]\n\n  @@index([userId])\n}\n\n// OrderItem (for multiple products per order)\nmodel OrderItem {\n  id        String @id @default(cuid())\n  orderId   String\n  productId String\n  quantity  Int\n\n  order   Order   @relation(fields: [orderId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([orderId])\n  @@index([productId])\n}\n\n// ShippingAddress\nmodel ShippingAddress {\n  id     String @id @default(cuid())\n  userId String\n\n  fullName    String\n  phoneNumber String\n  zipcode     String\n  area        String\n  city        String\n  province    String\n  orders      Order[]\n  user        User     @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([userId])\n}\n",
-  "inlineSchemaHash": "37903d3a509429aa6e97b8db7ab7bc3eb7a939bed397352f1882c42859e68a2b",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"rhel-openssl-3.0.x\"]\n  output        = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// User\nmodel User {\n  id        String   @id @default(cuid())\n  name      String\n  email     String   @unique\n  image     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  products  Product[]\n  orders    Order[]\n  addresses ShippingAddress[]\n  cartItems CartItem[]\n  payments  Payment[]\n}\n\n// Define product type enum\nenum ProductType {\n  SIMPLE\n  VARIATION\n}\n\nmodel Product {\n  id          String      @id @default(cuid())\n  userId      String\n  name        String\n  description String\n  category    String\n  image       String[]\n  price       Int\n  offerPrice  Int\n  // new\n  search_keys String[]\n  sku         String\n  stock       Int\n  type        ProductType @default(SIMPLE)\n  variations  String[]    @default([])\n  isArchived  Boolean     @default(false)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  orders    OrderItem[]\n  user      User        @relation(fields: [userId], references: [id])\n  cartItems CartItem[]\n\n  @@index([userId])\n}\n\n// CartItem\nmodel CartItem {\n  id        String @id @default(cuid())\n  userId    String\n  productId String\n  quantity  Int    @default(1)\n\n  user      User     @relation(fields: [userId], references: [id])\n  product   Product  @relation(fields: [productId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, productId])\n  @@index([userId])\n  @@index([productId])\n}\n\n// Order\nmodel Order {\n  id                String  @id @default(cuid())\n  userId            String\n  shippingAddressId String?\n\n  amount         Int\n  isPaid         Boolean  @default(false)\n  shippingMethod String\n  shippingStatus String?  @default(\"pending\")\n  orderDate      DateTime @default(now())\n\n  user            User             @relation(fields: [userId], references: [id])\n  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])\n  items           OrderItem[]\n\n  payment Payment? // back-relation only\n\n  @@index([userId])\n}\n\n// Payment\nmodel Payment {\n  id                         String   @id @default(cuid())\n  userId                     String\n  orderId                    String   @unique // 1-to-1 with Order\n  paymongo_payment_id        String\n  paymongo_checkout_id       String\n  paymongo_payment_intent_id String\n  amount                     Int\n  tax                        Int\n  shipping                   Int\n  payer_name                 String\n  payer_email                String\n  payer_phone                String\n  date                       DateTime @default(now())\n  method                     String\n  currency                   String\n  line_items                 Json\n\n  user  User  @relation(fields: [userId], references: [id])\n  order Order @relation(fields: [orderId], references: [id])\n}\n\n// OrderItem (for multiple products per order)\nmodel OrderItem {\n  id        String @id @default(cuid())\n  orderId   String\n  productId String\n  quantity  Int\n\n  order   Order   @relation(fields: [orderId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@index([orderId])\n  @@index([productId])\n}\n\n// ShippingAddress\nmodel ShippingAddress {\n  id     String @id @default(cuid())\n  userId String\n\n  fullName    String\n  phoneNumber String\n  zipcode     String\n  area        String\n  city        String\n  province    String\n  orders      Order[]\n  user        User     @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@index([userId])\n}\n",
+  "inlineSchemaHash": "5be481e7f760913417d10d22a982657ab69b60ccace1ae4fab3b14d7da512ef2",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToUser\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToUser\"},{\"name\":\"addresses\",\"kind\":\"object\",\"type\":\"ShippingAddress\",\"relationName\":\"ShippingAddressToUser\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToUser\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"offerPrice\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProductToUser\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProduct\"}],\"dbName\":null},\"CartItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CartItemToUser\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CartItemToProduct\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shippingAddressId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"isPaid\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"shippingMethod\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrderToUser\"},{\"name\":\"shippingAddress\",\"kind\":\"object\",\"type\":\"ShippingAddress\",\"relationName\":\"OrderToShippingAddress\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"}],\"dbName\":null},\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"OrderItemToProduct\"}],\"dbName\":null},\"ShippingAddress\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"zipcode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"area\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"province\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToShippingAddress\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ShippingAddressToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToUser\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToUser\"},{\"name\":\"addresses\",\"kind\":\"object\",\"type\":\"ShippingAddress\",\"relationName\":\"ShippingAddressToUser\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToUser\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"PaymentToUser\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"offerPrice\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"search_keys\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stock\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"ProductType\"},{\"name\":\"variations\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isArchived\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProductToUser\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProduct\"}],\"dbName\":null},\"CartItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CartItemToUser\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CartItemToProduct\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shippingAddressId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"isPaid\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"shippingMethod\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shippingStatus\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrderToUser\"},{\"name\":\"shippingAddress\",\"kind\":\"object\",\"type\":\"ShippingAddress\",\"relationName\":\"OrderToShippingAddress\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"payment\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"OrderToPayment\"}],\"dbName\":null},\"Payment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymongo_payment_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymongo_checkout_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymongo_payment_intent_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"tax\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"shipping\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"payer_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payer_email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payer_phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"line_items\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PaymentToUser\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToPayment\"}],\"dbName\":null},\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"OrderItemToProduct\"}],\"dbName\":null},\"ShippingAddress\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"zipcode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"area\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"province\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToShippingAddress\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ShippingAddressToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

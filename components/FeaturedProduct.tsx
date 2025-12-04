@@ -38,35 +38,35 @@ const FeaturedProduct = () => {
       </div>
 
       <div className="flex overflow-x-scroll scrollbar-hide gap-8 lg:gap-14">
-  {products.map(({ id, image, title, description }) => (
-    <div
-      key={id}
-      className="relative 
+        {products.map(({ id, image, title, description }) => (
+          <div
+            key={id}
+            className="relative 
         min-w-full
         sm:min-w-[50%]
         md:min-w-[calc((100%-7rem)/3)]
         xl:min-w-[calc((100%-11rem)/4)]"
-    >
-      <Image
-        src={image}
-        alt={title}
-        className="group-hover:brightness-75 transition duration-300 w-full h-auto object-cover"
-      />
+          >
+            <Image
+              src={image}
+              alt={title}
+              className="group-hover:brightness-75 transition duration-300 w-full h-auto object-cover"
+            />
 
-      <div className="group-hover:-translate-y-4 transition duration-300 absolute bottom-8 left-8 text-white space-y-2">
-        <p className="font-medium text-xl lg:text-2xl">{title}</p>
-        <p className="text-sm lg:text-base leading-5 max-w-60">
-          {description}
-        </p>
+            <div className="group-hover:-translate-y-4 transition duration-300 absolute bottom-8 left-8 text-white space-y-2">
+              <p className="font-medium text-xl lg:text-2xl">{title}</p>
+              <p className="text-sm lg:text-base leading-5 max-w-60">
+                {description}
+              </p>
 
-        <button className="flex items-center gap-1.5 bg-orange-600 px-4 py-2 rounded">
-          Buy now
-          <Image className="h-3 w-3" src={assets.redirect_icon} alt="Redirect Icon" />
-        </button>
+              <button className="flex items-center gap-1.5 bg-orange-600 px-4 py-2 rounded">
+                Buy now
+                <Image className="h-3 w-3" src={assets.redirect_icon} alt="Redirect Icon" />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
     </div>
   );

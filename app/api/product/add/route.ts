@@ -31,6 +31,18 @@ export async function POST(request: NextRequest) {
     const price = formData.get("price") as string | null;
     const offerPrice = formData.get("offerPrice") as string | null;
 
+    const sku = formData.get("sku") as string | null;
+    const stock = formData.get("stock") as string | null;
+    const searchKeysRaw = formData.get("search_keys") as string | null;
+    const variationsRaw = formData.get("variations") as string | null;
+
+    const search_keys: string[] = searchKeysRaw
+      ? JSON.parse(searchKeysRaw)
+      : [];
+    const variations: string[] = variationsRaw
+      ? JSON.parse(variationsRaw)
+      : [];
+
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {
@@ -70,6 +82,12 @@ export async function POST(request: NextRequest) {
         category: category!,
         price: Number(price),
         offerPrice: Number(offerPrice),
+        
+        sku: sku!,
+        stock: Number(stock),
+        search_keys,
+        variations,
+
         image: imageUrls,
       },
     });

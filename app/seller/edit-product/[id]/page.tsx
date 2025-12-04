@@ -82,30 +82,33 @@ const EditProduct = () => {
     formData.append("category", category);
     formData.append("price", price);
     formData.append("offerPrice", offerPrice);
+    formData.append("sku", sku);
+    formData.append("stock", stock);
 
-    // MUST match backend
-    for (let i = 0; i < 4; i++) {
-      const file = files[i];
+    // Convert comma-separated strings into trimmed arrays
+    const searchKeysArray = searchKeys
+      .split(",")
+      .map((key) => key.trim())
+      .filter((key) => key.length > 0);
+    formData.append("search_keys", JSON.stringify(searchKeysArray));
 
-      // Safe File detection for Next.js
-      const isRealFile =
-        file && typeof file === "object" && "name" in file && "size" in file;
+    const variationsArray = variations
+      .split(",")
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0);
+    formData.append("variations", JSON.stringify(variationsArray));
 
-      if (isRealFile) {
-        formData.append(`images[${i}]`, file as any);
-      } else {
-        formData.append(`images[${i}]`, "");
-      }
-    }
+    // Append files if present
+    files.forEach((file: File) => {
+      if (file) formData.append("images", file);
+    });
 
     try {
       const token = await getToken();
       setLoading(true);
 
       const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setLoading(false);
@@ -121,6 +124,7 @@ const EditProduct = () => {
         });
       }
     } catch (error: any) {
+      setLoading(false);
       toast({
         title: "Error",
         description: error.message,
@@ -128,6 +132,7 @@ const EditProduct = () => {
       });
     }
   };
+
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between mt-16">

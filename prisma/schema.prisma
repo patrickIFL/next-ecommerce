@@ -22,20 +22,34 @@ model User {
   orders    Order[]
   addresses ShippingAddress[]
   cartItems CartItem[]
+  payments  Payment[]
 }
 
-// Product
+// Define product type enum
+enum ProductType {
+  SIMPLE
+  VARIATION
+}
+
 model Product {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   userId      String
   name        String
   description String
   category    String
-  image       String[] // matches TS: product.image
+  image       String[]
   price       Int
   offerPrice  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  // new
+  search_keys String[]
+  sku         String
+  stock       Int
+  type        ProductType @default(SIMPLE)
+  variations  String[]    @default([])
+  isArchived  Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   orders    OrderItem[]
   user      User        @relation(fields: [userId], references: [id])
@@ -70,14 +84,39 @@ model Order {
   amount         Int
   isPaid         Boolean  @default(false)
   shippingMethod String
-  // shippingStatus String?  @default("pending") // new column
+  shippingStatus String?  @default("pending")
   orderDate      DateTime @default(now())
 
   user            User             @relation(fields: [userId], references: [id])
   shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
   items           OrderItem[]
 
+  payment Payment? // back-relation only
+
   @@index([userId])
+}
+
+// Payment
+model Payment {
+  id                         String   @id @default(cuid())
+  userId                     String
+  orderId                    String   @unique // 1-to-1 with Order
+  paymongo_payment_id        String
+  paymongo_checkout_id       String
+  paymongo_payment_intent_id String
+  amount                     Int
+  tax                        Int
+  shipping                   Int
+  payer_name                 String
+  payer_email                String
+  payer_phone                String
+  date                       DateTime @default(now())
+  method                     String
+  currency                   String
+  line_items                 Json
+
+  user  User  @relation(fields: [userId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 }
 
 // OrderItem (for multiple products per order)

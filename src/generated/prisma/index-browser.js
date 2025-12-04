@@ -139,6 +139,12 @@ exports.Prisma.ProductScalarFieldEnum = {
   image: 'image',
   price: 'price',
   offerPrice: 'offerPrice',
+  search_keys: 'search_keys',
+  sku: 'sku',
+  stock: 'stock',
+  type: 'type',
+  variations: 'variations',
+  isArchived: 'isArchived',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -159,7 +165,27 @@ exports.Prisma.OrderScalarFieldEnum = {
   amount: 'amount',
   isPaid: 'isPaid',
   shippingMethod: 'shippingMethod',
+  shippingStatus: 'shippingStatus',
   orderDate: 'orderDate'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  orderId: 'orderId',
+  paymongo_payment_id: 'paymongo_payment_id',
+  paymongo_checkout_id: 'paymongo_checkout_id',
+  paymongo_payment_intent_id: 'paymongo_payment_intent_id',
+  amount: 'amount',
+  tax: 'tax',
+  shipping: 'shipping',
+  payer_name: 'payer_name',
+  payer_email: 'payer_email',
+  payer_phone: 'payer_phone',
+  date: 'date',
+  method: 'method',
+  currency: 'currency',
+  line_items: 'line_items'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -187,6 +213,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -197,12 +227,22 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.ProductType = exports.$Enums.ProductType = {
+  SIMPLE: 'SIMPLE',
+  VARIATION: 'VARIATION'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Product: 'Product',
   CartItem: 'CartItem',
   Order: 'Order',
+  Payment: 'Payment',
   OrderItem: 'OrderItem',
   ShippingAddress: 'ShippingAddress'
 };

@@ -20,7 +20,7 @@ function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
 
   const isSale = product.offerPrice < product.price;
-  const [isArchived, setIsArchived] = useState(false);
+  const [isArchived, setIsArchived] = useState(product.isArchived);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const { getToken } = useAuth();
   const { toast } = useToast();
@@ -76,7 +76,7 @@ function ProductDataRow({ product }: { product: any }) {
       <td className="px-4 py-3">{product.category}</td>
       <td className="px-4 py-3">
         {/* SKU */}
-        1234
+        {product.sku}
       </td>
       <td className="px-4 py-3">
         {currency}
@@ -89,7 +89,7 @@ function ProductDataRow({ product }: { product: any }) {
 
       <td className="px-4 py-3">
         {/* Stock */}
-        123
+        {product.stock}
       </td>
 
       <td className="py-3">
@@ -99,12 +99,12 @@ function ProductDataRow({ product }: { product: any }) {
               <button
                 onClick={() => {
                   setIsArchived(!isArchived);
+
                 }}
-                className={`flex items-center gap-1 p-1.5 ${
-                  isArchived
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-green-600 hover:bg-green-700"
-                } cursor-pointer text-white rounded-md`}
+                className={`flex items-center gap-1 p-1.5 ${isArchived
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-green-600 hover:bg-green-700"
+                  } cursor-pointer text-white rounded-md`}
               >
                 {isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>

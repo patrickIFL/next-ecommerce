@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
         amount,
         orderDate: new Date(),
         shippingMethod: "standard",
+        //shippingStatus: "pending", // pending by default
         items,
       },
     });

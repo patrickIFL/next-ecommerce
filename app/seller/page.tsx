@@ -26,7 +26,7 @@ const AddProduct = () => {
   const [sku, setSku] = useState('');
   // =========================================
 
-  const [category, setCategory] = useState('Earphone');
+  const [category, setCategory] = useState('Uncategorized');
   const [price, setPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
 
@@ -36,14 +36,33 @@ const AddProduct = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('category', category);
-    formData.append('price', price);
-    formData.append('offerPrice', offerPrice);
+    // Convert search keys to array
+    const searchKeysArray = searchKeys
+      .split(",")
+      .map((key) => key.trim())
+      .filter((key) => key.length > 0);
+
+    // Convert variations if needed
+    const variationsArray = variations
+      .split(",")
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0);
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("price", price);
+    formData.append("offerPrice", offerPrice);
+
+    formData.append("sku", sku);
+    formData.append("stock", stock);
+
+    // ADD THESE
+    formData.append("search_keys", JSON.stringify(searchKeysArray));
+    formData.append("variations", JSON.stringify(variationsArray));
 
     for (let i = 0; i < files.length; i++) {
-      formData.append('images', files[i]);
+      formData.append("images", files[i]);
     }
 
     try {
@@ -64,7 +83,7 @@ const AddProduct = () => {
         setFiles([]);
         setName('');
         setDescription('');
-        setCategory('Earphone');
+        setCategory('Uncategorized');
         setPrice('');
         setOfferPrice('');
       }
@@ -155,7 +174,7 @@ const AddProduct = () => {
             id="product-description"
             rows={4}
             className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-            placeholder="Separate each variation with a comma"
+            placeholder="Leave as blank - coming soon"
             onChange={(e) => setVariations(e.target.value)}
             value={variations}
             required
