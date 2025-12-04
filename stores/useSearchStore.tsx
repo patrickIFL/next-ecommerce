@@ -7,7 +7,8 @@ type SearchStore = {
 
 const useSearchStore = create<SearchStore>((set) => ({
   searchQuery: "",
-  setSearchQuery: (searchQuery: string) => set({ searchQuery }),
+  setSearchQuery: (searchQuery) => set({ searchQuery }),
 }));
+
 
 export default useSearchStore;

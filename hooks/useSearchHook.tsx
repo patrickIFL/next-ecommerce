@@ -12,35 +12,40 @@ export interface Product {
   image: string[];
 }
 
-function useSearchHook() {
-    const router = useRouter();
-  const { searchQuery } = useSearchStore();
+function useSearchHook(query?: string) {
+  const router = useRouter();
+  const { searchQuery: storeQuery } = useSearchStore();
+  const queryParam = query ?? storeQuery;
 
-  const { data:searchResults, isFetching:searchLoading, refetch:search } = useQuery({
-    queryKey: ["searchResults"],
-    queryFn: async () => {
-      const res = await fetch(`/api/product/search/${searchQuery}`);
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to load search data");
-      }
-      return data.results as Product[];
-    },
-    enabled: false,
-    retry: false
-  });
+  const { data: searchResults, isFetching: searchLoading, refetch: search } =
+    useQuery({
+      queryKey: ["searchResults"],
+      queryFn: async () => {
+        const res = await fetch(`/api/product/search?q=${queryParam}`);
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Failed to load search data");
+        }
+        return data.results;
+      },
+      enabled: false,
+      retry: false,
+    });
 
-  const handleSearch = async () => {
-    if(!searchQuery.trim() || searchQuery === "") return;
+  const handleSearch = async (q?: string) => {
+    const searchVal = q ?? storeQuery;
+    if (!searchVal.trim()) return;
     search();
-    router.push(`/${searchQuery}/products`)
-}
+    router.push(`/${searchVal}/products`);
+  };
+
   return {
-    searchResults, 
+    searchResults,
     searchLoading,
     search,
-    handleSearch
+    handleSearch,
   };
 }
+
 
 export default useSearchHook;

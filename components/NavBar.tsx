@@ -32,6 +32,8 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 import useSearchStore from "@/stores/useSearchStore";
 import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
+import useSearchHook from "@/hooks/useSearchHook";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -131,14 +133,14 @@ function NavBar() {
           {isDark ? (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => {}}
+              onClick={() => { }}
               src={assets.logo_white}
               alt="logo"
             />
           ) : (
             <Image
               className="cursor-pointer w-28 md:w-32"
-              onClick={() => {}}
+              onClick={() => { }}
               src={assets.logo}
               alt="logo"
             />
@@ -148,7 +150,7 @@ function NavBar() {
           <NavLinks menus={menus} />
         </div>
 
-        
+
 
         <NavigationMenu
           viewport={false}
@@ -244,7 +246,7 @@ function NavBar() {
         isOpen={isOpen}
         menus={menus}
         openSignIn={openSignIn}
-        // accountMenu={accountMenu}
+      // accountMenu={accountMenu}
       />
     </>
   );
@@ -253,23 +255,27 @@ function NavBar() {
 export default NavBar;
 
 const SearchBar = () => {
-  const {searchQuery, setSearchQuery} = useSearchStore();
+  const { searchQuery, setSearchQuery } = useSearchStore();
+  const { handleSearch } = useSearchHook();
   const router = useRouter();
 
   return (
     <form onSubmit={(e) => {
-        e.preventDefault()
-        router.push(`/${searchQuery}/products`)
-      }}>
+      e.preventDefault();
+      handleSearch();
+    }}>
       <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
         <button type="submit">
           <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />
         </button>
         <input
           name="search"
+          autoComplete="off"
           value={searchQuery}
           placeholder="Search a product"
-          className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+          className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden 
+          
+          disabled:cursor-not-allowed disabled:opacity-50"
           onChange={(e) => {
             setSearchQuery(e.target.value)
           }}

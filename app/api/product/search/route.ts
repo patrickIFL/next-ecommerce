@@ -6,26 +6,14 @@ export async function GET(req: Request) {
   const q = searchParams.get("q") || "";
 
   if (!q) {
-    return NextResponse.json({ data: [], success: true });
+    return NextResponse.json({ success: true, results: [] });
   }
 
   const products = await prisma.product.findMany({
     where: {
-      // avoid is archived also when archive is available.
       OR: [
-        {
-          name: {
-            contains: q,
-            mode: "insensitive",
-          },
-        },
-
-        {
-          category: {
-            contains: q,
-            mode: "insensitive",
-          },
-        },
+        { name: { contains: q, mode: "insensitive" } },
+        { category: { contains: q, mode: "insensitive" } },
       ],
     },
   });
