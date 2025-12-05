@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 export interface Product {
   id: string;
@@ -8,11 +8,14 @@ export interface Product {
   price: number;
   offerPrice: number;
   image: string[];
+  variations?: string[];
+  search_keys?: string[];
+  sku?: string;
+  stock?: number;
 }
 
 function useProductHook() {
-
-  const { data: products = [], isLoading:productsLoading } = useQuery({
+  const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await fetch("/api/product/list");
@@ -26,8 +29,9 @@ function useProductHook() {
   });
 
   return {
-    products, productsLoading
-  }
+    products,
+    productsLoading,
+  };
 }
 
-export default useProductHook
+export default useProductHook;

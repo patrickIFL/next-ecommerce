@@ -17,21 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
-
-type ProductType = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  offerPrice: number;
-  category: string;
-  variations: string[];
-  search_keys: string[];
-  image: string[];
-  sku: string;
-  stock: number;
-};
+import { Info, LoaderIcon } from "lucide-react";
 
 const EditProduct = () => {
   const { getToken } = useAuth();
@@ -52,7 +38,7 @@ const EditProduct = () => {
   const [loading, setLoading] = useState(false);
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
-  const [productData, setProductData] = useState<ProductType | null>(null);
+  const [productData, setProductData] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,66 +75,66 @@ const EditProduct = () => {
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const handleSubmit = async (e: any) => {
-  e.preventDefault();
-  const formData = new FormData();
+    e.preventDefault();
+    const formData = new FormData();
 
-  // Convert search keys to array
-  const searchKeysArray = searchKeys
-    .split(",")
-    .map((key) => key.trim())
-    .filter((key) => key.length > 0);
+    // Convert search keys to array
+    const searchKeysArray = searchKeys
+      .split(",")
+      .map((key) => key.trim())
+      .filter((key) => key.length > 0);
 
-  // Convert variations if needed
-  const variationsArray = variations
-    .split(",")
-    .map((v) => v.trim())
-    .filter((v) => v.length > 0);
+    // Convert variations if needed
+    const variationsArray = variations
+      .split(",")
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0);
 
-  formData.append("name", name);
-  formData.append("description", description);
-  formData.append("category", category);
-  formData.append("price", price);
-  formData.append("offerPrice", offerPrice);
-  formData.append("sku", sku);
-  formData.append("stock", stock);
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("price", price);
+    formData.append("offerPrice", offerPrice);
+    formData.append("sku", sku);
+    formData.append("stock", stock);
 
-  formData.append("search_keys", JSON.stringify(searchKeysArray));
-  formData.append("variations", JSON.stringify(variationsArray));
+    formData.append("search_keys", JSON.stringify(searchKeysArray));
+    formData.append("variations", JSON.stringify(variationsArray));
 
-  // Append images with indexed keys to match backend
-  files.forEach((file: File, index: number) => {
-    if (file) formData.append(`images[${index}]`, file);
-  });
-
-  try {
-    const token = await getToken();
-    setLoading(true);
-
-    const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
-      headers: { Authorization: `Bearer ${token}` },
+    // Append images with indexed keys to match backend
+    files.forEach((file: File, index: number) => {
+      if (file) formData.append(`images[${index}]`, file);
     });
 
-    setLoading(false);
+    try {
+      const token = await getToken();
+      setLoading(true);
 
-    if (data.success) {
-      toast({ title: "Success", description: data.message });
-      router.push("/seller/product-list");
-    } else {
+      const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setLoading(false);
+
+      if (data.success) {
+        toast({ title: "Success", description: data.message });
+        router.push("/seller/product-list");
+      } else {
+        toast({
+          title: "Error",
+          description: data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      setLoading(false);
       toast({
         title: "Error",
-        description: data.message,
+        description: error.message,
         variant: "destructive",
       });
     }
-  } catch (error: any) {
-    setLoading(false);
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    });
-  }
-};
+  };
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between mt-16">
@@ -289,7 +275,7 @@ const EditProduct = () => {
             </label>
             <Input
               id="product-price"
-              type="number"
+              type="text"
               placeholder="0"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setSku(e.target.value)}
@@ -350,12 +336,18 @@ const EditProduct = () => {
 
         <Button
           type="submit"
-          onClick={() => {}}
-          className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
-    ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          className={`py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
+          ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading}
         >
-          {loading ? "Updating..." : "UPDATE"}
+          {loading ? (
+            <div className="mx-3.5 flex gap-1 items-center">
+              <LoaderIcon className="animate-spin" size={16} />
+              <span>Updating</span>
+            </div>
+          ) : (
+            <span className="mx-6">UPDATE</span>
+          )}
         </Button>
       </form>
       {/* <Footer /> */}

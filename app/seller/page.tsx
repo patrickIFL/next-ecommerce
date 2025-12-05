@@ -1,34 +1,38 @@
-'use client'
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAuth } from "@clerk/nextjs"
+import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info, LoaderIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
   const [files, setFiles] = useState([]);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
   // NEW =====================================
-  const [variations, setVariations] = useState('');
-  const [searchKeys, setSearchKeys] = useState('');
-  const [stock, setStock] = useState('');
-  const [sku, setSku] = useState('');
+  const [variations, setVariations] = useState("");
+  const [searchKeys, setSearchKeys] = useState("");
+  const [stock, setStock] = useState("");
+  const [sku, setSku] = useState("");
   // =========================================
 
-  const [category, setCategory] = useState('Uncategorized');
-  const [price, setPrice] = useState('');
-  const [offerPrice, setOfferPrice] = useState('');
+  const [category, setCategory] = useState("Uncategorized");
+  const [price, setPrice] = useState("");
+  const [offerPrice, setOfferPrice] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -68,38 +72,40 @@ const AddProduct = () => {
     try {
       const token = await getToken();
       setLoading(true);
-      const { data } = await axios.post('/api/product/add', formData, {
+      const { data } = await axios.post("/api/product/add", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
       if (data.success) {
         setLoading(false);
         toast({
-          title: '✅ Success',
+          title: "✅ Success",
           description: data.message,
-          variant: 'default'
+          variant: "default",
         });
         setFiles([]);
-        setName('');
-        setDescription('');
-        setCategory('Uncategorized');
-        setPrice('');
-        setOfferPrice('');
-      }
-      else {
+        setName("");
+        setDescription("");
+        setCategory("Uncategorized");
+        setPrice("");
+        setOfferPrice("");
+        setVariations("");
+        setSearchKeys("");
+        setSku("");
+        setStock("");
+      } else {
         toast({
-          title: 'Error',
+          title: "Error",
           description: data.message,
-          variant: 'destructive'
+          variant: "destructive",
         });
       }
-
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message,
-        variant: 'destructive'
+        variant: "destructive",
       });
     }
   };
@@ -110,25 +116,32 @@ const AddProduct = () => {
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
-
             {[...Array(4)].map((_, index) => (
               <label key={index} htmlFor={`image${index}`}>
-                <input onChange={(e: any) => {
-                  const updatedFiles: any = [...files];
-                  updatedFiles[index] = e.target.files[0];
-                  setFiles(updatedFiles);
-                }} type="file" id={`image${index}`} hidden />
+                <input
+                  onChange={(e: any) => {
+                    const updatedFiles: any = [...files];
+                    updatedFiles[index] = e.target.files[0];
+                    setFiles(updatedFiles);
+                  }}
+                  type="file"
+                  id={`image${index}`}
+                  hidden
+                />
                 <Image
                   key={index}
                   className="max-w-24 h-24 object-cover rounded cursor-pointer"
-                  src={files[index] ? URL.createObjectURL(files[index]) : assets.upload_area}
+                  src={
+                    files[index]
+                      ? URL.createObjectURL(files[index])
+                      : assets.upload_area
+                  }
                   alt=""
                   width={100}
                   height={100}
                 />
               </label>
             ))}
-
           </div>
         </div>
         <div className="flex flex-col gap-1 max-w-md">
@@ -216,9 +229,7 @@ const AddProduct = () => {
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               <div className="flex gap-1.5 items-center">
-                <span>
-                  SKU
-                </span>
+                <span>SKU</span>
                 <Tooltip>
                   <TooltipTrigger>
                     <Info size={12} />
@@ -231,8 +242,8 @@ const AddProduct = () => {
             </label>
             <Input
               id="product-price"
-              type="number"
-              placeholder="0"
+              type="text"
+              placeholder="Unique Identifier"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setSku(e.target.value)}
               value={sku}
@@ -241,8 +252,7 @@ const AddProduct = () => {
           </div>
 
           <div className="flex flex-col flex-1 gap-1 w-32">
-            <label className="text-base font-medium"
-              htmlFor="offer-price">
+            <label className="text-base font-medium" htmlFor="offer-price">
               Stock
             </label>
             <Input
@@ -257,12 +267,9 @@ const AddProduct = () => {
           </div>
 
           {/*  ===================================== */}
-
         </div>
 
-
         <div className="flex items-center gap-5 flex-wrap">
-
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
@@ -296,10 +303,18 @@ const AddProduct = () => {
 
         <Button
           type="submit"
-          className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
-    ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-          disabled={loading} >
-          {loading ? 'Loading...' : 'ADD'}
+          className={`py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
+          ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          disabled={loading}
+        >
+          {loading ? (
+            <div className="mx-1 flex gap-1 items-center">
+              <LoaderIcon className="animate-spin" size={16} />
+              <span>Loading</span>
+            </div>
+          ) : (
+            <span className="mx-6">ADD</span>
+          )}
         </Button>
       </form>
       {/* <Footer /> */}

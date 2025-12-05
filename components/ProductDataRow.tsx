@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
   Eye,
   EyeOff,
+  LoaderIcon,
   SquareArrowOutUpRight,
   SquarePen,
   Trash2,
@@ -52,35 +53,35 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
-  const { mutateAsync: toggleArchive, isLoading: isToggling } = useMutation({
-  mutationFn: async (productId: string) => {
-    const token = await getToken();
-    const res = await fetch(`/api/product/toggle-archive/${productId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const { mutateAsync: toggleArchive, isPending: isToggling } = useMutation({
+    mutationFn: async (productId: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/toggle-archive/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to toggle archive product");
-    return data;
-  },
-  onSuccess: (data: any) => {
-    // Update local state immediately
-    setIsArchived(data.product.isArchived);
-    
-    // Optionally, refresh the query so other components stay in sync
-    queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-  },
-  onError: (error: any) =>
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    }),
-});
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to toggle archive product");
+      return data;
+    },
+    onSuccess: (data: any) => {
+      // Update local state immediately
+      setIsArchived(data.product.isArchived);
+
+      // Optionally, refresh the query so other components stay in sync
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+    onError: (error: any) =>
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      }),
+  });
 
 
 
@@ -129,17 +130,19 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-  onClick={() => toggleArchive(product.id)}
-  className={`flex items-center gap-1 p-1.5 ${isArchived
-    ? "bg-red-600 hover:bg-red-700"
-    : "bg-green-600 hover:bg-green-700"
-    } cursor-pointer text-white rounded-md`}
-  disabled={isToggling} // <-- disable during mutation
->
-  {isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
-</button>
-
-
+                onClick={() => toggleArchive(product.id)}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${isArchived
+                  ? isToggling
+                    ? "bg-red-900"
+                    : "bg-red-600 hover:bg-red-700"
+                  : isToggling
+                    ? "bg-green-900"
+                    : "bg-green-600 hover:bg-green-700"
+                  }`}
+                disabled={isToggling}
+              >
+                {isToggling ? <LoaderIcon className="animate-spin" size={16} /> : isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               {isArchived ? <p>Unarchive</p> : <p>Archive</p>}

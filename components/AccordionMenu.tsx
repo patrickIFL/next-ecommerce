@@ -17,9 +17,9 @@ function AccordionMenu({
   isOpen,
   isDark,
   menus,
-  openSignIn
-  // accountMenu
-}: {
+  openSignIn,
+}: // accountMenu
+{
   isOpen: boolean;
   isDark: boolean;
   menus: any;
@@ -40,7 +40,7 @@ function AccordionMenu({
           exit={{ y: "-100%" }}
           transition={{ duration: 0.2, ease: "easeInOut" }}
           className={`fixed top-13 right-0 w-64 lg:hidden px-6 py-6 text-foreground 
-            font-medium text-center rounded-bl-md z-40 bg-background
+            font-medium text-center rounded-bl-md z-49 bg-background
             flex flex-col items-center justify-start 
             ${isDark ? "border border-gray-700" : "border border-gray-300"}`}
           style={{ backdropFilter: "blur(8px)" }}
@@ -51,7 +51,6 @@ function AccordionMenu({
             className="w-full"
             defaultValue="account"
           >
-
             {/* Dynamic Menus */}
             {menus.map((menu: any, i: number) => {
               const isDirectLink =
@@ -85,29 +84,33 @@ function AccordionMenu({
                   </AccordionContent>
                 </AccordionItem>
               );
-            })
-            }
-             {/* Dark mode and Search */}
+            })}
+            {/* Dark mode and Search */}
             <AccordionItem className="border-none pt-3" value="theme-search">
               <div className="flex justify-between">
                 <div className="flex gap-2">
                   <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
                   <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
-                    <Search color={"var(--color-foreground)"} size={18} className="m-2"/>
+                    <Search
+                      color={"var(--color-foreground)"}
+                      size={18}
+                      className="m-2"
+                    />
                   </div>
                 </div>
                 <div>
-                  {user 
-                  ? 
-                  <ClerkUserButton />
-                  :
-                    <button onClick={openSignIn} className="w-full cursor-pointer hover:bg-accent rounded-md py-2 px-3 flex items-center justify-center gap-2 transition border">
-                    <User color={"var(--color-foreground)"} size={18} />
-                    <span className="text-sm ml-0.5">Account</span>
-                  </button>
-                  }
+                  {user ? (
+                    <ClerkUserButton />
+                  ) : (
+                    <button
+                      onClick={openSignIn}
+                      className="w-full cursor-pointer hover:bg-accent rounded-md py-2 px-3 flex items-center justify-center gap-2 transition border"
+                    >
+                      <User color={"var(--color-foreground)"} size={18} />
+                      <span className="text-sm ml-0.5">Account</span>
+                    </button>
+                  )}
                 </div>
-
               </div>
             </AccordionItem>
           </Accordion>
