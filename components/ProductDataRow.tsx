@@ -52,6 +52,38 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
+  const { mutateAsync: toggleArchive, isLoading: isToggling } = useMutation({
+  mutationFn: async (productId: string) => {
+    const token = await getToken();
+    const res = await fetch(`/api/product/toggle-archive/${productId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to toggle archive product");
+    return data;
+  },
+  onSuccess: (data: any) => {
+    // Update local state immediately
+    setIsArchived(data.product.isArchived);
+    
+    // Optionally, refresh the query so other components stay in sync
+    queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+  },
+  onError: (error: any) =>
+    toast({
+      title: "Error",
+      description: error.message,
+      variant: "destructive",
+    }),
+});
+
+
+
   return (
     <tr className="border-t border-gray-500/20">
       <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3">
@@ -97,17 +129,17 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => {
-                  setIsArchived(!isArchived);
+  onClick={() => toggleArchive(product.id)}
+  className={`flex items-center gap-1 p-1.5 ${isArchived
+    ? "bg-red-600 hover:bg-red-700"
+    : "bg-green-600 hover:bg-green-700"
+    } cursor-pointer text-white rounded-md`}
+  disabled={isToggling} // <-- disable during mutation
+>
+  {isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
+</button>
 
-                }}
-                className={`flex items-center gap-1 p-1.5 ${isArchived
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-green-600 hover:bg-green-700"
-                  } cursor-pointer text-white rounded-md`}
-              >
-                {isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+
             </TooltipTrigger>
             <TooltipContent>
               {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
