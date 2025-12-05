@@ -76,15 +76,15 @@ export default function CategoryComboBox({
       return data;
     },
     onSuccess: () => {
-      setNewCategory({ name: "", slug: "" })
+      setNewCategory({ name: "", slug: "" });
     },
     onError: () => {
       toast({
-        title: 'Category Already Exist',
+        title: "Category Already Exist",
         description: "Try another one.",
-        variant: 'default'
+        variant: "default",
       });
-    }
+    },
   });
 
   const selected = categories?.find((c: any) => c.slug === value);
@@ -95,8 +95,7 @@ export default function CategoryComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`rounded font-normal justify-between ${className ?? ""
-            }`}
+          className={`rounded font-normal justify-between ${className ?? ""}`}
         >
           {selected ? selected.name : "Select category"}
           <ChevronDown className="opacity-50" />

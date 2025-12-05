@@ -31,18 +31,20 @@ export async function GET(request: NextRequest) {
     const cartItems = await prisma.cartItem.findMany({
       where: {
         userId,
+        product: {
+          isArchived: false,
+        },
       },
       include: {
         product: true,
       },
       orderBy: {
         createdAt: "desc",
-      }
+      },
     });
 
     // 5. Return the updated/created cart item
     return Response.json({ success: true, cartItems });
-    
   } catch (error) {
     console.error("FETCH CART ERROR:", error);
     return Response.json(

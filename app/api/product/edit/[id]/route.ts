@@ -63,6 +63,17 @@ export async function PATCH(request: NextRequest) {
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations") as string | null;
 
+    const skuExist = await prisma.product.findFirst({
+      where: { sku: sku! },
+    });
+
+    if (skuExist) {
+      return NextResponse.json(
+        { success: false, message: "SKU already exists" },
+        { status: 400 }
+      );
+    }
+
     const search_keys: string[] = searchKeysRaw
       ? JSON.parse(searchKeysRaw)
       : oldProduct.search_keys;
@@ -89,10 +100,11 @@ export async function PATCH(request: NextRequest) {
       const buffer = Buffer.from(await file.arrayBuffer());
 
       const uploaded = await new Promise<any>((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { resource_type: "auto" },
-          (err: any, result: any) => (err ? reject(err) : resolve(result))
-        ).end(buffer);
+        cloudinary.uploader
+          .upload_stream({ resource_type: "auto" }, (err: any, result: any) =>
+            err ? reject(err) : resolve(result)
+          )
+          .end(buffer);
       });
 
       finalImages[i] = uploaded.secure_url;

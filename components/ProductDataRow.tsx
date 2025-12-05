@@ -16,6 +16,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "./ui/use-toast";
+import ConfirmDelete from "./ConfirmDeleteProduct";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
@@ -25,9 +26,9 @@ function ProductDataRow({ product }: { product: any }) {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const { getToken } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const { mutateAsync: deleteProduct } = useMutation({
+  const { mutateAsync: deleteProduct, isPending: isDeleting } = useMutation({
     mutationFn: async (productId: string) => {
       const token = await getToken();
       const res = await fetch(`/api/product/delete/${productId}`, {
@@ -65,7 +66,8 @@ function ProductDataRow({ product }: { product: any }) {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to toggle archive product");
+      if (!res.ok)
+        throw new Error(data.message || "Failed to toggle archive product");
       return data;
     },
     onSuccess: (data: any) => {
@@ -82,8 +84,6 @@ function ProductDataRow({ product }: { product: any }) {
         variant: "destructive",
       }),
   });
-
-
 
   return (
     <tr className="border-t border-gray-500/20">
@@ -131,17 +131,24 @@ function ProductDataRow({ product }: { product: any }) {
             <TooltipTrigger asChild>
               <button
                 onClick={() => toggleArchive(product.id)}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${isArchived
-                  ? isToggling
-                    ? "bg-red-900"
-                    : "bg-red-600 hover:bg-red-700"
-                  : isToggling
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                  isArchived
+                    ? isToggling
+                      ? "bg-red-900"
+                      : "bg-red-600 hover:bg-red-700"
+                    : isToggling
                     ? "bg-green-900"
                     : "bg-green-600 hover:bg-green-700"
-                  }`}
+                }`}
                 disabled={isToggling}
               >
-                {isToggling ? <LoaderIcon className="animate-spin" size={16} /> : isArchived ? <EyeOff size={16} /> : <Eye size={16} />}
+                {isToggling ? (
+                  <LoaderIcon className="animate-spin" size={16} />
+                ) : isArchived ? (
+                  <EyeOff size={16} />
+                ) : (
+                  <Eye size={16} />
+                )}
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -170,22 +177,21 @@ function ProductDataRow({ product }: { product: any }) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                onClick={() => {
-                  const result = confirm(
-                    "Are you sure you want to delete this product?"
-                  );
-                  if (result) {
-                    deleteProduct(product.id)
-                  } else {
-                    // User clicked "Cancel"
-                    console.log("Cancelled");
-                  }
-                }}
-                className="flex items-center gap-1 p-1.5 bg-red-600 cursor-pointer hover:bg-red-700 text-white rounded-md"
-              >
-                <Trash2 size={16} />
-              </button>
+              <ConfirmDelete onConfirm={() => deleteProduct(product.id)}>
+  <button
+    disabled={isDeleting}
+    className={`flex items-center gap-1 p-1.5 ${
+      isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
+    } cursor-pointer text-white rounded-md`}
+  >
+    {isDeleting ? (
+      <LoaderIcon className="animate-spin" size={16} />
+    ) : (
+      <Trash2 size={16} />
+    )}
+  </button>
+</ConfirmDelete>
+
             </TooltipTrigger>
             <TooltipContent>
               <p>Delete</p>

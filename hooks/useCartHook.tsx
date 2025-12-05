@@ -25,7 +25,7 @@ function useCartHook() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: handleAddToCart } = useMutation({
+  const { mutateAsync: handleAddToCart, isPending: addToCartLoading } = useMutation({
     mutationFn: async (productId: string) => {
       const token = await getToken();
       const res = await fetch("/api/cart/add", {
@@ -55,7 +55,7 @@ function useCartHook() {
       }),
   });
 
-  const { mutateAsync: handleBuyNow } = useMutation({
+  const { mutateAsync: handleBuyNow, isPending: buyNowLoading } = useMutation({
     mutationFn: async (productId: string) => {
       await handleAddToCart(productId);
     },
@@ -121,7 +121,9 @@ function useCartHook() {
     isLoading,
     refetchCart,
     updateCartQuantity,
-    getCartTotal
+    getCartTotal,
+    addToCartLoading,
+    buyNowLoading
   }
 }
 

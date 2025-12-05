@@ -89,7 +89,7 @@ const ProductList = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} className="text-center py-4">
+                        <td colSpan={8} className="text-center py-4">
                           No products found.
                         </td>
                       </tr>

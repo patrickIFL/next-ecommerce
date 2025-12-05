@@ -106,7 +106,7 @@ export default function Page() {
           type="submit"
           className={`max-w-sm w-full mt-6 text-white py-3 uppercase 
             ${isPending
-              ? "bg-orange-900 cursor-not-allowed"
+              ? "bg-orange-900"
               : "bg-orange-600 cursor-pointer hover:bg-orange-700"}`}
         >
           {

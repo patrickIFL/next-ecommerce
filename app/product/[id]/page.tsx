@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 import useProductHook from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
+import { LoaderIcon } from "lucide-react";
 
 type ProductType = {
   id: string;
@@ -24,7 +25,7 @@ const Product = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
-  const { handleAddToCart } = useCartHook();
+  const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } = useCartHook();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   const [productData, setProductData] = useState<ProductType | null>(null);
@@ -148,9 +149,16 @@ const Product = () => {
           <div className="flex items-center mt-10 gap-4">
             <button
               onClick={() => handleAddToCart(productData.id)}
-              className="cursor-pointer w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition"
+              disabled={addToCartLoading}
+              className={`w-full py-3.5 text-gray-800/80 ${addToCartLoading ? "bg-gray-400" : "cursor-pointer bg-gray-100 hover:bg-gray-200"} transition`}
             >
-              Add to Cart
+              {addToCartLoading 
+              ? (<div className="flex gap-2 justify-center items-center">
+                <LoaderIcon className="animate-spin text-background" size={16} />
+                Adding
+              </div>) 
+              : "Add to cart"}
+              
             </button>
 
             <button
@@ -158,9 +166,15 @@ const Product = () => {
                 handleAddToCart(productData.id);
                 router.push("/cart");
               }}
-              className="w-full py-3.5 bg-orange-600 text-white cursor-pointer hover:bg-orange-700 transition"
+              disabled={buyNowLoading}
+              className={`w-full py-3.5 text-white ${buyNowLoading ? "bg-orange-900" : "cursor-pointer bg-orange-600 hover:bg-orange-700"} transition`}
             >
-              Buy now
+              {buyNowLoading 
+              ? (<div className="flex gap-2 justify-center items-center">
+                <LoaderIcon className="animate-spin text-white" size={16} />
+                Loading
+              </div>) 
+              : "Buy Now"}
             </button>
           </div>
         </div>

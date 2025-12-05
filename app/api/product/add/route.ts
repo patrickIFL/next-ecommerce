@@ -39,11 +39,21 @@ export async function POST(request: NextRequest) {
     const search_keys: string[] = searchKeysRaw
       ? JSON.parse(searchKeysRaw)
       : [];
-    const variations: string[] = variationsRaw
-      ? JSON.parse(variationsRaw)
-      : [];
+    const variations: string[] = variationsRaw ? JSON.parse(variationsRaw) : [];
 
     const files = formData.getAll("images") as File[];
+
+    // Check if SKU already exists
+    const skuExist = await prisma.product.findUnique({
+      where: { sku: sku! },
+    });
+
+    if (skuExist) {
+      return NextResponse.json(
+        { success: false, message: "SKU already exists" },
+        { status: 400 }
+      );
+    }
 
     if (!files || files.length === 0) {
       return NextResponse.json(
@@ -82,7 +92,7 @@ export async function POST(request: NextRequest) {
         category: category!,
         price: Number(price),
         offerPrice: Number(offerPrice),
-        
+
         sku: sku!,
         stock: Number(stock),
         search_keys,

@@ -3,11 +3,12 @@
 import { assets } from "@/assets/assets";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
+import { LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: any }) => {
-  const { handleBuyNow } = useCartHook();
+  const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.offerPrice < product.price;
@@ -88,13 +89,19 @@ const ProductCard = ({ product }: { product: any }) => {
         </p>
         
         <button
+          disabled={buyNowLoading}
           onClick={(e) => {
             e.stopPropagation(); // prevent navigation
             handleBuyNow(product.id);
+            
           }}
-          className="max-sm:hidden px-3 py-1.5 text-foreground border border-foreground rounded-full text-xs hover:bg-foreground hover:text-background transition cursor-pointer"
+          className={`max-sm:hidden px-3 py-1.5 text-foreground border ${buyNowLoading ? "border-foreground/50" : "cursor-pointer border-foreground hover:bg-foreground hover:text-background"} rounded-full text-xs transition`}
         >
-          Buy now
+          {buyNowLoading ? 
+          <div className="w-[47px]">
+            <LoaderIcon className="animate-spin text-foreground/50 mx-auto" size={16} />
+          </div>
+           : "Buy Now"}
         </button>
       </div>
     </div>

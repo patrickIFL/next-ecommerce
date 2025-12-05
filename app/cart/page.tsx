@@ -53,8 +53,8 @@ const Cart = () => {
         </div>
 
         <button
-          onClick={() => router.push("/all-products")}
-          className="group flex items-center mt-6 gap-2 text-orange-600"
+          onClick={() => router.push("/all/products")}
+          className="group flex items-center mt-6 gap-2 text-orange-600 cursor-pointer"
         >
           <Image
             className="group-hover:-translate-x-1 transition"

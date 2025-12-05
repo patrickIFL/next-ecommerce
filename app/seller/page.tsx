@@ -16,6 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useMutation } from "@tanstack/react-query";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -34,80 +35,80 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
 
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const formData = new FormData();
-
-    // Convert search keys to array
-    const searchKeysArray = searchKeys
-      .split(",")
-      .map((key) => key.trim())
-      .filter((key) => key.length > 0);
-
-    // Convert variations if needed
-    const variationsArray = variations
-      .split(",")
-      .map((v) => v.trim())
-      .filter((v) => v.length > 0);
-
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("price", price);
-    formData.append("offerPrice", offerPrice);
-
-    formData.append("sku", sku);
-    formData.append("stock", stock);
-
-    // ADD THESE
-    formData.append("search_keys", JSON.stringify(searchKeysArray));
-    formData.append("variations", JSON.stringify(variationsArray));
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append("images", files[i]);
-    }
-
-    try {
+  const { mutateAsync: addProduct, isPending: loading } = useMutation({
+    mutationFn: async () => {
+      const formData = new FormData();
       const token = await getToken();
-      setLoading(true);
-      const { data } = await axios.post("/api/product/add", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (data.success) {
-        setLoading(false);
-        toast({
-          title: "✅ Success",
-          description: data.message,
-          variant: "default",
+      // Convert search keys to array
+      const searchKeysArray = searchKeys
+        .split(",")
+        .map((key) => key.trim())
+        .filter((key) => key.length > 0);
+
+      // Convert variations if needed
+      const variationsArray = variations
+        .split(",")
+        .map((v) => v.trim())
+        .filter((v) => v.length > 0);
+
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("price", price);
+      formData.append("offerPrice", offerPrice);
+      formData.append("sku", sku);
+      formData.append("stock", stock);
+      // ADD THESE
+      formData.append("search_keys", JSON.stringify(searchKeysArray));
+      formData.append("variations", JSON.stringify(variationsArray));
+      for (let i = 0; i < files.length; i++) {
+        formData.append("images", files[i]);
+      }
+      try {
+        const { data } = await axios.post("/api/product/add", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setFiles([]);
-        setName("");
-        setDescription("");
-        setCategory("Uncategorized");
-        setPrice("");
-        setOfferPrice("");
-        setVariations("");
-        setSearchKeys("");
-        setSku("");
-        setStock("");
-      } else {
+        if (data.success) {
+          toast({
+            title: "✅ Success",
+            description: data.message,
+            variant: "default",
+          });
+        }
+      } catch (error: any) {
         toast({
           title: "Error",
-          description: data.message,
+          description: error.message,
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    },
+    onError: (error: any) => {
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
-    }
+    },
+    onSettled: () => {
+      setFiles([]);
+      setName("");
+      setDescription("");
+      setCategory("Uncategorized");
+      setPrice("");
+      setOfferPrice("");
+      setVariations("");
+      setSearchKeys("");
+      setSku("");
+      setStock("");
+    },
+  });
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    await addProduct();
   };
 
   return (
@@ -190,7 +191,6 @@ const AddProduct = () => {
             placeholder="Leave as blank - coming soon"
             onChange={(e) => setVariations(e.target.value)}
             value={variations}
-            required
           ></Textarea>
         </div>
 
@@ -208,7 +208,6 @@ const AddProduct = () => {
             placeholder="Separate each with a comma"
             onChange={(e) => setSearchKeys(e.target.value)}
             value={searchKeys}
-            required
           ></Textarea>
         </div>
         {/* ===================================== */}
@@ -241,7 +240,7 @@ const AddProduct = () => {
               </div>
             </label>
             <Input
-              id="product-price"
+              id="sku"
               type="text"
               placeholder="Unique Identifier"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
@@ -256,13 +255,14 @@ const AddProduct = () => {
               Stock
             </label>
             <Input
-              id="offer-price"
+              id="stock"
               type="number"
               placeholder="0"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setStock(e.target.value)}
               value={stock}
               required
+              autoComplete="false"
             />
           </div>
 
@@ -282,6 +282,7 @@ const AddProduct = () => {
               onChange={(e) => setPrice(e.target.value)}
               value={price}
               required
+              autoComplete="false"
             />
           </div>
 
@@ -297,14 +298,15 @@ const AddProduct = () => {
               onChange={(e) => setOfferPrice(e.target.value)}
               value={offerPrice}
               required
+              autoComplete="false"
             />
           </div>
         </div>
 
         <Button
           type="submit"
-          className={`py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
-          ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          className={`py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded
+          ${loading ? "opacity-50" : "cursor-pointer"}`}
           disabled={loading}
         >
           {loading ? (

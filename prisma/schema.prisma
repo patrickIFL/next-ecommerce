@@ -41,7 +41,7 @@ model Product {
   price       Int
   offerPrice  Int
   // new
-  search_keys String[]
+  search_keys String[]    @default([])
   sku         String
   stock       Int
   type        ProductType @default(SIMPLE)
@@ -55,7 +55,10 @@ model Product {
   user      User        @relation(fields: [userId], references: [id])
   cartItems CartItem[]
 
+  @@unique([sku])
   @@index([userId])
+  @@index([category])
+  @@index([search_keys], type: Gin) // improves search on array of text
 }
 
 // CartItem
@@ -63,10 +66,12 @@ model CartItem {
   id        String @id @default(cuid())
   userId    String
   productId String
-  quantity  Int    @default(1)
 
-  user      User     @relation(fields: [userId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  quantity Int @default(1)
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -119,18 +124,17 @@ model Payment {
   order Order @relation(fields: [orderId], references: [id])
 }
 
-// OrderItem (for multiple products per order)
+// OrderItem
 model OrderItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   orderId   String
-  productId String
+  productId String? // nullable
+  name      String // snapshot of product name
+  price     Int // snapshot of product price
   quantity  Int
 
-  order   Order   @relation(fields: [orderId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
-
-  @@index([orderId])
-  @@index([productId])
+  order   Order    @relation(fields: [orderId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
 }
 
 // ShippingAddress

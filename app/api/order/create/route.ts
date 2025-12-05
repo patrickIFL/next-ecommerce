@@ -53,47 +53,53 @@ export async function POST(req: NextRequest) {
 
     const lineItems = [
       ...cartItems.map((item) => ({
-      name: item.product.name,
-      quantity: item.quantity,
-      amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
-      currency: "PHP",
+        name: item.product.name,
+        quantity: item.quantity,
+        amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
+        currency: "PHP",
       })),
       {
         name: "Tax",
         quantity: 1,
-        amount: (taxValue*100), // Remove if no tax
-        currency: "PHP"
+        amount: taxValue * 100, // Remove if no tax
+        currency: "PHP",
       },
       {
         name: "Shipping",
         quantity: 1,
         amount: shipping, // Remove if no shipping
-        currency: "PHP"
+        currency: "PHP",
       },
-    ]
+    ];
 
     const checkoutSession = await paymongo.post("/checkout_sessions", {
-  data: {
-    attributes: {
-      line_items: lineItems,
-      payment_method_types: ["gcash", "card", "paymaya", "grab_pay", "billease"], 
-      description: "Next-Ecommerce",
-      success_url: platform === "mobile" 
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}`
-        : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`
-      ,
-      cancel_url: platform === "mobile" 
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}`
-        : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`
-      ,
-      metadata: {
-        userId,
-        selectedAddressId,
-        cartItems: JSON.stringify(cartItems),
+      data: {
+        attributes: {
+          line_items: lineItems,
+          payment_method_types: [
+            "gcash",
+            "card",
+            "paymaya",
+            "grab_pay",
+            "billease",
+          ],
+          description: "Next-Ecommerce",
+          success_url:
+            platform === "mobile"
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}`
+              : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
+          cancel_url:
+            platform === "mobile"
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}`
+              : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
+          metadata: {
+            userId,
+            selectedAddressId,
+            cartItems: JSON.stringify(cartItems),
+          },
+        },
       },
-    },
-  },
-});
+    });
 
     const session = checkoutSession.data.data;
 

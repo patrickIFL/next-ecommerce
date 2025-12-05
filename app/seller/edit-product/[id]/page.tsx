@@ -274,7 +274,7 @@ const EditProduct = () => {
               </div>
             </label>
             <Input
-              id="product-price"
+              id="sku"
               type="text"
               placeholder="0"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
@@ -289,13 +289,14 @@ const EditProduct = () => {
               Stock
             </label>
             <Input
-              id="offer-price"
+              id="stock"
               type="number"
               placeholder="0"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setStock(e.target.value)}
               value={stock}
               required
+              autoComplete="false"
             />
           </div>
 
@@ -315,6 +316,7 @@ const EditProduct = () => {
               onChange={(e) => setPrice(e.target.value)}
               value={price}
               required
+              autoComplete="false"
             />
           </div>
 
@@ -330,14 +332,15 @@ const EditProduct = () => {
               onChange={(e) => setOfferPrice(e.target.value)}
               value={offerPrice}
               required
+              autoComplete="false"
             />
           </div>
         </div>
 
         <Button
           type="submit"
-          className={`py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
-          ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          className={`py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded
+          ${loading ? "opacity-50" : "cursor-pointer"}`}
           disabled={loading}
         >
           {loading ? (
