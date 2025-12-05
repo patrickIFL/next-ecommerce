@@ -12,7 +12,11 @@ import { Input } from "@/components/ui/input";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 
 type ProductType = {
@@ -22,7 +26,11 @@ type ProductType = {
   price: number;
   offerPrice: number;
   category: string;
+  variations: string[];
+  search_keys: string[];
   image: string[];
+  sku: string;
+  stock: number;
 };
 
 const EditProduct = () => {
@@ -35,10 +43,10 @@ const EditProduct = () => {
   const [offerPrice, setOfferPrice] = useState("");
 
   // NEW =====================================
-  const [variations, setVariations] = useState('');
-  const [searchKeys, setSearchKeys] = useState('');
-  const [stock, setStock] = useState('');
-  const [sku, setSku] = useState('');
+  const [variations, setVariations] = useState("");
+  const [searchKeys, setSearchKeys] = useState("");
+  const [stock, setStock] = useState("");
+  const [sku, setSku] = useState("");
   // =========================================
 
   const [loading, setLoading] = useState(false);
@@ -62,6 +70,13 @@ const EditProduct = () => {
     setPrice(String(productData.price));
     setOfferPrice(String(productData.offerPrice));
 
+    setSku(productData.sku);
+    setStock(String(productData.stock));
+    // Convert array → "val1, val2, val3"
+    setSearchKeys(productData.search_keys.join(", "));
+    // If you also have variations:
+    setVariations(productData.variations.join(", "));
+
     // images
     setFiles([]);
   }, [productData]);
@@ -74,65 +89,66 @@ const EditProduct = () => {
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const formData = new FormData();
+  e.preventDefault();
+  const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("price", price);
-    formData.append("offerPrice", offerPrice);
-    formData.append("sku", sku);
-    formData.append("stock", stock);
+  // Convert search keys to array
+  const searchKeysArray = searchKeys
+    .split(",")
+    .map((key) => key.trim())
+    .filter((key) => key.length > 0);
 
-    // Convert comma-separated strings into trimmed arrays
-    const searchKeysArray = searchKeys
-      .split(",")
-      .map((key) => key.trim())
-      .filter((key) => key.length > 0);
-    formData.append("search_keys", JSON.stringify(searchKeysArray));
+  // Convert variations if needed
+  const variationsArray = variations
+    .split(",")
+    .map((v) => v.trim())
+    .filter((v) => v.length > 0);
 
-    const variationsArray = variations
-      .split(",")
-      .map((v) => v.trim())
-      .filter((v) => v.length > 0);
-    formData.append("variations", JSON.stringify(variationsArray));
+  formData.append("name", name);
+  formData.append("description", description);
+  formData.append("category", category);
+  formData.append("price", price);
+  formData.append("offerPrice", offerPrice);
+  formData.append("sku", sku);
+  formData.append("stock", stock);
 
-    // Append files if present
-    files.forEach((file: File) => {
-      if (file) formData.append("images", file);
+  formData.append("search_keys", JSON.stringify(searchKeysArray));
+  formData.append("variations", JSON.stringify(variationsArray));
+
+  // Append images with indexed keys to match backend
+  files.forEach((file: File, index: number) => {
+    if (file) formData.append(`images[${index}]`, file);
+  });
+
+  try {
+    const token = await getToken();
+    setLoading(true);
+
+    const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
-    try {
-      const token = await getToken();
-      setLoading(true);
+    setLoading(false);
 
-      const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setLoading(false);
-
-      if (data.success) {
-        toast({ title: "Success", description: data.message });
-        router.push("/seller/product-list");
-      } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      setLoading(false);
+    if (data.success) {
+      toast({ title: "Success", description: data.message });
+      router.push("/seller/product-list");
+    } else {
       toast({
         title: "Error",
-        description: error.message,
+        description: data.message,
         variant: "destructive",
       });
     }
-  };
-
+  } catch (error: any) {
+    setLoading(false);
+    toast({
+      title: "Error",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
+};
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between mt-16">
@@ -145,8 +161,8 @@ const EditProduct = () => {
               const previewImage = files[index]
                 ? URL.createObjectURL(files[index])
                 : existingImage
-                  ? existingImage
-                  : assets.upload_area;
+                ? existingImage
+                : assets.upload_area;
 
               return (
                 <label key={index} htmlFor={`image${index}`}>
@@ -260,9 +276,7 @@ const EditProduct = () => {
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               <div className="flex gap-1.5 items-center">
-                <span>
-                  SKU
-                </span>
+                <span>SKU</span>
                 <Tooltip>
                   <TooltipTrigger>
                     <Info size={12} />
@@ -285,8 +299,7 @@ const EditProduct = () => {
           </div>
 
           <div className="flex flex-col flex-1 gap-1 w-32">
-            <label className="text-base font-medium"
-              htmlFor="offer-price">
+            <label className="text-base font-medium" htmlFor="offer-price">
               Stock
             </label>
             <Input
@@ -301,12 +314,9 @@ const EditProduct = () => {
           </div>
 
           {/*  ===================================== */}
-
         </div>
 
-
         <div className="flex items-center gap-5 flex-wrap">
-
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
@@ -340,7 +350,7 @@ const EditProduct = () => {
 
         <Button
           type="submit"
-          onClick={() => { }}
+          onClick={() => {}}
           className={`px-8 py-2.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white font-medium rounded
     ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           disabled={loading}

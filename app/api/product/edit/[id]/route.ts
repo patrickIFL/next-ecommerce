@@ -24,9 +24,8 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // 2. Get product ID
+    // 2. Product ID
     const productId = request.url.split("/").pop();
-    
     if (!productId) {
       return NextResponse.json(
         { success: false, message: "Product ID is required" },
@@ -48,15 +47,31 @@ export async function PATCH(request: NextRequest) {
     // 3. Extract incoming form data
     const formData = await request.formData();
 
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const price = Number(formData.get("price"));
-    const offerPrice = Number(formData.get("offerPrice"));
+    const name = (formData.get("name") as string) || oldProduct.name;
+    const description =
+      (formData.get("description") as string) || oldProduct.description;
+    const category =
+      (formData.get("category") as string) || oldProduct.category;
+
+    const price = Number(formData.get("price") ?? oldProduct.price);
+    const offerPrice = Number(
+      formData.get("offerPrice") ?? oldProduct.offerPrice
+    );
+
+    const sku = formData.get("sku") as string | null;
+    const stock = formData.get("stock") as string | null;
+    const searchKeysRaw = formData.get("search_keys") as string | null;
+    const variationsRaw = formData.get("variations") as string | null;
+
+    const search_keys: string[] = searchKeysRaw
+      ? JSON.parse(searchKeysRaw)
+      : oldProduct.search_keys;
+
+    const variations: string[] = variationsRaw
+      ? JSON.parse(variationsRaw)
+      : oldProduct.variations;
 
     // ---- Image Handling ----
-    // We expect EXACTLY 4 image slots
-    // Each is "images[0]", "images[1]", etc.
     const newFiles: (File | null)[] = [];
 
     for (let i = 0; i < 4; i++) {
@@ -64,14 +79,11 @@ export async function PATCH(request: NextRequest) {
       newFiles.push(file instanceof File ? file : null);
     }
 
-    // Start with old images
     const finalImages = [...oldProduct.image];
 
-    // Upload only changed slots
+    // Upload only changed image slots
     for (let i = 0; i < 4; i++) {
       const file = newFiles[i];
-
-      // Skip unchanged slots
       if (!file || file.size === 0) continue;
 
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -79,21 +91,29 @@ export async function PATCH(request: NextRequest) {
       const uploaded = await new Promise<any>((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           { resource_type: "auto" },
-          (err:any, result:any) => (err ? reject(err) : resolve(result))
+          (err: any, result: any) => (err ? reject(err) : resolve(result))
         ).end(buffer);
       });
 
       finalImages[i] = uploaded.secure_url;
     }
 
-    // 4. Check if anything actually changed
+    // ---- Updated changesMade check ----
+    const imagesChanged = finalImages.some(
+      (url, i) => url !== oldProduct.image[i]
+    );
+
     const changesMade =
       oldProduct.name !== name ||
       oldProduct.description !== description ||
       oldProduct.category !== category ||
       oldProduct.price !== price ||
       oldProduct.offerPrice !== offerPrice ||
-      JSON.stringify(oldProduct.image) !== JSON.stringify(finalImages);
+      oldProduct.sku !== sku ||
+      oldProduct.stock !== Number(stock) ||
+      JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
+      JSON.stringify(oldProduct.variations) !== JSON.stringify(variations) ||
+      imagesChanged;
 
     if (!changesMade) {
       return NextResponse.json({
@@ -106,11 +126,16 @@ export async function PATCH(request: NextRequest) {
     const updated = await prisma.product.update({
       where: { id: productId },
       data: {
-        name,
-        description,
-        category,
-        price,
-        offerPrice,
+        userId: userId!,
+        name: name!,
+        description: description!,
+        category: category!,
+        price: Number(price),
+        offerPrice: Number(offerPrice),
+        sku: sku!,
+        stock: Number(stock),
+        search_keys,
+        variations,
         image: finalImages,
       },
     });
