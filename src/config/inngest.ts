@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Inngest } from "inngest";
 import prisma from "@/app/db/prisma";
 
@@ -9,6 +8,33 @@ interface ClerkUserEvent {
   last_name?: string;
   email_addresses: { email_address: string }[];
   image_url?: string | null;
+}
+
+interface OrderCreatedEventData {
+  userId: string;
+  items: {
+    productId: string;
+    quantity: number;
+    name: string;
+    price: number;
+  }[];
+  amount: number;
+  shippingAddressId: string;
+  orderDate: Date;
+  shippingMethod: string;
+  orderId: string;
+  paymongoPaymentId: string;
+  paymongoCheckoutId: string;
+  paymongoIntentId: string;
+  tax: number;
+  shipping: number;
+  payerName: string;
+  payerEmail: string;
+  payerPhone: string;
+  method: string;
+  payment_date: string;
+  currency: string;
+  line_items: string;
 }
 
 // Inngest client
@@ -106,58 +132,16 @@ export const syncUserDeletion = inngest.createFunction(
   }
 );
 
-// Types
-interface PaymongoLineItem {
-  amount: number;
-  currency: string;
-  description: string | null;
-  images: string[];
-  name: string;
-  quantity: number;
-}
-
-interface OrderItem {
-  productId: string;
-  quantity: number;
-  name: string;
-  price: number;
-}
-
-interface OrderCreatedEventData {
-  userId: string;
-  items: OrderItem[];
-  amount: number;
-  shippingAddressId: string;
-  orderDate: Date;
-  shippingMethod: string;
-
-  // Payment info
-  paymongoPaymentId?: string;
-  paymongoCheckoutId?: string;
-  paymongoIntentId?: string;
-  tax?: number;
-  shipping?: number;
-  payerName?: string;
-  payerEmail?: string;
-  payerPhone?: string;
-  method?: string;
-  payment_date?: string;
-  currency?: string;
-  line_items: PaymongoLineItem[];
-}
-
-// ✅ Create User Order Function
 export const createUserOrder = inngest.createFunction(
   {
     id: "create-user-order",
     batchEvents: { maxSize: 5, timeout: "5s" },
   },
   { event: "order/created" },
-  async ({ events, step }) => {
+  async ({ events }) => {
     for (const event of events) {
       const data: OrderCreatedEventData = event.data;
 
-      // 1️⃣ Create the order in Prisma
       const order = await prisma.order.create({
         data: {
           userId: data.userId,
@@ -166,41 +150,32 @@ export const createUserOrder = inngest.createFunction(
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
           items: {
-            create: data.items.map(item => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              name: item.name,
-              price: item.price,
-            })),
+            create: data.items,
           },
         },
       });
 
-      // 2️⃣ Send payment/record event to Inngest (correct syntax)
-      await step.sendEvent("payment/record", {
-        userId: data.userId,
-        orderId: order.id,
-        paymongoPaymentId: data.paymongoPaymentId,
-        paymongoCheckoutId: data.paymongoCheckoutId,
-        paymongoIntentId: data.paymongoIntentId,
-        amount: data.amount,
-        tax: data.tax,
-        shipping: data.shipping,
-        payerName: data.payerName,
-        payerEmail: data.payerEmail,
-        payerPhone: data.payerPhone,
-        method: data.method,
-        payment_date: data.payment_date,
-        currency: data.currency,
-        line_items: data.line_items,
+      await prisma.payment.create({
+        data: {
+          userId: data.userId,
+          orderId: order.id, // <-- linking payment to order
+          paymongo_payment_id: data.paymongoPaymentId,
+          paymongo_checkout_id: data.paymongoCheckoutId,
+          paymongo_payment_intent_id: data.paymongoIntentId,
+          amount: data.amount,
+          tax: data.tax,
+          shipping: data.shipping,
+          payer_name: data.payerName ?? "",
+          payer_email: data.payerEmail ?? "",
+          payer_phone: data.payerPhone ?? "",
+          method: data.method,
+          currency: data.currency,
+          line_items: data.line_items,
+        },
       });
-
-      // 3️⃣ Clear the user's cart
-      await prisma.cartItem.deleteMany({ where: { userId: data.userId } });
     }
   }
 );
-
 
 export const createPaymentRecord = inngest.createFunction(
   {

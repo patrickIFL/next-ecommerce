@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
         tax: 123,
         shipping: 123,
         currency,
-        line_items
+        line_items: JSON.stringify(line_items),
       },
     });
 
