@@ -29,14 +29,12 @@ export async function POST(req: NextRequest) {
       const amount = payment.attributes.amount;
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
-      const cartItems = JSON.parse(metadata.cartItems);
+      const cartItems = metadata.cartItems;
 
       // Prepare items for nested create
-      const items = cartItems.map((item: any) => ({
-        productId: item.productId,
-        quantity: Math.floor(item.quantity), // ensure integer
-        name: item.name,
-        price: Math.floor(item.price), // ensure integer
+    const items = cartItems.map((item: any) => ({
+      productId: item.productId,
+      quantity: item.quantity,
       }));
 
       await inngest.send({
@@ -47,7 +45,6 @@ export async function POST(req: NextRequest) {
           amount,
           orderDate: new Date(),
           shippingMethod: "standard",
-          //shippingStatus: "pending", // pending by default
           items,
           // values for payment object
           paymongoPaymentId: payment_id,

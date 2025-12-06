@@ -150,12 +150,7 @@ export const createUserOrder = inngest.createFunction(
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
           items: {
-            create: data.items.map((item) => ({
-              productId: item.productId,
-              quantity: Math.floor(item.quantity),
-              name: item.name,
-              price: Math.floor(item.price),
-            })),
+            create: data.items
           },
         },
       });
