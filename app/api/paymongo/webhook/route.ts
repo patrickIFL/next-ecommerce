@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       const line_items = session.attributes.line_items;
       const checkout_id = session.id;
       const payment = session.attributes.payments[0];
-      const currency = payment.currency;
+      const currency = payment.attributes.currency;
       const payment_intent = session.attributes.payment_intent;
       const payment_intent_id = payment_intent.id;
       const payment_id = payment.id;
