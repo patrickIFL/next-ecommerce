@@ -35,7 +35,7 @@ function NavLinks({ menus }: { menus: any }) {
     </NavigationMenuTrigger>
 
     <NavigationMenuContent className="absolute min-w-[200px] z-50">
-      <ul className="grid w-[200px] gap-1">
+      <ul className="grid w-[200px] gap-1 text-foreground">
         {menu.menuLinks.map((link: any, j: number) => (
           <li key={j}>
             <NavigationMenuLink asChild>

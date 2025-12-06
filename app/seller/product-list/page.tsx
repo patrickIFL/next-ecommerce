@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any*/
 import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";

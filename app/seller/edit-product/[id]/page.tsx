@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info, LoaderIcon } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 
 const EditProduct = () => {
   const { getToken } = useAuth();
@@ -35,7 +36,6 @@ const EditProduct = () => {
   const [sku, setSku] = useState("");
   // =========================================
 
-  const [loading, setLoading] = useState(false);
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
   const [productData, setProductData] = useState<any>(null);
@@ -70,75 +70,98 @@ const EditProduct = () => {
   // Global loading state (products not ready yet)
   // if (!products || products.length === 0) return <Loading />;
 
+  const { mutateAsync: updateProduct, isPending: loading } = useMutation({
+    mutationFn: async () => {
+      const formData = new FormData();
+
+      // validate
+      if (Number(offerPrice) <= 0 || Number(price) <= 0)
+        return toast({
+          title: "Invalid Price",
+          description: "Price must be greater than 0",
+          variant: "destructive",
+        });
+
+      if (Number(offerPrice) < 0)
+        return toast({
+          title: "Invalid Stock",
+          description: "Price must be greater than or equal to 0",
+          variant: "destructive",
+        });
+
+      const token = await getToken();
+      // Convert search keys to array
+      const searchKeysArray = searchKeys
+        .split(",")
+        .map((key) => key.trim())
+        .filter((key) => key.length > 0);
+
+      // Convert variations if needed
+      const variationsArray = variations
+        .split(",")
+        .map((v) => v.trim())
+        .filter((v) => v.length > 0);
+
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("price", price);
+      formData.append("offerPrice", offerPrice);
+      formData.append("sku", sku);
+      formData.append("stock", stock);
+      // ADD THESE
+      formData.append("search_keys", JSON.stringify(searchKeysArray));
+      formData.append("variations", JSON.stringify(variationsArray));
+
+      // Append images with indexed keys to match backend
+      files.forEach((file: File, index: number) => {
+        if (file) formData.append(`images[${index}]`, file);
+      });
+
+      try {
+        const res = await axios.patch(`/api/product/edit/${id}`, formData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.data;
+        return data;
+      } catch (error: any) {
+        const serverMessage =
+          error?.response?.data?.message ||
+          error.message ||
+          "Failed to edit product";
+
+        throw new Error(serverMessage);
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+    onSettled: (data: any) => {
+      toast({ title: "Success", description: data.message });
+      router.push("/seller/product-list");
+    },
+  });
+
   // Product not found
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    // Convert search keys to array
-    const searchKeysArray = searchKeys
-      .split(",")
-      .map((key) => key.trim())
-      .filter((key) => key.length > 0);
-
-    // Convert variations if needed
-    const variationsArray = variations
-      .split(",")
-      .map((v) => v.trim())
-      .filter((v) => v.length > 0);
-
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("price", price);
-    formData.append("offerPrice", offerPrice);
-    formData.append("sku", sku);
-    formData.append("stock", stock);
-
-    formData.append("search_keys", JSON.stringify(searchKeysArray));
-    formData.append("variations", JSON.stringify(variationsArray));
-
-    // Append images with indexed keys to match backend
-    files.forEach((file: File, index: number) => {
-      if (file) formData.append(`images[${index}]`, file);
-    });
-
-    try {
-      const token = await getToken();
-      setLoading(true);
-
-      const { data } = await axios.patch(`/api/product/edit/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setLoading(false);
-
-      if (data.success) {
-        toast({ title: "Success", description: data.message });
-        router.push("/seller/product-list");
-      } else {
-        toast({
-          title: "Error",
-          description: data.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      setLoading(false);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+    await updateProduct();
   };
 
   return (
-    <div className="flex-1 min-h-screen flex flex-col justify-between mt-16">
+    <div className="flex-1 min-h-screen flex flex-col justify-between mt-12">
       <form onSubmit={handleSubmit} className="md:p-10 p-4 space-y-5 max-w-lg">
+        <div className="flex flex-col mb-5">
+          <p className="text-2xl font-medium">{productData.name}</p>
+          <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+        </div>
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -296,7 +319,7 @@ const EditProduct = () => {
               onChange={(e) => setStock(e.target.value)}
               value={stock}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
 
@@ -316,7 +339,7 @@ const EditProduct = () => {
               onChange={(e) => setPrice(e.target.value)}
               value={price}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
 
@@ -332,7 +355,7 @@ const EditProduct = () => {
               onChange={(e) => setOfferPrice(e.target.value)}
               value={offerPrice}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
         </div>

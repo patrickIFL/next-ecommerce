@@ -151,9 +151,11 @@ function ProductDataRow({ product }: { product: any }) {
                 )}
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
-            </TooltipContent>
+            {!isToggling && (
+              <TooltipContent>
+                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+              </TooltipContent>
+            )}
           </Tooltip>
         </div>
       </td>
@@ -178,20 +180,19 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <ConfirmDelete onConfirm={() => deleteProduct(product.id)}>
-  <button
-    disabled={isDeleting}
-    className={`flex items-center gap-1 p-1.5 ${
-      isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
-    } cursor-pointer text-white rounded-md`}
-  >
-    {isDeleting ? (
-      <LoaderIcon className="animate-spin" size={16} />
-    ) : (
-      <Trash2 size={16} />
-    )}
-  </button>
-</ConfirmDelete>
-
+                <button
+                  disabled={isDeleting}
+                  className={`flex items-center gap-1 p-1.5 ${
+                    isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
+                  } cursor-pointer text-white rounded-md`}
+                >
+                  {isDeleting ? (
+                    <LoaderIcon className="animate-spin" size={16} />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
+                </button>
+              </ConfirmDelete>
             </TooltipTrigger>
             <TooltipContent>
               <p>Delete</p>

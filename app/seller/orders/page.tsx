@@ -52,7 +52,10 @@ const Orders: React.FC = () => {
                     </thead>
 
                     <tbody>
-                      {allOrders.map((order: any, i: number) => (
+                      {allOrders && allOrders.length > 0 
+                      ? (
+                        <>
+                        {allOrders.map((order: any, i: number) => (
                         <tr key={i} className="border-b border-accent">
                           {/* PRODUCT */}
                           <td className="p-3 align-top">
@@ -101,6 +104,17 @@ const Orders: React.FC = () => {
                           </td>
                         </tr>
                       ))}
+                        </>
+                      ) 
+                      : (
+                        <tr>
+                        <td colSpan={4} className="text-center py-4">
+                          No Orders Yet.
+                        </td>
+                      </tr>
+                      )
+                      }
+                      
                     </tbody>
                   </table>
                   <ScrollBar orientation="vertical" />

@@ -36,12 +36,21 @@ export async function POST(request: NextRequest) {
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations") as string | null;
 
-    const search_keys: string[] = searchKeysRaw
-      ? JSON.parse(searchKeysRaw)
-      : [];
-    const variations: string[] = variationsRaw ? JSON.parse(variationsRaw) : [];
+    // validate
 
-    const files = formData.getAll("images") as File[];
+    if (Number(price) <= 0 || Number(offerPrice) <= 0) {
+      return NextResponse.json(
+        { success: false, message: "Price cannot be set to equal or less than 0" },
+        { status: 401 }
+      );
+    }
+
+    if (Number(stock) < 0) {
+      return NextResponse.json(
+        { success: false, message: "Stock cannot be set to less than 0" },
+        { status: 401 }
+      );
+    }
 
     // Check if SKU already exists
     const skuExist = await prisma.product.findUnique({
@@ -55,12 +64,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const files = formData.getAll("images") as File[];
+
     if (!files || files.length === 0) {
       return NextResponse.json(
         { success: false, message: "No files uploaded" },
         { status: 400 }
       );
     }
+
+    const search_keys: string[] = searchKeysRaw
+      ? JSON.parse(searchKeysRaw)
+      : [];
+    const variations: string[] = variationsRaw ? JSON.parse(variationsRaw) : [];
 
     // Upload each image to Cloudinary
     const uploadResults = await Promise.all(

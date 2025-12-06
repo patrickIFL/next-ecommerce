@@ -38,6 +38,22 @@ const AddProduct = () => {
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
+
+      // validate
+      if (Number(offerPrice) <= 0 || Number(price) <= 0)
+        return toast({
+          title: "Invalid Price",
+          description: "Price must be greater than 0",
+          variant: "destructive",
+        });
+
+      if (Number(offerPrice) < 0)
+        return toast({
+          title: "Invalid Stock",
+          description: "Stock must be greater than or equal to 0",
+          variant: "destructive",
+        });
+
       const token = await getToken();
       // Convert search keys to array
       const searchKeysArray = searchKeys
@@ -65,34 +81,30 @@ const AddProduct = () => {
         formData.append("images", files[i]);
       }
       try {
-        const { data } = await axios.post("/api/product/add", formData, {
+        const res = await axios.post("/api/product/add", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (data.success) {
-          toast({
-            title: "✅ Success",
-            description: data.message,
-            variant: "default",
-          });
-        }
+
+        const data = await res.data;
+        return data;
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        const serverMessage =
+          error?.response?.data?.message ||
+          error.message ||
+          "Failed to add product";
+
+        throw new Error(serverMessage);
       }
     },
-    onError: (error: any) => {
+    onSuccess: (data) => {
       toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+        title: "✅ Success",
+        description: data.message,
+        variant: "default",
       });
-    },
-    onSettled: () => {
+
       setFiles([]);
       setName("");
       setDescription("");
@@ -104,6 +116,13 @@ const AddProduct = () => {
       setSku("");
       setStock("");
     },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const handleSubmit = async (e: any) => {
@@ -112,8 +131,12 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="flex-1 min-h-screen flex flex-col justify-between mt-16">
+    <div className="flex-1 min-h-screen flex flex-col justify-between mt-12">
       <form onSubmit={handleSubmit} className="md:p-10 p-4 space-y-5 max-w-lg">
+        <div className="flex flex-col mb-5">
+          <p className="text-2xl font-medium">New Product</p>
+          <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+        </div>
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -262,7 +285,7 @@ const AddProduct = () => {
               onChange={(e) => setStock(e.target.value)}
               value={stock}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
 
@@ -282,7 +305,7 @@ const AddProduct = () => {
               onChange={(e) => setPrice(e.target.value)}
               value={price}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
 
@@ -298,7 +321,7 @@ const AddProduct = () => {
               onChange={(e) => setOfferPrice(e.target.value)}
               value={offerPrice}
               required
-              autoComplete="false"
+              autoComplete="off"
             />
           </div>
         </div>

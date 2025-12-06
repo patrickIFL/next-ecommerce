@@ -63,6 +63,22 @@ export async function PATCH(request: NextRequest) {
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations") as string | null;
 
+    // validate
+
+    if (Number(price) <= 0 || Number(offerPrice) <= 0) {
+      return NextResponse.json(
+        { success: false, message: "Price cannot be set to equal or less than 0" },
+        { status: 401 }
+      );
+    }
+
+    if (Number(stock) < 0) {
+      return NextResponse.json(
+        { success: false, message: "Stock cannot be set to less than 0" },
+        { status: 401 }
+      );
+    }
+
     const skuExist = await prisma.product.findFirst({
       where: { sku: sku! },
     });
