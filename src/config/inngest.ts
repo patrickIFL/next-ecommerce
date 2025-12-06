@@ -120,11 +120,11 @@ export const createUserOrder = inngest.createFunction(
     batchEvents: { maxSize: 5, timeout: "5s" },
   },
   { event: "order/created" },
-  async ({ events }) => {
+  async ({ events, step }) => {
     for (const event of events) {
       const data: OrderCreatedEventData = event.data;
 
-      await prisma.order.create({
+      const order = await prisma.order.create({
         data: {
           userId: data.userId,
           shippingAddressId: data.shippingAddressId,
@@ -132,12 +132,60 @@ export const createUserOrder = inngest.createFunction(
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
           items: {
-            create: data.items
+            create: data.items,
           },
-      }});
+        },
+      });
+
+      await step.sendEvent("payment/record", {
+        userId: data.userId,
+        orderId: order.id,
+        paymongoPaymentId: data.paymongoPaymentId,
+        paymongoCheckoutId: data.paymongoCheckoutId,
+        paymongoIntentId: data.paymongoIntentId,
+        amount: data.amount,
+        tax: data.tax,
+        shipping: data.shipping,
+        payerName: data.payerName,
+        payerEmail: data.payerEmail,
+        payerPhone: data.payerPhone,
+        method: data.method,
+        payment_date: data.payment_date,
+        currency: data.currency,
+        line_items: data.line_items,
+      });
     }
   }
 );
 
-// create payent Object
+export const createPaymentRecord = inngest.createFunction(
+  {
+    id: "create-payment-record",
+    batchEvents: { maxSize: 5, timeout: "5s" },
+  },
+  { event: "payment/record" },
+  async ({ events }) => {
+    for (const event of events) {
+      const data = event.data;
 
+      await prisma.payment.create({
+        data: {
+          userId: data.userId,
+          orderId: data.orderId, // <-- linking payment to order
+          paymongo_payment_id: data.paymongoPaymentId,
+          paymongo_checkout_id: data.paymongoCheckoutId,
+          paymongo_payment_intent_id: data.paymongoIntentId,
+          amount: data.amount,
+          tax: data.tax,
+          shipping: data.shipping,
+          payer_name: data.payerName ?? "",
+          payer_email: data.payerEmail ?? "",
+          payer_phone: data.payerPhone ?? "",
+          method: data.method,
+          currency: data.currency,
+          line_items: data.line_items,
+        },
+      });
+    }
+  }
+);

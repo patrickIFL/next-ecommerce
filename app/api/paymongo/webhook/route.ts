@@ -15,15 +15,18 @@ export async function POST(req: NextRequest) {
       // For Future Optimizations
 
       const session = body.data.attributes.data; 
+      const line_items = session.attributes.line_items;
+      const checkout_id = session.id;
       const payment = session.attributes.payments[0];
-      // const payment_intent = session.attributes.payment_intent; 
-      // const payment_intent_id = payment_intent.id; 
-      // const payment_id = payment.id;
-      // const customer_name = payment.attributes.billing.name;
-      // const customer_email = payment.attributes.billing.email;
-      // const customer_phone = payment.attributes.billing.phone;
-      // const payment_method = payment.attributes.source.type;
-      // const payment_date = payment.attributes.paid_at;
+      const currency = payment.currency;
+      const payment_intent = session.attributes.payment_intent; 
+      const payment_intent_id = payment_intent.id; 
+      const payment_id = payment.id;
+      const customer_name = payment.attributes.billing.name;
+      const customer_email = payment.attributes.billing.email;
+      const customer_phone = payment.attributes.billing.phone;
+      const payment_method = payment.attributes.source.type;
+      const payment_date = payment.attributes.paid_at;
 
       const metadata = session.attributes.metadata;
       const amount = payment.attributes.amount / 100;
@@ -63,6 +66,19 @@ export async function POST(req: NextRequest) {
         shippingMethod: "standard",
         //shippingStatus: "pending", // pending by default
         items,
+        // values for payment object
+        paymongoPaymentId: payment_id,
+        paymongoCheckoutId: checkout_id,
+        paymongoIntentId: payment_intent_id,
+        payerName: customer_name,
+        payerEmail: customer_email,
+        payerPhone: customer_phone,
+        method: payment_method,
+        payment_date,
+        tax: 123,
+        shipping: 123,
+        currency,
+        line_items
       },
     });
 
