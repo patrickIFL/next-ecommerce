@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     if (eventType === "checkout_session.payment.paid") {
       const session = body.data.attributes.data;
-      
+      const line_items = session.attributes.line_items;
       const checkout_id = session.id;
       const payment = session.attributes.payments[0];
       const currency = payment.attributes.currency;
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);
-      const line_items = metadata.line_items;
+      console.log(metadata.line_items)
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
           tax: 123,
           shipping: 123,
           currency,
-          line_items,
+          line_items: JSON.stringify(line_items),
         },
       });
 
