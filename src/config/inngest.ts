@@ -143,23 +143,22 @@ export const createUserOrder = inngest.createFunction(
       const data: OrderCreatedEventData = event.data;
 
       const order = await prisma.order.create({
-  data: {
-    userId: data.userId,
-    shippingAddressId: data.shippingAddressId,
-    amount: data.amount,
-    orderDate: data.orderDate,
-    shippingMethod: data.shippingMethod,
-    items: {
-      create: data.items.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        name: item.name,
-        price: item.price,
-      })),
-    },
-  },
-});
-
+        data: {
+          userId: data.userId,
+          shippingAddressId: data.shippingAddressId,
+          amount: Math.floor(data.amount),
+          orderDate: data.orderDate,
+          shippingMethod: data.shippingMethod,
+          items: {
+            create: data.items.map((item) => ({
+              productId: item.productId,
+              quantity: Math.floor(item.quantity),
+              name: item.name,
+              price: Math.floor(item.price),
+            })),
+          },
+        },
+      });
 
       await prisma.payment.create({
         data: {
