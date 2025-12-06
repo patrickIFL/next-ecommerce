@@ -143,54 +143,28 @@ export const createUserOrder = inngest.createFunction(
       const data: OrderCreatedEventData = event.data;
 
       const order = await prisma.order.create({
-        data: {
-          userId: data.userId,
-          shippingAddressId: data.shippingAddressId,
-          amount: data.amount,
-          orderDate: data.orderDate,
-          shippingMethod: data.shippingMethod,
-          items: {
-            create: data.items,
-          },
-        },
-      });
+  data: {
+    userId: data.userId,
+    shippingAddressId: data.shippingAddressId,
+    amount: data.amount,
+    orderDate: data.orderDate,
+    shippingMethod: data.shippingMethod,
+    items: {
+      create: data.items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        name: item.name,
+        price: item.price,
+      })),
+    },
+  },
+});
+
 
       await prisma.payment.create({
         data: {
           userId: data.userId,
           orderId: order.id, // <-- linking payment to order
-          paymongo_payment_id: data.paymongoPaymentId,
-          paymongo_checkout_id: data.paymongoCheckoutId,
-          paymongo_payment_intent_id: data.paymongoIntentId,
-          amount: data.amount,
-          tax: data.tax,
-          shipping: data.shipping,
-          payer_name: data.payerName ?? "",
-          payer_email: data.payerEmail ?? "",
-          payer_phone: data.payerPhone ?? "",
-          method: data.method,
-          currency: data.currency,
-          line_items: data.line_items,
-        },
-      });
-    }
-  }
-);
-
-export const createPaymentRecord = inngest.createFunction(
-  {
-    id: "create-payment-record",
-    batchEvents: { maxSize: 5, timeout: "5s" },
-  },
-  { event: "payment/record" },
-  async ({ events }) => {
-    for (const event of events) {
-      const data = event.data;
-
-      await prisma.payment.create({
-        data: {
-          userId: data.userId,
-          orderId: data.orderId, // <-- linking payment to order
           paymongo_payment_id: data.paymongoPaymentId,
           paymongo_checkout_id: data.paymongoCheckoutId,
           paymongo_payment_intent_id: data.paymongoIntentId,
