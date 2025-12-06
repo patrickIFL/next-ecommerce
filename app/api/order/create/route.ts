@@ -52,25 +52,32 @@ export async function POST(req: NextRequest) {
     // const total = subtotal + taxValue + shipping;
 
     const lineItems = [
-      ...cartItems.map((item) => ({
-        name: item.product.name,
-        quantity: item.quantity,
-        amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
-        currency: "PHP",
-      })),
-      {
-        name: "Tax",
-        quantity: 1,
-        amount: taxValue * 100, // Remove if no tax
-        currency: "PHP",
-      },
-      {
-        name: "Shipping",
-        quantity: 1,
-        amount: shipping, // Remove if no shipping
-        currency: "PHP",
-      },
-    ];
+  ...cartItems.map((item) => ({
+    name: item.product.name,
+    quantity: item.quantity,
+    amount: Math.floor(item.product.offerPrice * 100),
+    currency: "PHP",
+    images: item.product.image ?? [],         // VALID
+    description: item.product.description ?? null,  // VALID
+  })),
+  {
+    name: "Tax",
+    quantity: 1,
+    amount: taxValue * 100,
+    currency: "PHP",
+    images: [],
+    description: null,
+  },
+  {
+    name: "Shipping",
+    quantity: 1,
+    amount: shipping,
+    currency: "PHP",
+    images: [],
+    description: null,
+  },
+];
+
 
     const checkoutSession = await paymongo.post("/checkout_sessions", {
       data: {
