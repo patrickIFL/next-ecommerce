@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
 
     if (eventType === "checkout_session.payment.paid") {
 
-      // For Future Optimizations
-
       const session = body.data.attributes.data; 
       const line_items = session.attributes.line_items;
       const checkout_id = session.id;
@@ -30,22 +28,6 @@ export async function POST(req: NextRequest) {
 
       const metadata = session.attributes.metadata;
       const amount = payment.attributes.amount / 100;
-      // const status = payment.attributes.status;
-
-      // console.log("🎉 PAYMENT PAID EVENT");
-      // console.log("Paid at:", payment_date);
-      // console.log("UserID:", metadata.userId);
-      // console.log("Selected Address:", metadata.selectedAddressId);
-      // console.log("Customer Name:", customer_name);
-      // console.log("Customer Email:", customer_email);
-      // console.log("Customer Phone:", customer_phone);
-      // console.log("Payment Intent ID:", payment_intent_id);
-      // console.log("Payment ID:", payment_id);
-      // console.log("Raw Items:", metadata.cartItems);
-      // console.log("Amount:", amount);
-      // console.log("Payment Method:", payment_method);
-      // console.log("Status:", status);
-
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);

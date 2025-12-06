@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Inngest } from "inngest";
 import prisma from "@/app/db/prisma";
 
@@ -10,13 +11,43 @@ interface ClerkUserEvent {
   image_url?: string | null;
 }
 
+interface PaymongoLineItem {
+  amount: number;
+  currency: string;
+  description: string | null;
+  images: string[];
+  name: string;
+  quantity: number;
+}
+
 interface OrderCreatedEventData {
   userId: string;
-  items: { productId: string; quantity: number }[];
+  items: {
+    productId: string;
+    quantity: number;
+    name: string;
+    price: number;
+  }[];
   amount: number;
   shippingAddressId: string;
   orderDate: Date;
   shippingMethod: string;
+
+  // Payment info
+  orderId?: string;
+  paymongoPaymentId?: string;
+  paymongoCheckoutId?: string;
+  paymongoIntentId?: string;
+  tax?: number;
+  shipping?: number;
+  payerName?: string;
+  payerEmail?: string;
+  payerPhone?: string;
+  method?: string;
+  payment_date?: string;
+  currency?: string;
+
+  line_items: PaymongoLineItem[]; // ✅ array of Paymongo items
 }
 
 // Inngest client
@@ -137,7 +168,7 @@ export const createUserOrder = inngest.createFunction(
         },
       });
 
-      await step.sendEvent("payment/record", {
+      await step.sendEvent<any>("payment/record", {
         userId: data.userId,
         orderId: order.id,
         paymongoPaymentId: data.paymongoPaymentId,
