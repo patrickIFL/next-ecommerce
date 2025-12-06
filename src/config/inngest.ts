@@ -11,45 +11,6 @@ interface ClerkUserEvent {
   image_url?: string | null;
 }
 
-interface PaymongoLineItem {
-  amount: number;
-  currency: string;
-  description: string | null;
-  images: string[];
-  name: string;
-  quantity: number;
-}
-
-interface OrderCreatedEventData {
-  userId: string;
-  items: {
-    productId: string;
-    quantity: number;
-    name: string;
-    price: number;
-  }[];
-  amount: number;
-  shippingAddressId: string;
-  orderDate: Date;
-  shippingMethod: string;
-
-  // Payment info
-  orderId?: string;
-  paymongoPaymentId?: string;
-  paymongoCheckoutId?: string;
-  paymongoIntentId?: string;
-  tax?: number;
-  shipping?: number;
-  payerName?: string;
-  payerEmail?: string;
-  payerPhone?: string;
-  method?: string;
-  payment_date?: string;
-  currency?: string;
-
-  line_items: PaymongoLineItem[]; // ✅ array of Paymongo items
-}
-
 // Inngest client
 export const inngest = new Inngest({ id: "next-ecommerce" });
 
@@ -145,6 +106,47 @@ export const syncUserDeletion = inngest.createFunction(
   }
 );
 
+// Types
+interface PaymongoLineItem {
+  amount: number;
+  currency: string;
+  description: string | null;
+  images: string[];
+  name: string;
+  quantity: number;
+}
+
+interface OrderItem {
+  productId: string;
+  quantity: number;
+  name: string;
+  price: number;
+}
+
+interface OrderCreatedEventData {
+  userId: string;
+  items: OrderItem[];
+  amount: number;
+  shippingAddressId: string;
+  orderDate: Date;
+  shippingMethod: string;
+
+  // Payment info
+  paymongoPaymentId?: string;
+  paymongoCheckoutId?: string;
+  paymongoIntentId?: string;
+  tax?: number;
+  shipping?: number;
+  payerName?: string;
+  payerEmail?: string;
+  payerPhone?: string;
+  method?: string;
+  payment_date?: string;
+  currency?: string;
+  line_items: PaymongoLineItem[];
+}
+
+// ✅ Create User Order Function
 export const createUserOrder = inngest.createFunction(
   {
     id: "create-user-order",
@@ -155,6 +157,7 @@ export const createUserOrder = inngest.createFunction(
     for (const event of events) {
       const data: OrderCreatedEventData = event.data;
 
+      // 1️⃣ Create the order in Prisma
       const order = await prisma.order.create({
         data: {
           userId: data.userId,
@@ -163,12 +166,18 @@ export const createUserOrder = inngest.createFunction(
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
           items: {
-            create: data.items,
+            create: data.items.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              name: item.name,
+              price: item.price,
+            })),
           },
         },
       });
 
-      await step.sendEvent<any>("payment/record", {
+      // 2️⃣ Send payment/record event to Inngest (correct syntax)
+      await step.sendEvent("payment/record", {
         userId: data.userId,
         orderId: order.id,
         paymongoPaymentId: data.paymongoPaymentId,
@@ -185,9 +194,13 @@ export const createUserOrder = inngest.createFunction(
         currency: data.currency,
         line_items: data.line_items,
       });
+
+      // 3️⃣ Clear the user's cart
+      await prisma.cartItem.deleteMany({ where: { userId: data.userId } });
     }
   }
 );
+
 
 export const createPaymentRecord = inngest.createFunction(
   {
