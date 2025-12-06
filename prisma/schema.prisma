@@ -118,7 +118,7 @@ model Payment {
   date                       DateTime @default(now())
   method                     String
   currency                   String
-  line_items                 Json
+  line_items                 Json[]
 
   user  User  @relation(fields: [userId], references: [id])
   order Order @relation(fields: [orderId], references: [id])

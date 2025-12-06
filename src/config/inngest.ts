@@ -170,7 +170,7 @@ export const createUserOrder = inngest.createFunction(
           payer_phone: data.payerPhone ?? "",
           method: data.method,
           currency: data.currency,
-          line_items: data.line_items,
+          line_items: JSON.parse(data.line_items),
         },
       });
     }

@@ -6651,7 +6651,7 @@ export namespace Prisma {
     date: Date
     method: string
     currency: string
-    line_items: JsonValue
+    line_items: JsonValue[]
     _count: PaymentCountAggregateOutputType | null
     _avg: PaymentAvgAggregateOutputType | null
     _sum: PaymentSumAggregateOutputType | null
@@ -6791,7 +6791,7 @@ export namespace Prisma {
       date: Date
       method: string
       currency: string
-      line_items: Prisma.JsonValue
+      line_items: Prisma.JsonValue[]
     }, ExtArgs["result"]["payment"]>
     composites: {}
   }
@@ -7232,7 +7232,7 @@ export namespace Prisma {
     readonly date: FieldRef<"Payment", 'DateTime'>
     readonly method: FieldRef<"Payment", 'String'>
     readonly currency: FieldRef<"Payment", 'String'>
-    readonly line_items: FieldRef<"Payment", 'Json'>
+    readonly line_items: FieldRef<"Payment", 'Json[]'>
   }
     
 
@@ -10068,13 +10068,6 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -10089,15 +10082,6 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-  export const JsonNullValueFilter: {
-    DbNull: typeof DbNull,
-    JsonNull: typeof JsonNull,
-    AnyNull: typeof AnyNull
-  };
-
-  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -10169,16 +10153,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
+   * Reference to a field of type 'Json[]'
    */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+  export type ListJsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json[]'>
     
 
 
   /**
-   * Reference to a field of type 'QueryMode'
+   * Reference to a field of type 'Json'
    */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
@@ -10555,7 +10539,7 @@ export namespace Prisma {
     date?: DateTimeFilter<"Payment"> | Date | string
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    line_items?: JsonFilter<"Payment">
+    line_items?: JsonNullableListFilter<"Payment">
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }
@@ -10600,7 +10584,7 @@ export namespace Prisma {
     date?: DateTimeFilter<"Payment"> | Date | string
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    line_items?: JsonFilter<"Payment">
+    line_items?: JsonNullableListFilter<"Payment">
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }, "id" | "orderId">
@@ -10648,7 +10632,7 @@ export namespace Prisma {
     date?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
     method?: StringWithAggregatesFilter<"Payment"> | string
     currency?: StringWithAggregatesFilter<"Payment"> | string
-    line_items?: JsonWithAggregatesFilter<"Payment">
+    line_items?: JsonNullableListFilter<"Payment">
   }
 
   export type OrderItemWhereInput = {
@@ -11180,7 +11164,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
     user: UserCreateNestedOneWithoutPaymentsInput
     order: OrderCreateNestedOneWithoutPaymentInput
   }
@@ -11201,7 +11185,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentUpdateInput = {
@@ -11218,7 +11202,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
     order?: OrderUpdateOneRequiredWithoutPaymentNestedInput
   }
@@ -11239,7 +11223,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentCreateManyInput = {
@@ -11258,7 +11242,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentUpdateManyMutationInput = {
@@ -11275,7 +11259,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentUncheckedUpdateManyInput = {
@@ -11294,7 +11278,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type OrderItemCreateInput = {
@@ -11863,28 +11847,19 @@ export namespace Prisma {
   export type OrderSumOrderByAggregateInput = {
     amount?: SortOrder
   }
-  export type JsonFilter<$PrismaModel = never> =
+  export type JsonNullableListFilter<$PrismaModel = never> =
     | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
+        Either<Required<JsonNullableListFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableListFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableListFilterBase<$PrismaModel>>
       >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+    | OptionalFlat<Omit<Required<JsonNullableListFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type JsonNullableListFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel> | null
+    has?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    hasEvery?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel>
+    hasSome?: InputJsonValue[] | ListJsonFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
   }
 
   export type OrderScalarRelationFilter = {
@@ -11957,32 +11932,6 @@ export namespace Prisma {
     amount?: SortOrder
     tax?: SortOrder
     shipping?: SortOrder
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type ProductNullableScalarRelationFilter = {
@@ -12561,6 +12510,10 @@ export namespace Prisma {
     update?: XOR<XOR<PaymentUpdateToOneWithWhereWithoutOrderInput, PaymentUpdateWithoutOrderInput>, PaymentUncheckedUpdateWithoutOrderInput>
   }
 
+  export type PaymentCreateline_itemsInput = {
+    set: InputJsonValue[]
+  }
+
   export type UserCreateNestedOneWithoutPaymentsInput = {
     create?: XOR<UserCreateWithoutPaymentsInput, UserUncheckedCreateWithoutPaymentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPaymentsInput
@@ -12571,6 +12524,11 @@ export namespace Prisma {
     create?: XOR<OrderCreateWithoutPaymentInput, OrderUncheckedCreateWithoutPaymentInput>
     connectOrCreate?: OrderCreateOrConnectWithoutPaymentInput
     connect?: OrderWhereUniqueInput
+  }
+
+  export type PaymentUpdateline_itemsInput = {
+    set?: InputJsonValue[]
+    push?: InputJsonValue | InputJsonValue[]
   }
 
   export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
@@ -12840,29 +12798,6 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
-  export type NestedJsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type ProductCreateWithoutUserInput = {
     id?: string
@@ -13024,7 +12959,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
     order: OrderCreateNestedOneWithoutPaymentInput
   }
 
@@ -13043,7 +12978,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentCreateOrConnectWithoutUserInput = {
@@ -13219,7 +13154,7 @@ export namespace Prisma {
     date?: DateTimeFilter<"Payment"> | Date | string
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    line_items?: JsonFilter<"Payment">
+    line_items?: JsonNullableListFilter<"Payment">
   }
 
   export type OrderItemCreateWithoutProductInput = {
@@ -13652,7 +13587,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
     user: UserCreateNestedOneWithoutPaymentsInput
   }
 
@@ -13671,7 +13606,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentCreateOrConnectWithoutOrderInput = {
@@ -13794,7 +13729,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -13813,7 +13748,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type UserCreateWithoutPaymentsInput = {
@@ -14289,7 +14224,7 @@ export namespace Prisma {
     date?: Date | string
     method: string
     currency: string
-    line_items: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentCreateline_itemsInput | InputJsonValue[]
   }
 
   export type ProductUpdateWithoutUserInput = {
@@ -14460,7 +14395,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
     order?: OrderUpdateOneRequiredWithoutPaymentNestedInput
   }
 
@@ -14479,7 +14414,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type PaymentUncheckedUpdateManyWithoutUserInput = {
@@ -14497,7 +14432,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    line_items?: JsonNullValueInput | InputJsonValue
+    line_items?: PaymentUpdateline_itemsInput | InputJsonValue[]
   }
 
   export type OrderItemCreateManyProductInput = {
