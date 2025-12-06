@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
     const items = cartItems.map((item: any) => ({
       productId: item.productId,
       quantity: item.quantity,
+      name: item.name,
+      price: item.price
       }));
       
       await inngest.send({
