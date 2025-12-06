@@ -55,24 +55,20 @@ export async function POST(req: NextRequest) {
       ...cartItems.map((item) => ({
         name: item.product.name,
         quantity: item.quantity,
-        amount: Math.floor(item.product.offerPrice * 100),
+        amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
         currency: "PHP",
-        images: item.product.image ? [item.product.image] : [], // FIXED
-        description: item.product.description || undefined, // FIXED
       })),
       {
         name: "Tax",
         quantity: 1,
-        amount: taxValue * 100,
+        amount: taxValue * 100, // Remove if no tax
         currency: "PHP",
-        images: [],
       },
       {
         name: "Shipping",
         quantity: 1,
-        amount: shipping * 100, // FIXED
+        amount: shipping, // Remove if no shipping
         currency: "PHP",
-        images: [],
       },
     ];
 
@@ -100,6 +96,16 @@ export async function POST(req: NextRequest) {
             userId,
             selectedAddressId,
             cartItems: JSON.stringify(cartItems),
+            lineItems: JSON.stringify(
+              cartItems.map((item) => ({
+                name: item.product.name,
+                quantity: item.quantity,
+                amount: Math.floor(item.product.offerPrice * 100),
+                currency: "PHP",
+                images: item.product.image ? [item.product.image] : [],
+                description: item.product.description || "",
+              }))
+            ),
           },
         },
       },
