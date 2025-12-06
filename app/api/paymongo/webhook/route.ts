@@ -29,12 +29,14 @@ export async function POST(req: NextRequest) {
       const amount = payment.attributes.amount;
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
-      const cartItems = metadata.cartItems;
+      const cartItems = JSON.parse(metadata.cartItems);
 
       // Prepare items for nested create
-    const items = cartItems.map((item: any) => ({
-      productId: item.productId,
-      quantity: item.quantity,
+      const items = cartItems.map((item: any) => ({
+        productId: item.productId ?? null,
+        quantity: Math.floor(item.quantity ?? 1),
+        name: item.product?.name ?? "Unknown Product",
+        price: Math.floor(item.product?.offerPrice ?? 0),
       }));
 
       await inngest.send({
