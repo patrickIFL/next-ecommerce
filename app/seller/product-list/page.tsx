@@ -13,7 +13,7 @@ interface ProductType {
   name: string;
   category: string;
   price: number;
-  offerPrice: number;
+  salePrice: number;
   image: string[];
 }
 

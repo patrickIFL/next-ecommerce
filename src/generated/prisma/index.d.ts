@@ -48,6 +48,11 @@ export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
  * 
  */
 export type ShippingAddress = $Result.DefaultSelection<Prisma.$ShippingAddressPayload>
+/**
+ * Model StockReservation
+ * 
+ */
+export type StockReservation = $Result.DefaultSelection<Prisma.$StockReservationPayload>
 
 /**
  * Enums
@@ -60,11 +65,25 @@ export namespace $Enums {
 
 export type ProductType = (typeof ProductType)[keyof typeof ProductType]
 
+
+export const ShippingStatus: {
+  pending: 'pending',
+  toShip: 'toShip',
+  toReceive: 'toReceive',
+  toRate: 'toRate'
+};
+
+export type ShippingStatus = (typeof ShippingStatus)[keyof typeof ShippingStatus]
+
 }
 
 export type ProductType = $Enums.ProductType
 
 export const ProductType: typeof $Enums.ProductType
+
+export type ShippingStatus = $Enums.ShippingStatus
+
+export const ShippingStatus: typeof $Enums.ShippingStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -253,6 +272,16 @@ export class PrismaClient<
     * ```
     */
   get shippingAddress(): Prisma.ShippingAddressDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockReservation`: Exposes CRUD operations for the **StockReservation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockReservations
+    * const stockReservations = await prisma.stockReservation.findMany()
+    * ```
+    */
+  get stockReservation(): Prisma.StockReservationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -700,7 +729,8 @@ export namespace Prisma {
     Order: 'Order',
     Payment: 'Payment',
     OrderItem: 'OrderItem',
-    ShippingAddress: 'ShippingAddress'
+    ShippingAddress: 'ShippingAddress',
+    StockReservation: 'StockReservation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -719,7 +749,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "product" | "cartItem" | "order" | "payment" | "orderItem" | "shippingAddress"
+      modelProps: "user" | "product" | "cartItem" | "order" | "payment" | "orderItem" | "shippingAddress" | "stockReservation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1241,6 +1271,80 @@ export namespace Prisma {
           }
         }
       }
+      StockReservation: {
+        payload: Prisma.$StockReservationPayload<ExtArgs>
+        fields: Prisma.StockReservationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockReservationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockReservationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          findFirst: {
+            args: Prisma.StockReservationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockReservationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          findMany: {
+            args: Prisma.StockReservationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>[]
+          }
+          create: {
+            args: Prisma.StockReservationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          createMany: {
+            args: Prisma.StockReservationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockReservationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>[]
+          }
+          delete: {
+            args: Prisma.StockReservationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          update: {
+            args: Prisma.StockReservationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockReservationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockReservationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockReservationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockReservationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockReservationPayload>
+          }
+          aggregate: {
+            args: Prisma.StockReservationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockReservation>
+          }
+          groupBy: {
+            args: Prisma.StockReservationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockReservationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockReservationCountArgs<ExtArgs>
+            result: $Utils.Optional<StockReservationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1344,6 +1448,7 @@ export namespace Prisma {
     payment?: PaymentOmit
     orderItem?: OrderItemOmit
     shippingAddress?: ShippingAddressOmit
+    stockReservation?: StockReservationOmit
   }
 
   /* Types for Logging */
@@ -2801,13 +2906,13 @@ export namespace Prisma {
 
   export type ProductAvgAggregateOutputType = {
     price: number | null
-    offerPrice: number | null
+    salePrice: number | null
     stock: number | null
   }
 
   export type ProductSumAggregateOutputType = {
     price: number | null
-    offerPrice: number | null
+    salePrice: number | null
     stock: number | null
   }
 
@@ -2818,11 +2923,12 @@ export namespace Prisma {
     description: string | null
     category: string | null
     price: number | null
-    offerPrice: number | null
+    salePrice: number | null
     sku: string | null
     stock: number | null
     type: $Enums.ProductType | null
     isArchived: boolean | null
+    isOnSale: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2834,11 +2940,12 @@ export namespace Prisma {
     description: string | null
     category: string | null
     price: number | null
-    offerPrice: number | null
+    salePrice: number | null
     sku: string | null
     stock: number | null
     type: $Enums.ProductType | null
     isArchived: boolean | null
+    isOnSale: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2851,13 +2958,14 @@ export namespace Prisma {
     category: number
     image: number
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys: number
     sku: number
     stock: number
     type: number
     variations: number
     isArchived: number
+    isOnSale: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2866,13 +2974,13 @@ export namespace Prisma {
 
   export type ProductAvgAggregateInputType = {
     price?: true
-    offerPrice?: true
+    salePrice?: true
     stock?: true
   }
 
   export type ProductSumAggregateInputType = {
     price?: true
-    offerPrice?: true
+    salePrice?: true
     stock?: true
   }
 
@@ -2883,11 +2991,12 @@ export namespace Prisma {
     description?: true
     category?: true
     price?: true
-    offerPrice?: true
+    salePrice?: true
     sku?: true
     stock?: true
     type?: true
     isArchived?: true
+    isOnSale?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2899,11 +3008,12 @@ export namespace Prisma {
     description?: true
     category?: true
     price?: true
-    offerPrice?: true
+    salePrice?: true
     sku?: true
     stock?: true
     type?: true
     isArchived?: true
+    isOnSale?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2916,13 +3026,14 @@ export namespace Prisma {
     category?: true
     image?: true
     price?: true
-    offerPrice?: true
+    salePrice?: true
     search_keys?: true
     sku?: true
     stock?: true
     type?: true
     variations?: true
     isArchived?: true
+    isOnSale?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3018,17 +3129,18 @@ export namespace Prisma {
     id: string
     userId: string
     name: string
-    description: string
+    description: string | null
     category: string
     image: string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys: string[]
-    sku: string
+    sku: string | null
     stock: number
     type: $Enums.ProductType
     variations: string[]
     isArchived: boolean
+    isOnSale: boolean
     createdAt: Date
     updatedAt: Date
     _count: ProductCountAggregateOutputType | null
@@ -3060,13 +3172,14 @@ export namespace Prisma {
     category?: boolean
     image?: boolean
     price?: boolean
-    offerPrice?: boolean
+    salePrice?: boolean
     search_keys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     orders?: boolean | Product$ordersArgs<ExtArgs>
@@ -3083,13 +3196,14 @@ export namespace Prisma {
     category?: boolean
     image?: boolean
     price?: boolean
-    offerPrice?: boolean
+    salePrice?: boolean
     search_keys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3103,13 +3217,14 @@ export namespace Prisma {
     category?: boolean
     image?: boolean
     price?: boolean
-    offerPrice?: boolean
+    salePrice?: boolean
     search_keys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3123,18 +3238,19 @@ export namespace Prisma {
     category?: boolean
     image?: boolean
     price?: boolean
-    offerPrice?: boolean
+    salePrice?: boolean
     search_keys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "offerPrice" | "search_keys" | "sku" | "stock" | "type" | "variations" | "isArchived" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "variations" | "isArchived" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3159,17 +3275,18 @@ export namespace Prisma {
       id: string
       userId: string
       name: string
-      description: string
+      description: string | null
       category: string
       image: string[]
       price: number
-      offerPrice: number
+      salePrice: number
       search_keys: string[]
-      sku: string
+      sku: string | null
       stock: number
       type: $Enums.ProductType
       variations: string[]
       isArchived: boolean
+      isOnSale: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["product"]>
@@ -3605,13 +3722,14 @@ export namespace Prisma {
     readonly category: FieldRef<"Product", 'String'>
     readonly image: FieldRef<"Product", 'String[]'>
     readonly price: FieldRef<"Product", 'Int'>
-    readonly offerPrice: FieldRef<"Product", 'Int'>
+    readonly salePrice: FieldRef<"Product", 'Int'>
     readonly search_keys: FieldRef<"Product", 'String[]'>
     readonly sku: FieldRef<"Product", 'String'>
     readonly stock: FieldRef<"Product", 'Int'>
     readonly type: FieldRef<"Product", 'ProductType'>
     readonly variations: FieldRef<"Product", 'String[]'>
     readonly isArchived: FieldRef<"Product", 'Boolean'>
+    readonly isOnSale: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
   }
@@ -5375,7 +5493,7 @@ export namespace Prisma {
   export type OrderGroupByOutputType = {
     id: string
     userId: string
-    shippingAddressId: string | null
+    shippingAddressId: string
     amount: number
     isPaid: boolean
     shippingMethod: string
@@ -5483,7 +5601,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      shippingAddressId: string | null
+      shippingAddressId: string
       amount: number
       isPaid: boolean
       shippingMethod: string
@@ -9937,6 +10055,1061 @@ export namespace Prisma {
 
 
   /**
+   * Model StockReservation
+   */
+
+  export type AggregateStockReservation = {
+    _count: StockReservationCountAggregateOutputType | null
+    _avg: StockReservationAvgAggregateOutputType | null
+    _sum: StockReservationSumAggregateOutputType | null
+    _min: StockReservationMinAggregateOutputType | null
+    _max: StockReservationMaxAggregateOutputType | null
+  }
+
+  export type StockReservationAvgAggregateOutputType = {
+    quantity: number | null
+  }
+
+  export type StockReservationSumAggregateOutputType = {
+    quantity: number | null
+  }
+
+  export type StockReservationMinAggregateOutputType = {
+    id: string | null
+    productId: string | null
+    userId: string | null
+    quantity: number | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    fulfilled: boolean | null
+  }
+
+  export type StockReservationMaxAggregateOutputType = {
+    id: string | null
+    productId: string | null
+    userId: string | null
+    quantity: number | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    fulfilled: boolean | null
+  }
+
+  export type StockReservationCountAggregateOutputType = {
+    id: number
+    productId: number
+    userId: number
+    quantity: number
+    createdAt: number
+    expiresAt: number
+    fulfilled: number
+    _all: number
+  }
+
+
+  export type StockReservationAvgAggregateInputType = {
+    quantity?: true
+  }
+
+  export type StockReservationSumAggregateInputType = {
+    quantity?: true
+  }
+
+  export type StockReservationMinAggregateInputType = {
+    id?: true
+    productId?: true
+    userId?: true
+    quantity?: true
+    createdAt?: true
+    expiresAt?: true
+    fulfilled?: true
+  }
+
+  export type StockReservationMaxAggregateInputType = {
+    id?: true
+    productId?: true
+    userId?: true
+    quantity?: true
+    createdAt?: true
+    expiresAt?: true
+    fulfilled?: true
+  }
+
+  export type StockReservationCountAggregateInputType = {
+    id?: true
+    productId?: true
+    userId?: true
+    quantity?: true
+    createdAt?: true
+    expiresAt?: true
+    fulfilled?: true
+    _all?: true
+  }
+
+  export type StockReservationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockReservation to aggregate.
+     */
+    where?: StockReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockReservations to fetch.
+     */
+    orderBy?: StockReservationOrderByWithRelationInput | StockReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockReservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockReservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockReservations
+    **/
+    _count?: true | StockReservationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockReservationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockReservationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockReservationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockReservationMaxAggregateInputType
+  }
+
+  export type GetStockReservationAggregateType<T extends StockReservationAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockReservation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockReservation[P]>
+      : GetScalarType<T[P], AggregateStockReservation[P]>
+  }
+
+
+
+
+  export type StockReservationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockReservationWhereInput
+    orderBy?: StockReservationOrderByWithAggregationInput | StockReservationOrderByWithAggregationInput[]
+    by: StockReservationScalarFieldEnum[] | StockReservationScalarFieldEnum
+    having?: StockReservationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockReservationCountAggregateInputType | true
+    _avg?: StockReservationAvgAggregateInputType
+    _sum?: StockReservationSumAggregateInputType
+    _min?: StockReservationMinAggregateInputType
+    _max?: StockReservationMaxAggregateInputType
+  }
+
+  export type StockReservationGroupByOutputType = {
+    id: string
+    productId: string
+    userId: string
+    quantity: number
+    createdAt: Date
+    expiresAt: Date
+    fulfilled: boolean
+    _count: StockReservationCountAggregateOutputType | null
+    _avg: StockReservationAvgAggregateOutputType | null
+    _sum: StockReservationSumAggregateOutputType | null
+    _min: StockReservationMinAggregateOutputType | null
+    _max: StockReservationMaxAggregateOutputType | null
+  }
+
+  type GetStockReservationGroupByPayload<T extends StockReservationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockReservationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockReservationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockReservationGroupByOutputType[P]>
+            : GetScalarType<T[P], StockReservationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockReservationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    userId?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    fulfilled?: boolean
+  }, ExtArgs["result"]["stockReservation"]>
+
+  export type StockReservationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    userId?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    fulfilled?: boolean
+  }, ExtArgs["result"]["stockReservation"]>
+
+  export type StockReservationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    productId?: boolean
+    userId?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    fulfilled?: boolean
+  }, ExtArgs["result"]["stockReservation"]>
+
+  export type StockReservationSelectScalar = {
+    id?: boolean
+    productId?: boolean
+    userId?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    fulfilled?: boolean
+  }
+
+  export type StockReservationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "userId" | "quantity" | "createdAt" | "expiresAt" | "fulfilled", ExtArgs["result"]["stockReservation"]>
+
+  export type $StockReservationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockReservation"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      productId: string
+      userId: string
+      quantity: number
+      createdAt: Date
+      expiresAt: Date
+      fulfilled: boolean
+    }, ExtArgs["result"]["stockReservation"]>
+    composites: {}
+  }
+
+  type StockReservationGetPayload<S extends boolean | null | undefined | StockReservationDefaultArgs> = $Result.GetResult<Prisma.$StockReservationPayload, S>
+
+  type StockReservationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockReservationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockReservationCountAggregateInputType | true
+    }
+
+  export interface StockReservationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockReservation'], meta: { name: 'StockReservation' } }
+    /**
+     * Find zero or one StockReservation that matches the filter.
+     * @param {StockReservationFindUniqueArgs} args - Arguments to find a StockReservation
+     * @example
+     * // Get one StockReservation
+     * const stockReservation = await prisma.stockReservation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockReservationFindUniqueArgs>(args: SelectSubset<T, StockReservationFindUniqueArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockReservation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockReservationFindUniqueOrThrowArgs} args - Arguments to find a StockReservation
+     * @example
+     * // Get one StockReservation
+     * const stockReservation = await prisma.stockReservation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockReservationFindUniqueOrThrowArgs>(args: SelectSubset<T, StockReservationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockReservation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationFindFirstArgs} args - Arguments to find a StockReservation
+     * @example
+     * // Get one StockReservation
+     * const stockReservation = await prisma.stockReservation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockReservationFindFirstArgs>(args?: SelectSubset<T, StockReservationFindFirstArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockReservation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationFindFirstOrThrowArgs} args - Arguments to find a StockReservation
+     * @example
+     * // Get one StockReservation
+     * const stockReservation = await prisma.stockReservation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockReservationFindFirstOrThrowArgs>(args?: SelectSubset<T, StockReservationFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockReservations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockReservations
+     * const stockReservations = await prisma.stockReservation.findMany()
+     * 
+     * // Get first 10 StockReservations
+     * const stockReservations = await prisma.stockReservation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockReservationWithIdOnly = await prisma.stockReservation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockReservationFindManyArgs>(args?: SelectSubset<T, StockReservationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockReservation.
+     * @param {StockReservationCreateArgs} args - Arguments to create a StockReservation.
+     * @example
+     * // Create one StockReservation
+     * const StockReservation = await prisma.stockReservation.create({
+     *   data: {
+     *     // ... data to create a StockReservation
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockReservationCreateArgs>(args: SelectSubset<T, StockReservationCreateArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockReservations.
+     * @param {StockReservationCreateManyArgs} args - Arguments to create many StockReservations.
+     * @example
+     * // Create many StockReservations
+     * const stockReservation = await prisma.stockReservation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockReservationCreateManyArgs>(args?: SelectSubset<T, StockReservationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockReservations and returns the data saved in the database.
+     * @param {StockReservationCreateManyAndReturnArgs} args - Arguments to create many StockReservations.
+     * @example
+     * // Create many StockReservations
+     * const stockReservation = await prisma.stockReservation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockReservations and only return the `id`
+     * const stockReservationWithIdOnly = await prisma.stockReservation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockReservationCreateManyAndReturnArgs>(args?: SelectSubset<T, StockReservationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockReservation.
+     * @param {StockReservationDeleteArgs} args - Arguments to delete one StockReservation.
+     * @example
+     * // Delete one StockReservation
+     * const StockReservation = await prisma.stockReservation.delete({
+     *   where: {
+     *     // ... filter to delete one StockReservation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockReservationDeleteArgs>(args: SelectSubset<T, StockReservationDeleteArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockReservation.
+     * @param {StockReservationUpdateArgs} args - Arguments to update one StockReservation.
+     * @example
+     * // Update one StockReservation
+     * const stockReservation = await prisma.stockReservation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockReservationUpdateArgs>(args: SelectSubset<T, StockReservationUpdateArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockReservations.
+     * @param {StockReservationDeleteManyArgs} args - Arguments to filter StockReservations to delete.
+     * @example
+     * // Delete a few StockReservations
+     * const { count } = await prisma.stockReservation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockReservationDeleteManyArgs>(args?: SelectSubset<T, StockReservationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockReservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockReservations
+     * const stockReservation = await prisma.stockReservation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockReservationUpdateManyArgs>(args: SelectSubset<T, StockReservationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockReservations and returns the data updated in the database.
+     * @param {StockReservationUpdateManyAndReturnArgs} args - Arguments to update many StockReservations.
+     * @example
+     * // Update many StockReservations
+     * const stockReservation = await prisma.stockReservation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockReservations and only return the `id`
+     * const stockReservationWithIdOnly = await prisma.stockReservation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockReservationUpdateManyAndReturnArgs>(args: SelectSubset<T, StockReservationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockReservation.
+     * @param {StockReservationUpsertArgs} args - Arguments to update or create a StockReservation.
+     * @example
+     * // Update or create a StockReservation
+     * const stockReservation = await prisma.stockReservation.upsert({
+     *   create: {
+     *     // ... data to create a StockReservation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockReservation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockReservationUpsertArgs>(args: SelectSubset<T, StockReservationUpsertArgs<ExtArgs>>): Prisma__StockReservationClient<$Result.GetResult<Prisma.$StockReservationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockReservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationCountArgs} args - Arguments to filter StockReservations to count.
+     * @example
+     * // Count the number of StockReservations
+     * const count = await prisma.stockReservation.count({
+     *   where: {
+     *     // ... the filter for the StockReservations we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockReservationCountArgs>(
+      args?: Subset<T, StockReservationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockReservationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockReservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockReservationAggregateArgs>(args: Subset<T, StockReservationAggregateArgs>): Prisma.PrismaPromise<GetStockReservationAggregateType<T>>
+
+    /**
+     * Group by StockReservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockReservationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockReservationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockReservationGroupByArgs['orderBy'] }
+        : { orderBy?: StockReservationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockReservationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockReservationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockReservation model
+   */
+  readonly fields: StockReservationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockReservation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockReservationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockReservation model
+   */
+  interface StockReservationFieldRefs {
+    readonly id: FieldRef<"StockReservation", 'String'>
+    readonly productId: FieldRef<"StockReservation", 'String'>
+    readonly userId: FieldRef<"StockReservation", 'String'>
+    readonly quantity: FieldRef<"StockReservation", 'Int'>
+    readonly createdAt: FieldRef<"StockReservation", 'DateTime'>
+    readonly expiresAt: FieldRef<"StockReservation", 'DateTime'>
+    readonly fulfilled: FieldRef<"StockReservation", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockReservation findUnique
+   */
+  export type StockReservationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter, which StockReservation to fetch.
+     */
+    where: StockReservationWhereUniqueInput
+  }
+
+  /**
+   * StockReservation findUniqueOrThrow
+   */
+  export type StockReservationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter, which StockReservation to fetch.
+     */
+    where: StockReservationWhereUniqueInput
+  }
+
+  /**
+   * StockReservation findFirst
+   */
+  export type StockReservationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter, which StockReservation to fetch.
+     */
+    where?: StockReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockReservations to fetch.
+     */
+    orderBy?: StockReservationOrderByWithRelationInput | StockReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockReservations.
+     */
+    cursor?: StockReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockReservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockReservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockReservations.
+     */
+    distinct?: StockReservationScalarFieldEnum | StockReservationScalarFieldEnum[]
+  }
+
+  /**
+   * StockReservation findFirstOrThrow
+   */
+  export type StockReservationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter, which StockReservation to fetch.
+     */
+    where?: StockReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockReservations to fetch.
+     */
+    orderBy?: StockReservationOrderByWithRelationInput | StockReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockReservations.
+     */
+    cursor?: StockReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockReservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockReservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockReservations.
+     */
+    distinct?: StockReservationScalarFieldEnum | StockReservationScalarFieldEnum[]
+  }
+
+  /**
+   * StockReservation findMany
+   */
+  export type StockReservationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter, which StockReservations to fetch.
+     */
+    where?: StockReservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockReservations to fetch.
+     */
+    orderBy?: StockReservationOrderByWithRelationInput | StockReservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockReservations.
+     */
+    cursor?: StockReservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockReservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockReservations.
+     */
+    skip?: number
+    distinct?: StockReservationScalarFieldEnum | StockReservationScalarFieldEnum[]
+  }
+
+  /**
+   * StockReservation create
+   */
+  export type StockReservationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a StockReservation.
+     */
+    data: XOR<StockReservationCreateInput, StockReservationUncheckedCreateInput>
+  }
+
+  /**
+   * StockReservation createMany
+   */
+  export type StockReservationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockReservations.
+     */
+    data: StockReservationCreateManyInput | StockReservationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockReservation createManyAndReturn
+   */
+  export type StockReservationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockReservations.
+     */
+    data: StockReservationCreateManyInput | StockReservationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockReservation update
+   */
+  export type StockReservationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a StockReservation.
+     */
+    data: XOR<StockReservationUpdateInput, StockReservationUncheckedUpdateInput>
+    /**
+     * Choose, which StockReservation to update.
+     */
+    where: StockReservationWhereUniqueInput
+  }
+
+  /**
+   * StockReservation updateMany
+   */
+  export type StockReservationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockReservations.
+     */
+    data: XOR<StockReservationUpdateManyMutationInput, StockReservationUncheckedUpdateManyInput>
+    /**
+     * Filter which StockReservations to update
+     */
+    where?: StockReservationWhereInput
+    /**
+     * Limit how many StockReservations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockReservation updateManyAndReturn
+   */
+  export type StockReservationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * The data used to update StockReservations.
+     */
+    data: XOR<StockReservationUpdateManyMutationInput, StockReservationUncheckedUpdateManyInput>
+    /**
+     * Filter which StockReservations to update
+     */
+    where?: StockReservationWhereInput
+    /**
+     * Limit how many StockReservations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockReservation upsert
+   */
+  export type StockReservationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the StockReservation to update in case it exists.
+     */
+    where: StockReservationWhereUniqueInput
+    /**
+     * In case the StockReservation found by the `where` argument doesn't exist, create a new StockReservation with this data.
+     */
+    create: XOR<StockReservationCreateInput, StockReservationUncheckedCreateInput>
+    /**
+     * In case the StockReservation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockReservationUpdateInput, StockReservationUncheckedUpdateInput>
+  }
+
+  /**
+   * StockReservation delete
+   */
+  export type StockReservationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+    /**
+     * Filter which StockReservation to delete.
+     */
+    where: StockReservationWhereUniqueInput
+  }
+
+  /**
+   * StockReservation deleteMany
+   */
+  export type StockReservationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockReservations to delete
+     */
+    where?: StockReservationWhereInput
+    /**
+     * Limit how many StockReservations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockReservation without action
+   */
+  export type StockReservationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockReservation
+     */
+    select?: StockReservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockReservation
+     */
+    omit?: StockReservationOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9970,13 +11143,14 @@ export namespace Prisma {
     category: 'category',
     image: 'image',
     price: 'price',
-    offerPrice: 'offerPrice',
+    salePrice: 'salePrice',
     search_keys: 'search_keys',
     sku: 'sku',
     stock: 'stock',
     type: 'type',
     variations: 'variations',
     isArchived: 'isArchived',
+    isOnSale: 'isOnSale',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -10058,6 +11232,19 @@ export namespace Prisma {
   };
 
   export type ShippingAddressScalarFieldEnum = (typeof ShippingAddressScalarFieldEnum)[keyof typeof ShippingAddressScalarFieldEnum]
+
+
+  export const StockReservationScalarFieldEnum: {
+    id: 'id',
+    productId: 'productId',
+    userId: 'userId',
+    quantity: 'quantity',
+    createdAt: 'createdAt',
+    expiresAt: 'expiresAt',
+    fulfilled: 'fulfilled'
+  };
+
+  export type StockReservationScalarFieldEnum = (typeof StockReservationScalarFieldEnum)[keyof typeof StockReservationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10262,17 +11449,18 @@ export namespace Prisma {
     id?: StringFilter<"Product"> | string
     userId?: StringFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
-    description?: StringFilter<"Product"> | string
+    description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    offerPrice?: IntFilter<"Product"> | number
+    salePrice?: IntFilter<"Product"> | number
     search_keys?: StringNullableListFilter<"Product">
-    sku?: StringFilter<"Product"> | string
+    sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntFilter<"Product"> | number
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -10284,17 +11472,18 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     category?: SortOrder
     image?: SortOrder
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     search_keys?: SortOrder
-    sku?: SortOrder
+    sku?: SortOrderInput | SortOrder
     stock?: SortOrder
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orders?: OrderItemOrderByRelationAggregateInput
@@ -10310,16 +11499,17 @@ export namespace Prisma {
     NOT?: ProductWhereInput | ProductWhereInput[]
     userId?: StringFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
-    description?: StringFilter<"Product"> | string
+    description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    offerPrice?: IntFilter<"Product"> | number
+    salePrice?: IntFilter<"Product"> | number
     search_keys?: StringNullableListFilter<"Product">
     stock?: IntFilter<"Product"> | number
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -10331,17 +11521,18 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     category?: SortOrder
     image?: SortOrder
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     search_keys?: SortOrder
-    sku?: SortOrder
+    sku?: SortOrderInput | SortOrder
     stock?: SortOrder
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -10358,17 +11549,18 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Product"> | string
     userId?: StringWithAggregatesFilter<"Product"> | string
     name?: StringWithAggregatesFilter<"Product"> | string
-    description?: StringWithAggregatesFilter<"Product"> | string
+    description?: StringNullableWithAggregatesFilter<"Product"> | string | null
     category?: StringWithAggregatesFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntWithAggregatesFilter<"Product"> | number
-    offerPrice?: IntWithAggregatesFilter<"Product"> | number
+    salePrice?: IntWithAggregatesFilter<"Product"> | number
     search_keys?: StringNullableListFilter<"Product">
-    sku?: StringWithAggregatesFilter<"Product"> | string
+    sku?: StringNullableWithAggregatesFilter<"Product"> | string | null
     stock?: IntWithAggregatesFilter<"Product"> | number
     type?: EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolWithAggregatesFilter<"Product"> | boolean
+    isOnSale?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
   }
@@ -10445,7 +11637,7 @@ export namespace Prisma {
     NOT?: OrderWhereInput | OrderWhereInput[]
     id?: StringFilter<"Order"> | string
     userId?: StringFilter<"Order"> | string
-    shippingAddressId?: StringNullableFilter<"Order"> | string | null
+    shippingAddressId?: StringFilter<"Order"> | string
     amount?: IntFilter<"Order"> | number
     isPaid?: BoolFilter<"Order"> | boolean
     shippingMethod?: StringFilter<"Order"> | string
@@ -10460,7 +11652,7 @@ export namespace Prisma {
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    shippingAddressId?: SortOrderInput | SortOrder
+    shippingAddressId?: SortOrder
     amount?: SortOrder
     isPaid?: SortOrder
     shippingMethod?: SortOrder
@@ -10478,7 +11670,7 @@ export namespace Prisma {
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
     userId?: StringFilter<"Order"> | string
-    shippingAddressId?: StringNullableFilter<"Order"> | string | null
+    shippingAddressId?: StringFilter<"Order"> | string
     amount?: IntFilter<"Order"> | number
     isPaid?: BoolFilter<"Order"> | boolean
     shippingMethod?: StringFilter<"Order"> | string
@@ -10493,7 +11685,7 @@ export namespace Prisma {
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    shippingAddressId?: SortOrderInput | SortOrder
+    shippingAddressId?: SortOrder
     amount?: SortOrder
     isPaid?: SortOrder
     shippingMethod?: SortOrder
@@ -10512,7 +11704,7 @@ export namespace Prisma {
     NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Order"> | string
     userId?: StringWithAggregatesFilter<"Order"> | string
-    shippingAddressId?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    shippingAddressId?: StringWithAggregatesFilter<"Order"> | string
     amount?: IntWithAggregatesFilter<"Order"> | number
     isPaid?: BoolWithAggregatesFilter<"Order"> | boolean
     shippingMethod?: StringWithAggregatesFilter<"Order"> | string
@@ -10783,6 +11975,70 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ShippingAddress"> | Date | string
   }
 
+  export type StockReservationWhereInput = {
+    AND?: StockReservationWhereInput | StockReservationWhereInput[]
+    OR?: StockReservationWhereInput[]
+    NOT?: StockReservationWhereInput | StockReservationWhereInput[]
+    id?: StringFilter<"StockReservation"> | string
+    productId?: StringFilter<"StockReservation"> | string
+    userId?: StringFilter<"StockReservation"> | string
+    quantity?: IntFilter<"StockReservation"> | number
+    createdAt?: DateTimeFilter<"StockReservation"> | Date | string
+    expiresAt?: DateTimeFilter<"StockReservation"> | Date | string
+    fulfilled?: BoolFilter<"StockReservation"> | boolean
+  }
+
+  export type StockReservationOrderByWithRelationInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    userId?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    fulfilled?: SortOrder
+  }
+
+  export type StockReservationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StockReservationWhereInput | StockReservationWhereInput[]
+    OR?: StockReservationWhereInput[]
+    NOT?: StockReservationWhereInput | StockReservationWhereInput[]
+    productId?: StringFilter<"StockReservation"> | string
+    userId?: StringFilter<"StockReservation"> | string
+    quantity?: IntFilter<"StockReservation"> | number
+    createdAt?: DateTimeFilter<"StockReservation"> | Date | string
+    expiresAt?: DateTimeFilter<"StockReservation"> | Date | string
+    fulfilled?: BoolFilter<"StockReservation"> | boolean
+  }, "id">
+
+  export type StockReservationOrderByWithAggregationInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    userId?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    fulfilled?: SortOrder
+    _count?: StockReservationCountOrderByAggregateInput
+    _avg?: StockReservationAvgOrderByAggregateInput
+    _max?: StockReservationMaxOrderByAggregateInput
+    _min?: StockReservationMinOrderByAggregateInput
+    _sum?: StockReservationSumOrderByAggregateInput
+  }
+
+  export type StockReservationScalarWhereWithAggregatesInput = {
+    AND?: StockReservationScalarWhereWithAggregatesInput | StockReservationScalarWhereWithAggregatesInput[]
+    OR?: StockReservationScalarWhereWithAggregatesInput[]
+    NOT?: StockReservationScalarWhereWithAggregatesInput | StockReservationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockReservation"> | string
+    productId?: StringWithAggregatesFilter<"StockReservation"> | string
+    userId?: StringWithAggregatesFilter<"StockReservation"> | string
+    quantity?: IntWithAggregatesFilter<"StockReservation"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"StockReservation"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"StockReservation"> | Date | string
+    fulfilled?: BoolWithAggregatesFilter<"StockReservation"> | boolean
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -10869,17 +12125,18 @@ export namespace Prisma {
   export type ProductCreateInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -10891,17 +12148,18 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -10911,17 +12169,18 @@ export namespace Prisma {
   export type ProductUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -10933,17 +12192,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -10954,17 +12214,18 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10972,17 +12233,18 @@ export namespace Prisma {
   export type ProductUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10991,17 +12253,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11083,7 +12346,7 @@ export namespace Prisma {
   export type OrderUncheckedCreateInput = {
     id?: string
     userId: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -11109,7 +12372,7 @@ export namespace Prisma {
   export type OrderUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string
@@ -11122,7 +12385,7 @@ export namespace Prisma {
   export type OrderCreateManyInput = {
     id?: string
     userId: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -11142,7 +12405,7 @@ export namespace Prisma {
   export type OrderUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string
@@ -11436,6 +12699,76 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StockReservationCreateInput = {
+    id?: string
+    productId: string
+    userId: string
+    quantity: number
+    createdAt?: Date | string
+    expiresAt: Date | string
+    fulfilled?: boolean
+  }
+
+  export type StockReservationUncheckedCreateInput = {
+    id?: string
+    productId: string
+    userId: string
+    quantity: number
+    createdAt?: Date | string
+    expiresAt: Date | string
+    fulfilled?: boolean
+  }
+
+  export type StockReservationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fulfilled?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type StockReservationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fulfilled?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type StockReservationCreateManyInput = {
+    id?: string
+    productId: string
+    userId: string
+    quantity: number
+    createdAt?: Date | string
+    expiresAt: Date | string
+    fulfilled?: boolean
+  }
+
+  export type StockReservationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fulfilled?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type StockReservationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fulfilled?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11663,20 +12996,21 @@ export namespace Prisma {
     category?: SortOrder
     image?: SortOrder
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     search_keys?: SortOrder
     sku?: SortOrder
     stock?: SortOrder
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ProductAvgOrderByAggregateInput = {
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     stock?: SortOrder
   }
 
@@ -11687,11 +13021,12 @@ export namespace Prisma {
     description?: SortOrder
     category?: SortOrder
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     sku?: SortOrder
     stock?: SortOrder
     type?: SortOrder
     isArchived?: SortOrder
+    isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11703,18 +13038,19 @@ export namespace Prisma {
     description?: SortOrder
     category?: SortOrder
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     sku?: SortOrder
     stock?: SortOrder
     type?: SortOrder
     isArchived?: SortOrder
+    isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ProductSumOrderByAggregateInput = {
     price?: SortOrder
-    offerPrice?: SortOrder
+    salePrice?: SortOrder
     stock?: SortOrder
   }
 
@@ -12013,6 +13349,44 @@ export namespace Prisma {
     province?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type StockReservationCountOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    userId?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    fulfilled?: SortOrder
+  }
+
+  export type StockReservationAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+  }
+
+  export type StockReservationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    userId?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    fulfilled?: SortOrder
+  }
+
+  export type StockReservationMinOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+    userId?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    fulfilled?: SortOrder
+  }
+
+  export type StockReservationSumOrderByAggregateInput = {
+    quantity?: SortOrder
   }
 
   export type ProductCreateNestedManyWithoutUserInput = {
@@ -12802,17 +14176,18 @@ export namespace Prisma {
   export type ProductCreateWithoutUserInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -12822,17 +14197,18 @@ export namespace Prisma {
   export type ProductUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -12863,7 +14239,7 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateWithoutUserInput = {
     id?: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -13014,17 +14390,18 @@ export namespace Prisma {
     id?: StringFilter<"Product"> | string
     userId?: StringFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
-    description?: StringFilter<"Product"> | string
+    description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    offerPrice?: IntFilter<"Product"> | number
+    salePrice?: IntFilter<"Product"> | number
     search_keys?: StringNullableListFilter<"Product">
-    sku?: StringFilter<"Product"> | string
+    sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntFilter<"Product"> | number
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
@@ -13051,7 +14428,7 @@ export namespace Prisma {
     NOT?: OrderScalarWhereInput | OrderScalarWhereInput[]
     id?: StringFilter<"Order"> | string
     userId?: StringFilter<"Order"> | string
-    shippingAddressId?: StringNullableFilter<"Order"> | string | null
+    shippingAddressId?: StringFilter<"Order"> | string
     amount?: IntFilter<"Order"> | number
     isPaid?: BoolFilter<"Order"> | boolean
     shippingMethod?: StringFilter<"Order"> | string
@@ -13355,17 +14732,18 @@ export namespace Prisma {
   export type ProductCreateWithoutCartItemsInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -13376,17 +14754,18 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -13448,17 +14827,18 @@ export namespace Prisma {
   export type ProductUpdateWithoutCartItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -13469,17 +14849,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -13797,7 +15178,7 @@ export namespace Prisma {
   export type OrderUncheckedCreateWithoutPaymentInput = {
     id?: string
     userId: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -13874,7 +15255,7 @@ export namespace Prisma {
   export type OrderUncheckedUpdateWithoutPaymentInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string
@@ -13898,7 +15279,7 @@ export namespace Prisma {
   export type OrderUncheckedCreateWithoutItemsInput = {
     id?: string
     userId: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -13915,17 +15296,18 @@ export namespace Prisma {
   export type ProductCreateWithoutOrdersInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProductsInput
@@ -13936,17 +15318,18 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     cartItems?: CartItemUncheckedCreateNestedManyWithoutProductInput
@@ -13983,7 +15366,7 @@ export namespace Prisma {
   export type OrderUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string
@@ -14006,17 +15389,18 @@ export namespace Prisma {
   export type ProductUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProductsNestedInput
@@ -14027,17 +15411,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cartItems?: CartItemUncheckedUpdateManyWithoutProductNestedInput
@@ -14164,24 +15549,25 @@ export namespace Prisma {
   export type ProductCreateManyUserInput = {
     id?: string
     name: string
-    description: string
+    description?: string | null
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    offerPrice: number
+    salePrice: number
     search_keys?: ProductCreatesearch_keysInput | string[]
-    sku: string
+    sku?: string | null
     stock: number
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type OrderCreateManyUserInput = {
     id?: string
-    shippingAddressId?: string | null
+    shippingAddressId: string
     amount: number
     isPaid?: boolean
     shippingMethod: string
@@ -14230,17 +15616,18 @@ export namespace Prisma {
   export type ProductUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -14250,17 +15637,18 @@ export namespace Prisma {
   export type ProductUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -14270,17 +15658,18 @@ export namespace Prisma {
   export type ProductUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    offerPrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: IntFieldUpdateOperationsInput | number
     search_keys?: ProductUpdatesearch_keysInput | string[]
-    sku?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14299,7 +15688,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string
@@ -14311,7 +15700,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shippingAddressId?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddressId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     shippingMethod?: StringFieldUpdateOperationsInput | string

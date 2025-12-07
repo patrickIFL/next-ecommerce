@@ -8,7 +8,7 @@ type CartProduct = {
   id: string;
   name: string;
   image: string[];
-  offerPrice: number;
+  salePrice: number;
 };
 
 type CartItem = {
@@ -108,7 +108,7 @@ function useCartHook() {
 
   const getCartTotal: any = (items: CartItem[]) => {
     return items.reduce((total, item) => {
-      const price = item.product.offerPrice ?? 0;
+      const price = item.product.salePrice ?? 0;
       const qty = item.quantity ?? 0;
       return total + price * qty;
     }, 0);

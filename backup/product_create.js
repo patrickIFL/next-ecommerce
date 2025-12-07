@@ -20,7 +20,7 @@ async function main() {
         description: prod.description,
         category: prod.category,
         price: Number(prod.price),
-        offerPrice: Number(prod.offerPrice),
+        salePrice: Number(prod.salePrice),
         image: prod.imageUrls ?? prod.image ?? [],
       },
     });

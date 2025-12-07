@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         productId: item.productId ?? null,
         quantity: Math.floor(item.quantity ?? 1),
         name: item.product?.name ?? "Unknown Product",
-        price: Math.floor(item.product?.offerPrice ?? 0),
+        price: Math.floor(item.product?.salePrice ?? 0),
       }));
 
       await inngest.send({

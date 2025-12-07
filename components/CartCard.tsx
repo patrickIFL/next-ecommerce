@@ -8,7 +8,7 @@ interface CartProduct {
   id: string;
   name: string;
   image: string[];
-  offerPrice: number;
+  salePrice: number;
 }
 
 interface CartItem {
@@ -43,7 +43,7 @@ function CartCard({ item }: CartCardProps) {
   const decrement = () => updateQuantity(Math.max(0, quantity - 1));
   const remove = () => updateQuantity(0);
 
-  const totalPrice = formatMoney(item.product.offerPrice * quantity);
+  const totalPrice = formatMoney(item.product.salePrice * quantity);
 
   return (
     <tr>
@@ -70,7 +70,7 @@ function CartCard({ item }: CartCardProps) {
       </td>
 
       <td className="py-4 md:px-4 px-1 text-foreground/80">
-        {currency}{formatMoney(item.product.offerPrice)} /pc
+        {currency}{formatMoney(item.product.salePrice)} /pc
       </td>
 
       <td className="py-4 md:px-4 px-1">

@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     // 2️⃣ Calculate totals
     const subtotal = cartItems.reduce(
-      (acc, item) => acc + item.quantity * item.product.offerPrice,
+      (acc, item) => acc + item.quantity * item.product.salePrice,
       0
     );
 
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       ...cartItems.map((item) => ({
         name: item.product.name,
         quantity: item.quantity,
-        amount: Math.floor(item.product.offerPrice * 100), // PayMongo uses cents
+        amount: Math.floor(item.product.salePrice * 100), // PayMongo uses cents
         currency: "PHP",
       })),
       {
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
               cartItems.map((item) => ({
                 name: item.product.name,
                 quantity: item.quantity,
-                amount: Math.floor(item.product.offerPrice * 100),
+                amount: Math.floor(item.product.salePrice * 100),
                 currency: "PHP",
                 images: item.product.image ? [item.product.image] : [],
                 description: item.product.description || "",

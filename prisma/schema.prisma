@@ -35,11 +35,11 @@ model Product {
   id          String      @id @default(cuid())
   userId      String
   name        String
-  description String
+  description String?
   category    String
   image       String[]
   price       Int
-  offerPrice  Int
+  salePrice  Int
   // new
   search_keys String[]    @default([])
   sku         String?
@@ -47,6 +47,7 @@ model Product {
   type        ProductType @default(SIMPLE)
   variations  String[]    @default([])
   isArchived  Boolean     @default(false)
+  isOnSale  Boolean     @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

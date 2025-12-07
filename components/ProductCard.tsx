@@ -11,7 +11,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
-  const isSale = product.offerPrice < product.price;
+  const isSale = product.salePrice < product.price;
 
   return (
     <div
@@ -75,7 +75,7 @@ const ProductCard = ({ product }: { product: any }) => {
         <p className="text-foreground font-medium">
         <span className="text-md">
             {currency}
-          {formatMoney(product.offerPrice)}{" "}
+          {formatMoney(product.salePrice)}{" "}
         </span>
 
         {isSale && 

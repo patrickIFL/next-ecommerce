@@ -234,7 +234,7 @@ useAuth and getAuth is different. useAuth is for client, getAuth is for server. 
       category: 'Earphone',
       image: [Array],
       price: 2500,
-      offerPrice: 2499,
+      salePrice: 2499,
       createdAt: 2025-11-26T22:45:30.665Z,
       updatedAt: 2025-11-26T22:45:30.665Z
     }
@@ -254,7 +254,7 @@ useAuth and getAuth is different. useAuth is for client, getAuth is for server. 
       category: 'Earphone',
       image: [Array],
       price: 2500,
-      offerPrice: 499,
+      salePrice: 499,
       createdAt: 2025-11-26T22:46:07.498Z,
       updatedAt: 2025-11-26T22:46:07.498Z
     }
@@ -576,7 +576,7 @@ x session.attributes.metadata
         for (const item of cartItems) {
           const product = await tx.product.findUnique({
             where: { id: item.productId },
-            select: { stock: true, name: true, offerPrice: true },
+            select: { stock: true, name: true, salePrice: true },
           });
 
           if (!product) {

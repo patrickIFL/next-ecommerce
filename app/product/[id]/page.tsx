@@ -16,7 +16,7 @@ type ProductType = {
   name: string;
   description: string;
   price: number;
-  offerPrice: number;
+  salePrice: number;
   category: string;
   image: string[];
 };
@@ -49,7 +49,7 @@ const Product = () => {
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
-  const isSale = productData.offerPrice < productData.price;
+  const isSale = productData.salePrice < productData.price;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -109,12 +109,12 @@ const Product = () => {
           </div>
 
           {/* DESCRIPTION */}
-          <p className="text-foreground mt-3">{productData.description}</p>
+          <p className="text-foreground mt-3">{productData.description ? productData.description : ""}</p>
 
           {/* PRICE */}
           <p className="text-3xl font-medium mt-6">
             {currency}
-            {formatMoney(productData.offerPrice)}
+            {formatMoney(productData.salePrice)}
             {isSale && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}

@@ -21,7 +21,7 @@ import ConfirmDelete from "./ConfirmDeleteProduct";
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
 
-  const isSale = product.offerPrice < product.price;
+  const isSale = product.salePrice < product.price;
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const { getToken } = useAuth();
@@ -107,14 +107,14 @@ function ProductDataRow({ product }: { product: any }) {
       </td>
 
       <td className="px-4 py-3 text-center">{product.category}</td>
-      <td className="px-4 py-3 text-center">{product.sku}</td>
+      <td className="px-4 py-3 text-center">{product.sku ? product.sku : "-" }</td>
       <td className="px-4 py-3 text-center">
         {currency}
         {formatMoney(product.price)}
       </td>
       <td className="px-4 py-3 text-center">
         {currency}
-        {formatMoney(product.offerPrice)}
+        {formatMoney(product.salePrice)}
       </td>
 
       <td className="px-4 py-3 text-center">
@@ -130,6 +130,36 @@ function ProductDataRow({ product }: { product: any }) {
 
       <td className="py-3">
         <div className="flex justify-center w-full mx-2 gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => toggleArchive(product.id)}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                  isArchived
+                    ? isToggling
+                      ? "bg-red-900"
+                      : "bg-red-600 hover:bg-red-700"
+                    : isToggling
+                    ? "bg-green-900"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
+                disabled={isToggling}
+              >
+                {isToggling ? (
+                  <LoaderIcon className="animate-spin" size={16} />
+                ) : isArchived ? (
+                  <EyeOff size={16} />
+                ) : (
+                  <Eye size={16} />
+                )}
+              </button>
+            </TooltipTrigger>
+            {!isToggling && (
+              <TooltipContent>
+                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+              </TooltipContent>
+            )}
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <button

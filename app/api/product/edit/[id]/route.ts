@@ -54,8 +54,8 @@ export async function PATCH(request: NextRequest) {
       (formData.get("category") as string) || oldProduct.category;
 
     const price = Number(formData.get("price") ?? oldProduct.price);
-    const offerPrice = Number(
-      formData.get("offerPrice") ?? oldProduct.offerPrice
+    const salePrice = Number(
+      formData.get("salePrice") ?? oldProduct.salePrice
     );
 
     const sku = formData.get("sku") as string | null;
@@ -65,7 +65,7 @@ export async function PATCH(request: NextRequest) {
 
     // validate
 
-    if (Number(price) <= 0 || Number(offerPrice) <= 0) {
+    if (Number(price) <= 0 || Number(salePrice) <= 0) {
       return NextResponse.json(
         { success: false, message: "Price cannot be set to equal or less than 0" },
         { status: 401 }
@@ -139,7 +139,7 @@ export async function PATCH(request: NextRequest) {
       oldProduct.description !== description ||
       oldProduct.category !== category ||
       oldProduct.price !== price ||
-      oldProduct.offerPrice !== offerPrice ||
+      oldProduct.salePrice !== salePrice ||
       oldProduct.sku !== sku ||
       oldProduct.stock !== Number(stock) ||
       JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
@@ -162,7 +162,7 @@ export async function PATCH(request: NextRequest) {
         description: description!,
         category: category!,
         price: Number(price),
-        offerPrice: Number(offerPrice),
+        salePrice: Number(salePrice),
         sku: sku!,
         stock: Number(stock),
         search_keys,

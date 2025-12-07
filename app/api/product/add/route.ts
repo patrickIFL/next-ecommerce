@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
     const price = formData.get("price") as string | null;
-    const offerPrice = formData.get("offerPrice") as string | null;
+    const salePrice = formData.get("salePrice") as string | null;
 
     const sku = formData.get("sku") as string | null;
     const stock = formData.get("stock") as string | null;
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // validate
 
-    if (Number(price) <= 0 || Number(offerPrice) <= 0) {
+    if (Number(price) <= 0 || Number(salePrice) <= 0) {
       return NextResponse.json(
         { success: false, message: "Price cannot be set to equal or less than 0" },
         { status: 401 }
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
         description: description!,
         category: category!,
         price: Number(price),
-        offerPrice: Number(offerPrice),
+        salePrice: Number(salePrice),
 
         sku: sku!,
         stock: Number(stock),

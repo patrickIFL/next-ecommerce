@@ -33,21 +33,21 @@ const AddProduct = () => {
 
   const [category, setCategory] = useState("Uncategorized");
   const [price, setPrice] = useState("");
-  const [offerPrice, setOfferPrice] = useState("");
+  const [salePrice, setsalePrice] = useState("");
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
 
       // validate
-      if (Number(offerPrice) <= 0 || Number(price) <= 0)
+      if (Number(salePrice) <= 0 || Number(price) <= 0)
         return toast({
           title: "Invalid Price",
           description: "Price must be greater than 0",
           variant: "destructive",
         });
 
-      if (Number(offerPrice) < 0)
+      if (Number(salePrice) < 0)
         return toast({
           title: "Invalid Stock",
           description: "Stock must be greater than or equal to 0",
@@ -71,7 +71,7 @@ const AddProduct = () => {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("price", price);
-      formData.append("offerPrice", offerPrice);
+      formData.append("salePrice", salePrice);
       formData.append("sku", sku);
       formData.append("stock", stock);
       // ADD THESE
@@ -110,7 +110,7 @@ const AddProduct = () => {
       setDescription("");
       setCategory("Uncategorized");
       setPrice("");
-      setOfferPrice("");
+      setsalePrice("");
       setVariations("");
       setSearchKeys("");
       setSku("");
@@ -196,7 +196,6 @@ const AddProduct = () => {
             placeholder="Type here"
             onChange={(e) => setDescription(e.target.value)}
             value={description}
-            required
           ></Textarea>
         </div>
         {/* // NEW ===================================== */}
@@ -270,7 +269,6 @@ const AddProduct = () => {
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setSku(e.target.value)}
               value={sku}
-              required
             />
           </div>
 
@@ -312,15 +310,15 @@ const AddProduct = () => {
 
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="offer-price">
-              Offer Price
+              Sale Price
             </label>
             <Input
               id="offer-price"
               type="number"
               placeholder="0"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-              onChange={(e) => setOfferPrice(e.target.value)}
-              value={offerPrice}
+              onChange={(e) => setsalePrice(e.target.value)}
+              value={salePrice}
               required
               autoComplete="off"
             />
