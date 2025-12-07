@@ -106,23 +106,26 @@ function ProductDataRow({ product }: { product: any }) {
         <span className="w-full">{product.name}</span>
       </td>
 
-      <td className="px-4 py-3">{product.category}</td>
-      <td className="px-4 py-3">
-        {/* SKU */}
-        {product.sku}
-      </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 text-center">{product.category}</td>
+      <td className="px-4 py-3 text-center">{product.sku}</td>
+      <td className="px-4 py-3 text-center">
         {currency}
         {formatMoney(product.price)}
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 text-center">
         {currency}
         {formatMoney(product.offerPrice)}
       </td>
 
-      <td className="px-4 py-3">
-        {/* Stock */}
-        {product.stock}
+      <td className="px-4 py-3 text-center">
+        {product.stock !== 0 ? (
+          product.stock
+        ) : (
+          <div className="flex font-bold text-red-600 flex-col leading-none">
+            <span>Out of</span>
+            <span>stock</span>
+          </div>
+        )}
       </td>
 
       <td className="py-3">

@@ -140,6 +140,7 @@ export default function CategoryComboBox({
                 ))}
             </CommandGroup>
           </CommandList>
+
           <div className="flex h-9 items-center gap-2 border-t px-3">
             <input
               value={newCategory.name}
@@ -150,12 +151,18 @@ export default function CategoryComboBox({
                   slug: name.toLowerCase().replace(/\s+/g, "-"),
                 });
               }}
+              onKeyDown={async (e) => {
+                // Prevent Enter from closing the Command popover
+                if (e.key === "Enter") {
+                  e.stopPropagation();
+                  await addCategory(newCategory);
+                  queryClient.invalidateQueries({ queryKey: ["categories"] });
+                }
+              }}
               placeholder="Add New"
-              className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+              className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             />
-
             <button
-              type="submit"
               onClick={async () => {
                 await addCategory(newCategory);
                 queryClient.invalidateQueries({ queryKey: ["categories"] });

@@ -69,12 +69,12 @@ const ProductList = () => {
                 <table className="w-full">
                   <thead className="text-foreground text-sm text-left sticky top-0 bg-accent z-48">
                     <tr>
-                      <th className="w-60 px-4 py-3 font-medium">Product</th>
-                      <th className="px-4 py-3 font-medium">Category</th>
-                      <th className="px-4 py-3 font-medium">SKU</th>
-                      <th className="px-4 py-3 font-medium">Price</th>
-                      <th className="px-4 py-3 font-medium">Sale Price</th>
-                      <th className="px-4 py-3 font-medium">Stock</th>
+                      <th className="w-60 px-4 py-3 font-medium text-center">Product</th>
+                      <th className="px-4 py-3 font-medium text-center">Category</th>
+                      <th className="px-4 py-3 font-medium text-center">SKU</th>
+                      <th className="px-4 py-3 font-medium text-center">Price</th>
+                      <th className="px-4 py-3 font-medium text-center">Sale Price</th>
+                      <th className="px-4 py-3 font-medium text-center">Stock</th>
                       <th className="px-4 py-3 font-medium text-center">
                         Archive
                       </th>
