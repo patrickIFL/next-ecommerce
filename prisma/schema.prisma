@@ -42,7 +42,7 @@ model Product {
   offerPrice  Int
   // new
   search_keys String[]    @default([])
-  sku         String
+  sku         String?
   stock       Int
   type        ProductType @default(SIMPLE)
   variations  String[]    @default([])
@@ -66,11 +66,10 @@ model CartItem {
   id        String @id @default(cuid())
   userId    String
   productId String
-
   quantity Int @default(1)
 
   user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,11 +79,18 @@ model CartItem {
   @@index([productId])
 }
 
+enum ShippingStatus {
+  pending
+  toShip
+  toReceive
+  toRate
+}
+
 // Order
 model Order {
   id                String  @id @default(cuid())
   userId            String
-  shippingAddressId String?
+  shippingAddressId String
 
   amount         Int
   isPaid         Boolean  @default(false)
@@ -155,3 +161,14 @@ model ShippingAddress {
 
   @@index([userId])
 }
+
+model StockReservation {
+  id          String   @id @default(cuid())
+  productId   String
+  userId      String
+  quantity    Int
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+  fulfilled   Boolean  @default(false)
+}
+

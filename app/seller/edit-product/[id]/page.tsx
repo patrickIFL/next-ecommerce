@@ -140,7 +140,7 @@ const EditProduct = () => {
         variant: "destructive",
       });
     },
-    onSettled: (data: any) => {
+    onSuccess: (data: any) => {
       toast({ title: "Success", description: data.message });
       router.push("/seller/product-list");
     },
@@ -246,7 +246,6 @@ const EditProduct = () => {
             placeholder="Separate each variation with a comma"
             onChange={(e) => setVariations(e.target.value)}
             value={variations}
-            required
           ></Textarea>
         </div>
 
@@ -264,7 +263,6 @@ const EditProduct = () => {
             placeholder="Separate each with a comma"
             onChange={(e) => setSearchKeys(e.target.value)}
             value={searchKeys}
-            required
           ></Textarea>
         </div>
         {/* ===================================== */}
@@ -291,7 +289,8 @@ const EditProduct = () => {
                     <Info size={12} />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Stock Keeping Unit</p>
+                    <p className="font-bold">Stock Keeping Unit</p>
+                    <p className="text-[11px]">Stock Keeping Unit</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -299,7 +298,7 @@ const EditProduct = () => {
             <Input
               id="sku"
               type="text"
-              placeholder="0"
+              placeholder="Optional"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setSku(e.target.value)}
               value={sku}
@@ -360,21 +359,30 @@ const EditProduct = () => {
           </div>
         </div>
 
-        <Button
-          type="submit"
-          className={`py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded
+        <div className="flex gap-3">
+          <Button
+            type="submit"
+            className={`py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded
           ${loading ? "opacity-50" : "cursor-pointer"}`}
-          disabled={loading}
-        >
-          {loading ? (
-            <div className="mx-3.5 flex gap-1 items-center">
-              <LoaderIcon className="animate-spin" size={16} />
-              <span>Updating</span>
-            </div>
-          ) : (
-            <span className="mx-6">UPDATE</span>
-          )}
-        </Button>
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="mx-3.5 flex gap-1 items-center">
+                <LoaderIcon className="animate-spin" size={16} />
+                <span>Updating</span>
+              </div>
+            ) : (
+              <span className="mx-6">UPDATE</span>
+            )}
+          </Button>
+
+          <Button
+            onClick={() => router.back()}
+            className={`cursor-pointer py-2.5 text-foreground bg-accent hover:bg-accent/50 font-medium rounded`}
+          >
+            <span className="mx-6">Cancel</span>
+          </Button>
+        </div>
       </form>
       {/* <Footer /> */}
     </div>

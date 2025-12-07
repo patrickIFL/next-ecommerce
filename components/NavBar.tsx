@@ -5,6 +5,7 @@ import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
 import {
+  LoaderIcon,
   Menu,
   MessageCircleMore,
   SearchIcon,
@@ -256,7 +257,7 @@ export default NavBar;
 
 const SearchBar = () => {
   const { searchQuery, setSearchQuery } = useSearchStore();
-  const { handleSearch } = useSearchHook();
+  const { handleSearch, searchLoading } = useSearchHook();
   const params = useParams();
   console.log(params.cat)
   // const router = useRouter();
@@ -275,15 +276,18 @@ const SearchBar = () => {
     }}>
       <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
         <button type="submit">
-          <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />
+          {searchLoading 
+          ? <LoaderIcon className="animate-spin size-4 shrink-0 opacity-50 text-foreground" /> 
+          : <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />}
         </button>
         <input
+          type="text"
+          disabled={searchLoading}
           name="search"
           autoComplete="off"
           value={searchQuery}
           placeholder="Search a product"
           className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden 
-          
           disabled:cursor-not-allowed disabled:opacity-50"
           onChange={(e) => {
             setSearchQuery(e.target.value)

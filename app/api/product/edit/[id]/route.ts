@@ -80,7 +80,10 @@ export async function PATCH(request: NextRequest) {
     }
 
     const skuExist = await prisma.product.findFirst({
-      where: { sku: sku! },
+      where: {   
+        sku: sku!,
+        NOT: { id: productId }, 
+      },
     });
 
     if (skuExist) {

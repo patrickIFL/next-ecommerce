@@ -30,14 +30,16 @@ export async function GET(req: Request) {
   SELECT *
   FROM "Product"
   WHERE 
-    LOWER("name") LIKE ${`%${q.toLowerCase()}%`}
-    OR LOWER("category") LIKE ${`%${q.toLowerCase()}%`}
+    "name" ILIKE ${`%${q}%`}
+    OR "category" ILIKE ${`%${q}%`}
+    OR "sku" ILIKE ${`%${q}%`}
     OR EXISTS (
       SELECT 1
       FROM unnest("search_keys") AS sk
-      WHERE LOWER(sk) LIKE ${`%${q.toLowerCase()}%`}
+      WHERE sk ILIKE ${`%${q}%`}
     );
 `;
+
 
   return NextResponse.json({ success: true, results: products });
 }

@@ -257,7 +257,8 @@ const AddProduct = () => {
                     <Info size={12} />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Stock Keeping Unit</p>
+                    <p className="font-bold">Stock Keeping Unit</p>
+                    <p className="text-[11px]">Your Unique Identifier</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -265,7 +266,7 @@ const AddProduct = () => {
             <Input
               id="sku"
               type="text"
-              placeholder="Unique Identifier"
+              placeholder="Optional"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setSku(e.target.value)}
               value={sku}
