@@ -1,7 +1,6 @@
 "use client";
-import { assets } from "@/assets/assets";
+import AddAddressIcon from "@/components/svgs/AddAddressIcon";
 import useAddressHook from "@/hooks/useAddressHook";
-import Image from "next/image";
 import { useState } from "react";
 
 interface AddressForm {
@@ -23,22 +22,22 @@ export default function Page() {
     province: "",
   });
 
-  const { addAddress, addAddressLoading: isPending } = useAddressHook()
+  const { addAddress, addAddressLoading: isPending } = useAddressHook();
 
   const handleAddAddress = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addAddress(address);
-  }
+  };
 
   return (
-    <div className="mt-16 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-between">
-      <form onSubmit={handleAddAddress} className="w-full">
+    <div className="mt-16 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-center">
+      <form onSubmit={handleAddAddress} className="w-full flex flex-col items-center pt-5 order-2 md:order-1 md:items-start">
         <p className="text-2xl md:text-3xl text-foreground/80">
           Add Shipping{" "}
           <span className="font-semibold text-primary">Address</span>
         </p>
 
-        <div className="space-y-3 max-w-sm mt-10">
+        <div className="space-y-3 max-w-xl md:max-w-sm mt-10">
           <input
             className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
@@ -100,27 +99,23 @@ export default function Page() {
               }
             />
           </div>
-        </div>
-
         <button
           type="submit"
-          className={`max-w-sm w-full mt-6 text-white py-3 uppercase 
-            ${isPending
-              ? "bg-primary-loading"
-              : "bg-primary cursor-pointer hover:bg-primary-hover"}`}
+          className={`md:max-w-sm w-full mt-6 text-white py-3 uppercase 
+            ${
+              isPending
+                ? "bg-primary-loading"
+                : "bg-primary cursor-pointer hover:bg-primary-hover"
+            }`}
         >
-          {
-            isPending ? "Loading..." : "Save address"
-          }
-
+          {isPending ? "Loading..." : "Save address"}
         </button>
-      </form>
+        </div>
 
-      <Image
-        className="md:mr-16 mt-16 md:mt-0"
-        src={assets.my_location_image}
-        alt="my_location_image"
-      />
+      </form>
+      <div className="w-full flex items-center order-1 md:order-2 justify-center">
+        <AddAddressIcon size={400} />
+      </div>
     </div>
   );
 }

@@ -39,7 +39,7 @@ model Product {
   category    String
   image       String[]
   price       Int
-  salePrice  Int
+  salePrice   Int
   // new
   search_keys String[]    @default([])
   sku         String?
@@ -47,14 +47,15 @@ model Product {
   type        ProductType @default(SIMPLE)
   variations  String[]    @default([])
   isArchived  Boolean     @default(false)
-  isOnSale  Boolean     @default(false)
+  isOnSale    Boolean     @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders    OrderItem[]
-  user      User        @relation(fields: [userId], references: [id])
-  cartItems CartItem[]
+  orders            OrderItem[]
+  user              User               @relation(fields: [userId], references: [id])
+  cartItems         CartItem[]
+  stockReservations StockReservation[]
 
   @@unique([sku])
   @@index([userId])
@@ -67,7 +68,7 @@ model CartItem {
   id        String @id @default(cuid())
   userId    String
   productId String
-  quantity Int @default(1)
+  quantity  Int    @default(1)
 
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
@@ -89,7 +90,7 @@ enum ShippingStatus {
 
 // Order
 model Order {
-  id                String  @id @default(cuid())
+  id                String @id @default(cuid())
   userId            String
   shippingAddressId String
 
@@ -164,12 +165,14 @@ model ShippingAddress {
 }
 
 model StockReservation {
-  id          String   @id @default(cuid())
-  productId   String
-  userId      String
-  quantity    Int
-  createdAt   DateTime @default(now())
-  expiresAt   DateTime
-  fulfilled   Boolean  @default(false)
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  quantity  Int
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  fulfilled Boolean  @default(false)
+  restored  Boolean  @default(false) // true if we restored stock due to expire/failure
+  meta      Json? // optional: store extra metadata (cart item snapshot, etc.)
 }
-

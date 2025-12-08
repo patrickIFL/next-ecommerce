@@ -17,12 +17,13 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "./ui/use-toast";
-import ConfirmDelete from "./ConfirmDeleteProduct";
+import Confirmation from "./Confirmation";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
 
   const isSale = product.salePrice < product.price;
+  const [onSale, setOnSale] = useState(false);
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const { getToken } = useAuth();
@@ -108,7 +109,9 @@ function ProductDataRow({ product }: { product: any }) {
       </td>
 
       <td className="px-4 py-3 text-center">{product.category}</td>
-      <td className="px-4 py-3 text-center">{product.sku ? product.sku : "-" }</td>
+      <td className="px-4 py-3 text-center">
+        {product.sku ? product.sku : "-"}
+      </td>
       <td className="px-4 py-3 text-center">
         {currency}
         {formatMoney(product.price)}
@@ -163,17 +166,29 @@ function ProductDataRow({ product }: { product: any }) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                onClick={() => {}}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-amber-600`}
-                disabled={isToggling}
-              >
-                <TicketPercent size={16}/>
-              </button>
+
+              <div>
+                <Confirmation confirmMessage="Put on SALE" title={`Put ${product.name} on SALE?`} message="Customers will checkout using the SALE price." onConfirm={() => {setOnSale(!onSale);}}>
+                  <button
+                    className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                      onSale ? "bg-red-600" : "bg-amber-500"
+                    }`}
+                    disabled={isToggling}
+                  >
+                    {onSale ? (
+                      <div className="flex flex-col items-center font-bold text-[10px]">
+                        <p>SALE!</p>
+                      </div>
+                    ) : (
+                      <TicketPercent className="mx-[5.2px]" size={16} />
+                    )}
+                  </button>
+                </Confirmation>
+              </div>
             </TooltipTrigger>
             {!isToggling && (
               <TooltipContent>
-                <p>Put on SALE</p>
+                { onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
               </TooltipContent>
             )}
           </Tooltip>
@@ -199,20 +214,22 @@ function ProductDataRow({ product }: { product: any }) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <ConfirmDelete onConfirm={() => deleteProduct(product.id)}>
-                <button
-                  disabled={isDeleting}
-                  className={`flex items-center gap-1 p-1.5 ${
-                    isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
-                  } cursor-pointer text-white rounded-md`}
-                >
-                  {isDeleting ? (
-                    <LoaderIcon className="animate-spin" size={16} />
-                  ) : (
-                    <Trash2 size={16} />
-                  )}
-                </button>
-              </ConfirmDelete>
+              <div>
+                <Confirmation message="This action cannot be undone. This will permanently delete the item." onConfirm={() => deleteProduct(product.id)}>
+                  <button
+                    disabled={isDeleting}
+                    className={`flex items-center gap-1 p-1.5 ${
+                      isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
+                    } cursor-pointer text-white rounded-md`}
+                  >
+                    {isDeleting ? (
+                      <LoaderIcon className="animate-spin" size={16} />
+                    ) : (
+                      <Trash2 size={16} />
+                    )}
+                  </button>
+                </Confirmation>
+              </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>Delete</p>

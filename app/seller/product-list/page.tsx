@@ -7,6 +7,10 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import ProductDataRow from "@/components/ProductDataRow";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
+import SellerSearch from "@/components/SellerSearch";
+import CategoryComboBox from "@/components/CategoryComboBox";
+import SellerCategoryFilter from "@/components/SellerCategoryFilter";
+import { useState } from "react";
 
 interface ProductType {
   id: string;
@@ -19,6 +23,7 @@ interface ProductType {
 
 const ProductList = () => {
   const { getToken } = useAuth();
+  const [filterCategory, setFilterCategory] = useState("All");
 
   const { data: sellerProducts, isLoading } = useQuery<ProductType[]>({
     queryKey: ["sellerProducts"],
@@ -59,9 +64,18 @@ const ProductList = () => {
       ) : (
         <>
           <div className="w-full md:p-10 p-4">
-            <div className="flex flex-col pt-12 mb-5">
-              <p className="text-2xl font-medium">Products</p>
-              <div className="w-16 h-0.5 bg-primary rounded-full"></div>
+            <div className="flex pt-12 mb-5 justify-between">
+              
+              <div className="flex flex-col">
+                <p className="text-2xl font-medium">Products</p>
+                <div className="w-16 h-0.5 bg-primary rounded-full"></div>
+              </div>
+              
+              <div className="flex gap-2">
+
+                <SellerSearch />
+                <SellerCategoryFilter value={filterCategory} onChange={setFilterCategory} />
+              </div>
             </div>
 
             <ScrollArea className="flex flex-col items-center w-full rounded-md bg-accent border border-gray-500/20">

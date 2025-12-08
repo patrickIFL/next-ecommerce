@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import CartCard from "@/components/CartCard";
 import { useEffect } from "react";
 import useCartHook from "@/hooks/useCartHook";
+import { MoveLeft } from "lucide-react";
 
 const Cart = () => {
   const router = useRouter();
@@ -56,11 +57,7 @@ const Cart = () => {
           onClick={() => router.push("/all/products")}
           className="group flex items-center mt-6 gap-2 text-primary cursor-pointer"
         >
-          <Image
-            className="group-hover:-translate-x-1 transition"
-            src={assets.arrow_right_icon_colored}
-            alt="arrow_right_icon_colored"
-          />
+          <MoveLeft className="group-hover:-translate-x-1 transition" color={"var(--primary)"} />
           Continue Shopping
         </button>
       </div>

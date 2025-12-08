@@ -60,7 +60,7 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0 text-foreground">
         <Command>
           <div className="flex items-center gap-2 p-2">
             <CommandInput placeholder="Search Address..." className="h-9" />

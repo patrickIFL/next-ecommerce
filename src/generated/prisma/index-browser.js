@@ -218,12 +218,19 @@ exports.Prisma.StockReservationScalarFieldEnum = {
   quantity: 'quantity',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt',
-  fulfilled: 'fulfilled'
+  fulfilled: 'fulfilled',
+  restored: 'restored',
+  meta: 'meta'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -234,6 +241,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.ProductType = exports.$Enums.ProductType = {
   SIMPLE: 'SIMPLE',

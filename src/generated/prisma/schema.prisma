@@ -52,9 +52,10 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders    OrderItem[]
-  user      User        @relation(fields: [userId], references: [id])
-  cartItems CartItem[]
+  orders            OrderItem[]
+  user              User               @relation(fields: [userId], references: [id])
+  cartItems         CartItem[]
+  stockReservations StockReservation[]
 
   @@unique([sku])
   @@index([userId])
@@ -166,9 +167,12 @@ model ShippingAddress {
 model StockReservation {
   id        String   @id @default(cuid())
   productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId    String
   quantity  Int
   createdAt DateTime @default(now())
   expiresAt DateTime
   fulfilled Boolean  @default(false)
+  restored  Boolean  @default(false) // true if we restored stock due to expire/failure
+  meta      Json? // optional: store extra metadata (cart item snapshot, etc.)
 }
