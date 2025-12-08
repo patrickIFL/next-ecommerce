@@ -3,7 +3,7 @@
 import { assets } from "@/assets/assets";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -46,66 +46,68 @@ const ProductCard = ({ product }: { product: any }) => {
         )}
       </div>
 
-{/* info */}
-    <div className="w-full p-2">
-        
-      <p className="md:text-base font-medium w-full truncate">
-        {product.name}
-      </p>
-      <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
-        {product.description}
-      </p>
-      <div className="flex items-center gap-2">
-        <p className="text-xs">{4.5}</p>
-        <div className="flex items-center gap-0.5">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Image
-              key={index}
-              className="h-3 w-3"
-              src={
-                index < Math.floor(4) ? assets.star_icon : assets.star_dull_icon
-              }
-              alt="star_icon"
-            />
-          ))}
+      {/* info */}
+      <div className="w-full p-2">
+        <p className="md:text-base font-medium w-full truncate">
+          {product.name}
+        </p>
+        <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
+          {product.description}
+        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs">{4.5}</p>
+          <div className="flex items-center gap-0.5">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star
+                key={index}
+                className="h-3 w-3"
+                fill={index < 4 ? "orange" : "lightgray"}
+                stroke="none"
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-end justify-between w-full mt-1">
+          <p className="text-foreground font-medium">
+            <span className="text-md">
+              {currency}
+              {formatMoney(product.salePrice)}{" "}
+            </span>
+
+            {isSale && (
+              <span className="text-xs text-foreground/40 font-normal line-through">
+                {currency}
+                {formatMoney(product.price)}
+              </span>
+            )}
+          </p>
+
+          <button
+            disabled={buyNowLoading}
+            onClick={(e) => {
+              e.stopPropagation(); // prevent navigation
+              handleBuyNow(product.id);
+            }}
+            className={`max-sm:hidden px-3 py-1.5 text-foreground border ${
+              buyNowLoading
+                ? "border-foreground/50"
+                : "cursor-pointer border-foreground hover:bg-foreground hover:text-background"
+            } rounded-full text-xs transition`}
+          >
+            {buyNowLoading ? (
+              <div className="w-[47px]">
+                <LoaderIcon
+                  className="animate-spin text-foreground/50 mx-auto"
+                  size={16}
+                />
+              </div>
+            ) : (
+              "Buy Now"
+            )}
+          </button>
         </div>
       </div>
-      
-      <div className="flex items-end justify-between w-full mt-1">
-        <p className="text-foreground font-medium">
-        <span className="text-md">
-            {currency}
-          {formatMoney(product.salePrice)}{" "}
-        </span>
-
-        {isSale && 
-        <span className="text-xs text-foreground/40 font-normal line-through">
-          {currency}
-          {formatMoney(product.price)}
-        </span>
-        }
-        
-          
-        </p>
-        
-        <button
-          disabled={buyNowLoading}
-          onClick={(e) => {
-            e.stopPropagation(); // prevent navigation
-            handleBuyNow(product.id);
-            
-          }}
-          className={`max-sm:hidden px-3 py-1.5 text-foreground border ${buyNowLoading ? "border-foreground/50" : "cursor-pointer border-foreground hover:bg-foreground hover:text-background"} rounded-full text-xs transition`}
-        >
-          {buyNowLoading ? 
-          <div className="w-[47px]">
-            <LoaderIcon className="animate-spin text-foreground/50 mx-auto" size={16} />
-          </div>
-           : "Buy Now"}
-        </button>
-      </div>
-    </div>
-
     </div>
   );
 };

@@ -61,12 +61,12 @@ const HeaderSlider = () => {
             className="flex flex-col-reverse md:flex-row items-center justify-between bg-slider py-8 md:px-14 px-5 mt-6 rounded-xl min-w-full"
           >
             <div className="md:pl-8 mt-10 md:mt-0">
-              <p className="md:text-base text-orange-600 pb-1">{slide.offer}</p>
+              <p className="md:text-base text-primary pb-1">{slide.offer}</p>
               <h1 className="max-w-lg md:text-[40px] md:leading-12 text-2xl font-semibold">
                 {slide.title}
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">
-                <button className="cursor-pointer md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 hover:bg-orange-700 rounded-full text-white font-medium">
+                <button className="cursor-pointer md:px-10 px-7 md:py-2.5 py-2 bg-primary hover:bg-primary-hover rounded-full text-white font-medium">
                   {slide.buttonText1}
                 </button>
                 <button className="cursor-pointer group flex items-center gap-2 px-6 py-2.5 font-medium">
