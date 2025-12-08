@@ -46,7 +46,7 @@ const SideBar = () => {
             <div
               className={`flex items-center py-3 px-4 gap-3 ${
                 isActive
-                  ? "border-r-4 lg:border-r-[6px] bg-orange-600/50 border-orange-500"
+                  ? "border-r-4 lg:border-r-[6px] bg-primary/50 border-primary"
                   : "hover:bg-accent border-white"
               }`}
             >

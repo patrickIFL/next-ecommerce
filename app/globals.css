@@ -17,6 +17,7 @@
 
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
+  --color-primary-loading: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
 
   --color-secondary: var(--secondary);
@@ -72,6 +73,8 @@
 
   --primary: oklch(0.5461 0.2152 262.88);
   --primary-hover: oklch(0.4882 0.2172 264.38);
+  --primary-loading: oklch(0.38 0.24 36.5);
+
 
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
@@ -110,6 +113,7 @@
 
   --primary: oklch(0.5461 0.2152 262.88);
   --primary-hover: oklch(0.4882 0.2172 264.38);
+  --primary-loading: oklch(0.38 0.24 36.5);
 
   --primary-foreground: oklch(0.21 0.006 285.885);
   --secondary: oklch(0.274 0.006 286.033);

@@ -11,6 +11,7 @@ import {
   LoaderIcon,
   SquareArrowOutUpRight,
   SquarePen,
+  TicketPercent,
   Trash2,
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -163,30 +164,16 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => toggleArchive(product.id)}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
-                  isArchived
-                    ? isToggling
-                      ? "bg-red-900"
-                      : "bg-red-600 hover:bg-red-700"
-                    : isToggling
-                    ? "bg-green-900"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
+                onClick={() => {}}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-amber-600`}
                 disabled={isToggling}
               >
-                {isToggling ? (
-                  <LoaderIcon className="animate-spin" size={16} />
-                ) : isArchived ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                <TicketPercent size={16}/>
               </button>
             </TooltipTrigger>
             {!isToggling && (
               <TooltipContent>
-                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+                <p>Put on SALE</p>
               </TooltipContent>
             )}
           </Tooltip>

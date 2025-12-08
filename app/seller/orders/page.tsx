@@ -37,7 +37,7 @@ const Orders: React.FC = () => {
 
                 <div className="flex flex-col pt-12 mb-5">
                   <p className="text-2xl font-medium">Orders</p>
-                  <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+                  <div className="w-16 h-0.5 bg-primary rounded-full"></div>
                 </div>
 
                 <ScrollArea className="max-w-5xl overflow-x-auto">

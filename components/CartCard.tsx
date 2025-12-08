@@ -61,7 +61,7 @@ function CartCard({ item }: CartCardProps) {
         <div className="text-sm hidden md:block">
           <p className="text-foreground">{item.product.name}</p>
           <button
-            className="text-xs text-orange-600 mt-1 cursor-pointer hover:underline"
+            className="text-xs text-primary mt-1 cursor-pointer hover:underline"
             onClick={remove}
           >
             Remove

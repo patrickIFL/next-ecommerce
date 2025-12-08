@@ -135,7 +135,7 @@ const AddProduct = () => {
       <form onSubmit={handleSubmit} className="md:p-10 p-4 space-y-5 max-w-lg">
         <div className="flex flex-col mb-5">
           <p className="text-2xl font-medium">New Product</p>
-          <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+          <div className="w-16 h-0.5 bg-primary rounded-full"></div>
         </div>
         <div>
           <p className="text-base font-medium">Product Image</p>
@@ -327,7 +327,7 @@ const AddProduct = () => {
 
         <Button
           type="submit"
-          className={`py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded
+          className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
           ${loading ? "opacity-50" : "cursor-pointer"}`}
           disabled={loading}
         >

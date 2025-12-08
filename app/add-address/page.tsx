@@ -35,12 +35,12 @@ export default function Page() {
       <form onSubmit={handleAddAddress} className="w-full">
         <p className="text-2xl md:text-3xl text-foreground/80">
           Add Shipping{" "}
-          <span className="font-semibold text-orange-600">Address</span>
+          <span className="font-semibold text-primary">Address</span>
         </p>
 
         <div className="space-y-3 max-w-sm mt-10">
           <input
-            className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
+            className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Full name"
             value={address.fullName}
@@ -50,7 +50,7 @@ export default function Page() {
           />
 
           <input
-            className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
+            className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Phone number"
             value={address.phoneNumber}
@@ -60,7 +60,7 @@ export default function Page() {
           />
 
           <input
-            className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
+            className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Zip code"
             value={address.zipcode}
@@ -70,7 +70,7 @@ export default function Page() {
           />
 
           <textarea
-            className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground resize-none placeholder:text-foreground/50"
+            className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground resize-none placeholder:text-foreground/50"
             rows={4}
             placeholder="Address (Area and Street)"
             value={address.area}
@@ -81,7 +81,7 @@ export default function Page() {
 
           <div className="flex space-x-3">
             <input
-              className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
+              className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
               type="text"
               placeholder="City/District/Town"
               value={address.city}
@@ -91,7 +91,7 @@ export default function Page() {
             />
 
             <input
-              className="px-2 py-2.5 focus:border-orange-500 transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
+              className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
               type="text"
               placeholder="Province"
               value={address.province}
@@ -106,8 +106,8 @@ export default function Page() {
           type="submit"
           className={`max-w-sm w-full mt-6 text-white py-3 uppercase 
             ${isPending
-              ? "bg-orange-900"
-              : "bg-orange-600 cursor-pointer hover:bg-orange-700"}`}
+              ? "bg-primary-loading"
+              : "bg-primary cursor-pointer hover:bg-primary-hover"}`}
         >
           {
             isPending ? "Loading..." : "Save address"
