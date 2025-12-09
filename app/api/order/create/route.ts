@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
     // 1️⃣ Get cart items
     const cartItems = await prisma.cartItem.findMany({
       where: { userId },
-      include: { product: true },
     });
 
     if (!cartItems.length) {
@@ -50,17 +49,50 @@ export async function POST(req: NextRequest) {
             throw new Error("Product not found: " + item.productId);
           }
 
+          // Early Obvious Prevention
           if (product.stock < item.quantity) {
             throw new Error(
               `Insufficient stock for ${product.name}. Available: ${product.stock}`
             );
           }
 
-          // decrement stock atomically
+          // decrement stock atomically for instant UI update Out of Stock
           await tx.product.update({
             where: { id: item.productId },
             data: { stock: { decrement: item.quantity } },
           });
+
+          // Aggregate active reservations first 
+          // - check if the sum total of current reservations in less than stock
+          const reserved = await tx.stockReservation.aggregate({
+            where: {
+              productId: item.productId,
+              fulfilled: false,
+              restored: false,
+            },
+            _sum: { quantity: true },
+          });
+
+          const reservedQty = reserved._sum.quantity ?? 0;
+          const available = product.stock - reservedQty;
+
+          if (available < item.quantity) {
+            throw new Error(
+              `Insufficient stock for ${product.name}. Available: ${product.stock}`
+            );
+          }
+
+          // Stock chek Passed - create reservation now, 10 mins expiration 
+          await tx.stockReservation.create({
+            data: {
+              productId: item.productId,
+              userId,
+              quantity: item.quantity,
+              expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+            },
+          });
+
+          // create a CRON job that checks if reservations are expired, if yes, restore reserved stocks.
         }
       });
     } catch (err: any) {
@@ -70,8 +102,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // User's Cart is valid, you may now include the products
+    const cartItemsWithProduct = await prisma.cartItem.findMany({
+      where: { userId },
+      include: { product: true },
+    });
+
     // 2️⃣ Calculate totals
-    const subtotal = cartItems.reduce(
+    const subtotal = cartItemsWithProduct.reduce(
       (acc, item) => acc + item.quantity * item.product.salePrice,
       0
     );
@@ -85,7 +123,7 @@ export async function POST(req: NextRequest) {
     // const total = subtotal + taxValue + shipping;
 
     const lineItems = [
-      ...cartItems.map((item) => ({
+      ...cartItemsWithProduct.map((item) => ({
         name: item.product.name,
         quantity: item.quantity,
         amount: Math.floor(item.product.salePrice), // Already converted
@@ -94,7 +132,7 @@ export async function POST(req: NextRequest) {
       {
         name: "Tax",
         quantity: 1,
-        amount: taxValue * 100, // Remove if no tax
+        amount: taxValue, // Remove if no tax
         currency: "PHP",
       },
       {
@@ -128,9 +166,9 @@ export async function POST(req: NextRequest) {
           metadata: {
             userId,
             selectedAddressId,
-            cartItems: JSON.stringify(cartItems),
+            cartItems: JSON.stringify(cartItemsWithProduct),
             lineItems: JSON.stringify(
-              cartItems.map((item) => ({
+              cartItemsWithProduct.map((item) => ({
                 name: item.product.name,
                 quantity: item.quantity,
                 amount: Math.floor(item.product.salePrice),

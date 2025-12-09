@@ -31,7 +31,7 @@ const SellerSearch = () => {
           name="search"
           autoComplete="off"
           // value={searchQuery} 
-          placeholder="Search a product"
+          placeholder="Search Product List"
           className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden 
           disabled:cursor-not-allowed disabled:opacity-50"
           // onChange={(e) => {

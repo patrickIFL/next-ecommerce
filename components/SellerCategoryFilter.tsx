@@ -55,7 +55,7 @@ export default function SellerCategoryFilter({
           aria-expanded={open}
           className={`rounded font-normal justify-between ${className ?? ""}`}
         >
-          {selected ? selected.name : "Filter category"}
+          {selected ? selected.name : "Filter by category"}
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
