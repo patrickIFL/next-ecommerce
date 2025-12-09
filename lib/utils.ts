@@ -6,6 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatMoney(amount:number){
-    const formatted = amount.toLocaleString('en-PH');
+    const formatted = (amount/100).toLocaleString('en-PH');
     return formatted;
 }
