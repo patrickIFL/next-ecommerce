@@ -10,8 +10,7 @@ export async function POST(req: NextRequest) {
     const eventType = body.data?.attributes?.type;
     console.log("🔔 Event type:", eventType);
 
-    // if (eventType === "checkout_session.payment.paid") {
-    if (eventType === "payment.paid") {
+    if (eventType === "checkout_session.payment.paid") {
       const session = body.data.attributes.data;
       const checkout_id = session.id;
       const payment = session.attributes.payments[0];
@@ -31,17 +30,6 @@ export async function POST(req: NextRequest) {
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);
       const line_items = metadata.lineItems;
-      const reservations = JSON.parse(metadata.reservations || "[]");
-
-      // Update reservations
-      await prisma.$transaction(
-        reservations.map((item: any) =>
-          prisma.stockReservation.update({
-            where: { id: item.id },
-            data: { fulfilled: true },
-          })
-        )
-      );
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
@@ -79,29 +67,6 @@ export async function POST(req: NextRequest) {
       // 5️⃣ Clear cart
       await prisma.cartItem.deleteMany({ where: { userId } });
 
-      return NextResponse.json({ success: true });
-    }
-
-    if (eventType === "payment.failed") {
-      const session = body.data.attributes.data;
-      const metadata = session.attributes.metadata;
-      const reservations = JSON.parse(metadata.reservations);
-
-      // Update reservations, Return stock
-      await prisma.$transaction(
-        reservations
-          .map((item: any) => [
-            prisma.product.update({
-              where: { id: item.productId },
-              data: { stock: { increment: item.quantity } },
-            }),
-            prisma.stockReservation.update({
-              where: { id: item.id },
-              data: { restored: true },
-            }),
-          ])
-          .flat()
-      );
       return NextResponse.json({ success: true });
     }
 
