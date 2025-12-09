@@ -37,6 +37,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 🔥 2️⃣ ATOMIC STOCK VALIDATION & RESERVATION
+    try {
+      await prisma.$transaction(async (tx) => {
+        for (const item of cartItems) {
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { stock: true, name: true, salePrice: true },
+          });
+
+          if (!product) {
+            throw new Error("Product not found: " + item.productId);
+          }
+
+          if (product.stock < item.quantity) {
+            throw new Error(
+              `Insufficient stock for ${product.name}. Available: ${product.stock}`
+            );
+          }
+
+          // decrement stock atomically
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { decrement: item.quantity } },
+          });
+        }
+      });
+    } catch (err: any) {
+      return NextResponse.json(
+        { success: false, message: err.message },
+        { status: 400 }
+      );
+    }
+
     // 2️⃣ Calculate totals
     const subtotal = cartItems.reduce(
       (acc, item) => acc + item.quantity * item.product.salePrice,
