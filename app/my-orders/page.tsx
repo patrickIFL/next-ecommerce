@@ -79,7 +79,7 @@ const MyOrders: React.FC = () => {
 
                       {/* AMOUNT */}
                       <td className="p-3 align-top font-medium">
-                        {currency}{formatMoney(order.amount)}
+                        {currency}{formatMoney(order.amount/100)} {/* since price was stored as cents */}
                       </td>
 
                       {/* INFO */}

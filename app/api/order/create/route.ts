@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       ...cartItems.map((item) => ({
         name: item.product.name,
         quantity: item.quantity,
-        amount: Math.floor(item.product.salePrice * 100), // PayMongo uses cents
+        amount: Math.floor(item.product.salePrice), // Already converted
         currency: "PHP",
       })),
       {
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       {
         name: "Shipping",
         quantity: 1,
-        amount: shipping, // Remove if no shipping
+        amount: shipping * 100, // Remove if no shipping
         currency: "PHP",
       },
     ];
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
               cartItems.map((item) => ({
                 name: item.product.name,
                 quantity: item.quantity,
-                amount: Math.floor(item.product.salePrice * 100),
+                amount: Math.floor(item.product.salePrice),
                 currency: "PHP",
                 images: item.product.image ? [item.product.image] : [],
                 description: item.product.description || "",

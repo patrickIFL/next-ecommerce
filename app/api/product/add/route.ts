@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       where: { sku: sku! },
     });
 
-    if (skuExist) {
+    if (sku && skuExist) {
       return NextResponse.json(
         { success: false, message: "SKU already exists" },
         { status: 400 }
@@ -106,8 +106,8 @@ export async function POST(request: NextRequest) {
         name: name!,
         description: description!,
         category: category!,
-        price: Number(price),
-        salePrice: Number(salePrice),
+        price: Number(price)*100, // cents
+        salePrice: Number(salePrice)*100, //cents
 
         sku: sku!,
         stock: Number(stock),
