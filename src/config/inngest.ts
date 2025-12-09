@@ -177,54 +177,54 @@ export const createUserOrder = inngest.createFunction(
   }
 );
 
-export const restoreExpiredReservations = inngest.createFunction(
-  {
-    id: "restore-expired-stock-reservations",
-    cron: "*/1 * * * *", // run every minute
-  },
-  async () => {
-    console.log("Running expired reservation cleanup...");
+// export const restoreExpiredReservations = inngest.createFunction(
+//   {
+//     id: "restore-expired-stock-reservations",
+//     cron: "*/1 * * * *", // run every minute
+//   },
+//   async () => {
+//     console.log("Running expired reservation cleanup...");
 
-    const now = new Date();
+//     const now = new Date();
 
-    // Find expired unfulfilled reservations
-    const expired = await prisma.stockReservation.findMany({
-      where: {
-        expiresAt: { lt: now },
-        fulfilled: false,
-        restored: false,
-      },
-    });
+//     // Find expired unfulfilled reservations
+//     const expired = await prisma.stockReservation.findMany({
+//       where: {
+//         expiresAt: { lt: now },
+//         fulfilled: false,
+//         restored: false,
+//       },
+//     });
 
-    if (!expired.length) return;
+//     if (!expired.length) return;
 
-    // Group by productId
-    const grouped: Record<string, number> = {};
-    for (const r of expired) {
-      grouped[r.productId] = (grouped[r.productId] ?? 0) + r.quantity;
-    }
+//     // Group by productId
+//     const grouped: Record<string, number> = {};
+//     for (const r of expired) {
+//       grouped[r.productId] = (grouped[r.productId] ?? 0) + r.quantity;
+//     }
 
-    // Restore stock atomically
-    for (const [productId, qty] of Object.entries(grouped)) {
-      await prisma.$transaction(async (tx) => {
-        await tx.product.update({
-          where: { id: productId },
-          data: { stock: { increment: qty } },
-        });
+//     // Restore stock atomically
+//     for (const [productId, qty] of Object.entries(grouped)) {
+//       await prisma.$transaction(async (tx) => {
+//         await tx.product.update({
+//           where: { id: productId },
+//           data: { stock: { increment: qty } },
+//         });
 
-        await tx.stockReservation.updateMany({
-          where: {
-            productId,
-            expiresAt: { lt: now },
-            fulfilled: false,
-            restored: false,
-          },
-          data: { restored: true },
-        });
-      });
-    }
+//         await tx.stockReservation.updateMany({
+//           where: {
+//             productId,
+//             expiresAt: { lt: now },
+//             fulfilled: false,
+//             restored: false,
+//           },
+//           data: { restored: true },
+//         });
+//       });
+//     }
 
-    console.log(`Restored stock for ${expired.length} expired reservations.`);
-  }
-);
+//     console.log(`Restored stock for ${expired.length} expired reservations.`);
+//   }
+// );
 
