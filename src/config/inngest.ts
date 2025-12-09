@@ -186,7 +186,7 @@ export const restoreExpiredReservations = inngest.createFunction(
     cron: "*/10 * * * *", // runs every 10 minutes
   },
   async ({ step }) => {
-    console.log("[Stock Cron] Running expired reservation cleanup...");
+    // console.log("[Stock Cron] Running expired reservation cleanup...");
 
     const now = new Date();
     const batchSize = 50; // process 50 reservations at a time
@@ -203,7 +203,7 @@ export const restoreExpiredReservations = inngest.createFunction(
       });
 
       if (!expiredBatch.length) {
-        console.log("[Stock Cron] No more expired reservations to process.");
+        // console.log("[Stock Cron] No more expired reservations to process.");
         break;
       }
 
@@ -235,15 +235,15 @@ export const restoreExpiredReservations = inngest.createFunction(
         }
       });
 
-      console.log(
-        `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations in this batch.`
-      );
+      // console.log(
+      //   `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations in this batch.`
+      // );
 
       // Small delay optional if batches are large to reduce DB load
       // await new Promise((res) => setTimeout(res, 100));
     }
 
-    console.log("[Stock Cron] Finished expired reservation cleanup.");
+    // console.log("[Stock Cron] Finished expired reservation cleanup.");
   }
 );
 

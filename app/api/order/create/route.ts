@@ -37,70 +37,61 @@ export async function POST(req: NextRequest) {
     }
 
     // 🔥 2️⃣ ATOMIC STOCK VALIDATION & RESERVATION
-    try {
-      await prisma.$transaction(async (tx) => {
-        for (const item of cartItems) {
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-            select: { stock: true, name: true, salePrice: true },
-          });
 
-          if (!product) {
-            throw new Error("Product not found: " + item.productId);
-          }
+    const reservations = await prisma.$transaction(async (tx) => {
+      const createdReservations: any[] = [];
 
-          // Early Obvious Prevention
-          if (product.stock < item.quantity) {
-            throw new Error(
-              `Insufficient stock for ${product.name}. Available: ${product.stock}`
-            );
-          }
+      for (const item of cartItems) {
+        const product = await tx.product.findUnique({
+          where: { id: item.productId },
+          select: { stock: true, name: true, salePrice: true },
+        });
 
-          // decrement stock atomically for instant UI update Out of Stock
-          await tx.product.update({
-            where: { id: item.productId },
-            data: { stock: { decrement: item.quantity } },
-          });
+        if (!product) throw new Error("Product not found: " + item.productId);
 
-          // Aggregate active reservations first 
-          // - check if the sum total of current reservations in less than stock
-          const reserved = await tx.stockReservation.aggregate({
-            where: {
-              productId: item.productId,
-              fulfilled: false,
-              restored: false,
-            },
-            _sum: { quantity: true },
-          });
+        // Obvious insufficient stock
+        if (product.stock < item.quantity)
+          throw new Error(
+            `Insufficient stock for ${product.name}. Available: ${product.stock}`
+          );
 
-          const reservedQty = reserved._sum.quantity ?? 0;
-          const available = product.stock - reservedQty;
+        // Atomic decrement
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } },
+        });
 
-          if (available < item.quantity) {
-            throw new Error(
-              `Insufficient stock for ${product.name}. Available: ${product.stock}`
-            );
-          }
+        // Multiple users are reserving the same product at the same time
+        const reserved = await tx.stockReservation.aggregate({
+          where: {
+            productId: item.productId,
+            fulfilled: false,
+            restored: false,
+          },
+          _sum: { quantity: true },
+        });
 
-          // Stock chek Passed - create reservation now, 10 mins expiration 
-          await tx.stockReservation.create({
-            data: {
-              productId: item.productId,
-              userId,
-              quantity: item.quantity,
-              expiresAt: new Date(Date.now() + 10 * 60 * 1000),
-            },
-          });
-
-          // create a CRON job that checks if reservations are expired, if yes, restore reserved stocks.
+        const reservedQty = reserved._sum.quantity ?? 0;
+        // the total of that is less than the actual stock
+        if (product.stock - reservedQty < item.quantity) {
+          throw new Error(`Insufficient stock for ${product.name}`);
         }
-      });
-    } catch (err: any) {
-      return NextResponse.json(
-        { success: false, message: err.message },
-        { status: 400 }
-      );
-    }
+
+        // checks passed, Create reservation
+        const reservation = await tx.stockReservation.create({
+          data: {
+            productId: item.productId,
+            userId,
+            quantity: item.quantity,
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+          },
+        });
+        // each product in cart has a reservation
+        createdReservations.push(reservation);
+      }
+      // compiled reservations
+      return createdReservations;
+    });
 
     // User's Cart is valid, you may now include the products
     const cartItemsWithProduct = await prisma.cartItem.findMany({
@@ -166,8 +157,9 @@ export async function POST(req: NextRequest) {
           metadata: {
             userId,
             selectedAddressId,
-            cartItems: JSON.stringify(cartItemsWithProduct),
-            lineItems: JSON.stringify(
+            reservations: JSON.stringify(reservations), // stock reservation data.
+            cartItems: JSON.stringify(cartItemsWithProduct), // used for order creation.
+            lineItems: JSON.stringify( // snapshot of line items with full order details
               cartItemsWithProduct.map((item) => ({
                 name: item.product.name,
                 quantity: item.quantity,

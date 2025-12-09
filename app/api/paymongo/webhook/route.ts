@@ -10,7 +10,8 @@ export async function POST(req: NextRequest) {
     const eventType = body.data?.attributes?.type;
     console.log("🔔 Event type:", eventType);
 
-    if (eventType === "checkout_session.payment.paid") {
+    // if (eventType === "checkout_session.payment.paid") {
+    if (eventType === "payment.paid") {
       const session = body.data.attributes.data;
       const checkout_id = session.id;
       const payment = session.attributes.payments[0];
@@ -30,6 +31,23 @@ export async function POST(req: NextRequest) {
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);
       const line_items = metadata.lineItems;
+      const reservations = JSON.parse(metadata.reservations || "[]");
+
+      await prisma.$transaction(async (tx) => {
+        for (const item of reservations) {
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+          });
+
+          if (!product) throw new Error("Product not found: " + item.productId);
+
+          await tx.stockReservation.update({
+            where: { id: item.id },
+            data: { fulfilled: true },
+          });
+        }
+        console.log("Order Fulfilled");
+      });
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
@@ -67,6 +85,34 @@ export async function POST(req: NextRequest) {
       // 5️⃣ Clear cart
       await prisma.cartItem.deleteMany({ where: { userId } });
 
+      return NextResponse.json({ success: true });
+    }
+
+    if (eventType === "payment.failed") {
+      const session = body.data.attributes.data;
+      const metadata = session.attributes.metadata;
+      const reservations = JSON.parse(metadata.reservations);
+      await prisma.$transaction(async (tx) => {
+        for (const item of reservations) {
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+          });
+
+          if (!product) throw new Error("Product not found: " + item.productId);
+
+          // Atomic increment
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { increment: item.quantity } },
+          });
+
+          await tx.stockReservation.update({
+            where: { id: item.id },
+            data: { restored: true },
+          });
+        }
+        console.log("Failed order stock restored");
+      });
       return NextResponse.json({ success: true });
     }
 
