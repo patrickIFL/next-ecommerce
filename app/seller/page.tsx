@@ -10,7 +10,7 @@ import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Info, LoaderIcon } from "lucide-react";
+import { Info, LoaderIcon, PhilippinePeso } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -296,32 +296,39 @@ const AddProduct = () => {
             <label className="text-base font-medium" htmlFor="product-price">
               Product Price
             </label>
-            <Input
-              id="product-price"
-              type="number"
-              placeholder="0"
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-              onChange={(e) => setPrice(e.target.value)}
-              value={price}
-              required
-              autoComplete="off"
-            />
+            <div className="flex items-center gap-2">
+              <PhilippinePeso size={18} />
+              <Input
+                id="product-price"
+                type="number"
+                placeholder="0"
+                className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                onChange={(e) => setPrice(e.target.value)}
+                value={price}
+                required
+                autoComplete="off"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col flex-1 gap-1 w-32">
             <label className="text-base font-medium" htmlFor="offer-price">
               Sale Price
             </label>
-            <Input
-              id="offer-price"
-              type="number"
-              placeholder="0"
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-              onChange={(e) => setsalePrice(e.target.value)}
-              value={salePrice}
-              required
-              autoComplete="off"
-            />
+
+            <div className="flex items-center gap-2">
+              <PhilippinePeso size={18} />
+              <Input
+                id="offer-price"
+                type="number"
+                placeholder="0"
+                className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                onChange={(e) => setsalePrice(e.target.value)}
+                value={salePrice}
+                required
+                autoComplete="off"
+              />
+            </div>
           </div>
         </div>
 

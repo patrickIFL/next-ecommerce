@@ -161,8 +161,8 @@ export async function PATCH(request: NextRequest) {
         name: name!,
         description: description!,
         category: category!,
-        price: Number(price),
-        salePrice: Number(salePrice),
+        price: Number(price)*100, // cents
+        salePrice: Number(salePrice)*100, // cents
         sku: sku!,
         stock: Number(stock),
         search_keys,

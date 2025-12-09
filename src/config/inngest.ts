@@ -183,67 +183,57 @@ export const restoreExpiredReservations = inngest.createFunction(
     id: "restore-expired-stock-reservations",
   },
   {
-    cron: "*/10 * * * *", // runs every 10 minutes
+    cron: "*/10 * * * *", // runs every 10 minute
   },
   async ({ step }) => {
     // console.log("[Stock Cron] Running expired reservation cleanup...");
 
     const now = new Date();
-    const batchSize = 50; // process 50 reservations at a time
 
-    while (true) {
-      // Fetch a batch of expired, unfulfilled, unrestored reservations
-      const expiredBatch = await prisma.stockReservation.findMany({
-        where: {
-          expiresAt: { lt: now },
-          fulfilled: false,
-          restored: false,
-        },
-        take: batchSize,
-      });
+    // Fetch expired, unfulfilled, and unrestored reservations
+    const expiredReservations = await prisma.stockReservation.findMany({
+      where: {
+        expiresAt: { lt: now },
+        fulfilled: false,
+        restored: false,
+      },
+    });
 
-      if (!expiredBatch.length) {
-        // console.log("[Stock Cron] No more expired reservations to process.");
-        break;
-      }
-
-      // Group by productId to restore stock per product
-      const restoreMap: Record<string, number> = {};
-      for (const r of expiredBatch) {
-        restoreMap[r.productId] = (restoreMap[r.productId] ?? 0) + r.quantity;
-      }
-
-      // Perform atomic update per product
-      await prisma.$transaction(async (tx) => {
-        for (const [productId, qty] of Object.entries(restoreMap)) {
-          // Use transaction to prevent concurrency issues
-          await tx.product.update({
-            where: { id: productId },
-            data: { stock: { increment: qty } },
-          });
-
-          // Mark reservations as restored
-          await tx.stockReservation.updateMany({
-            where: {
-              productId,
-              expiresAt: { lt: now },
-              fulfilled: false,
-              restored: false,
-            },
-            data: { restored: true },
-          });
-        }
-      });
-
-      // console.log(
-      //   `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations in this batch.`
-      // );
-
-      // Small delay optional if batches are large to reduce DB load
-      // await new Promise((res) => setTimeout(res, 100));
+    if (!expiredReservations.length) {
+      // console.log("[Stock Cron] No expired reservations found.");
+      return;
     }
 
-    // console.log("[Stock Cron] Finished expired reservation cleanup.");
+    // Aggregate quantity by product
+    const productRestoreMap: Record<string, number> = {};
+    for (const r of expiredReservations) {
+      productRestoreMap[r.productId] =
+        (productRestoreMap[r.productId] ?? 0) + r.quantity;
+    }
+
+    // Restore stock per product atomically
+    for (const [productId, qty] of Object.entries(productRestoreMap)) {
+      await prisma.$transaction(async (tx) => {
+        await tx.product.update({
+          where: { id: productId },
+          data: { stock: { increment: qty } },
+        });
+
+        await tx.stockReservation.updateMany({
+          where: {
+            productId,
+            expiresAt: { lt: now },
+            fulfilled: false,
+            restored: false,
+          },
+          data: { restored: true },
+        });
+      });
+    }
+
+    // console.log(
+      // `[Stock Cron] Restored stock for ${expiredReservations.length} expired reservations.`
+    // );
   }
 );
 
