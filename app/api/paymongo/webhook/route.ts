@@ -33,21 +33,15 @@ export async function POST(req: NextRequest) {
       const line_items = metadata.lineItems;
       const reservations = JSON.parse(metadata.reservations || "[]");
 
-      await prisma.$transaction(async (tx) => {
-        for (const item of reservations) {
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-          });
-
-          if (!product) throw new Error("Product not found: " + item.productId);
-
-          await tx.stockReservation.update({
+      // Update reservations
+      await prisma.$transaction(
+        reservations.map((item: any) =>
+          prisma.stockReservation.update({
             where: { id: item.id },
             data: { fulfilled: true },
-          });
-        }
-        console.log("Order Fulfilled");
-      });
+          })
+        )
+      );
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
@@ -92,27 +86,22 @@ export async function POST(req: NextRequest) {
       const session = body.data.attributes.data;
       const metadata = session.attributes.metadata;
       const reservations = JSON.parse(metadata.reservations);
-      await prisma.$transaction(async (tx) => {
-        for (const item of reservations) {
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-          });
 
-          if (!product) throw new Error("Product not found: " + item.productId);
-
-          // Atomic increment
-          await tx.product.update({
-            where: { id: item.productId },
-            data: { stock: { increment: item.quantity } },
-          });
-
-          await tx.stockReservation.update({
-            where: { id: item.id },
-            data: { restored: true },
-          });
-        }
-        console.log("Failed order stock restored");
-      });
+      // Update reservations, Return stock
+      await prisma.$transaction(
+        reservations
+          .map((item: any) => [
+            prisma.product.update({
+              where: { id: item.productId },
+              data: { stock: { increment: item.quantity } },
+            }),
+            prisma.stockReservation.update({
+              where: { id: item.id },
+              data: { restored: true },
+            }),
+          ])
+          .flat()
+      );
       return NextResponse.json({ success: true });
     }
 
