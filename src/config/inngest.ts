@@ -180,15 +180,17 @@ export const createUserOrder = inngest.createFunction(
 export const restoreExpiredReservations = inngest.createFunction(
   {
     id: "restore-expired-stock-reservations",
-    cron: "*/1 * * * *", // run every minute
   },
-  async () => {
-    console.log("Running expired reservation cleanup...");
+  {
+    cron: "*/1 * * * *", // runs every 1 minute
+  },
+  async ({ step }) => {
+    console.log("[Stock Cron] Running expired reservation cleanup...");
 
     const now = new Date();
 
-    // Find expired unfulfilled reservations
-    const expired = await prisma.stockReservation.findMany({
+    // Fetch expired, unfulfilled, and unrestored reservations
+    const expiredReservations = await prisma.stockReservation.findMany({
       where: {
         expiresAt: { lt: now },
         fulfilled: false,
@@ -196,16 +198,20 @@ export const restoreExpiredReservations = inngest.createFunction(
       },
     });
 
-    if (!expired.length) return;
-
-    // Group by productId
-    const grouped: Record<string, number> = {};
-    for (const r of expired) {
-      grouped[r.productId] = (grouped[r.productId] ?? 0) + r.quantity;
+    if (!expiredReservations.length) {
+      console.log("[Stock Cron] No expired reservations found.");
+      return;
     }
 
-    // Restore stock atomically
-    for (const [productId, qty] of Object.entries(grouped)) {
+    // Aggregate quantity by product
+    const productRestoreMap: Record<string, number> = {};
+    for (const r of expiredReservations) {
+      productRestoreMap[r.productId] =
+        (productRestoreMap[r.productId] ?? 0) + r.quantity;
+    }
+
+    // Restore stock per product atomically
+    for (const [productId, qty] of Object.entries(productRestoreMap)) {
       await prisma.$transaction(async (tx) => {
         await tx.product.update({
           where: { id: productId },
@@ -224,7 +230,10 @@ export const restoreExpiredReservations = inngest.createFunction(
       });
     }
 
-    console.log(`Restored stock for ${expired.length} expired reservations.`);
+    console.log(
+      `[Stock Cron] Restored stock for ${expiredReservations.length} expired reservations.`
+    );
   }
 );
+
 
