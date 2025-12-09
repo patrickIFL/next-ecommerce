@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { assets } from "@/assets/assets";
 import ProductCard from "@/components/ProductCard";
 import Loading from "@/components/Loading";
 import useProductHook from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, Star } from "lucide-react";
 
 type ProductType = {
   id: string;
@@ -22,9 +21,9 @@ type ProductType = {
 };
 
 const Product = () => {
-  const router = useRouter();
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
+  const dummyRating:number = 4.5
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } = useCartHook();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
@@ -95,17 +94,16 @@ const Product = () => {
           {/* RATING */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-0.5">
-              <Image className="h-4 w-4" src={assets.star_icon} alt="star" />
-              <Image className="h-4 w-4" src={assets.star_icon} alt="star" />
-              <Image className="h-4 w-4" src={assets.star_icon} alt="star" />
-              <Image className="h-4 w-4" src={assets.star_icon} alt="star" />
-              <Image
-                className="h-4 w-4"
-                src={assets.star_dull_icon}
-                alt="star"
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star
+                key={index}
+                className="h-5 w-5"
+                fill={index < Math.floor(dummyRating) ? "orange" : "lightgray"}
+                stroke="none"
               />
-            </div>
-            <p>(4.5)</p>
+            ))}
+          </div>
+            <p>{dummyRating}</p>
           </div>
 
           {/* DESCRIPTION */}
@@ -163,8 +161,7 @@ const Product = () => {
 
             <button
               onClick={() => {
-                handleAddToCart(productData.id);
-                router.push("/cart");
+                handleBuyNow(productData.id);
               }}
               disabled={buyNowLoading}
               className={`w-full py-3.5 text-white ${buyNowLoading ? "bg-primary-loading" : "cursor-pointer bg-primary hover:bg-primary-hover"} transition`}

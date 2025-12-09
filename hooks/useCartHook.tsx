@@ -57,7 +57,19 @@ function useCartHook() {
 
   const { mutateAsync: handleBuyNow, isPending: buyNowLoading } = useMutation({
     mutationFn: async (productId: string) => {
-      await handleAddToCart(productId);
+      const token = await getToken();
+      const res = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to add to cart");
+      return data;
     },
     onSuccess: () => router.push("/cart"),
     onError: (error: any) =>
