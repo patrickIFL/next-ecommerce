@@ -185,8 +185,8 @@ const EditProduct = () => {
                       type="file"
                       id={`image${index}`}
                       hidden
-                      onChange={(e) => {
-                        const updatedFiles = [...files];
+                      onChange={(e:any) => {
+                        const updatedFiles:any = [...files];
                         updatedFiles[index] = e.target.files[0];
                         setFiles(updatedFiles);
                       }}

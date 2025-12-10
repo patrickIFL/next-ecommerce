@@ -189,10 +189,9 @@ export const restoreExpiredReservations = inngest.createFunction(
     console.log("[Stock Cron] Running expired reservation cleanup...");
 
     const now = new Date();
-    const batchSize = 50; // process 50 reservations at a time
+    const batchSize = 50;
 
     while (true) {
-      // Fetch a batch of expired, unfulfilled, unrestored reservations
       const expiredBatch = await prisma.stockReservation.findMany({
         where: {
           expiresAt: { lt: now },
@@ -207,22 +206,19 @@ export const restoreExpiredReservations = inngest.createFunction(
         break;
       }
 
-      // Group by productId to restore stock per product
       const restoreMap: Record<string, number> = {};
       for (const r of expiredBatch) {
         restoreMap[r.productId] = (restoreMap[r.productId] ?? 0) + r.quantity;
       }
 
-      // Perform atomic update per product
+      // Restore stock
       await prisma.$transaction(async (tx) => {
         for (const [productId, qty] of Object.entries(restoreMap)) {
-          // Use transaction to prevent concurrency issues
           await tx.product.update({
             where: { id: productId },
             data: { stock: { increment: qty } },
           });
 
-          // Mark reservations as restored
           await tx.stockReservation.updateMany({
             where: {
               productId,
@@ -236,12 +232,20 @@ export const restoreExpiredReservations = inngest.createFunction(
       });
 
       console.log(
-        `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations in this batch.`
+        `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations.`
       );
-
-      // Small delay optional if batches are large to reduce DB load
-      // await new Promise((res) => setTimeout(res, 100));
     }
+
+    // Archive only products that STILL have stock = 0 after restoration
+    await prisma.product.updateMany({
+      where: {
+        stock: 0,
+        isArchived: false, // avoid unnecessary writes
+      },
+      data: {
+        isArchived: true,
+      },
+    });
 
     console.log("[Stock Cron] Finished expired reservation cleanup.");
   }
