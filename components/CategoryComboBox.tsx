@@ -95,14 +95,14 @@ export default function CategoryComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`rounded font-normal justify-between ${className ?? ""}`}
+          className={`rounded font-normal min-w-[140px] justify-between ${className ?? ""}`}
         >
           {selected ? selected.name : "Select category"}
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[135px] p-0">
+      <PopoverContent className="w-[140px] p-0">
         <Command>
           <CommandList>
             <CommandEmpty>No categories found</CommandEmpty>
