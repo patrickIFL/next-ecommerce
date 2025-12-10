@@ -183,7 +183,7 @@ export const restoreExpiredReservations = inngest.createFunction(
     id: "restore-expired-stock-reservations",
   },
   {
-    cron: "*/10 * * * *", // runs every 10 minutes
+    cron: "*/5 * * * *", // runs every 5 minutes
   },
   async ({ step }) => {
     console.log("[Stock Cron] Running expired reservation cleanup...");

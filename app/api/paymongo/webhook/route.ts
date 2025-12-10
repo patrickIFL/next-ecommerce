@@ -29,11 +29,19 @@ export async function POST(req: NextRequest) {
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);
-      const reservations = JSON.parse(metadata.reservations);
+      const reservations_obj = JSON.parse(metadata.reservations);
+      const reservations = reservations_obj.list;
       const line_items = metadata.lineItems;
 
-      console.log("🔥 Reservation webhook")
-      console.log("🔥🔥 Reservations metadata: ", reservations.list)
+      // Update reservations
+      await prisma.$transaction(
+        reservations.map((item: any) =>
+          prisma.stockReservation.update({
+            where: { id: item.id },
+            data: { fulfilled: true },
+          })
+        )
+      );
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
@@ -71,6 +79,23 @@ export async function POST(req: NextRequest) {
       // 5️⃣ Clear cart
       await prisma.cartItem.deleteMany({ where: { userId } });
 
+      return NextResponse.json({ success: true });
+    }
+    else if (eventType === "payment.failed") {
+      const session = body.data.attributes.data;
+      const metadata = session.attributes.metadata;
+      const reservations_obj = JSON.parse(metadata.reservations);
+      const reservations = reservations_obj.list;
+
+      // Update reservations
+      await prisma.$transaction(
+        reservations.map((item: any) =>
+          prisma.stockReservation.update({
+            where: { id: item.id },
+            data: { fulfilled: true },
+          })
+        )
+      );
       return NextResponse.json({ success: true });
     }
 
