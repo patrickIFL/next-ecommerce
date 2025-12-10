@@ -34,10 +34,11 @@ export async function POST(req: NextRequest) {
       const line_items = metadata.lineItems;
 
       // Update reservations
+      // Update reservations
       await prisma.$transaction(
-        reservations.map((item: any) =>
+        reservations.map((id: string) =>
           prisma.stockReservation.update({
-            where: { id: item.id },
+            where: { id },
             data: { fulfilled: true },
           })
         )
@@ -80,8 +81,7 @@ export async function POST(req: NextRequest) {
       await prisma.cartItem.deleteMany({ where: { userId } });
 
       return NextResponse.json({ success: true });
-    }
-    else if (eventType === "payment.failed") {
+    } else if (eventType === "payment.failed") {
       const session = body.data.attributes.data;
       const metadata = session.attributes.metadata;
       const reservations_obj = JSON.parse(metadata.reservations);
@@ -89,9 +89,9 @@ export async function POST(req: NextRequest) {
 
       // Update reservations
       await prisma.$transaction(
-        reservations.map((item: any) =>
+        reservations.map((id: any) =>
           prisma.stockReservation.update({
-            where: { id: item.id },
+            where: { id },
             data: { fulfilled: true },
           })
         )
