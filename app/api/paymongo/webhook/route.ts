@@ -29,7 +29,11 @@ export async function POST(req: NextRequest) {
       const userId = metadata.userId;
       const selectedAddressId = metadata.selectedAddressId;
       const cartItems = JSON.parse(metadata.cartItems);
+      const reservations = JSON.parse(metadata.reservations);
       const line_items = metadata.lineItems;
+
+      console.log("🔥 Reservation webhook")
+      console.log("🔥🔥 Reservations metadata: ", reservations.list)
 
       // Prepare items for nested create
       const items = cartItems.map((item: any) => ({

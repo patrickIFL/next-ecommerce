@@ -36,10 +36,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔥 2️⃣ ATOMIC STOCK VALIDATION & RESERVATION
+    // 🔥 2️⃣ ATOMIC STOCK VALIDATION + RESERVATIONS
+    let reservationIds: string[] = [];
+
     try {
-      await prisma.$transaction(async (tx) => {
+      reservationIds = await prisma.$transaction(async (tx) => {
+        const createdReservations: string[] = [];
+
         for (const item of cartItems) {
+          // ALWAYS fetch latest stock inside transaction
           const product = await tx.product.findUnique({
             where: { id: item.productId },
             select: { stock: true, name: true, salePrice: true },
@@ -49,21 +54,14 @@ export async function POST(req: NextRequest) {
             throw new Error("Product not found: " + item.productId);
           }
 
-          // Early Obvious Prevention
+          // ❗ 1. Early check
           if (product.stock < item.quantity) {
             throw new Error(
               `Insufficient stock for ${product.name}. Available: ${product.stock}`
             );
           }
 
-          // decrement stock atomically for instant UI update Out of Stock
-          await tx.product.update({
-            where: { id: item.productId },
-            data: { stock: { decrement: item.quantity } },
-          });
-
-          // Aggregate active reservations first 
-          // - check if the sum total of current reservations in less than stock
+          // ❗ 2. Check EXISTING reservations
           const reserved = await tx.stockReservation.aggregate({
             where: {
               productId: item.productId,
@@ -74,16 +72,22 @@ export async function POST(req: NextRequest) {
           });
 
           const reservedQty = reserved._sum.quantity ?? 0;
-          const available = product.stock - reservedQty;
+          const availableBefore = product.stock - reservedQty;
 
-          if (available < item.quantity) {
+          if (availableBefore < item.quantity) {
             throw new Error(
-              `Insufficient stock for ${product.name}. Available: ${product.stock}`
+              `Insufficient stock for ${product.name}. Available: ${availableBefore}`
             );
           }
 
-          // Stock chek Passed - create reservation now, 10 mins expiration 
-          await tx.stockReservation.create({
+          // ❗ 3. ATOMIC decrement stock
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { decrement: item.quantity } },
+          });
+
+          // ❗ 4. Create reservation (store ID)
+          const reservation = await tx.stockReservation.create({
             data: {
               productId: item.productId,
               userId,
@@ -92,8 +96,10 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          // create a CRON job that checks if reservations are expired, if yes, restore reserved stocks.
+          createdReservations.push(reservation.id);
         }
+
+        return createdReservations;
       });
     } catch (err: any) {
       return NextResponse.json(
@@ -166,6 +172,7 @@ export async function POST(req: NextRequest) {
           metadata: {
             userId,
             selectedAddressId,
+            reservations: JSON.stringify({list: reservationIds}),
             cartItems: JSON.stringify(cartItemsWithProduct),
             lineItems: JSON.stringify(
               cartItemsWithProduct.map((item) => ({
