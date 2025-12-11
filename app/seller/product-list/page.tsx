@@ -8,7 +8,6 @@ import ProductDataRow from "@/components/ProductDataRow";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import SellerSearch from "@/components/SellerSearch";
-import CategoryComboBox from "@/components/CategoryComboBox";
 import SellerCategoryFilter from "@/components/SellerCategoryFilter";
 import { useState } from "react";
 
@@ -17,7 +16,7 @@ interface ProductType {
   name: string;
   category: string;
   price: number;
-  salePrice: number;
+  salePrice: number | null;
   image: string[];
 }
 

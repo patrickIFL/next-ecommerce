@@ -147,8 +147,8 @@ function ProductDataRow({ product }: { product: any }) {
         {formatMoney(product.price)}
       </td>
       <td className="px-4 py-3 text-center">
-        {currency}
-        {formatMoney(product.salePrice)}
+        
+        {product.salePrice !== null ? currency+formatMoney(product.salePrice) : "-"}
       </td>
 
       <td className="px-4 py-3 text-center">
