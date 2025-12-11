@@ -206,12 +206,12 @@ const EditProduct = () => {
 
           <div className="flex flex-col gap-1 w-full">
             <label className="text-base font-medium" htmlFor="product-name">
-              Product Name
+              Name of Product
             </label>
             <Input
               id="product-name"
               type="text"
-              placeholder="Type here"
+              placeholder="Enter your product's name"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -227,21 +227,21 @@ const EditProduct = () => {
               id="product-description"
               rows={4}
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-              placeholder="Type here"
+              placeholder="Describe your product"
               onChange={(e) => setDescription(e.target.value)}
               value={description}
             ></Textarea>
           </div>
 
           <div className="flex flex-col gap-1 w-full">
-            <label className="text-base font-medium" htmlFor="product-description">
+            <label className="text-base font-medium" htmlFor="product-variations">
               Product Variations
             </label>
             <Textarea
-              id="product-description"
+              id="product-variations"
               rows={4}
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-              placeholder="Separate each variation with a comma"
+              placeholder="Variation A values: eg. Sml, Med, Lrg"
               onChange={(e) => setVariations(e.target.value)}
               value={variations}
             ></Textarea>
@@ -252,7 +252,17 @@ const EditProduct = () => {
         <div className="space-y-5 w-full max-w-xl lg:max-w-md">
           <div className="flex flex-col gap-1 w-full">
             <label className="text-base font-medium" htmlFor="product-description">
-              Search keys
+              <div className="flex gap-1.5 items-center">
+                    <span>Search Keys</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Enter keywords to help customers find this product</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
             </label>
             <Textarea
               id="product-description"
@@ -273,7 +283,7 @@ const EditProduct = () => {
             </div>
 
             <div className="flex flex-col flex-1 gap-1 w-32">
-              <label className="text-base font-medium" htmlFor="product-price">
+              <label className="text-base font-medium" htmlFor="sku">
                 <div className="flex gap-1.5 items-center">
                   <span>SKU</span>
                   <Tooltip>
@@ -298,7 +308,7 @@ const EditProduct = () => {
             </div>
 
             <div className="flex flex-col flex-1 gap-1 w-32">
-              <label className="text-base font-medium" htmlFor="offer-price">
+              <label className="text-base font-medium" htmlFor="stock">
                 Stock
               </label>
               <Input
@@ -317,7 +327,17 @@ const EditProduct = () => {
           <div className="flex items-center gap-5 flex-wrap">
             <div className="flex flex-col flex-1 gap-1 w-32">
               <label className="text-base font-medium" htmlFor="product-price">
-                Product Price
+                <div className="flex gap-1.5 items-center">
+                    <span>Product Price</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Original Price</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
               </label>
               <div className="flex items-center gap-2">
                 <PhilippinePeso size={18} />
@@ -335,19 +355,28 @@ const EditProduct = () => {
             </div>
 
             <div className="flex flex-col flex-1 gap-1 w-32">
-              <label className="text-base font-medium" htmlFor="offer-price">
-                Sale Price
+              <label className="text-base font-medium" htmlFor="sale-price">
+                <div className="flex gap-1.5 items-center">
+                    <span>SALE Price</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Price when on SALE</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
               </label>
               <div className="flex items-center gap-2">
                 <PhilippinePeso size={18} />
                 <Input
-                  id="offer-price"
+                  id="sale-price"
                   type="number"
                   placeholder="0"
                   className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                   onChange={(e) => setsalePrice(e.target.value)}
                   value={salePrice}
-                  required
                   autoComplete="off"
                 />
               </div>

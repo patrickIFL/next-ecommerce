@@ -3,15 +3,17 @@
 import { assets } from "@/assets/assets";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
-import { LoaderIcon, Star } from "lucide-react";
+import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const ProductCard = ({ product }: { product: any }) => {
   const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   return (
     <div
@@ -26,16 +28,27 @@ const ProductCard = ({ product }: { product: any }) => {
           <Image
             src={product.image[0]}
             alt={product.name}
-            className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full cursor-pointer"
+            className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
             width={800}
             height={800}
           />
-          <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md">
-            <Image
-              className="h-3 w-3"
-              src={assets.heart_icon}
-              alt="heart_icon"
+          <button onClick={(e) => {
+            e.stopPropagation();
+            setIsWishlisted(!isWishlisted)
+          }} 
+          className="cursor-pointer absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
+          disabled={false}
+          >
+            {false ? (
+              <LoaderIcon className="h-3 w-3 text-gray-500 animate-spin"  />
+            ) : (
+              
+            <Heart className="h-3 w-3 text-gray-500" 
+            fill={isWishlisted ? "#F91880" : "none"} 
+            color={isWishlisted ? "#F91880" : "#6B7280"} 
+            strokeWidth={3} 
             />
+            )}
           </button>
         </div>
         {/* Sale flag */}

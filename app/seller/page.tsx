@@ -180,7 +180,7 @@ const AddProduct = () => {
               <Input
                 id="product-name"
                 type="text"
-                placeholder="Type here"
+                placeholder="Enter your product's name"
                 className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -198,7 +198,7 @@ const AddProduct = () => {
                 id="product-description"
                 rows={4}
                 className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                placeholder="Type here"
+                placeholder="Describe your product"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
               ></Textarea>
@@ -212,10 +212,10 @@ const AddProduct = () => {
                 Product Variations
               </label>
               <Textarea
-                id="product-description"
+                id="product-variations"
                 rows={4}
                 className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                placeholder="Leave as blank - coming soon"
+                placeholder="Variation A values: eg. Sml, Med, Lrg"
                 onChange={(e) => setVariations(e.target.value)}
                 value={variations}
               ></Textarea>
@@ -228,7 +228,17 @@ const AddProduct = () => {
                 className="text-base font-medium"
                 htmlFor="product-description"
               >
-                Search keys
+                <div className="flex gap-1.5 items-center">
+                    <span>Search Keys</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Enter keywords to help customers find this product</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
               </label>
               <Textarea
                 id="product-description"
@@ -257,20 +267,20 @@ const AddProduct = () => {
               <div className="flex flex-col flex-1 gap-1 w-32">
                 <label
                   className="text-base font-medium"
-                  htmlFor="product-price"
+                  htmlFor="sku"
                 >
                   <div className="flex gap-1.5 items-center">
-                    <span>SKU</span>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info size={12} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="font-bold">Stock Keeping Unit</p>
-                        <p className="text-[11px]">Your Unique Identifier</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <span>SKU</span>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={12} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="font-bold">Stock Keeping Unit</p>
+                      <p className="text-[11px]">Stock Keeping Unit</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 </label>
                 <Input
                   id="sku"
@@ -283,7 +293,7 @@ const AddProduct = () => {
               </div>
 
               <div className="flex flex-col flex-1 gap-1 w-32">
-                <label className="text-base font-medium" htmlFor="offer-price">
+                <label className="text-base font-medium" htmlFor="stock">
                   Stock
                 </label>
                 <Input
@@ -307,7 +317,17 @@ const AddProduct = () => {
                   className="text-base font-medium"
                   htmlFor="product-price"
                 >
-                  Product Price
+                  <div className="flex gap-1.5 items-center">
+                    <span>Product Price</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Original Price</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </label>
                 <div className="flex items-center gap-2">
                   <PhilippinePeso size={18} />
@@ -326,7 +346,17 @@ const AddProduct = () => {
 
               <div className="flex flex-col flex-1 gap-1 w-32">
                 <label className="text-base font-medium" htmlFor="offer-price">
-                  Sale Price
+                  <div className="flex gap-1.5 items-center">
+                    <span>SALE Price</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">Price when on SALE</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </label>
 
                 <div className="flex items-center gap-2">
