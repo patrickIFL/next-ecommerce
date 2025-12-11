@@ -38,9 +38,10 @@ const AddProduct = () => {
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
+      const salePriceNum = salePrice ? Number(salePrice) : null;
 
       // validate
-      if (Number(salePrice) <= 0 || Number(price) <= 0)
+      if (Number(price) <= 0)
         return toast({
           title: "Invalid Price",
           description: "Price must be greater than 0",
@@ -71,7 +72,7 @@ const AddProduct = () => {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("price", price);
-      formData.append("salePrice", salePrice);
+      formData.append("salePrice", salePriceNum !== null ? salePriceNum.toString() : "");
       formData.append("sku", sku);
       formData.append("stock", stock);
       // ADD THESE
@@ -333,11 +334,10 @@ const AddProduct = () => {
                   <Input
                     id="offer-price"
                     type="number"
-                    placeholder="0"
+                    placeholder="Optional"
                     className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                     onChange={(e) => setsalePrice(e.target.value)}
                     value={salePrice}
-                    required
                     autoComplete="off"
                   />
                 </div>

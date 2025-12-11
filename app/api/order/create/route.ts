@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
           // ALWAYS fetch latest stock inside transaction
           const product = await tx.product.findUnique({
             where: { id: item.productId },
-            select: { stock: true, name: true, salePrice: true },
+            select: { stock: true, name: true, price: true },
           });
 
           if (!product) {
@@ -116,7 +116,10 @@ export async function POST(req: NextRequest) {
 
     // 2️⃣ Calculate totals
     const subtotal = cartItemsWithProduct.reduce(
-      (acc, item) => acc + item.quantity * item.product.salePrice,
+      (acc, item) => acc + item.quantity * 
+      (item.product.isOnSale 
+        ? item.product.salePrice ? item.product.salePrice : item.product.price  
+        : item.product.price),
       0
     );
 
@@ -132,7 +135,10 @@ export async function POST(req: NextRequest) {
       ...cartItemsWithProduct.map((item) => ({
         name: item.product.name,
         quantity: item.quantity,
-        amount: Math.floor(item.product.salePrice), // Already converted
+        amount: Math.floor(
+          item.product.isOnSale 
+          ? item.product.salePrice ? item.product.salePrice : item.product.price 
+          : item.product.price), // Already converted
         currency: "PHP",
       })),
       {
@@ -178,7 +184,10 @@ export async function POST(req: NextRequest) {
               cartItemsWithProduct.map((item) => ({
                 name: item.product.name,
                 quantity: item.quantity,
-                amount: Math.floor(item.product.salePrice),
+                amount: Math.floor(
+                          item.product.isOnSale 
+                             ? item.product.salePrice ? item.product.salePrice : item.product.price 
+                             : item.product.price),
                 currency: "PHP",
                 images: item.product.image ? [item.product.image] : [],
                 description: item.product.description || "",

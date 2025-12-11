@@ -11,7 +11,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
-  const isSale = product.salePrice < product.price;
+  const isSale = product.salePrice ? product.isOnSale : false;
 
   return (
     <div
@@ -39,7 +39,7 @@ const ProductCard = ({ product }: { product: any }) => {
           </button>
         </div>
         {/* Sale flag */}
-        {isSale && (
+        { isSale && (
           <div className="shadow-lg rounded-xs absolute top-0 left-0 -translate-x-1 -translate-y-1 bg-red-600 px-1 py-0.5">
             <p className="text-[10px] text-white font-bold">SALE</p>
           </div>
@@ -72,7 +72,7 @@ const ProductCard = ({ product }: { product: any }) => {
           <p className="text-foreground font-medium">
             <span className="text-md">
               {currency}
-              {formatMoney(product.salePrice)}{" "}
+              {formatMoney(isSale ? product.salePrice : product.price)}{" "}
             </span>
 
             {isSale && (

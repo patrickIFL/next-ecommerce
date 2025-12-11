@@ -9,6 +9,8 @@ type CartProduct = {
   name: string;
   image: string[];
   salePrice: number;
+  price: number;
+  isOnSale: boolean;
 };
 
 type CartItem = {
@@ -120,7 +122,10 @@ function useCartHook() {
 
   const getCartTotal: any = (items: CartItem[]) => {
     return items.reduce((total, item) => {
-      const price = item.product.salePrice ?? 0;
+      const price = 
+      item.product.isOnSale 
+      ? item.product.salePrice ? item.product.salePrice : item.product.price 
+      : item.product.price;
       const qty = item.quantity ?? 0;
       return total + price * qty;
     }, 0);

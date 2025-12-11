@@ -22,9 +22,8 @@ import Confirmation from "./Confirmation";
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
 
-  const isSale = product.salePrice < product.price;
-  const [onSale, setOnSale] = useState(false);
   const [isArchived, setIsArchived] = useState(product.isArchived);
+  const [onSale, setOnSale] = useState(product.isOnSale);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const { getToken } = useAuth();
   const { toast } = useToast();
@@ -56,7 +55,7 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
-  const { mutateAsync: toggleArchive, isPending: isToggling } = useMutation({
+  const { mutateAsync: toggleArchive, isPending: isTogglingArchive } = useMutation({
     mutationFn: async (productId: string) => {
       const token = await getToken();
       const res = await fetch(`/api/product/toggle-archive/${productId}`, {
@@ -87,6 +86,37 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
+  const { mutateAsync: toggleSale, isPending: isTogglingSale } = useMutation({
+    mutationFn: async (productId: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/toggle-sale/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data.message || "Failed to toggle archive product");
+      return data;
+    },
+    onSuccess: (data: any) => {
+      // Update local state immediately
+      setOnSale(data.product.isOnSale);
+
+      // Optionally, refresh the query so other components stay in sync
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+    onError: (error: any) =>
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      }),
+  });
+
   return (
     <tr className="border-t border-gray-500/20">
       <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3">
@@ -98,7 +128,7 @@ function ProductDataRow({ product }: { product: any }) {
             width={1280}
             height={720}
           />
-          {isSale && (
+          {onSale && (
             <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
               <p className="text-[10px] text-white font-bold ">SALE</p>
             </div>
@@ -140,16 +170,16 @@ function ProductDataRow({ product }: { product: any }) {
                 onClick={() => toggleArchive(product.id)}
                 className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
                   isArchived
-                    ? isToggling
+                    ? isTogglingArchive
                       ? "bg-red-900"
                       : "bg-red-600 hover:bg-red-700"
-                    : isToggling
+                    : isTogglingArchive
                     ? "bg-green-900"
                     : "bg-green-600 hover:bg-green-700"
                 }`}
-                disabled={isToggling}
+                disabled={isTogglingArchive}
               >
-                {isToggling ? (
+                {isTogglingArchive ? (
                   <LoaderIcon className="animate-spin" size={16} />
                 ) : isArchived ? (
                   <EyeOff size={16} />
@@ -158,7 +188,7 @@ function ProductDataRow({ product }: { product: any }) {
                 )}
               </button>
             </TooltipTrigger>
-            {!isToggling && (
+            {!isTogglingArchive && (
               <TooltipContent>
                 {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
               </TooltipContent>
@@ -168,25 +198,40 @@ function ProductDataRow({ product }: { product: any }) {
             <TooltipTrigger asChild>
 
               <div>
-                <Confirmation confirmMessage="Put on SALE" title={`Put ${product.name} on SALE?`} message="Customers will checkout using the SALE price." onConfirm={() => {setOnSale(!onSale);}}>
+                <Confirmation 
+                confirmMessage={onSale ? "End SALE" : "Put on SALE"} 
+                btnVariant={onSale ? "destructive" : "default"} 
+                title={onSale ? `End SALE for ${product.name}?` : `Put ${product.name} on SALE?`} 
+                message="Customers will checkout using the SALE price." 
+                onConfirm={() => toggleSale(product.id)}>
                   <button
-                    className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
-                      onSale ? "bg-red-600" : "bg-amber-500"
+                    className={`min-w-10 min-h-full flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                      onSale
+                    ? isTogglingSale
+                      ? "bg-red-900"
+                      : "bg-red-600 hover:bg-red-700"
+                    : isTogglingSale
+                    ? "bg-amber-700"
+                    : "bg-amber-500 hover:bg-amber-600"
                     }`}
-                    disabled={isToggling}
+                    disabled={isTogglingSale}
                   >
-                    {onSale ? (
+                    {isTogglingSale 
+                    ? (<LoaderIcon className="animate-spin" size={16} />) 
+                    : (onSale ? (
                       <div className="flex flex-col items-center font-bold text-[10px]">
                         <p>SALE!</p>
                       </div>
                     ) : (
-                      <TicketPercent className="mx-[5.2px]" size={16} />
-                    )}
+                      <TicketPercent size={16} />
+                    ))
+                    }
+                    
                   </button>
                 </Confirmation>
               </div>
             </TooltipTrigger>
-            {!isToggling && (
+            {!isTogglingSale && (
               <TooltipContent>
                 { onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
               </TooltipContent>

@@ -65,7 +65,7 @@ export async function PATCH(request: NextRequest) {
 
     // validate
 
-    if (Number(price) <= 0 || Number(salePrice) <= 0) {
+    if (Number(price) <= 0) {
       return NextResponse.json(
         { success: false, message: "Price cannot be set to equal or less than 0" },
         { status: 401 }
@@ -162,7 +162,7 @@ export async function PATCH(request: NextRequest) {
         description: description!,
         category: category!,
         price: Number(price)*100, // cents
-        salePrice: Number(salePrice)*100, // cents
+        salePrice: salePrice ? Number(salePrice)*100 : null, // cents
         sku: sku!,
         stock: Number(stock),
         search_keys,

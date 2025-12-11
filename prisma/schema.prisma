@@ -39,7 +39,7 @@ model Product {
   category    String
   image       String[]
   price       Int
-  salePrice   Int
+  salePrice   Int?
   // new
   search_keys String[]    @default([])
   sku         String?

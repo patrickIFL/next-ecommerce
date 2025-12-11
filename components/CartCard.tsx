@@ -9,6 +9,8 @@ interface CartProduct {
   name: string;
   image: string[];
   salePrice: number;
+  price: number;
+  isOnSale: boolean;
 }
 
 interface CartItem {
@@ -43,7 +45,11 @@ function CartCard({ item }: CartCardProps) {
   const decrement = () => updateQuantity(Math.max(0, quantity - 1));
   const remove = () => updateQuantity(0);
 
-  const totalPrice = formatMoney(item.product.salePrice * quantity);
+  const totalPrice = formatMoney( 
+    (item.product.isOnSale 
+    ? item.product.salePrice ? item.product.salePrice : item.product.price
+    : item.product.price) * quantity
+  );
 
   return (
     <tr>
@@ -70,7 +76,10 @@ function CartCard({ item }: CartCardProps) {
       </td>
 
       <td className="py-4 md:px-4 px-1 text-foreground/80">
-        {currency}{formatMoney(item.product.salePrice)} /pc
+        {currency}{formatMoney(
+          item.product.isOnSale 
+          ? item.product.salePrice ? item.product.salePrice : item.product.price 
+          : item.product.price)} /pc
       </td>
 
       <td className="py-4 md:px-4 px-1">

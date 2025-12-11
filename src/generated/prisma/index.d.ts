@@ -3142,7 +3142,7 @@ export namespace Prisma {
     category: string
     image: string[]
     price: number
-    salePrice: number
+    salePrice: number | null
     search_keys: string[]
     sku: string | null
     stock: number
@@ -3291,7 +3291,7 @@ export namespace Prisma {
       category: string
       image: string[]
       price: number
-      salePrice: number
+      salePrice: number | null
       search_keys: string[]
       sku: string | null
       stock: number
@@ -11601,7 +11601,7 @@ export namespace Prisma {
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    salePrice?: IntFilter<"Product"> | number
+    salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntFilter<"Product"> | number
@@ -11625,7 +11625,7 @@ export namespace Prisma {
     category?: SortOrder
     image?: SortOrder
     price?: SortOrder
-    salePrice?: SortOrder
+    salePrice?: SortOrderInput | SortOrder
     search_keys?: SortOrder
     sku?: SortOrderInput | SortOrder
     stock?: SortOrder
@@ -11653,7 +11653,7 @@ export namespace Prisma {
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    salePrice?: IntFilter<"Product"> | number
+    salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     stock?: IntFilter<"Product"> | number
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
@@ -11676,7 +11676,7 @@ export namespace Prisma {
     category?: SortOrder
     image?: SortOrder
     price?: SortOrder
-    salePrice?: SortOrder
+    salePrice?: SortOrderInput | SortOrder
     search_keys?: SortOrder
     sku?: SortOrderInput | SortOrder
     stock?: SortOrder
@@ -11704,7 +11704,7 @@ export namespace Prisma {
     category?: StringWithAggregatesFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntWithAggregatesFilter<"Product"> | number
-    salePrice?: IntWithAggregatesFilter<"Product"> | number
+    salePrice?: IntNullableWithAggregatesFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableWithAggregatesFilter<"Product"> | string | null
     stock?: IntWithAggregatesFilter<"Product"> | number
@@ -12293,7 +12293,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -12317,7 +12317,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -12339,7 +12339,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -12363,7 +12363,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -12386,7 +12386,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -12405,7 +12405,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -12425,7 +12425,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -13142,6 +13142,17 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EnumProductTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
@@ -13259,6 +13270,22 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -13928,6 +13955,14 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type ProductUpdatesearch_keysInput = {
     set?: string[]
     push?: string | string[]
@@ -14455,6 +14490,33 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
@@ -14503,7 +14565,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -14525,7 +14587,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -14719,7 +14781,7 @@ export namespace Prisma {
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
     price?: IntFilter<"Product"> | number
-    salePrice?: IntFilter<"Product"> | number
+    salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntFilter<"Product"> | number
@@ -15124,7 +15186,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -15147,7 +15209,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -15221,7 +15283,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -15244,7 +15306,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -15692,7 +15754,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -15715,7 +15777,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -15787,7 +15849,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -15810,7 +15872,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -15949,7 +16011,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -15972,7 +16034,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -16009,7 +16071,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -16032,7 +16094,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -16053,7 +16115,7 @@ export namespace Prisma {
     category: string
     image?: ProductCreateimageInput | string[]
     price: number
-    salePrice: number
+    salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
     stock: number
@@ -16120,7 +16182,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -16142,7 +16204,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
@@ -16164,7 +16226,7 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
     price?: IntFieldUpdateOperationsInput | number
-    salePrice?: IntFieldUpdateOperationsInput | number
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: IntFieldUpdateOperationsInput | number
