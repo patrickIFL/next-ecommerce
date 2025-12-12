@@ -38,19 +38,19 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // 4. Toggle the sale state
+    // 4. Toggle the featured state
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
-      data: { isOnSale: !product.isOnSale },
+      data: { isFeatured: !product.isFeatured },
     });
 
     return NextResponse.json({
       success: true,
-      message: `Product is ${updatedProduct.isOnSale ? "now on sale" : "removed from sale"}`,
+      message: `Product is ${updatedProduct.isFeatured ? "now on Featured" : "removed from featured list"}`,
       product: updatedProduct,
     });
   } catch (error: any) {
-    console.error("TOGGLE SALE ERROR:", error);
+    console.error("TOGGLE FEATURE ERROR:", error);
     return NextResponse.json(
       { success: false, message: "Server error", error: error.message },
       { status: 500 }

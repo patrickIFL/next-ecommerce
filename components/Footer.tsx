@@ -2,6 +2,7 @@
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useTheme } from "./theme-provider";
+import NextLogo from "./NextLogo";
 
 const Footer = () => {
   const { isDark } = useTheme();
@@ -36,12 +37,11 @@ const Footer = () => {
 
         {/* Logo + Description */}
         <div className="w-2/6">
-          <Image
-            className="cursor-pointer w-28 md:w-32"
-            onClick={() => {}}
-            src={isDark ? assets.logo_white : assets.logo}
-            alt="logo"
-          />
+           {isDark ? (
+            <NextLogo size={130} />
+          ) : (
+            <NextLogo size={130}/>
+          )}
 
           <p className="mt-6 text-sm text-foreground">
             Lorem Ipsum is simply dummy text of the printing and typesetting

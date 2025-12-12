@@ -22,7 +22,6 @@ import Confirmation from "./Confirmation";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
-  const isTogglingFeatured = false;
   const [isFeatured, setIsFeatured] = useState(product.isArchived);
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const [onSale, setOnSale] = useState(product.isOnSale);
@@ -120,6 +119,37 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
+  const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } = useMutation({
+    mutationFn: async (productId: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/toggle-featured/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data.message || "Failed to toggle archive product");
+      return data;
+    },
+    onSuccess: (data: any) => {
+      // Update local state immediately
+      setIsFeatured(data.product.isFeatured);
+
+      // Optionally, refresh the query so other components stay in sync
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+    onError: (error: any) =>
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      }),
+  });
+
   return (
     <tr className="border-t border-gray-500/20">
       <td className="py-3">
@@ -135,6 +165,11 @@ function ProductDataRow({ product }: { product: any }) {
           {onSale && (
             <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
               <p className="text-[10px] text-white font-bold">SALE</p>
+            </div>
+          )}
+          {isFeatured && (
+            <div className="absolute w-4 h-4 flex items-center justify-center top-0 right-0 translate-x-2/3 -translate-y-1/2 bg-gray-900 px-1 py-0.5 rounded-full">
+              <Star size={14} fill="#f59e0b" color="#f59e0b"/>
             </div>
           )}
         </div>
@@ -175,9 +210,10 @@ function ProductDataRow({ product }: { product: any }) {
             <TooltipTrigger asChild>
               <button
                 onClick={() => {
-                  setIsFeatured(!isFeatured);
+                  toggleFeatured(product.id);
                 }}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-foreground/50`}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-gray-900 
+                  outline-3 outline-gray-700 outline-offset-[-3px]`}
                 disabled={isTogglingFeatured}
               >
                 {isTogglingFeatured ? (
@@ -185,13 +221,13 @@ function ProductDataRow({ product }: { product: any }) {
                 ) : (
                   <Star
                     size={16}
-                    color={isFeatured ? "orange" : "white"}
-                    fill={isFeatured ? "orange" : "none"}
+                    color={isFeatured ? "#d97706" : "white"}
+                    fill={isFeatured ? "#f59e0b" : "none"}
                   />
                 )}
               </button>
             </TooltipTrigger>
-            {!isTogglingArchive && (
+            {!isTogglingFeatured && (
               <TooltipContent>
                 {isFeatured ? <p>Un-Feature</p> : <p>Feature</p>}
               </TooltipContent>
@@ -244,8 +280,9 @@ function ProductDataRow({ product }: { product: any }) {
                   onConfirm={() => toggleSale(product.id)}
                 >
                   <button
-                    className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
-                      onSale
+                    className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md 
+                      
+                      ${onSale
                         ? isTogglingSale
                           ? "bg-red-900"
                           : "bg-red-600 hover:bg-red-700"
