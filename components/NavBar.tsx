@@ -34,13 +34,33 @@ import ClerkUserButton from "./ClerkUserButton";
 import useSearchStore from "@/stores/useSearchStore";
 // import { useRouter } from "next/navigation";
 import useSearchHook from "@/hooks/useSearchHook";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 function NavBar() {
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const { user } = useUser();
   const { openSignIn } = useClerk();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+
+  // Close the Hamburger Menu When Resizing to Large
+  useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 1024) {
+      setIsOpen(false); // lg breakpoint and above
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  // Run once on mount
+  handleResize();
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
 
   // For the Nav links
   const menus = [

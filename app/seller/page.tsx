@@ -278,7 +278,7 @@ const AddProduct = () => {
                   className="text-base font-medium"
                   htmlFor="product-description"
                 >
-                  Variation A
+                  - Variation A
                 </label>
                 <Input
                   id="product-variations"
@@ -295,7 +295,7 @@ const AddProduct = () => {
                   className="text-base font-medium"
                   htmlFor="product-description"
                 >
-                  {"Variation B (Optional)"}
+                  {"- Variation B (Optional)"}
                 </label>
                 <Input
                   id="product-variations"
@@ -307,17 +307,19 @@ const AddProduct = () => {
               </div>
 
               <Button
-                className={`py-2.5 text-accent bg-foreground/90 font-medium rounded
-          ${loading ? "hover:bg-foreground/90 opacity-50" : "cursor-pointer hover:bg-foreground/70"}`}
+                className={`py-2.5 font-medium rounded 
+                  ${loading 
+                  ? "hover:bg-gray-100/80 bg-gray-100/80" 
+                  : "cursor-pointer bg-gray-100 hover:bg-gray-200"} transition`}
                 disabled={loading}
               >
                 {loading ? (
-                  <div className="mx-1 flex gap-1 items-center">
+                  <div className="text-gray-400 mx-1 flex gap-1 items-center">
                     <LoaderIcon className="animate-spin" size={16} />
                     <span>Generating...</span>
                   </div>
                 ) : (
-                  <span className="mx-6">Generate Variations</span>
+                  <span className="mx-6 text-gray-800/80">Generate Variations</span>
                 )}
               </Button>
             </Activity>
