@@ -1,4 +1,4 @@
-import logo from "./logo.svg";
+import logo from "./NEXTCART.svg";
 import logo_white from "./logo-white.svg";
 
 // import search_icon from "./search_icon.svg";

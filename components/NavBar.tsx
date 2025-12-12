@@ -35,6 +35,7 @@ import useSearchStore from "@/stores/useSearchStore";
 // import { useRouter } from "next/navigation";
 import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
+import NextLogo from "./NextLogo";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -181,19 +182,9 @@ useEffect(() => {
         {/* Logo will Change Depending on Theme. */}
         <Link href={"/"}>
           {isDark ? (
-            <Image
-              className="cursor-pointer w-28 md:w-32"
-              onClick={() => { }}
-              src={assets.logo_white}
-              alt="logo"
-            />
+            <NextLogo size={150} />
           ) : (
-            <Image
-              className="cursor-pointer w-28 md:w-32"
-              onClick={() => { }}
-              src={assets.logo}
-              alt="logo"
-            />
+            <NextLogo size={150}/>
           )}
         </Link>
         <div className="relative hidden lg:block">
