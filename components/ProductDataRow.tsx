@@ -205,7 +205,7 @@ function ProductDataRow({ product }: { product: any }) {
                 message="Customers will checkout using the SALE price." 
                 onConfirm={() => toggleSale(product.id)}>
                   <button
-                    className={`min-w-10 min-h-full flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                    className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
                       onSale
                     ? isTogglingSale
                       ? "bg-red-900"
@@ -219,9 +219,9 @@ function ProductDataRow({ product }: { product: any }) {
                     {isTogglingSale 
                     ? (<LoaderIcon className="animate-spin" size={16} />) 
                     : (onSale ? (
-                      <div className="flex flex-col items-center font-bold text-[10px]">
-                        <p>SALE!</p>
-                      </div>
+                      
+                        <TicketPercent size={16} />
+                      
                     ) : (
                       <TicketPercent size={16} />
                     ))

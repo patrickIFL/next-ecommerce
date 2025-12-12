@@ -1,17 +1,17 @@
 'use client';
 
-import { assets } from "@/assets/assets";
 import OrderSummary from "@/components/OrderSummary";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CartCard from "@/components/CartCard";
 import { useEffect } from "react";
 import useCartHook from "@/hooks/useCartHook";
-import { MoveLeft } from "lucide-react";
+import { MoveLeft, ShoppingCart } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
+import Loading from "@/components/Loading";
 
 const Cart = () => {
   const router = useRouter();
-  const { cartItems, refetchCart, getCartTotal } = useCartHook();
+  const { cartItems, cartLoading, refetchCart, getCartTotal } = useCartHook();
 
   const cartCount = cartItems.reduce((a, i) => a + i.quantity, 0);
   const cartAmount = getCartTotal(cartItems);
@@ -20,7 +20,34 @@ const Cart = () => {
     refetchCart();
   }, [refetchCart]);
 
-  // todo: to optimize the use of functions, create a edit button just like the mobile app.
+  // Decide what to show in the cart content
+  let cartContent;
+
+  if (cartLoading) {
+    cartContent = (
+      <tr>
+        <td colSpan={4} className="text-center">
+          <Loading />
+        </td>
+      </tr>
+    );
+  } else if (cartItems.length === 0 && !cartLoading) {
+    cartContent = (
+      <tr>
+        <td colSpan={4}>
+          <EmptyState
+            icon={ShoppingCart}
+            title="Your Cart is Empty"
+            description="Check our wide range of items and find great deals."
+          />
+        </td>
+      </tr>
+    );
+  } else {
+    cartContent = cartItems.map(item => (
+      <CartCard key={item.id} item={item} />
+    ));
+  }
 
   return (
     <div className="mt-16 flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
@@ -46,16 +73,14 @@ const Cart = () => {
             </thead>
 
             <tbody>
-              {cartItems.map(item => (
-                <CartCard key={item.id} item={item} />
-              ))}
+              {cartContent}
             </tbody>
           </table>
         </div>
 
         <button
           onClick={() => router.push("/all/products")}
-          className="group flex items-center mt-6 gap-2 text-primary cursor-pointer"
+          className="cursor-pointer group flex items-center mt-6 gap-2 text-primary"
         >
           <MoveLeft className="group-hover:-translate-x-1 transition" color={"var(--primary)"} />
           Continue Shopping

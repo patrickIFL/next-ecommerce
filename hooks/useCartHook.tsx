@@ -82,7 +82,7 @@ function useCartHook() {
       }),
   });
 
-  const { data: cartItems = [], isLoading, refetch: refetchCart } = useQuery<CartItem[]>({
+  const { data: cartItems = [], isLoading:cartLoading, refetch: refetchCart } = useQuery<CartItem[]>({
     queryKey: ['cartItems'],
     queryFn: async () => {
       const token = await getToken();
@@ -135,7 +135,7 @@ function useCartHook() {
     handleAddToCart,
     handleBuyNow,
     cartItems,
-    isLoading,
+    cartLoading,
     refetchCart,
     updateCartQuantity,
     getCartTotal,
