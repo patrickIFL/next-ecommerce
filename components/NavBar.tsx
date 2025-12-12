@@ -243,7 +243,16 @@ useEffect(() => {
 
             <NavigationMenuItem className="hidden lg:flex items-center p-2 rounded-full">
               {user ? (
-                <ClerkUserButton />
+                <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <ClerkUserButton />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>My Account</p>
+                      </TooltipContent>
+                    </Tooltip>
               ) : (
                 <button
                   onClick={() => openSignIn()}

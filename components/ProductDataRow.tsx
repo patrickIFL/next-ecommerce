@@ -11,6 +11,7 @@ import {
   LoaderIcon,
   SquareArrowOutUpRight,
   SquarePen,
+  Star,
   TicketPercent,
   Trash2,
 } from "lucide-react";
@@ -21,7 +22,8 @@ import Confirmation from "./Confirmation";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
-
+  const isTogglingFeatured = false;
+  const [isFeatured, setIsFeatured] = useState(product.isArchived);
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const [onSale, setOnSale] = useState(product.isOnSale);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -55,36 +57,37 @@ function ProductDataRow({ product }: { product: any }) {
       }),
   });
 
-  const { mutateAsync: toggleArchive, isPending: isTogglingArchive } = useMutation({
-    mutationFn: async (productId: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-archive/${productId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const { mutateAsync: toggleArchive, isPending: isTogglingArchive } =
+    useMutation({
+      mutationFn: async (productId: string) => {
+        const token = await getToken();
+        const res = await fetch(`/api/product/toggle-archive/${productId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to toggle archive product");
-      return data;
-    },
-    onSuccess: (data: any) => {
-      // Update local state immediately
-      setIsArchived(data.product.isArchived);
+        const data = await res.json();
+        if (!res.ok)
+          throw new Error(data.message || "Failed to toggle archive product");
+        return data;
+      },
+      onSuccess: (data: any) => {
+        // Update local state immediately
+        setIsArchived(data.product.isArchived);
 
-      // Optionally, refresh the query so other components stay in sync
-      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-    },
-    onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
-  });
+        // Optionally, refresh the query so other components stay in sync
+        queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+      },
+      onError: (error: any) =>
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        }),
+    });
 
   const { mutateAsync: toggleSale, isPending: isTogglingSale } = useMutation({
     mutationFn: async (productId: string) => {
@@ -119,23 +122,26 @@ function ProductDataRow({ product }: { product: any }) {
 
   return (
     <tr className="border-t border-gray-500/20">
-      <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3">
-        <div className="relative bg-gray-500/10 rounded p-2">
+      <td className="py-3">
+        <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
           <Image
             src={product.image?.[0] ?? "/placeholder.png"}
             alt="Product Image"
-            className="w-16"
+            className="w-10"
             width={1280}
             height={720}
           />
+
           {onSale && (
             <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
-              <p className="text-[10px] text-white font-bold ">SALE</p>
+              <p className="text-[10px] text-white font-bold">SALE</p>
             </div>
           )}
         </div>
+      </td>
 
-        <span className="w-full">{product.name}</span>
+      <td className="md:px-4 pl-2 md:pl-4 py-3 text-center">
+        <span>{product.name}</span>
       </td>
 
       <td className="px-4 py-3 text-center">{product.category}</td>
@@ -147,8 +153,9 @@ function ProductDataRow({ product }: { product: any }) {
         {formatMoney(product.price)}
       </td>
       <td className="px-4 py-3 text-center">
-        
-        {product.salePrice !== null ? currency+formatMoney(product.salePrice) : "-"}
+        {product.salePrice !== null
+          ? currency + formatMoney(product.salePrice)
+          : "-"}
       </td>
 
       <td className="px-4 py-3 text-center">
@@ -162,31 +169,35 @@ function ProductDataRow({ product }: { product: any }) {
         )}
       </td>
 
-      <td className="py-3">
+      <td className="py-3 px-2">
         <div className="flex justify-center w-full mx-2 gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => {}}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-gray-500`}
-                disabled={isTogglingArchive}
+                onClick={() => {
+                  setIsFeatured(!isFeatured);
+                }}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-foreground/50`}
+                disabled={isTogglingFeatured}
               >
-                {isTogglingArchive ? (
+                {isTogglingFeatured ? (
                   <LoaderIcon className="animate-spin" size={16} />
-                ) : isArchived ? (
-                  <EyeOff size={16} />
                 ) : (
-                  <Eye size={16} />
+                  <Star
+                    size={16}
+                    color={isFeatured ? "orange" : "white"}
+                    fill={isFeatured ? "orange" : "none"}
+                  />
                 )}
               </button>
             </TooltipTrigger>
             {!isTogglingArchive && (
               <TooltipContent>
-                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+                {isFeatured ? <p>Un-Feature</p> : <p>Feature</p>}
               </TooltipContent>
             )}
           </Tooltip>
-          
+
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -220,49 +231,50 @@ function ProductDataRow({ product }: { product: any }) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-
               <div>
-                <Confirmation 
-                confirmMessage={onSale ? "End SALE" : "Put on SALE"} 
-                btnVariant={onSale ? "destructive" : "default"} 
-                title={onSale ? `End SALE for ${product.name}?` : `Put ${product.name} on SALE?`} 
-                message="Customers will checkout using the SALE price." 
-                onConfirm={() => toggleSale(product.id)}>
+                <Confirmation
+                  confirmMessage={onSale ? "End SALE" : "Put on SALE"}
+                  btnVariant={onSale ? "destructive" : "default"}
+                  title={
+                    onSale
+                      ? `End SALE for ${product.name}?`
+                      : `Put ${product.name} on SALE?`
+                  }
+                  message="Customers will checkout using the SALE price."
+                  onConfirm={() => toggleSale(product.id)}
+                >
                   <button
                     className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
                       onSale
-                    ? isTogglingSale
-                      ? "bg-red-900"
-                      : "bg-red-600 hover:bg-red-700"
-                    : isTogglingSale
-                    ? "bg-amber-700"
-                    : "bg-amber-500 hover:bg-amber-600"
+                        ? isTogglingSale
+                          ? "bg-red-900"
+                          : "bg-red-600 hover:bg-red-700"
+                        : isTogglingSale
+                        ? "bg-amber-700"
+                        : "bg-amber-500 hover:bg-amber-600"
                     }`}
                     disabled={isTogglingSale}
                   >
-                    {isTogglingSale 
-                    ? (<LoaderIcon className="animate-spin" size={16} />) 
-                    : (onSale ? (
-                    <TicketPercent size={16} />
-                      
+                    {isTogglingSale ? (
+                      <LoaderIcon className="animate-spin" size={16} />
+                    ) : onSale ? (
+                      <TicketPercent size={16} />
                     ) : (
                       <TicketPercent size={16} />
-                    ))
-                    }
-                    
+                    )}
                   </button>
                 </Confirmation>
               </div>
             </TooltipTrigger>
             {!isTogglingSale && (
               <TooltipContent>
-                { onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
+                {onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
               </TooltipContent>
             )}
           </Tooltip>
         </div>
       </td>
-      <td className="py-3">
+      <td className="py-3 px-2">
         <div className="flex w-full justify-center mx-2 gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -283,7 +295,10 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
-                <Confirmation message="This action cannot be undone. This will permanently delete the item." onConfirm={() => deleteProduct(product.id)}>
+                <Confirmation
+                  message="This action cannot be undone. This will permanently delete the item."
+                  onConfirm={() => deleteProduct(product.id)}
+                >
                   <button
                     disabled={isDeleting}
                     className={`flex items-center gap-1 p-1.5 ${

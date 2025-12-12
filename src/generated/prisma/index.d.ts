@@ -3074,6 +3074,7 @@ export namespace Prisma {
     stock: number | null
     type: $Enums.ProductType | null
     isArchived: boolean | null
+    isFeatured: boolean | null
     isOnSale: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3091,6 +3092,7 @@ export namespace Prisma {
     stock: number | null
     type: $Enums.ProductType | null
     isArchived: boolean | null
+    isFeatured: boolean | null
     isOnSale: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3111,6 +3113,7 @@ export namespace Prisma {
     type: number
     variations: number
     isArchived: number
+    isFeatured: number
     isOnSale: number
     createdAt: number
     updatedAt: number
@@ -3142,6 +3145,7 @@ export namespace Prisma {
     stock?: true
     type?: true
     isArchived?: true
+    isFeatured?: true
     isOnSale?: true
     createdAt?: true
     updatedAt?: true
@@ -3159,6 +3163,7 @@ export namespace Prisma {
     stock?: true
     type?: true
     isArchived?: true
+    isFeatured?: true
     isOnSale?: true
     createdAt?: true
     updatedAt?: true
@@ -3179,6 +3184,7 @@ export namespace Prisma {
     type?: true
     variations?: true
     isArchived?: true
+    isFeatured?: true
     isOnSale?: true
     createdAt?: true
     updatedAt?: true
@@ -3286,6 +3292,7 @@ export namespace Prisma {
     type: $Enums.ProductType
     variations: string[]
     isArchived: boolean
+    isFeatured: boolean
     isOnSale: boolean
     createdAt: Date
     updatedAt: Date
@@ -3325,6 +3332,7 @@ export namespace Prisma {
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3351,6 +3359,7 @@ export namespace Prisma {
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3372,6 +3381,7 @@ export namespace Prisma {
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3393,12 +3403,13 @@ export namespace Prisma {
     type?: boolean
     variations?: boolean
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "variations" | "isArchived" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "variations" | "isArchived" | "isFeatured" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     wishlist?: boolean | Product$wishlistArgs<ExtArgs>
@@ -3438,6 +3449,7 @@ export namespace Prisma {
       type: $Enums.ProductType
       variations: string[]
       isArchived: boolean
+      isFeatured: boolean
       isOnSale: boolean
       createdAt: Date
       updatedAt: Date
@@ -3883,6 +3895,7 @@ export namespace Prisma {
     readonly type: FieldRef<"Product", 'ProductType'>
     readonly variations: FieldRef<"Product", 'String[]'>
     readonly isArchived: FieldRef<"Product", 'Boolean'>
+    readonly isFeatured: FieldRef<"Product", 'Boolean'>
     readonly isOnSale: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
@@ -12503,6 +12516,7 @@ export namespace Prisma {
     type: 'type',
     variations: 'variations',
     isArchived: 'isArchived',
+    isFeatured: 'isFeatured',
     isOnSale: 'isOnSale',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -12853,6 +12867,7 @@ export namespace Prisma {
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -12878,6 +12893,7 @@ export namespace Prisma {
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isFeatured?: SortOrder
     isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12906,6 +12922,7 @@ export namespace Prisma {
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -12931,6 +12948,7 @@ export namespace Prisma {
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isFeatured?: SortOrder
     isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12959,6 +12977,7 @@ export namespace Prisma {
     type?: EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolWithAggregatesFilter<"Product"> | boolean
+    isFeatured?: BoolWithAggregatesFilter<"Product"> | boolean
     isOnSale?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -13611,6 +13630,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13636,6 +13656,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13659,6 +13680,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13684,6 +13706,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13708,6 +13731,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13727,6 +13751,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13747,6 +13772,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14584,6 +14610,7 @@ export namespace Prisma {
     type?: SortOrder
     variations?: SortOrder
     isArchived?: SortOrder
+    isFeatured?: SortOrder
     isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14607,6 +14634,7 @@ export namespace Prisma {
     stock?: SortOrder
     type?: SortOrder
     isArchived?: SortOrder
+    isFeatured?: SortOrder
     isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14624,6 +14652,7 @@ export namespace Prisma {
     stock?: SortOrder
     type?: SortOrder
     isArchived?: SortOrder
+    isFeatured?: SortOrder
     isOnSale?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16092,6 +16121,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16115,6 +16145,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16334,6 +16365,7 @@ export namespace Prisma {
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
+    isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
@@ -16812,6 +16844,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16836,6 +16869,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16913,6 +16947,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16937,6 +16972,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16992,6 +17028,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17016,6 +17053,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17093,6 +17131,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17117,6 +17156,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17574,6 +17614,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17598,6 +17639,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17671,6 +17713,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17695,6 +17738,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17839,6 +17883,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17863,6 +17908,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17901,6 +17947,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17925,6 +17972,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17947,6 +17995,7 @@ export namespace Prisma {
     type?: $Enums.ProductType
     variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
+    isFeatured?: boolean
     isOnSale?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18021,6 +18070,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18044,6 +18094,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18067,6 +18118,7 @@ export namespace Prisma {
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
     variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

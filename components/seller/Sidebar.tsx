@@ -6,6 +6,7 @@ import {
   PackageCheck,
   ClipboardList,
   SquareStar,
+  ChartColumnBig,
 } from "lucide-react";
 
 const SideBar = () => {
@@ -33,6 +34,11 @@ const SideBar = () => {
       name: "Banners",
       path: "/seller/banner",
       icon: SquareStar,
+    },
+    {
+      name: "Analytics",
+      path: "/seller/analytics",
+      icon: ChartColumnBig,
     },
   ];
 

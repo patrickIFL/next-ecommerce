@@ -8,10 +8,11 @@ import {
 } from "./ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
-import { Search, User } from "lucide-react";
+import { MessageCircleMore, User } from "lucide-react";
 // import { UserButton } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 import { useClerk } from "@clerk/nextjs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 function AccordionMenu({
   isOpen,
@@ -89,18 +90,43 @@ function AccordionMenu({
             <AccordionItem className="border-none pt-3" value="theme-search">
               <div className="flex justify-between">
                 <div className="flex gap-2">
-                  <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
-                  <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
-                    <Search
-                      color={"var(--color-foreground)"}
-                      size={18}
-                      className="m-2"
-                    />
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <AnimatedThemeToggler className="hover:bg-accent p-2 cursor-pointer border rounded-full" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Toggle Theme</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
+                        <MessageCircleMore
+                          color={"var(--color-foreground)"}
+                          size={18}
+                          className="m-2"
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Chats</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <div>
                   {user ? (
-                    <ClerkUserButton />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <ClerkUserButton />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>My Account</p>
+                      </TooltipContent>
+                    </Tooltip>
                   ) : (
                     <button
                       onClick={openSignIn}

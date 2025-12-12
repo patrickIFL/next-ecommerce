@@ -48,6 +48,7 @@ model Product {
   type        ProductType @default(SIMPLE)
   variations  String[]    @default([])
   isArchived  Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
   isOnSale    Boolean     @default(false)
 
   createdAt DateTime @default(now())

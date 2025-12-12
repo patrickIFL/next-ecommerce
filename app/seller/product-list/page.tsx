@@ -82,7 +82,8 @@ const ProductList = () => {
                 <table className="w-full">
                   <thead className="text-foreground text-sm text-left sticky top-0 bg-accent z-48">
                     <tr>
-                      <th className="w-60 px-4 py-3 font-medium text-center">Product</th>
+                      <th className="px-4 py-3 font-medium text-center">Image</th>
+                      <th className="px-4 py-3 font-medium text-center">Product</th>
                       <th className="px-4 py-3 font-medium text-center">Category</th>
                       <th className="px-4 py-3 font-medium text-center">SKU</th>
                       <th className="px-4 py-3 font-medium text-center">Price</th>
