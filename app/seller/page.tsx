@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { useState } from "react";
+import { Activity, useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
@@ -17,6 +17,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useMutation } from "@tanstack/react-query";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -29,6 +31,8 @@ const AddProduct = () => {
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
+
+  const [type, setType] = useState<"simple" | "variation">("simple");
   // =========================================
 
   const [category, setCategory] = useState("Uncategorized");
@@ -72,7 +76,10 @@ const AddProduct = () => {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("price", price);
-      formData.append("salePrice", salePriceNum !== null ? salePriceNum.toString() : "");
+      formData.append(
+        "salePrice",
+        salePriceNum !== null ? salePriceNum.toString() : ""
+      );
       formData.append("sku", sku);
       formData.append("stock", stock);
       // ADD THESE
@@ -198,58 +205,122 @@ const AddProduct = () => {
                 id="product-description"
                 rows={4}
                 className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                placeholder="Describe your product"
+                placeholder="(Optional) Describe your product"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
               ></Textarea>
             </div>
-            {/* // NEW ===================================== */}
-            <div className="flex flex-col gap-1">
-              <label
-                className="text-base font-medium"
-                htmlFor="product-description"
-              >
-                Product Variations
-              </label>
-              <Textarea
-                id="product-variations"
-                rows={4}
-                className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                placeholder="Variation A values: eg. Sml, Med, Lrg"
-                onChange={(e) => setVariations(e.target.value)}
-                value={variations}
-              ></Textarea>
-            </div>
-          </div>
-          {/* Column 2 */}
-          <div className="space-y-5 max-w-xl lg:max-w-md">
+
             <div className="flex flex-col gap-1">
               <label
                 className="text-base font-medium"
                 htmlFor="product-description"
               >
                 <div className="flex gap-1.5 items-center">
-                    <span>Search Keys</span>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info size={12} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="text-[11px]">Enter keywords to help customers find this product</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <span>Search Keys</span>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={12} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-[11px]">
+                        Enter keywords to help customers find this product
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </label>
               <Textarea
                 id="product-description"
                 rows={4}
                 className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                placeholder="Separate each with a comma"
+                placeholder="(Optional) Separate each with a comma"
                 onChange={(e) => setSearchKeys(e.target.value)}
                 value={searchKeys}
               ></Textarea>
             </div>
-            {/* ===================================== */}
+          </div>
+          {/* ===================================== */}
+          {/* Column 2 */}
+          <div
+            className={`${
+              type === "variation" ? "space-y-3" : "space-y-5"
+            } max-w-xl lg:max-w-md`}
+          >
+            <div className="flex gap-2">
+              <label
+                className="text-base font-medium"
+                htmlFor="product-description"
+              >
+                Product Type
+              </label>
+              <RadioGroup
+                className="flex min-w-xs justify-around"
+                value={type}
+                onValueChange={(val) => setType(val as "simple" | "variation")}
+              >
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="simple" id="r1" />
+                  <Label htmlFor="r1">Simple</Label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="variation" id="r2" />
+                  <Label htmlFor="r2">Variation</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <Activity mode={type === "variation" ? "visible" : "hidden"}>
+              {/* Variation A */}
+              <div className="flex flex-col gap-1">
+                <label
+                  className="text-base font-medium"
+                  htmlFor="product-description"
+                >
+                  Variation A
+                </label>
+                <Input
+                  id="product-variations"
+                  className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+                  placeholder="eg. Sml, Med, Lrg"
+                  onChange={(e) => setVariations(e.target.value)}
+                  value={variations}
+                />
+              </div>
+
+              {/* Variation B */}
+              <div className="flex flex-col gap-1">
+                <label
+                  className="text-base font-medium"
+                  htmlFor="product-description"
+                >
+                  {"Variation B (Optional)"}
+                </label>
+                <Input
+                  id="product-variations"
+                  className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+                  placeholder="eg. Red, Blue, Yellow"
+                  onChange={(e) => setVariations(e.target.value)}
+                  value={variations}
+                />
+              </div>
+
+              <Button
+                className={`py-2.5 text-accent bg-foreground/90 font-medium rounded
+          ${loading ? "hover:bg-foreground/90 opacity-50" : "cursor-pointer hover:bg-foreground/70"}`}
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className="mx-1 flex gap-1 items-center">
+                    <LoaderIcon className="animate-spin" size={16} />
+                    <span>Generating...</span>
+                  </div>
+                ) : (
+                  <span className="mx-6">Generate Variations</span>
+                )}
+              </Button>
+            </Activity>
 
             <div className="flex items-center gap-5 flex-wrap">
               <div className="flex flex-col flex-1  gap-1 w-32">
@@ -265,27 +336,24 @@ const AddProduct = () => {
               {/* // NEW ===================================== */}
 
               <div className="flex flex-col flex-1 gap-1 w-32">
-                <label
-                  className="text-base font-medium"
-                  htmlFor="sku"
-                >
+                <label className="text-base font-medium" htmlFor="sku">
                   <div className="flex gap-1.5 items-center">
-                  <span>SKU</span>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info size={12} />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="font-bold">Stock Keeping Unit</p>
-                      <p className="text-[11px]">Stock Keeping Unit</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                    <span>SKU</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-bold">Stock Keeping Unit</p>
+                        <p className="text-[11px]">Stock Keeping Unit</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </label>
                 <Input
                   id="sku"
                   type="text"
-                  placeholder="Optional"
+                  placeholder="(Optional)"
                   className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                   onChange={(e) => setSku(e.target.value)}
                   value={sku}
@@ -364,7 +432,7 @@ const AddProduct = () => {
                   <Input
                     id="offer-price"
                     type="number"
-                    placeholder="Optional"
+                    placeholder="(Optional)"
                     className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                     onChange={(e) => setsalePrice(e.target.value)}
                     value={salePrice}

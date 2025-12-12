@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   products  Product[]
+  wishlist  Wishlist[]
   orders    Order[]
   addresses ShippingAddress[]
   cartItems CartItem[]
@@ -53,6 +54,7 @@ model Product {
   updatedAt DateTime @updatedAt
 
   orders            OrderItem[]
+  wishlist          Wishlist[]
   user              User               @relation(fields: [userId], references: [id])
   cartItems         CartItem[]
   stockReservations StockReservation[]
@@ -61,6 +63,23 @@ model Product {
   @@index([userId])
   @@index([category])
   @@index([search_keys], type: Gin) // improves search on array of text
+}
+
+// WishList
+model Wishlist {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }
 
 // CartItem

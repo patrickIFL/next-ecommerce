@@ -150,6 +150,14 @@ exports.Prisma.ProductScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WishlistScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CartItemScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -256,6 +264,7 @@ exports.ProductType = exports.$Enums.ProductType = {
 exports.Prisma.ModelName = {
   User: 'User',
   Product: 'Product',
+  Wishlist: 'Wishlist',
   CartItem: 'CartItem',
   Order: 'Order',
   Payment: 'Payment',
