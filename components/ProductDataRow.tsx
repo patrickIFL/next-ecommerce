@@ -167,6 +167,29 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
+                onClick={() => {}}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-gray-500`}
+                disabled={isTogglingArchive}
+              >
+                {isTogglingArchive ? (
+                  <LoaderIcon className="animate-spin" size={16} />
+                ) : isArchived ? (
+                  <EyeOff size={16} />
+                ) : (
+                  <Eye size={16} />
+                )}
+              </button>
+            </TooltipTrigger>
+            {!isTogglingArchive && (
+              <TooltipContent>
+                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+              </TooltipContent>
+            )}
+          </Tooltip>
+          
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
                 onClick={() => toggleArchive(product.id)}
                 className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
                   isArchived
@@ -194,6 +217,7 @@ function ProductDataRow({ product }: { product: any }) {
               </TooltipContent>
             )}
           </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
 
@@ -219,8 +243,7 @@ function ProductDataRow({ product }: { product: any }) {
                     {isTogglingSale 
                     ? (<LoaderIcon className="animate-spin" size={16} />) 
                     : (onSale ? (
-                      
-                        <TicketPercent size={16} />
+                    <TicketPercent size={16} />
                       
                     ) : (
                       <TicketPercent size={16} />

@@ -61,6 +61,35 @@ function NavBar() {
   return () => window.removeEventListener("resize", handleResize);
 }, []);
 
+// Detect click outside of the mobile menu
+const handleOutsideClick = (e: MouseEvent) => {
+  const menu = document.getElementById("mobile-menu");
+  const hamburger = document.getElementById("hamburger-btn");
+
+  // ⭐ NEW: allow clicks inside Clerk portal menu
+  const clerkMenu = document.querySelector(".cl-userButton-popover");
+
+  if (
+    isOpen &&
+    menu &&
+    !menu.contains(e.target as Node) &&
+    hamburger &&
+    !hamburger.contains(e.target as Node) &&
+    (!clerkMenu || !clerkMenu.contains(e.target as Node)) // <-- ignore Clerk popup clicks
+  ) {
+    setIsOpen(false);
+  }
+};
+
+
+useEffect(() => {
+  document.addEventListener("mousedown", handleOutsideClick);
+  return () => document.removeEventListener("mousedown", handleOutsideClick);
+});
+
+
+
+
 
   // For the Nav links
   const menus = [
@@ -230,6 +259,7 @@ function NavBar() {
 
         {/* Mobile Hamburger/Accordion Trigger */}
         <button
+          id="hamburger-btn"
           className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -261,14 +291,35 @@ function NavBar() {
         </button>
       </nav>
 
+      {/* Mobile Menu Overlay + Sliding Menu */}
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              key="overlay"
+              onClick={() => setIsOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black lg:hidden z-49"
+            />
+          </>
+        )}
+      </AnimatePresence>
+            
       {/* Mobile Menu */}
-      <AccordionMenu
-        isDark={isDark}
-        isOpen={isOpen}
-        menus={menus}
-        openSignIn={openSignIn}
-      // accountMenu={accountMenu}
-      />
+      <div id="mobile-menu">
+        <AccordionMenu
+          isDark={isDark}
+          isOpen={isOpen}
+          menus={menus}
+          openSignIn={openSignIn}
+        // accountMenu={accountMenu}
+        />
+      </div>
     </>
   );
 }

@@ -37,7 +37,7 @@ const SideBar = () => {
   ];
 
   return (
-    <div className="mt-16 bg-background lg:w-64 w-16 border-r sticky left-0 min-h-screen text-base border-gray-500/30 py-2 flex flex-col z-49">
+    <div className="mt-16 bg-background lg:w-64 w-16 border-r sticky left-0 min-h-screen text-base border-gray-500/30 py-2 flex flex-col z-48">
       {menuItems.map((item) => {
         const isActive = pathname === item.path;
 
