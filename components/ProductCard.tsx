@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import useCartHook from "@/hooks/useCartHook";
-import { useToggleWishlist, useWishlist } from "@/hooks/useWishlist";
+import useWishlist from "@/hooks/useWishlist";
 import { formatMoney } from "@/lib/utils";
 import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
@@ -14,8 +14,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const isSale = product.salePrice ? product.isOnSale : false;
 
 
-  const { data: wishlist = [] } = useWishlist();
-  const { mutate: toggleWishlist, isPending } = useToggleWishlist();
+  const { wishlist, toggleWishlist, isPending} = useWishlist();
 
   const isWishlisted = wishlist.includes(product.id);
 

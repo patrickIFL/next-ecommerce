@@ -12,6 +12,7 @@ export interface Product {
   search_keys?: string[];
   sku?: string;
   stock?: number;
+  isOnSale: boolean;
 }
 
 function useProductHook() {
