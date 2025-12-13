@@ -1,19 +1,23 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { assets } from "@/assets/assets";
 import useCartHook from "@/hooks/useCartHook";
+import { useToggleWishlist, useWishlist } from "@/hooks/useWishlist";
 import { formatMoney } from "@/lib/utils";
 import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 const ProductCard = ({ product }: { product: any }) => {
   const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
-  const [isWishlisted, setIsWishlisted] = useState(false);
+
+
+  const { data: wishlist = [] } = useWishlist();
+  const { mutate: toggleWishlist, isPending } = useToggleWishlist();
+
+  const isWishlisted = wishlist.includes(product.id);
 
   return (
     <div
@@ -34,10 +38,10 @@ const ProductCard = ({ product }: { product: any }) => {
           />
           <button onClick={(e) => {
             e.stopPropagation();
-            setIsWishlisted(!isWishlisted)
+            toggleWishlist(product.id);
           }} 
           className="cursor-pointer absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
-          disabled={false}
+          disabled={isPending}
           >
             {false ? (
               <LoaderIcon className="h-3 w-3 text-gray-500 animate-spin"  />

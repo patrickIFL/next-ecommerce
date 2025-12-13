@@ -22,7 +22,7 @@ import Confirmation from "./Confirmation";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
-  const [isFeatured, setIsFeatured] = useState(product.isArchived);
+  const [isFeatured, setIsFeatured] = useState(product.isFeatured);
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const [onSale, setOnSale] = useState(product.isOnSale);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -168,8 +168,16 @@ function ProductDataRow({ product }: { product: any }) {
             </div>
           )}
           {isFeatured && (
-            <div className="absolute w-4 h-4 flex items-center justify-center top-0 right-0 translate-x-2/3 -translate-y-1/2 bg-gray-900 px-1 py-0.5 rounded-full">
-              <Star size={14} fill="#f59e0b" color="#f59e0b"/>
+            
+            <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
+              <Tooltip>
+              <TooltipTrigger>
+                  <Star size={17} fill="var(--foreground)"/>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Featured</p>
+              </TooltipContent>
+            </Tooltip>
             </div>
           )}
         </div>
@@ -212,8 +220,7 @@ function ProductDataRow({ product }: { product: any }) {
                 onClick={() => {
                   toggleFeatured(product.id);
                 }}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-gray-900 
-                  outline-3 outline-gray-700 outline-offset-[-3px]`}
+                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-purple-600 `}
                 disabled={isTogglingFeatured}
               >
                 {isTogglingFeatured ? (
@@ -221,8 +228,8 @@ function ProductDataRow({ product }: { product: any }) {
                 ) : (
                   <Star
                     size={16}
-                    color={isFeatured ? "#d97706" : "white"}
-                    fill={isFeatured ? "#f59e0b" : "none"}
+                    color={isFeatured ? "none" : "white"}
+                    fill={isFeatured ? "white" : "none"}
                   />
                 )}
               </button>

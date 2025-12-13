@@ -330,7 +330,6 @@ const SearchBar = () => {
   const { searchQuery, setSearchQuery } = useSearchStore();
   const { handleSearch, searchLoading } = useSearchHook();
   const params = useParams();
-  console.log(params.cat)
   // const router = useRouter();
 
   useEffect(() => {

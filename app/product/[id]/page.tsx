@@ -18,6 +18,7 @@ type ProductType = {
   salePrice: number;
   category: string;
   image: string[];
+  isOnSale: boolean;
 };
 
 const Product = () => {
@@ -48,7 +49,7 @@ const Product = () => {
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
-  const isSale = productData.salePrice < productData.price;
+  const isSale = productData.isOnSale;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -112,8 +113,14 @@ const Product = () => {
           {/* PRICE */}
           <p className="text-3xl font-medium mt-6">
             {currency}
-            {formatMoney(productData.salePrice)}
-            {isSale && (
+            {formatMoney(
+              isSale 
+              ? (productData.salePrice
+                ? productData.salePrice 
+                : productData.price)
+              : productData.price)}
+            
+            {isSale && productData.salePrice && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}
                 {formatMoney(productData.price)}
