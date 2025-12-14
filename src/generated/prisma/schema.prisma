@@ -59,11 +59,25 @@ model Product {
   user              User               @relation(fields: [userId], references: [id])
   cartItems         CartItem[]
   stockReservations StockReservation[]
+  variants          ProductVariant[]
 
   @@unique([sku])
   @@index([userId])
   @@index([category])
   @@index([search_keys], type: Gin) // improves search on array of text
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  sku       String? @unique
+  price     Int
+  salePrice Int?
+  stock     Int
+  image     String?
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
 }
 
 // WishList
