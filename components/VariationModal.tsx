@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogClose,
@@ -10,113 +11,216 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { PhilippinePeso, Trash2 } from "lucide-react";
+import {
+  PhilippinePeso,
+  SquareCheckBig,
+  SquarePen,
+  Trash2,
+} from "lucide-react";
 import { ImagePicker } from "./ImagePicker";
+import { useState } from "react";
+
+type Variation = {
+  name: string;
+  sku: string;
+  price: number;
+  salePrice: number;
+  stock: number;
+  imageIndex: number;
+};
 
 type VariationModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  imageOptions: any[];
 };
 
-export function VariationModal({ open, onOpenChange }: VariationModalProps) {
-  const images = [
-  { index: 0, url: "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1765630030/ibeidgyol31utfgdrgqk.png" },
-  { index: 1, url: "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1765630030/ibeidgyol31utfgdrgqk.png" },
-  // { index: 2, url: "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1765630030/ibeidgyol31utfgdrgqk.png" },
-  // { index: 3, url: "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1765630030/ibeidgyol31utfgdrgqk.png" },
-];
+export function VariationModal({
+  open,
+  onOpenChange,
+  imageOptions,
+}: VariationModalProps) {
+  const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null);
+
+  const [variations, setVariations] = useState<Variation[]>([
+    {
+      name: "Small, Red - Tshirt",
+      sku: "sample-123",
+      price: 0,
+      salePrice: 0,
+      stock: 0,
+      imageIndex: 0,
+    },
+  ]);
+
+  const updateVariation = (
+    index: number,
+    field: keyof Variation,
+    value: any
+  ) => {
+    setVariations((prev) =>
+      prev.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+    );
+  };
+
+  const deleteVariation = (index: number) => {
+    setVariations((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
         <DialogContent className="min-w-2xl">
           <DialogHeader>
-            <DialogTitle>Variations for Tshirt </DialogTitle>
+            <DialogTitle>Variations for Tshirt</DialogTitle>
             <DialogDescription>
               Make changes to variation. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4">
-            {/* sku, price, salePrice, stock, image */}
-            <div className="relative border p-4 rounded-md grid gap-2">
-              <Label className="font">Small, Yellow - Tshirt</Label>
-              {/* divider */}
-              <div className="w-full h-px bg-foreground"></div>
-              {/* main content */}
-              <div className="flex gap-2">
-                <div className="flex flex-col gap-1">
-                  <Label className="font-normal text-xs">Image</Label>
-                  <ImagePicker
-                    images={images}
-                    // value={variation.imageIndex}
-                    value={0}
-                    // onChange={(index) => onChange({ imageIndex: index })}
-                    onChange={() => {}}
-                  />
-                </div>
 
-                <div className="flex flex-col gap-1">
-                  <Label className="font-normal text-xs">SKU</Label>
-                  <Input
-                    id="name-1"
-                    name="name"
-                    defaultValue="Pedro Duarte"
-                    className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Label className="font-normal text-xs">Stock</Label>
-                  <Input
-                    id="name-1"
-                    name="name"
-                    defaultValue="Pedro Duarte"
-                    className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Label className="font-normal text-xs">Price</Label>
-                  <div className="flex items-center">
-                    <PhilippinePeso size={17} />
+          {variations.map((variation, i) => (
+            <div className="grid gap-4" key={i}>
+              {/* sku, price, salePrice, stock, image */}
+              <div className="relative border p-4 rounded-md grid gap-2">
+                <Label className="font flex items-center gap-2">
+                  {editingNameIndex === i ? (
+                    <div className="flex gap-1 p-0">
+                      <Input
+                        value={variation.name}
+                        onChange={(e) =>
+                          updateVariation(i, "name", e.target.value)
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault(); // 🚫 prevent form submit
+                            setEditingNameIndex(null); // ✅ save & exit edit mode
+                          }
+                        }}
+                        className="focus-visible:ring-0 h-8"
+                      />
+                      <Button
+                        variant={"ghost"}
+                        type="button"
+                        className="cursor-pointer w-8 h-8"
+                        onClick={() => setEditingNameIndex(null)}
+                      >
+                        <SquareCheckBig />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-1 p-0 items-center">
+                      {variation.name}
+                      <Button
+                        variant={"ghost"}
+                        type="button"
+                        className="cursor-pointer w-8 h-8"
+                        onClick={() => setEditingNameIndex(i)}
+                      >
+                        <SquarePen size={14} />
+                      </Button>
+                    </div>
+                  )}
+                </Label>
+
+                {/* divider */}
+                <div className="w-full h-px bg-foreground"></div>
+
+                {/* main content */}
+                <div className="flex gap-2">
+                  <div className="flex flex-col gap-1">
+                    <Label className="font-normal text-xs">Image</Label>
+                    <ImagePicker
+                      images={imageOptions}
+                      value={variation.imageIndex}
+                      onChange={(index) =>
+                        updateVariation(i, "imageIndex", index)
+                      }
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label className="font-normal text-xs">SKU</Label>
                     <Input
-                      id="name-1"
-                      name="name"
-                      defaultValue="Pedro Duarte"
+                      value={variation.sku}
+                      onChange={(e) =>
+                        updateVariation(i, "sku", e.target.value)
+                      }
                       className="focus-visible:ring-0 transition selection:bg-foreground/50"
                     />
                   </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Label className="font-normal text-xs">Sale Price</Label>
 
-                  <div className="flex items-center">
-                    <PhilippinePeso size={17} />
+                  <div className="flex flex-col gap-1">
+                    <Label className="font-normal text-xs">Stock</Label>
                     <Input
-                      id="name-1"
-                      name="name"
-                      defaultValue="Pedro Duarte"
+                      type="number"
+                      value={variation.stock}
+                      onChange={(e) =>
+                        updateVariation(i, "stock", Number(e.target.value))
+                      }
                       className="focus-visible:ring-0 transition selection:bg-foreground/50"
                     />
                   </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label className="font-normal text-xs">Price</Label>
+                    <div className="flex items-center">
+                      <PhilippinePeso size={17} />
+                      <Input
+                        type="number"
+                        value={variation.price}
+                        onChange={(e) =>
+                          updateVariation(i, "price", Number(e.target.value))
+                        }
+                        className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <Label className="font-normal text-xs">Sale Price</Label>
+                    <div className="flex items-center">
+                      <PhilippinePeso size={17} />
+                      <Input
+                        type="number"
+                        value={variation.salePrice}
+                        onChange={(e) =>
+                          updateVariation(
+                            i,
+                            "salePrice",
+                            Number(e.target.value)
+                          )
+                        }
+                        className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* delete button */}
+                <div>
+                  <Button
+                    type="button"
+                    onClick={() => deleteVariation(i)}
+                    className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                  >
+                    <Trash2 />
+                  </Button>
                 </div>
               </div>
-              {/* delete button */}
-              <div>
-                <Button className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white cursor-pointer">
-                  <Trash2 />
-                </Button>
+
+              <div className="grid gap-3">
+                <Label>Usernme</Label>
+                <Input
+                  className="
+                    focus-visible:ring-0
+                    transition
+                    selection:bg-gray-300
+                  "
+                />
               </div>
             </div>
-            <div className="grid gap-3">
-              <Label htmlFor="username-1">Usernme</Label>
-              <Input
-                className="
-    focus-visible:ring-0
-    transition
-    selection:bg-gray-300
-  "
-              />
-            </div>
-          </div>
+          ))}
+
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>

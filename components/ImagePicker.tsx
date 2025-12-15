@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { assets } from "@/assets/assets";
 
 type ImageItem = {
   index: number;
@@ -29,7 +30,7 @@ export function ImagePicker({ images, value, onChange }: Props) {
         <Button
           variant="outline"
           size="sm"
-          className="flex gap-2 justify-between w-[80px]"
+          className="flex gap-2 justify-between w-20"
         >
           {selected ? (
             <Image
@@ -40,7 +41,13 @@ export function ImagePicker({ images, value, onChange }: Props) {
               className="rounded object-cover"
             />
           ) : (
-            <span className="text-muted-foreground">Select image</span>
+            <Image
+              src={assets.upload_area}
+              alt=""
+              width={28}
+              height={28}
+              className="rounded object-cover"
+            />
           )}
           <ChevronDown size={14} />
         </Button>
@@ -48,9 +55,9 @@ export function ImagePicker({ images, value, onChange }: Props) {
 
       <PopoverContent className="w-48 p-2">
         <div className="grid grid-cols-2 gap-2">
+          {images.length === 0 && <p className="text-xs col-span-2 text-center">No images found.</p>}
           {images.map((img) => {
             const isSelected = img.index === value;
-
             return (
               <button
                 key={img.index}

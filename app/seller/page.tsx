@@ -25,11 +25,25 @@ import { useVariationModal } from "@/hooks/useVariationModal";
 const AddProduct = () => {
   const { getToken } = useAuth();
   const [files, setFiles] = useState([]);
+  const imageOptions = files
+  .map((file, index) => {
+    if (!file) return null;
+
+    return {
+      index,
+      url: URL.createObjectURL(file),
+    };
+  })
+  .filter(Boolean);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   // NEW =====================================
-  const [variations, setVariations] = useState("");
+  const [variationA, setVariationA] = useState("");
+  const [variationB, setVariationB] = useState("");
+
+
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
@@ -42,13 +56,68 @@ const AddProduct = () => {
 
   const variationModal = useVariationModal();
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
+  const [generateError, setGenerateError] = useState(false);
 
-  const handleGenerateVariations = async () => {
-    setisGeneratingVariations(true);
-    // generation logic
-    setisGeneratingVariations(false);
-    variationModal.openModal();
-  };
+  type ProductVariation = {
+  name: string;
+  sku: string;
+  price: number;
+  salePrice: number;
+  stock: number;
+  imageIndex: number;
+};
+
+const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[]>([]);
+
+
+ const handleGenerateVariations = () => {
+  if (!variationA) return;
+
+  setisGeneratingVariations(true);
+
+  const listA = variationA
+    .split(",")
+    .map(v => v.trim())
+    .filter(Boolean);
+
+  const listB = variationB
+    ? variationB.split(",").map(v => v.trim()).filter(Boolean)
+    : [];
+
+  const results: ProductVariation[] = [];
+
+  if (listB.length) {
+    listA.forEach(a => {
+      listB.forEach(b => {
+        results.push({
+          name: `${a}, ${b} - ${name}`,
+          sku: "",
+          price: Number(price) || 0,
+          salePrice: Number(salePrice) || 0,
+          stock: 0,
+          imageIndex: 0,
+        });
+      });
+    });
+  } else {
+    listA.forEach(a => {
+      results.push({
+        name: `${a} - ${name}`,
+        sku: "",
+        price: Number(price) || 0,
+        salePrice: Number(salePrice) || 0,
+        stock: 0,
+        imageIndex: 0,
+      });
+    });
+  }
+
+  setGeneratedVariations(results);
+  console.log(generatedVariations)
+  setisGeneratingVariations(false);
+  // variationModal.openModal();
+};
+
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
@@ -77,12 +146,6 @@ const AddProduct = () => {
         .map((key) => key.trim())
         .filter((key) => key.length > 0);
 
-      // Convert variations if needed
-      const variationsArray = variations
-        .split(",")
-        .map((v) => v.trim())
-        .filter((v) => v.length > 0);
-
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
@@ -95,7 +158,7 @@ const AddProduct = () => {
       formData.append("stock", stock);
       // ADD THESE
       formData.append("search_keys", JSON.stringify(searchKeysArray));
-      formData.append("variations", JSON.stringify(variationsArray));
+      // formData.append("variations", JSON.stringify(variationsArray));
       for (let i = 0; i < files.length; i++) {
         formData.append("images", files[i]);
       }
@@ -130,7 +193,6 @@ const AddProduct = () => {
       setCategory("Uncategorized");
       setPrice("");
       setsalePrice("");
-      setVariations("");
       setSearchKeys("");
       setSku("");
       setStock("");
@@ -298,8 +360,8 @@ const AddProduct = () => {
                     id="product-variations"
                     className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
                     placeholder="eg. Sml, Med, Lrg"
-                    onChange={(e) => setVariations(e.target.value)}
-                    value={variations}
+                    onChange={(e) => setVariationA(e.target.value)}
+                    value={variationA}
                   />
                 </div>
 
@@ -315,33 +377,46 @@ const AddProduct = () => {
                     id="product-variations"
                     className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
                     placeholder="eg. Red, Blue, Yellow"
-                    onChange={(e) => setVariations(e.target.value)}
-                    value={variations}
+                    onChange={(e) => setVariationB(e.target.value)}
+                    value={variationB}
                   />
                 </div>
 
-                <Button
-                  type="button"
-                  onClick={() => {
-                    handleGenerateVariations();
-                  }}
-                  className={`py-2.5 font-medium rounded 
-                    ${
-                      isGeneratingVariations
-                        ? "hover:bg-gray-100/80 bg-gray-100/80" // disabled look
-                        : "cursor-pointer bg-gray-100 hover:bg-gray-200"
-                    } transition`}
-                  disabled={isGeneratingVariations}
-                >
-                  {isGeneratingVariations ? (
-                    <div className="text-gray-400 mx-1 flex gap-1 items-center">
-                      <LoaderIcon className="animate-spin" size={16} />
-                      <div className="">Generating...</div>
-                    </div>
-                  ) : (
-                    <div className="text-gray-800/80">Generate Variations</div>
+                <div className="flex gap-5 items-center">
+
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      if (!name) {
+                        setGenerateError(true);
+                        return;
+                      }
+                      handleGenerateVariations();
+                      setGenerateError(false);
+                    }}
+                    className={`py-2.5 font-medium rounded 
+                      ${
+                        isGeneratingVariations
+                          ? "hover:bg-gray-100/80 bg-gray-100/80" // disabled look
+                          : "cursor-pointer bg-gray-100 hover:bg-gray-200"
+                      } transition`}
+                    disabled={isGeneratingVariations}
+                  >
+                    {isGeneratingVariations ? (
+                      <div className="text-gray-400 mx-1 flex gap-1 items-center">
+                        <LoaderIcon className="animate-spin" size={16} />
+                        <div className="">Generating...</div>
+                      </div>
+                    ) : (
+                      <div className="text-gray-800/80">Generate Variations</div>
+                    )}
+                  </Button>
+                  {generateError && (
+                    
+                  <span className="text-destructive">Fill in Product Name first</span>
                   )}
-                </Button>
+                </div>
+
               </Activity>
 
               <div className="flex items-center gap-5 flex-wrap">
@@ -492,6 +567,7 @@ const AddProduct = () => {
       <VariationModal
         open={variationModal.open}
         onOpenChange={variationModal.setOpen}
+        imageOptions={imageOptions}
       />
     </>
   );
