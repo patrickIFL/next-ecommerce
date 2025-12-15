@@ -18,7 +18,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { ImagePicker } from "./ImagePicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ScrollArea } from "./ui/scroll-area";
 
 type Variation = {
   name: string;
@@ -33,25 +34,24 @@ type VariationModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   imageOptions: any[];
+  generatedVariations: any[];
 };
 
 export function VariationModal({
   open,
   onOpenChange,
   imageOptions,
+  generatedVariations,
 }: VariationModalProps) {
   const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null);
 
-  const [variations, setVariations] = useState<Variation[]>([
-    {
-      name: "Small, Red - Tshirt",
-      sku: "sample-123",
-      price: 0,
-      salePrice: 0,
-      stock: 0,
-      imageIndex: 0,
-    },
-  ]);
+  const [variations, setVariations] = useState<Variation[]>([]);
+
+  useEffect(() => {
+    if (generatedVariations.length > 0) {
+      setVariations(generatedVariations);
+    }
+  }, [generatedVariations]);
 
   const updateVariation = (
     index: number,
@@ -78,148 +78,150 @@ export function VariationModal({
             </DialogDescription>
           </DialogHeader>
 
-          {variations.map((variation, i) => (
-            <div className="grid gap-4" key={i}>
-              {/* sku, price, salePrice, stock, image */}
-              <div className="relative border p-4 rounded-md grid gap-2">
-                <Label className="font flex items-center gap-2">
-                  {editingNameIndex === i ? (
-                    <div className="flex gap-1 p-0">
-                      <Input
-                        value={variation.name}
-                        onChange={(e) =>
-                          updateVariation(i, "name", e.target.value)
-                        }
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault(); // 🚫 prevent form submit
-                            setEditingNameIndex(null); // ✅ save & exit edit mode
+          <ScrollArea className="h-72 rounded-md border">
+            <div className="grid gap-2 p-1">
+              {variations.map((variation, i) => (
+                <div className="" key={i}>
+                  {/* sku, price, salePrice, stock, image */}
+                  <div className="relative border p-4 rounded-md grid gap-2">
+                    <Label className="font flex items-center gap-2">
+                      {editingNameIndex === i ? (
+                        <div className="flex gap-1 p-0">
+                          <Input
+                            value={variation.name}
+                            onChange={(e) =>
+                              updateVariation(i, "name", e.target.value)
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault(); // 🚫 prevent form submit
+                                setEditingNameIndex(null); // ✅ save & exit edit mode
+                              }
+                            }}
+                            className="focus-visible:ring-0 h-8 bg-amber-500"
+                          />
+                          <Button
+                            variant={"ghost"}
+                            type="button"
+                            className="cursor-pointer w-8 h-8"
+                            onClick={() => setEditingNameIndex(null)}
+                          >
+                            <SquareCheckBig />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-1 p-0 items-center">
+                          {variation.name}
+                          <Button
+                            variant={"ghost"}
+                            type="button"
+                            className="cursor-pointer w-8 h-8"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingNameIndex(i)}
+                            }
+                          >
+                            <SquarePen size={14} />
+                          </Button>
+                        </div>
+                      )}
+                    </Label>
+
+                    {/* divider */}
+                    <div className="w-full h-px bg-foreground"></div>
+
+                    {/* main content */}
+                    <div className="flex gap-2">
+                      <div className="flex flex-col gap-1">
+                        <Label className="font-normal text-xs">Image</Label>
+                        <ImagePicker
+                          images={imageOptions}
+                          value={variation.imageIndex}
+                          onChange={(index) =>
+                            updateVariation(i, "imageIndex", index)
                           }
-                        }}
-                        className="focus-visible:ring-0 h-8"
-                      />
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <Label className="font-normal text-xs">SKU</Label>
+                        <Input
+                          value={variation.sku}
+                          onChange={(e) =>
+                            updateVariation(i, "sku", e.target.value)
+                          }
+                          className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <Label className="font-normal text-xs">Stock</Label>
+                        <Input
+                          type="number"
+                          value={variation.stock}
+                          onChange={(e) =>
+                            updateVariation(i, "stock", Number(e.target.value))
+                          }
+                          className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <Label className="font-normal text-xs">Price</Label>
+                        <div className="flex items-center">
+                          <PhilippinePeso size={17} />
+                          <Input
+                            type="number"
+                            value={variation.price}
+                            onChange={(e) =>
+                              updateVariation(
+                                i,
+                                "price",
+                                Number(e.target.value)
+                              )
+                            }
+                            className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <Label className="font-normal text-xs">
+                          Sale Price
+                        </Label>
+                        <div className="flex items-center">
+                          <PhilippinePeso size={17} />
+                          <Input
+                            type="number"
+                            value={variation.salePrice}
+                            onChange={(e) =>
+                              updateVariation(
+                                i,
+                                "salePrice",
+                                Number(e.target.value)
+                              )
+                            }
+                            className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* delete button */}
+                    <div>
                       <Button
-                        variant={"ghost"}
                         type="button"
-                        className="cursor-pointer w-8 h-8"
-                        onClick={() => setEditingNameIndex(null)}
+                        onClick={() => deleteVariation(i)}
+                        className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white cursor-pointer"
                       >
-                        <SquareCheckBig />
+                        <Trash2 />
                       </Button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-1 p-0 items-center">
-                      {variation.name}
-                      <Button
-                        variant={"ghost"}
-                        type="button"
-                        className="cursor-pointer w-8 h-8"
-                        onClick={() => setEditingNameIndex(i)}
-                      >
-                        <SquarePen size={14} />
-                      </Button>
-                    </div>
-                  )}
-                </Label>
-
-                {/* divider */}
-                <div className="w-full h-px bg-foreground"></div>
-
-                {/* main content */}
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-normal text-xs">Image</Label>
-                    <ImagePicker
-                      images={imageOptions}
-                      value={variation.imageIndex}
-                      onChange={(index) =>
-                        updateVariation(i, "imageIndex", index)
-                      }
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-normal text-xs">SKU</Label>
-                    <Input
-                      value={variation.sku}
-                      onChange={(e) =>
-                        updateVariation(i, "sku", e.target.value)
-                      }
-                      className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-normal text-xs">Stock</Label>
-                    <Input
-                      type="number"
-                      value={variation.stock}
-                      onChange={(e) =>
-                        updateVariation(i, "stock", Number(e.target.value))
-                      }
-                      className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-normal text-xs">Price</Label>
-                    <div className="flex items-center">
-                      <PhilippinePeso size={17} />
-                      <Input
-                        type="number"
-                        value={variation.price}
-                        onChange={(e) =>
-                          updateVariation(i, "price", Number(e.target.value))
-                        }
-                        className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-normal text-xs">Sale Price</Label>
-                    <div className="flex items-center">
-                      <PhilippinePeso size={17} />
-                      <Input
-                        type="number"
-                        value={variation.salePrice}
-                        onChange={(e) =>
-                          updateVariation(
-                            i,
-                            "salePrice",
-                            Number(e.target.value)
-                          )
-                        }
-                        className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                      />
                     </div>
                   </div>
                 </div>
-
-                {/* delete button */}
-                <div>
-                  <Button
-                    type="button"
-                    onClick={() => deleteVariation(i)}
-                    className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="grid gap-3">
-                <Label>Usernme</Label>
-                <Input
-                  className="
-                    focus-visible:ring-0
-                    transition
-                    selection:bg-gray-300
-                  "
-                />
-              </div>
+              ))}
             </div>
-          ))}
+          </ScrollArea>
 
           <DialogFooter>
             <DialogClose asChild>

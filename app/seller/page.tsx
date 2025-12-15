@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { VariationModal } from "@/components/VariationModal";
 import { useVariationModal } from "@/hooks/useVariationModal";
+import { ProductVariation } from "@/hooks/useVariationModal";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -55,22 +56,11 @@ const AddProduct = () => {
   const [salePrice, setsalePrice] = useState("");
 
   const variationModal = useVariationModal();
+
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState(false);
 
-  type ProductVariation = {
-  name: string;
-  sku: string;
-  price: number;
-  salePrice: number;
-  stock: number;
-  imageIndex: number;
-};
-
-const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[]>([]);
-
-
- const handleGenerateVariations = () => {
+ const handleGenerateVariations = async () => {
   if (!variationA) return;
 
   setisGeneratingVariations(true);
@@ -85,8 +75,11 @@ const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[
     : [];
 
   const results: ProductVariation[] = [];
+  console.log(listA)
+  console.log(listB)
 
   if (listB.length) {
+    console.log('both have values')
     listA.forEach(a => {
       listB.forEach(b => {
         results.push({
@@ -100,6 +93,7 @@ const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[
       });
     });
   } else {
+    console.log('only a has values')
     listA.forEach(a => {
       results.push({
         name: `${a} - ${name}`,
@@ -112,10 +106,9 @@ const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[
     });
   }
 
-  setGeneratedVariations(results);
-  console.log(generatedVariations)
+  variationModal.setGeneratedVariations(results);
   setisGeneratingVariations(false);
-  // variationModal.openModal();
+  variationModal.openModal();
 };
 
 
@@ -568,6 +561,7 @@ const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[
         open={variationModal.open}
         onOpenChange={variationModal.setOpen}
         imageOptions={imageOptions}
+        generatedVariations={variationModal.generatedVariations}
       />
     </>
   );
