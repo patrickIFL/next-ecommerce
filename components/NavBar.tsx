@@ -1,6 +1,4 @@
 "use client";
-import { assets } from "@/assets/assets";
-import Image from "next/image";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "./theme-provider";
@@ -35,7 +33,7 @@ import useSearchStore from "@/stores/useSearchStore";
 // import { useRouter } from "next/navigation";
 import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
-import NextLogo from "./NextLogo";
+import NextLogo from "./svgs/NextLogo";
 
 function NavBar() {
   const { isDark } = useTheme();

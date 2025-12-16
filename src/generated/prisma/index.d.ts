@@ -3211,7 +3211,6 @@ export namespace Prisma {
     sku: number
     stock: number
     type: number
-    variations: number
     isArchived: number
     isFeatured: number
     isOnSale: number
@@ -3282,7 +3281,6 @@ export namespace Prisma {
     sku?: true
     stock?: true
     type?: true
-    variations?: true
     isArchived?: true
     isFeatured?: true
     isOnSale?: true
@@ -3384,16 +3382,15 @@ export namespace Prisma {
     description: string | null
     category: string
     image: string[]
-    price: number
+    price: number | null
     salePrice: number | null
     search_keys: string[]
     sku: string | null
-    stock: number
+    stock: number | null
     type: $Enums.ProductType
-    variations: string[]
     isArchived: boolean
     isFeatured: boolean
-    isOnSale: boolean
+    isOnSale: boolean | null
     createdAt: Date
     updatedAt: Date
     _count: ProductCountAggregateOutputType | null
@@ -3430,7 +3427,6 @@ export namespace Prisma {
     sku?: boolean
     stock?: boolean
     type?: boolean
-    variations?: boolean
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
@@ -3458,7 +3454,6 @@ export namespace Prisma {
     sku?: boolean
     stock?: boolean
     type?: boolean
-    variations?: boolean
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
@@ -3480,7 +3475,6 @@ export namespace Prisma {
     sku?: boolean
     stock?: boolean
     type?: boolean
-    variations?: boolean
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
@@ -3502,7 +3496,6 @@ export namespace Prisma {
     sku?: boolean
     stock?: boolean
     type?: boolean
-    variations?: boolean
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
@@ -3510,7 +3503,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "variations" | "isArchived" | "isFeatured" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     wishlist?: boolean | Product$wishlistArgs<ExtArgs>
@@ -3544,16 +3537,15 @@ export namespace Prisma {
       description: string | null
       category: string
       image: string[]
-      price: number
+      price: number | null
       salePrice: number | null
       search_keys: string[]
       sku: string | null
-      stock: number
+      stock: number | null
       type: $Enums.ProductType
-      variations: string[]
       isArchived: boolean
       isFeatured: boolean
-      isOnSale: boolean
+      isOnSale: boolean | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["product"]>
@@ -3997,7 +3989,6 @@ export namespace Prisma {
     readonly sku: FieldRef<"Product", 'String'>
     readonly stock: FieldRef<"Product", 'Int'>
     readonly type: FieldRef<"Product", 'ProductType'>
-    readonly variations: FieldRef<"Product", 'String[]'>
     readonly isArchived: FieldRef<"Product", 'Boolean'>
     readonly isFeatured: FieldRef<"Product", 'Boolean'>
     readonly isOnSale: FieldRef<"Product", 'Boolean'>
@@ -4564,6 +4555,7 @@ export namespace Prisma {
   export type ProductVariantMinAggregateOutputType = {
     id: string | null
     productId: string | null
+    name: string | null
     sku: string | null
     price: number | null
     salePrice: number | null
@@ -4574,6 +4566,7 @@ export namespace Prisma {
   export type ProductVariantMaxAggregateOutputType = {
     id: string | null
     productId: string | null
+    name: string | null
     sku: string | null
     price: number | null
     salePrice: number | null
@@ -4584,6 +4577,7 @@ export namespace Prisma {
   export type ProductVariantCountAggregateOutputType = {
     id: number
     productId: number
+    name: number
     sku: number
     price: number
     salePrice: number
@@ -4608,6 +4602,7 @@ export namespace Prisma {
   export type ProductVariantMinAggregateInputType = {
     id?: true
     productId?: true
+    name?: true
     sku?: true
     price?: true
     salePrice?: true
@@ -4618,6 +4613,7 @@ export namespace Prisma {
   export type ProductVariantMaxAggregateInputType = {
     id?: true
     productId?: true
+    name?: true
     sku?: true
     price?: true
     salePrice?: true
@@ -4628,6 +4624,7 @@ export namespace Prisma {
   export type ProductVariantCountAggregateInputType = {
     id?: true
     productId?: true
+    name?: true
     sku?: true
     price?: true
     salePrice?: true
@@ -4725,8 +4722,9 @@ export namespace Prisma {
   export type ProductVariantGroupByOutputType = {
     id: string
     productId: string
+    name: string
     sku: string | null
-    price: number
+    price: number | null
     salePrice: number | null
     stock: number
     image: string | null
@@ -4754,6 +4752,7 @@ export namespace Prisma {
   export type ProductVariantSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    name?: boolean
     sku?: boolean
     price?: boolean
     salePrice?: boolean
@@ -4765,6 +4764,7 @@ export namespace Prisma {
   export type ProductVariantSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    name?: boolean
     sku?: boolean
     price?: boolean
     salePrice?: boolean
@@ -4776,6 +4776,7 @@ export namespace Prisma {
   export type ProductVariantSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
+    name?: boolean
     sku?: boolean
     price?: boolean
     salePrice?: boolean
@@ -4787,6 +4788,7 @@ export namespace Prisma {
   export type ProductVariantSelectScalar = {
     id?: boolean
     productId?: boolean
+    name?: boolean
     sku?: boolean
     price?: boolean
     salePrice?: boolean
@@ -4794,7 +4796,7 @@ export namespace Prisma {
     image?: boolean
   }
 
-  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "sku" | "price" | "salePrice" | "stock" | "image", ExtArgs["result"]["productVariant"]>
+  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "name" | "sku" | "price" | "salePrice" | "stock" | "image", ExtArgs["result"]["productVariant"]>
   export type ProductVariantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
@@ -4813,8 +4815,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       productId: string
+      name: string
       sku: string | null
-      price: number
+      price: number | null
       salePrice: number | null
       stock: number
       image: string | null
@@ -5244,6 +5247,7 @@ export namespace Prisma {
   interface ProductVariantFieldRefs {
     readonly id: FieldRef<"ProductVariant", 'String'>
     readonly productId: FieldRef<"ProductVariant", 'String'>
+    readonly name: FieldRef<"ProductVariant", 'String'>
     readonly sku: FieldRef<"ProductVariant", 'String'>
     readonly price: FieldRef<"ProductVariant", 'Int'>
     readonly salePrice: FieldRef<"ProductVariant", 'Int'>
@@ -13768,7 +13772,6 @@ export namespace Prisma {
     sku: 'sku',
     stock: 'stock',
     type: 'type',
-    variations: 'variations',
     isArchived: 'isArchived',
     isFeatured: 'isFeatured',
     isOnSale: 'isOnSale',
@@ -13782,6 +13785,7 @@ export namespace Prisma {
   export const ProductVariantScalarFieldEnum: {
     id: 'id',
     productId: 'productId',
+    name: 'name',
     sku: 'sku',
     price: 'price',
     salePrice: 'salePrice',
@@ -14126,16 +14130,15 @@ export namespace Prisma {
     description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
-    price?: IntFilter<"Product"> | number
+    price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
-    stock?: IntFilter<"Product"> | number
+    stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
-    variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
-    isOnSale?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -14153,16 +14156,15 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     category?: SortOrder
     image?: SortOrder
-    price?: SortOrder
+    price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     search_keys?: SortOrder
     sku?: SortOrderInput | SortOrder
-    stock?: SortOrder
+    stock?: SortOrderInput | SortOrder
     type?: SortOrder
-    variations?: SortOrder
     isArchived?: SortOrder
     isFeatured?: SortOrder
-    isOnSale?: SortOrder
+    isOnSale?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orders?: OrderItemOrderByRelationAggregateInput
@@ -14184,15 +14186,14 @@ export namespace Prisma {
     description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
-    price?: IntFilter<"Product"> | number
+    price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
-    stock?: IntFilter<"Product"> | number
+    stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
-    variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
-    isOnSale?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -14210,16 +14211,15 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     category?: SortOrder
     image?: SortOrder
-    price?: SortOrder
+    price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     search_keys?: SortOrder
     sku?: SortOrderInput | SortOrder
-    stock?: SortOrder
+    stock?: SortOrderInput | SortOrder
     type?: SortOrder
-    variations?: SortOrder
     isArchived?: SortOrder
     isFeatured?: SortOrder
-    isOnSale?: SortOrder
+    isOnSale?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -14239,16 +14239,15 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Product"> | string | null
     category?: StringWithAggregatesFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
-    price?: IntWithAggregatesFilter<"Product"> | number
+    price?: IntNullableWithAggregatesFilter<"Product"> | number | null
     salePrice?: IntNullableWithAggregatesFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    stock?: IntWithAggregatesFilter<"Product"> | number
+    stock?: IntNullableWithAggregatesFilter<"Product"> | number | null
     type?: EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
-    variations?: StringNullableListFilter<"Product">
     isArchived?: BoolWithAggregatesFilter<"Product"> | boolean
     isFeatured?: BoolWithAggregatesFilter<"Product"> | boolean
-    isOnSale?: BoolWithAggregatesFilter<"Product"> | boolean
+    isOnSale?: BoolNullableWithAggregatesFilter<"Product"> | boolean | null
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
   }
@@ -14259,8 +14258,9 @@ export namespace Prisma {
     NOT?: ProductVariantWhereInput | ProductVariantWhereInput[]
     id?: StringFilter<"ProductVariant"> | string
     productId?: StringFilter<"ProductVariant"> | string
+    name?: StringFilter<"ProductVariant"> | string
     sku?: StringNullableFilter<"ProductVariant"> | string | null
-    price?: IntFilter<"ProductVariant"> | number
+    price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     image?: StringNullableFilter<"ProductVariant"> | string | null
@@ -14270,8 +14270,9 @@ export namespace Prisma {
   export type ProductVariantOrderByWithRelationInput = {
     id?: SortOrder
     productId?: SortOrder
+    name?: SortOrder
     sku?: SortOrderInput | SortOrder
-    price?: SortOrder
+    price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
     image?: SortOrderInput | SortOrder
@@ -14285,7 +14286,8 @@ export namespace Prisma {
     OR?: ProductVariantWhereInput[]
     NOT?: ProductVariantWhereInput | ProductVariantWhereInput[]
     productId?: StringFilter<"ProductVariant"> | string
-    price?: IntFilter<"ProductVariant"> | number
+    name?: StringFilter<"ProductVariant"> | string
+    price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     image?: StringNullableFilter<"ProductVariant"> | string | null
@@ -14295,8 +14297,9 @@ export namespace Prisma {
   export type ProductVariantOrderByWithAggregationInput = {
     id?: SortOrder
     productId?: SortOrder
+    name?: SortOrder
     sku?: SortOrderInput | SortOrder
-    price?: SortOrder
+    price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
     image?: SortOrderInput | SortOrder
@@ -14313,8 +14316,9 @@ export namespace Prisma {
     NOT?: ProductVariantScalarWhereWithAggregatesInput | ProductVariantScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ProductVariant"> | string
     productId?: StringWithAggregatesFilter<"ProductVariant"> | string
+    name?: StringWithAggregatesFilter<"ProductVariant"> | string
     sku?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
-    price?: IntWithAggregatesFilter<"ProductVariant"> | number
+    price?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
     stock?: IntWithAggregatesFilter<"ProductVariant"> | number
     image?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
@@ -14957,18 +14961,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -14984,18 +14987,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -15011,16 +15013,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -15038,16 +15039,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -15062,18 +15062,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15084,16 +15083,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15105,24 +15103,24 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductVariantCreateInput = {
     id?: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -15132,8 +15130,9 @@ export namespace Prisma {
   export type ProductVariantUncheckedCreateInput = {
     id?: string
     productId: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -15141,8 +15140,9 @@ export namespace Prisma {
 
   export type ProductVariantUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15152,8 +15152,9 @@ export namespace Prisma {
   export type ProductVariantUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15162,8 +15163,9 @@ export namespace Prisma {
   export type ProductVariantCreateManyInput = {
     id?: string
     productId: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -15171,8 +15173,9 @@ export namespace Prisma {
 
   export type ProductVariantUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15181,8 +15184,9 @@ export namespace Prisma {
   export type ProductVariantUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15946,17 +15950,6 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -15978,6 +15971,11 @@ export namespace Prisma {
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
   export type OrderItemListRelationFilter = {
@@ -16028,7 +16026,6 @@ export namespace Prisma {
     sku?: SortOrder
     stock?: SortOrder
     type?: SortOrder
-    variations?: SortOrder
     isArchived?: SortOrder
     isFeatured?: SortOrder
     isOnSale?: SortOrder
@@ -16084,22 +16081,6 @@ export namespace Prisma {
     stock?: SortOrder
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -16134,6 +16115,25 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
@@ -16142,6 +16142,7 @@ export namespace Prisma {
   export type ProductVariantCountOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    name?: SortOrder
     sku?: SortOrder
     price?: SortOrder
     salePrice?: SortOrder
@@ -16158,6 +16159,7 @@ export namespace Prisma {
   export type ProductVariantMaxOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    name?: SortOrder
     sku?: SortOrder
     price?: SortOrder
     salePrice?: SortOrder
@@ -16168,6 +16170,7 @@ export namespace Prisma {
   export type ProductVariantMinOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
+    name?: SortOrder
     sku?: SortOrder
     price?: SortOrder
     salePrice?: SortOrder
@@ -16179,6 +16182,22 @@ export namespace Prisma {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type WishlistUserIdProductIdCompoundUniqueInput = {
@@ -16831,10 +16850,6 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type ProductCreatevariationsInput = {
-    set: string[]
-  }
-
   export type OrderItemCreateNestedManyWithoutProductInput = {
     create?: XOR<OrderItemCreateWithoutProductInput, OrderItemUncheckedCreateWithoutProductInput> | OrderItemCreateWithoutProductInput[] | OrderItemUncheckedCreateWithoutProductInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutProductInput | OrderItemCreateOrConnectWithoutProductInput[]
@@ -16916,14 +16931,6 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -16941,13 +16948,12 @@ export namespace Prisma {
     set?: $Enums.ProductType
   }
 
-  export type ProductUpdatevariationsInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
   }
 
   export type OrderItemUpdateManyWithoutProductNestedInput = {
@@ -17102,6 +17108,14 @@ export namespace Prisma {
     create?: XOR<ProductCreateWithoutVariantsInput, ProductUncheckedCreateWithoutVariantsInput>
     connectOrCreate?: ProductCreateOrConnectWithoutVariantsInput
     connect?: ProductWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ProductUpdateOneRequiredWithoutVariantsNestedInput = {
@@ -17530,31 +17544,9 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -17601,6 +17593,41 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -17629,18 +17656,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -17654,18 +17680,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -17877,16 +17902,15 @@ export namespace Prisma {
     description?: StringNullableFilter<"Product"> | string | null
     category?: StringFilter<"Product"> | string
     image?: StringNullableListFilter<"Product">
-    price?: IntFilter<"Product"> | number
+    price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
     search_keys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
-    stock?: IntFilter<"Product"> | number
+    stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
-    variations?: StringNullableListFilter<"Product">
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
-    isOnSale?: BoolFilter<"Product"> | boolean
+    isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
@@ -18189,8 +18213,9 @@ export namespace Prisma {
 
   export type ProductVariantCreateWithoutProductInput = {
     id?: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -18198,8 +18223,9 @@ export namespace Prisma {
 
   export type ProductVariantUncheckedCreateWithoutProductInput = {
     id?: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -18367,8 +18393,9 @@ export namespace Prisma {
     NOT?: ProductVariantScalarWhereInput | ProductVariantScalarWhereInput[]
     id?: StringFilter<"ProductVariant"> | string
     productId?: StringFilter<"ProductVariant"> | string
+    name?: StringFilter<"ProductVariant"> | string
     sku?: StringNullableFilter<"ProductVariant"> | string | null
-    price?: IntFilter<"ProductVariant"> | number
+    price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     image?: StringNullableFilter<"ProductVariant"> | string | null
@@ -18378,18 +18405,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18404,18 +18430,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18446,16 +18471,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18472,16 +18496,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -18527,18 +18550,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18553,18 +18575,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18634,16 +18655,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18660,16 +18680,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -18715,18 +18734,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18741,18 +18759,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18822,16 +18839,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18848,16 +18864,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19305,18 +19320,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistCreateNestedManyWithoutProductInput
@@ -19331,18 +19345,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistUncheckedCreateNestedManyWithoutProductInput
@@ -19408,16 +19421,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUpdateManyWithoutProductNestedInput
@@ -19434,16 +19446,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUncheckedUpdateManyWithoutProductNestedInput
@@ -19578,18 +19589,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -19604,18 +19614,17 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -19646,16 +19655,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -19672,16 +19680,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19694,18 +19701,17 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
-    category: string
+    category?: string
     image?: ProductCreateimageInput | string[]
-    price: number
+    price?: number | null
     salePrice?: number | null
     search_keys?: ProductCreatesearch_keysInput | string[]
     sku?: string | null
-    stock: number
+    stock?: number | null
     type?: $Enums.ProductType
-    variations?: ProductCreatevariationsInput | string[]
     isArchived?: boolean
     isFeatured?: boolean
-    isOnSale?: boolean
+    isOnSale?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19771,16 +19777,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -19796,16 +19801,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19821,16 +19825,15 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
     image?: ProductUpdateimageInput | string[]
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     search_keys?: ProductUpdatesearch_keysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    stock?: IntFieldUpdateOperationsInput | number
+    stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
-    variations?: ProductUpdatevariationsInput | string[]
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    isOnSale?: BoolFieldUpdateOperationsInput | boolean
+    isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20042,8 +20045,9 @@ export namespace Prisma {
 
   export type ProductVariantCreateManyProductInput = {
     id?: string
+    name: string
     sku?: string | null
-    price: number
+    price?: number | null
     salePrice?: number | null
     stock: number
     image?: string | null
@@ -20153,8 +20157,9 @@ export namespace Prisma {
 
   export type ProductVariantUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20162,8 +20167,9 @@ export namespace Prisma {
 
   export type ProductVariantUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20171,8 +20177,9 @@ export namespace Prisma {
 
   export type ProductVariantUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     sku?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: IntFieldUpdateOperationsInput | number
+    price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     image?: NullableStringFieldUpdateOperationsInput | string | null

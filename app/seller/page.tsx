@@ -27,15 +27,15 @@ const AddProduct = () => {
   const { getToken } = useAuth();
   const [files, setFiles] = useState([]);
   const imageOptions = files
-  .map((file, index) => {
-    if (!file) return null;
+    .map((file, index) => {
+      if (!file) return null;
 
-    return {
-      index,
-      url: URL.createObjectURL(file),
-    };
-  })
-  .filter(Boolean);
+      return {
+        index,
+        url: URL.createObjectURL(file),
+      };
+    })
+    .filter(Boolean);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -43,7 +43,6 @@ const AddProduct = () => {
   // NEW =====================================
   const [variationA, setVariationA] = useState("");
   const [variationB, setVariationB] = useState("");
-
 
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
@@ -58,59 +57,59 @@ const AddProduct = () => {
   const variationModal = useVariationModal();
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
-  const [generateError, setGenerateError] = useState(false);
+  const [generateError, setGenerateError] = useState("");
 
- const handleGenerateVariations = async () => {
-  if (!variationA) return;
+  const handleGenerateVariations = async () => {
+    setisGeneratingVariations(true);
 
-  setisGeneratingVariations(true);
+    const listA = variationA
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
 
-  const listA = variationA
-    .split(",")
-    .map(v => v.trim())
-    .filter(Boolean);
+    const listB = variationB
+      ? variationB
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean)
+      : [];
 
-  const listB = variationB
-    ? variationB.split(",").map(v => v.trim()).filter(Boolean)
-    : [];
+    const results: ProductVariation[] = [];
+    console.log(listA);
+    console.log(listB);
 
-  const results: ProductVariation[] = [];
-  console.log(listA)
-  console.log(listB)
-
-  if (listB.length) {
-    console.log('both have values')
-    listA.forEach(a => {
-      listB.forEach(b => {
+    if (listB.length) {
+      console.log("both have values");
+      listA.forEach((a) => {
+        listB.forEach((b) => {
+          results.push({
+            name: `${a}, ${b} - ${name}`,
+            sku: "",
+            price: "",
+            salePrice: "",
+            stock: "",
+            imageIndex: 0,
+          });
+        });
+      });
+    } else {
+      console.log("only a has values");
+      listA.forEach((a) => {
         results.push({
-          name: `${a}, ${b} - ${name}`,
+          name: `${a} - ${name}`,
           sku: "",
-          price: Number(price) || 0,
-          salePrice: Number(salePrice) || 0,
-          stock: 0,
+          price: "",
+          salePrice: "",
+          stock: "",
           imageIndex: 0,
         });
       });
-    });
-  } else {
-    console.log('only a has values')
-    listA.forEach(a => {
-      results.push({
-        name: `${a} - ${name}`,
-        sku: "",
-        price: Number(price) || 0,
-        salePrice: Number(salePrice) || 0,
-        stock: 0,
-        imageIndex: 0,
-      });
-    });
-  }
+    }
 
-  variationModal.setGeneratedVariations(results);
-  setisGeneratingVariations(false);
-  variationModal.openModal();
-};
-
+    variationModal.setGeneratedVariations(results);
+    setisGeneratingVariations(false);
+    variationModal.openModal();
+  };
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
@@ -340,6 +339,157 @@ const AddProduct = () => {
                 </RadioGroup>
               </div>
 
+              <div className="flex items-center gap-5 flex-wrap">
+                <div className="flex flex-col flex-1  gap-1 w-32">
+                  <label className="text-base font-medium" htmlFor="category">
+                    Category
+                  </label>
+                  <CategoryComboBox
+                    value={category}
+                    onChange={(val) => setCategory(val)}
+                  />
+                </div>
+
+                  <Activity mode={type === "simple" ? "visible" : "hidden"}>
+<>
+                    {/* SKU */}
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium" htmlFor="sku">
+                        <div className="flex gap-1.5 items-center">
+                          <span>SKU</span>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info size={12} />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="font-bold">Stock Keeping Unit</p>
+                              <p className="text-[11px]">Stock Keeping Unit</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </label>
+                      <Input
+                        id="sku"
+                        type="text"
+                        placeholder="(Optional)"
+                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setSku(e.target.value)}
+                        value={sku}
+                      />
+                    </div>
+
+                    {/* Stock */}
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium" htmlFor="stock">
+                        Stock
+                      </label>
+                      <Input
+                        id="stock"
+                        type="number"
+                        placeholder="0"
+                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setStock(e.target.value)}
+                        value={stock}
+                        required={type === "simple"}
+                        autoComplete="off"
+                      />
+                    </div>
+                  </>
+                  </Activity>
+              </div>
+
+              {/* type is simple product */}
+              <Activity mode={type === "simple" ? "visible" : "hidden"}>
+                <>
+                
+                  {/* Prices */}
+                  <div className="flex items-center gap-5 flex-wrap">
+                    {/* Product Price */}
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label
+                        className="text-base font-medium"
+                        htmlFor="product-price"
+                      >
+                        <div className="flex gap-1.5 items-center">
+                          <span>Product Price</span>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info size={12} />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-[11px]">Original Price</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <PhilippinePeso size={18} />
+                        <Input
+                          id="product-price"
+                          type="number"
+                          placeholder="0"
+                          className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                          onChange={(e) => setPrice(e.target.value)}
+                          value={price}
+                          required={type === "simple"}
+                          autoComplete="off"
+                        />
+                      </div>
+                    </div>
+                    {/* Sale Price */}
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label
+                        className="text-base font-medium"
+                        htmlFor="offer-price"
+                      >
+                        <div className="flex gap-1.5 items-center">
+                          <span>SALE Price</span>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info size={12} />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-[11px]">Price when on SALE</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </label>
+
+                      <div className="flex items-center gap-2">
+                        <PhilippinePeso size={18} />
+                        <Input
+                          id="offer-price"
+                          type="number"
+                          placeholder="(Optional)"
+                          className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                          onChange={(e) => setsalePrice(e.target.value)}
+                          value={salePrice}
+                          autoComplete="off"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Button
+                      type="submit"
+                      className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
+            ${loading ? "opacity-50" : "cursor-pointer"}`}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <div className="mx-1 flex gap-1 items-center">
+                          <LoaderIcon className="animate-spin" size={16} />
+                          <span>Loading</span>
+                        </div>
+                      ) : (
+                        <span className="mx-6">ADD</span>
+                      )}
+                    </Button>
+                  </div>
+                </>
+                </Activity>
+
               <Activity mode={type === "variation" ? "visible" : "hidden"}>
                 {/* Variation A */}
                 <div className="flex flex-col gap-1">
@@ -366,26 +516,39 @@ const AddProduct = () => {
                   >
                     {"- Variation B (Optional)"}
                   </label>
-                  <Input
-                    id="product-variations"
-                    className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-                    placeholder="eg. Red, Blue, Yellow"
-                    onChange={(e) => setVariationB(e.target.value)}
-                    value={variationB}
-                  />
+                  <div
+                    className={`${!variationA.trim() && "cursor-not-allowed"} `}
+                  >
+                    <Input
+                      id="product-variations"
+                      placeholder="eg. Red, Blue, Yellow"
+                      value={variationB}
+                      onChange={(e) => setVariationB(e.target.value)}
+                      disabled={!variationA.trim()}
+                      className={`outline-none md:py-2.5 py-2 px-3 rounded resize-none border`}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex gap-5 items-center">
-
                   <Button
                     type="button"
                     onClick={() => {
                       if (!name) {
-                        setGenerateError(true);
+                        setGenerateError("empty name");
+                        return;
+                      }
+                      if (files.length === 0) {
+                        setGenerateError("empty image");
+                        return;
+                      }
+
+                      if (!variationA) {
+                        setGenerateError("empty variation");
                         return;
                       }
                       handleGenerateVariations();
-                      setGenerateError(false);
+                      setGenerateError("");
                     }}
                     className={`py-2.5 font-medium rounded 
                       ${
@@ -401,156 +564,22 @@ const AddProduct = () => {
                         <div className="">Generating...</div>
                       </div>
                     ) : (
-                      <div className="text-gray-800/80">Generate Variations</div>
+                      <div className="text-gray-800/80">
+                        Generate Variations
+                      </div>
                     )}
                   </Button>
                   {generateError && (
-                    
-                  <span className="text-destructive">Fill in Product Name first</span>
+                    <span className="text-destructive">
+                      {generateError === "empty name" && "Please enter a name."}
+                      {generateError === "empty image" &&
+                        "Please enter some images."}
+                      {generateError === "empty variation" &&
+                        "Please enter some variations first."}
+                    </span>
                   )}
                 </div>
-
               </Activity>
-
-              <div className="flex items-center gap-5 flex-wrap">
-                <div className="flex flex-col flex-1  gap-1 w-32">
-                  <label className="text-base font-medium" htmlFor="category">
-                    Category
-                  </label>
-                  <CategoryComboBox
-                    value={category}
-                    onChange={(val) => setCategory(val)}
-                  />
-                </div>
-
-                {/* // NEW ===================================== */}
-
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium" htmlFor="sku">
-                    <div className="flex gap-1.5 items-center">
-                      <span>SKU</span>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info size={12} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="font-bold">Stock Keeping Unit</p>
-                          <p className="text-[11px]">Stock Keeping Unit</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </label>
-                  <Input
-                    id="sku"
-                    type="text"
-                    placeholder="(Optional)"
-                    className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                    onChange={(e) => setSku(e.target.value)}
-                    value={sku}
-                  />
-                </div>
-
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium" htmlFor="stock">
-                    Stock
-                  </label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    placeholder="0"
-                    className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                    onChange={(e) => setStock(e.target.value)}
-                    value={stock}
-                    required
-                    autoComplete="off"
-                  />
-                </div>
-
-                {/*  ===================================== */}
-              </div>
-
-              <div className="flex items-center gap-5 flex-wrap">
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label
-                    className="text-base font-medium"
-                    htmlFor="product-price"
-                  >
-                    <div className="flex gap-1.5 items-center">
-                      <span>Product Price</span>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info size={12} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-[11px]">Original Price</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <PhilippinePeso size={18} />
-                    <Input
-                      id="product-price"
-                      type="number"
-                      placeholder="0"
-                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                      onChange={(e) => setPrice(e.target.value)}
-                      value={price}
-                      required
-                      autoComplete="off"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label
-                    className="text-base font-medium"
-                    htmlFor="offer-price"
-                  >
-                    <div className="flex gap-1.5 items-center">
-                      <span>SALE Price</span>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info size={12} />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-[11px]">Price when on SALE</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </label>
-
-                  <div className="flex items-center gap-2">
-                    <PhilippinePeso size={18} />
-                    <Input
-                      id="offer-price"
-                      type="number"
-                      placeholder="(Optional)"
-                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                      onChange={(e) => setsalePrice(e.target.value)}
-                      value={salePrice}
-                      autoComplete="off"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <Button
-                  type="submit"
-                  className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
-            ${loading ? "opacity-50" : "cursor-pointer"}`}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <div className="mx-1 flex gap-1 items-center">
-                      <LoaderIcon className="animate-spin" size={16} />
-                      <span>Loading</span>
-                    </div>
-                  ) : (
-                    <span className="mx-6">ADD</span>
-                  )}
-                </Button>
-              </div>
             </div>
           </div>
         </form>
@@ -560,6 +589,7 @@ const AddProduct = () => {
       <VariationModal
         open={variationModal.open}
         onOpenChange={variationModal.setOpen}
+        parentProductName={name}
         imageOptions={imageOptions}
         generatedVariations={variationModal.generatedVariations}
       />

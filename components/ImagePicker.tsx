@@ -30,7 +30,7 @@ export function ImagePicker({ images, value, onChange }: Props) {
         <Button
           variant="outline"
           size="sm"
-          className="flex gap-2 justify-between w-20"
+          className="flex gap-2 justify-between w-20 overflow-hidden"
         >
           {selected ? (
             <Image
@@ -38,7 +38,7 @@ export function ImagePicker({ images, value, onChange }: Props) {
               alt=""
               width={28}
               height={28}
-              className="rounded object-cover"
+              className="rounded object-cover "
             />
           ) : (
             <Image

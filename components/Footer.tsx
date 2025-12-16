@@ -2,7 +2,7 @@
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useTheme } from "./theme-provider";
-import NextLogo from "./NextLogo";
+import NextLogo from "./svgs/NextLogo";
 
 const Footer = () => {
   const { isDark } = useTheme();
@@ -92,7 +92,7 @@ const Footer = () => {
       </div>
 
       <p className="py-4 text-center text-xs md:text-sm">
-        Copyright 2025 © GreatStack.dev All Rights Reserved.
+        Copyright 2025 © <a href="https://github.com/Xepheree" target="_blank" className="hover:underline">Xepheree</a> All Rights Reserved.
       </p>
     </footer>
   );

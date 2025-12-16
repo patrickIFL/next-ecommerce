@@ -143,7 +143,6 @@ exports.Prisma.ProductScalarFieldEnum = {
   sku: 'sku',
   stock: 'stock',
   type: 'type',
-  variations: 'variations',
   isArchived: 'isArchived',
   isFeatured: 'isFeatured',
   isOnSale: 'isOnSale',
@@ -154,6 +153,7 @@ exports.Prisma.ProductScalarFieldEnum = {
 exports.Prisma.ProductVariantScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
+  name: 'name',
   sku: 'sku',
   price: 'price',
   salePrice: 'salePrice',
