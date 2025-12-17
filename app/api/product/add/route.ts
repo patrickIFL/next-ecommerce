@@ -195,7 +195,7 @@ export async function POST(request: NextRequest) {
                 ? Math.round(v.salePrice * 100)
                 : null,
             stock: v.stock,
-            image: v.imageIndex, // 👈 index of parent image
+            imageIndex: v.imageIndex, // 👈 index of parent image
           };
         });
 

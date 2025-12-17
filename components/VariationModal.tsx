@@ -50,7 +50,6 @@ export function VariationModal({
   parentProductName,
   onConfirm
 }: VariationModalProps) {
-  const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null);
 
   const [variations, setVariations] = useState<Variation[]>([]);
 
@@ -92,46 +91,11 @@ export function VariationModal({
                   {/* sku, price, salePrice, stock, image */}
                   <div className="relative border p-4 rounded-md grid gap-2">
                     <Label className="font flex items-center gap-2">
-                      {editingNameIndex === i ? (
-                        <div className="flex gap-1 p-0">
-                          <Input
-                            value={variation.name}
-                            onChange={(e) =>
-                              updateVariation(i, "name", e.target.value)
-                            }
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault(); // 🚫 prevent form submit
-                                setEditingNameIndex(null); // ✅ save & exit edit mode
-                              }
-                            }}
-                            className="focus-visible:ring-0 h-8 bg-amber-500"
-                          />
-                          <Button
-                            variant={"ghost"}
-                            type="button"
-                            className="cursor-pointer w-8 h-8"
-                            onClick={() => setEditingNameIndex(null)}
-                          >
-                            <SquareCheckBig />
-                          </Button>
-                        </div>
-                      ) : (
+                      
                         <div className="flex gap-1 p-0 items-center">
                           {variation.name}
-                          <Button
-                            variant={"ghost"}
-                            type="button"
-                            className="cursor-pointer w-8 h-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingNameIndex(i);
-                            }}
-                          >
-                            <SquarePen size={14} />
-                          </Button>
                         </div>
-                      )}
+                      
                     </Label>
 
                     {/* divider */}
@@ -248,14 +212,7 @@ export function VariationModal({
 </Button>
 
             </DialogClose>
-            <Button
-              onClick={() => {
-                console.log(generatedVariations);
-              }}
-              className="text-gray-100"
-            >
-              See vars dev
-            </Button>
+            
           </DialogFooter>
         </DialogContent>
       </form>

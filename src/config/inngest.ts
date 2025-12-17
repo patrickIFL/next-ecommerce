@@ -191,7 +191,7 @@ export const createUserOrder = inngest.createFunction(
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
           items: {
-            create: data.items
+            create: data.items,
           },
         },
       });
@@ -280,7 +280,7 @@ export const restoreExpiredReservations = inngest.createFunction(
     await prisma.product.updateMany({
       where: {
         stock: 0,
-        type:"SIMPLE",
+        type: "SIMPLE",
         isArchived: false, // avoid unnecessary writes
       },
       data: {
@@ -288,6 +288,23 @@ export const restoreExpiredReservations = inngest.createFunction(
       },
     });
 
-    console.log("[Stock Cron] Finished expired reservation cleanup.");
+    await prisma.product.updateMany({
+      where: {
+        type: "VARIATION",
+        isArchived: false,
+        variants: {
+          none: {
+            stock: {
+              gt: 0, // ❗ no variant with stock > 0
+            },
+          },
+        },
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+
+    console.log("[Stock Cron] Finished expired reservation and OOS cleanup.");
   }
 );
