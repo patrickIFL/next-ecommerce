@@ -13,6 +13,7 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
+    /* ================= AUTH ================= */
     const { userId } = getAuth(request);
     const isSeller = await authSeller(userId);
 
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    /* ================= PARSE ================= */
     const formData = await request.formData();
 
     const name = formData.get("name") as string | null;
@@ -32,36 +34,18 @@ export async function POST(request: NextRequest) {
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
-
-    // because "" will trigger unique constraint
-    const rawSku = formData.get("sku") as string | null;
-    const sku = rawSku && rawSku.trim() !== "" ? rawSku.trim() : null;
-
+    const sku = formData.get("sku") as string | null;
     const stock = formData.get("stock") as string | null;
+
     const searchKeysRaw = formData.get("search_keys") as string | null;
-    const variationsRaw = formData.get("variations");
+    const variantsRaw = formData.get("variations") as string | null;
 
-    let variations: any[] = [];
-
-    if (type === "variation") {
-      if (typeof variationsRaw !== "string") {
-        return NextResponse.json(
-          { success: false, message: "Variations are required" },
-          { status: 400 }
-        );
-      }
-
-      variations = JSON.parse(variationsRaw);
-
-      if (!Array.isArray(variations) || variations.length === 0) {
-        return NextResponse.json(
-          { success: false, message: "No variations provided" },
-          { status: 400 }
-        );
-      }
+    if (!name || !category) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields" },
+        { status: 400 }
+      );
     }
-
-    // validate
 
     if (!["simple", "variation"].includes(type)) {
       return NextResponse.json(
@@ -70,6 +54,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    /* ================= SIMPLE VALIDATION ================= */
     if (type === "simple") {
       if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return NextResponse.json(
@@ -99,25 +84,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    /* ================= FILE UPLOAD ================= */
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {
       return NextResponse.json(
-        { success: false, message: "No Images uploaded. Upload some." },
+        { success: false, message: "No images uploaded" },
         { status: 400 }
       );
     }
 
-    const search_keys: string[] = searchKeysRaw
-      ? JSON.parse(searchKeysRaw)
-      : [];
-
-    // Upload each image to Cloudinary
     const uploadResults = await Promise.all(
-      files.map((file: File) => {
-        return new Promise<any>(async (resolve, reject) => {
-          const buffer = Buffer.from(await file.arrayBuffer());
+      files.map(async (file) => {
+        const buffer = Buffer.from(await file.arrayBuffer());
 
+        return new Promise<any>((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
             { resource_type: "auto" },
             (error, result) => {
@@ -131,40 +112,83 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Extract URLs
     const imageUrls = uploadResults.map((r) => r.secure_url as string);
 
+    const search_keys: string[] = searchKeysRaw
+      ? JSON.parse(searchKeysRaw)
+      : [];
+
+    const variants = variantsRaw ? JSON.parse(variantsRaw) : [];
+
+    /* ================= TRANSACTION ================= */
     const product = await prisma.$transaction(async (tx) => {
-      // Create the Parent Product First,
+      /* ---------- CREATE PARENT PRODUCT ---------- */
       const parentProduct = await tx.product.create({
         data: {
           userId: userId!,
-          name: name!,
-          description: description!,
-          category: category!,
+          name,
+          description,
+          category,
+          type: type === "simple" ? "SIMPLE" : "VARIATION",
+          image: imageUrls,
+          search_keys,
+
           price: type === "simple" ? Math.round(Number(price) * 100) : null,
           salePrice:
             type === "simple" && salePrice
               ? Math.round(Number(salePrice) * 100)
               : null,
-          sku: sku,
-          stock: Number(stock),
-          search_keys,
-          image: imageUrls,
+          stock: type === "simple" ? Number(stock) : null,
+          sku: type === "simple" ? sku : null,
         },
       });
 
+      /* ---------- CREATE VARIANTS ---------- */
       if (type === "variation") {
-        // get the payload
+        if (!Array.isArray(variants) || variants.length === 0) {
+          throw new Error("Variation products require at least one variant");
+        }
+
+        const variantData = variants.map((v: any) => {
+          if (
+            !Number.isFinite(Number(v.price)) ||
+            Number(v.price) <= 0 ||
+            !Number.isFinite(Number(v.stock)) ||
+            Number(v.stock) < 0
+          ) {
+            throw new Error("Invalid variant price or stock");
+          }
+
+          return {
+            productId: parentProduct.id,
+            name: v.name,
+            sku: v.sku || null,
+            price: Math.round(Number(v.price) * 100),
+            salePrice: v.salePrice
+              ? Math.round(Number(v.salePrice) * 100)
+              : null,
+            stock: Number(v.stock),
+            image:
+              typeof v.imageIndex === "number"
+                ? imageUrls[v.imageIndex] ?? null
+                : null,
+          };
+        });
+
+        await tx.productVariant.createMany({
+          data: variantData,
+          skipDuplicates: true,
+        });
       }
 
       return parentProduct;
     });
 
+    /* ================= RESPONSE ================= */
     return NextResponse.json({
       success: true,
-      message: "Upload Successful.",
-      product: product.id,
+      message: "Product created successfully",
+      productId: product.id,
     });
   } catch (error: any) {
     console.error(error);

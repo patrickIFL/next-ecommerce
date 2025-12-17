@@ -120,16 +120,10 @@ const AddProduct = () => {
     const salePriceNum = salePrice ? Number(salePrice) : null;
 
     // ✅ validate ONLY for simple products
-    if (type === "simple" && Number(price) <= 0) {
-      throw new Error("Price must be greater than 0");
-    }
-
-    if (type === "simple" && Number(price) <= 0) {
-      throw new Error("Stock must be greater than 0");
-    }
-
-    if (type === "simple" && salePrice && Number(salePrice) < 0) {
-      throw new Error("Sale price cannot be negative");
+    if (type === "simple") {
+      if(Number(price) <= 0){throw new Error("Price must be greater than 0");}
+      if(Number(stock) <= 0){throw new Error("Stock must be greater than 0");} 
+      if(salePrice && Number(salePrice) < 0){throw new Error("Sale price cannot be negative");}
     }
 
     const token = await getToken();
@@ -143,6 +137,8 @@ const AddProduct = () => {
     formData.append("description", description);
     formData.append("category", category);
     formData.append("type", type);
+    formData.append("variations", JSON.stringify(finalVariations));
+
     formData.append("search_keys", JSON.stringify(searchKeysArray));
 
     // ✅ simple-only fields
