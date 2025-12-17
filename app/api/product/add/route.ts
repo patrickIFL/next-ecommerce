@@ -41,6 +41,13 @@ export async function POST(request: NextRequest) {
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations");
 
+    if (!name || !category) {
+      return NextResponse.json(
+        { success: false, message: "Name and category are required" },
+        { status: 400 }
+      );
+    }
+
     let variations: any[] = [];
 
     if (type === "variation") {
@@ -108,9 +115,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const search_keys: string[] = searchKeysRaw
-      ? JSON.parse(searchKeysRaw)
-      : [];
+    let search_keys: string[] = [];
+
+    if (searchKeysRaw) {
+      try {
+        search_keys = JSON.parse(searchKeysRaw);
+      } catch {
+        return NextResponse.json(
+          { success: false, message: "Invalid search keys format" },
+          { status: 400 }
+        );
+      }
+    }
 
     // Upload each image to Cloudinary
     const uploadResults = await Promise.all(
@@ -148,14 +164,45 @@ export async function POST(request: NextRequest) {
               ? Math.round(Number(salePrice) * 100)
               : null,
           sku: sku,
-          stock: Number(stock),
+          stock: type === "simple" ? Number(stock) : null,
           search_keys,
           image: imageUrls,
         },
       });
 
       if (type === "variation") {
-        // get the payload
+        const variantData = variations.map((v) => {
+          // Validate per-variant (IMPORTANT)
+          if (!v.name || typeof v.stock !== "number") {
+            throw new Error("Invalid variation data");
+          }
+
+          if (!Number.isFinite(v.price) || v.price <= 0) {
+            throw new Error(`Invalid price for variation: ${v.name}`);
+          }
+
+          if (!Number.isFinite(v.stock) || v.stock < 0) {
+            throw new Error(`Invalid stock for variation: ${v.name}`);
+          }
+
+          return {
+            productId: parentProduct.id,
+            name: v.name,
+            sku: v.sku && v.sku.trim() !== "" ? v.sku.trim() : null,
+            price: Math.round(v.price * 100),
+            salePrice:
+              v.salePrice && v.salePrice > 0
+                ? Math.round(v.salePrice * 100)
+                : null,
+            stock: v.stock,
+            image: v.imageIndex, // 👈 index of parent image
+          };
+        });
+
+        await tx.productVariant.createMany({
+          data: variantData,
+          skipDuplicates: true, // avoids SKU conflicts crashing everything
+        });
       }
 
       return parentProduct;

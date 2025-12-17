@@ -67,15 +67,15 @@ model Product {
 }
 
 model ProductVariant {
-  id        String  @id @default(cuid())
-  productId String
-  name      String
-  sku       String? @unique
-  price     Int?
-  salePrice Int?
-  stock     Int
-  image     String?
-  product   Product @relation(fields: [productId], references: [id])
+  id         String  @id @default(cuid())
+  productId  String
+  name       String
+  sku        String? @unique
+  price      Int?
+  salePrice  Int?
+  stock      Int
+  imageIndex Int?
+  product    Product @relation(fields: [productId], references: [id])
 
   @@index([productId])
 }

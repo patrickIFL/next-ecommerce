@@ -280,6 +280,7 @@ export const restoreExpiredReservations = inngest.createFunction(
     await prisma.product.updateMany({
       where: {
         stock: 0,
+        type:"SIMPLE",
         isArchived: false, // avoid unnecessary writes
       },
       data: {

@@ -4544,12 +4544,14 @@ export namespace Prisma {
     price: number | null
     salePrice: number | null
     stock: number | null
+    imageIndex: number | null
   }
 
   export type ProductVariantSumAggregateOutputType = {
     price: number | null
     salePrice: number | null
     stock: number | null
+    imageIndex: number | null
   }
 
   export type ProductVariantMinAggregateOutputType = {
@@ -4560,7 +4562,7 @@ export namespace Prisma {
     price: number | null
     salePrice: number | null
     stock: number | null
-    image: string | null
+    imageIndex: number | null
   }
 
   export type ProductVariantMaxAggregateOutputType = {
@@ -4571,7 +4573,7 @@ export namespace Prisma {
     price: number | null
     salePrice: number | null
     stock: number | null
-    image: string | null
+    imageIndex: number | null
   }
 
   export type ProductVariantCountAggregateOutputType = {
@@ -4582,7 +4584,7 @@ export namespace Prisma {
     price: number
     salePrice: number
     stock: number
-    image: number
+    imageIndex: number
     _all: number
   }
 
@@ -4591,12 +4593,14 @@ export namespace Prisma {
     price?: true
     salePrice?: true
     stock?: true
+    imageIndex?: true
   }
 
   export type ProductVariantSumAggregateInputType = {
     price?: true
     salePrice?: true
     stock?: true
+    imageIndex?: true
   }
 
   export type ProductVariantMinAggregateInputType = {
@@ -4607,7 +4611,7 @@ export namespace Prisma {
     price?: true
     salePrice?: true
     stock?: true
-    image?: true
+    imageIndex?: true
   }
 
   export type ProductVariantMaxAggregateInputType = {
@@ -4618,7 +4622,7 @@ export namespace Prisma {
     price?: true
     salePrice?: true
     stock?: true
-    image?: true
+    imageIndex?: true
   }
 
   export type ProductVariantCountAggregateInputType = {
@@ -4629,7 +4633,7 @@ export namespace Prisma {
     price?: true
     salePrice?: true
     stock?: true
-    image?: true
+    imageIndex?: true
     _all?: true
   }
 
@@ -4727,7 +4731,7 @@ export namespace Prisma {
     price: number | null
     salePrice: number | null
     stock: number
-    image: string | null
+    imageIndex: number | null
     _count: ProductVariantCountAggregateOutputType | null
     _avg: ProductVariantAvgAggregateOutputType | null
     _sum: ProductVariantSumAggregateOutputType | null
@@ -4757,7 +4761,7 @@ export namespace Prisma {
     price?: boolean
     salePrice?: boolean
     stock?: boolean
-    image?: boolean
+    imageIndex?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -4769,7 +4773,7 @@ export namespace Prisma {
     price?: boolean
     salePrice?: boolean
     stock?: boolean
-    image?: boolean
+    imageIndex?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -4781,7 +4785,7 @@ export namespace Prisma {
     price?: boolean
     salePrice?: boolean
     stock?: boolean
-    image?: boolean
+    imageIndex?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -4793,10 +4797,10 @@ export namespace Prisma {
     price?: boolean
     salePrice?: boolean
     stock?: boolean
-    image?: boolean
+    imageIndex?: boolean
   }
 
-  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "name" | "sku" | "price" | "salePrice" | "stock" | "image", ExtArgs["result"]["productVariant"]>
+  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "name" | "sku" | "price" | "salePrice" | "stock" | "imageIndex", ExtArgs["result"]["productVariant"]>
   export type ProductVariantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
@@ -4820,7 +4824,7 @@ export namespace Prisma {
       price: number | null
       salePrice: number | null
       stock: number
-      image: string | null
+      imageIndex: number | null
     }, ExtArgs["result"]["productVariant"]>
     composites: {}
   }
@@ -5252,7 +5256,7 @@ export namespace Prisma {
     readonly price: FieldRef<"ProductVariant", 'Int'>
     readonly salePrice: FieldRef<"ProductVariant", 'Int'>
     readonly stock: FieldRef<"ProductVariant", 'Int'>
-    readonly image: FieldRef<"ProductVariant", 'String'>
+    readonly imageIndex: FieldRef<"ProductVariant", 'Int'>
   }
     
 
@@ -13790,7 +13794,7 @@ export namespace Prisma {
     price: 'price',
     salePrice: 'salePrice',
     stock: 'stock',
-    image: 'image'
+    imageIndex: 'imageIndex'
   };
 
   export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
@@ -14263,7 +14267,7 @@ export namespace Prisma {
     price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
-    image?: StringNullableFilter<"ProductVariant"> | string | null
+    imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
 
@@ -14275,7 +14279,7 @@ export namespace Prisma {
     price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
-    image?: SortOrderInput | SortOrder
+    imageIndex?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
   }
 
@@ -14290,7 +14294,7 @@ export namespace Prisma {
     price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
-    image?: StringNullableFilter<"ProductVariant"> | string | null
+    imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id" | "sku">
 
@@ -14302,7 +14306,7 @@ export namespace Prisma {
     price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
-    image?: SortOrderInput | SortOrder
+    imageIndex?: SortOrderInput | SortOrder
     _count?: ProductVariantCountOrderByAggregateInput
     _avg?: ProductVariantAvgOrderByAggregateInput
     _max?: ProductVariantMaxOrderByAggregateInput
@@ -14321,7 +14325,7 @@ export namespace Prisma {
     price?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
     stock?: IntWithAggregatesFilter<"ProductVariant"> | number
-    image?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
+    imageIndex?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
   }
 
   export type WishlistWhereInput = {
@@ -15123,7 +15127,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
     product: ProductCreateNestedOneWithoutVariantsInput
   }
 
@@ -15135,7 +15139,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
   }
 
   export type ProductVariantUpdateInput = {
@@ -15145,7 +15149,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
   }
 
@@ -15157,7 +15161,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ProductVariantCreateManyInput = {
@@ -15168,7 +15172,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
   }
 
   export type ProductVariantUpdateManyMutationInput = {
@@ -15178,7 +15182,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ProductVariantUncheckedUpdateManyInput = {
@@ -15189,7 +15193,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type WishlistCreateInput = {
@@ -16147,13 +16151,14 @@ export namespace Prisma {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
-    image?: SortOrder
+    imageIndex?: SortOrder
   }
 
   export type ProductVariantAvgOrderByAggregateInput = {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
+    imageIndex?: SortOrder
   }
 
   export type ProductVariantMaxOrderByAggregateInput = {
@@ -16164,7 +16169,7 @@ export namespace Prisma {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
-    image?: SortOrder
+    imageIndex?: SortOrder
   }
 
   export type ProductVariantMinOrderByAggregateInput = {
@@ -16175,13 +16180,14 @@ export namespace Prisma {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
-    image?: SortOrder
+    imageIndex?: SortOrder
   }
 
   export type ProductVariantSumOrderByAggregateInput = {
     price?: SortOrder
     salePrice?: SortOrder
     stock?: SortOrder
+    imageIndex?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -18218,7 +18224,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
   }
 
   export type ProductVariantUncheckedCreateWithoutProductInput = {
@@ -18228,7 +18234,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
   }
 
   export type ProductVariantCreateOrConnectWithoutProductInput = {
@@ -18398,7 +18404,7 @@ export namespace Prisma {
     price?: IntNullableFilter<"ProductVariant"> | number | null
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
-    image?: StringNullableFilter<"ProductVariant"> | string | null
+    imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
   }
 
   export type ProductCreateWithoutVariantsInput = {
@@ -20050,7 +20056,7 @@ export namespace Prisma {
     price?: number | null
     salePrice?: number | null
     stock: number
-    image?: string | null
+    imageIndex?: number | null
   }
 
   export type OrderItemUpdateWithoutProductInput = {
@@ -20162,7 +20168,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ProductVariantUncheckedUpdateWithoutProductInput = {
@@ -20172,7 +20178,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ProductVariantUncheckedUpdateManyWithoutProductInput = {
@@ -20182,7 +20188,7 @@ export namespace Prisma {
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
-    image?: NullableStringFieldUpdateOperationsInput | string | null
+    imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type OrderItemCreateManyOrderInput = {

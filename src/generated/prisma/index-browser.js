@@ -158,7 +158,7 @@ exports.Prisma.ProductVariantScalarFieldEnum = {
   price: 'price',
   salePrice: 'salePrice',
   stock: 'stock',
-  image: 'image'
+  imageIndex: 'imageIndex'
 };
 
 exports.Prisma.WishlistScalarFieldEnum = {
