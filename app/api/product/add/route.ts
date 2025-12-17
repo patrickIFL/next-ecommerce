@@ -49,6 +49,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // if (type === "variation") {
+    //   return NextResponse.json(
+    //     { success: false, message: "variation on maintainance, try again later" },
+    //     { status: 400 }
+    //   );
+    // }
+
     if (type === "simple") {
       if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return NextResponse.json(
@@ -82,7 +89,7 @@ export async function POST(request: NextRequest) {
 
     if (!files || files.length === 0) {
       return NextResponse.json(
-        { success: false, message: "No files uploaded" },
+        { success: false, message: "No Images uploaded. Upload some." },
         { status: 400 }
       );
     }

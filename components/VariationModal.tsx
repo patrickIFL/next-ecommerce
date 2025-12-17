@@ -30,11 +30,16 @@ type Variation = {
   imageIndex: number;
 };
 
+// NOTE: THIS MODAL IS ONLY UI. USED TO EDIT THE VARIATIONS ONLY,
+// THE FINALIZED VARIATIONS ARE IN GENERATED VARIATIONS
+
 type VariationModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   imageOptions: any[];
   generatedVariations: any[];
+  parentProductName: string;
+  onConfirm: (variations: Variation[]) => void;
 };
 
 export function VariationModal({
@@ -42,6 +47,8 @@ export function VariationModal({
   onOpenChange,
   imageOptions,
   generatedVariations,
+  parentProductName,
+  onConfirm
 }: VariationModalProps) {
   const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null);
 
@@ -72,7 +79,7 @@ export function VariationModal({
       <form>
         <DialogContent className="min-w-2xl">
           <DialogHeader>
-            <DialogTitle>Variations for Tshirt</DialogTitle>
+            <DialogTitle>Variations for {parentProductName}</DialogTitle>
             <DialogDescription>
               Make changes to variation. Click save when you&apos;re done.
             </DialogDescription>
@@ -118,8 +125,8 @@ export function VariationModal({
                             className="cursor-pointer w-8 h-8"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setEditingNameIndex(i)}
-                            }
+                              setEditingNameIndex(i);
+                            }}
                           >
                             <SquarePen size={14} />
                           </Button>
@@ -147,6 +154,7 @@ export function VariationModal({
                         <Label className="font-normal text-xs">SKU</Label>
                         <Input
                           value={variation.sku}
+                          placeholder="Optional"
                           onChange={(e) =>
                             updateVariation(i, "sku", e.target.value)
                           }
@@ -158,6 +166,7 @@ export function VariationModal({
                         <Label className="font-normal text-xs">Stock</Label>
                         <Input
                           type="number"
+                          placeholder="0"
                           value={variation.stock}
                           onChange={(e) =>
                             updateVariation(i, "stock", Number(e.target.value))
@@ -173,6 +182,7 @@ export function VariationModal({
                           <Input
                             type="number"
                             value={variation.price}
+                            placeholder="0"
                             onChange={(e) =>
                               updateVariation(
                                 i,
@@ -194,6 +204,7 @@ export function VariationModal({
                           <Input
                             type="number"
                             value={variation.salePrice}
+                            placeholder="Optional"
                             onChange={(e) =>
                               updateVariation(
                                 i,
@@ -225,10 +236,25 @@ export function VariationModal({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button
+  type="button"
+  variant="outline"
+  onClick={() => {
+    onConfirm(variations); // ✅ push edited data up
+    onOpenChange(false);
+  }}
+>
+  Done
+</Button>
+
             </DialogClose>
-            <Button type="submit" className="text-gray-100">
-              Save changes
+            <Button
+              onClick={() => {
+                console.log(generatedVariations);
+              }}
+              className="text-gray-100"
+            >
+              See vars dev
             </Button>
           </DialogFooter>
         </DialogContent>

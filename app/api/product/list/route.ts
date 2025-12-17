@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
       where: { isArchived: false },
       orderBy: { createdAt: "desc" },
     });
+    console.log(products)
     return NextResponse.json({ success: true, products });
   } catch (error: any) {
     console.log(error.message);

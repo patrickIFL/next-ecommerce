@@ -5,9 +5,9 @@ import { useState } from "react";
 export type ProductVariation = {
 name: string;
 sku: string;
-price: string;
-salePrice: string;
-stock: string;
+price: number;
+salePrice: number;
+stock: number;
 imageIndex: number;
 };
 

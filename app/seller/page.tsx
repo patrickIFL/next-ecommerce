@@ -58,6 +58,10 @@ const AddProduct = () => {
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
+  
+  // Pushed up state of Variations from modal
+  const [finalVariations, setFinalVariations] = useState<any[]>([]);
+
 
   const handleGenerateVariations = async () => {
     setisGeneratingVariations(true);
@@ -75,8 +79,8 @@ const AddProduct = () => {
       : [];
 
     const results: ProductVariation[] = [];
-    console.log(listA);
-    console.log(listB);
+    // console.log(listA);
+    // console.log(listB);
 
     if (listB.length) {
       console.log("both have values");
@@ -85,22 +89,22 @@ const AddProduct = () => {
           results.push({
             name: `${a}, ${b} - ${name}`,
             sku: "",
-            price: "",
-            salePrice: "",
-            stock: "",
+            price: 0,
+            salePrice: 0,
+            stock: 0,
             imageIndex: 0,
           });
         });
       });
     } else {
-      console.log("only a has values");
+      // console.log("only a has values");
       listA.forEach((a) => {
         results.push({
           name: `${a} - ${name}`,
           sku: "",
-          price: "",
-          salePrice: "",
-          stock: "",
+          price: 0,
+          salePrice: 0,
+          stock: 0,
           imageIndex: 0,
         });
       });
@@ -108,41 +112,41 @@ const AddProduct = () => {
 
     variationModal.setGeneratedVariations(results);
     setisGeneratingVariations(false);
-    variationModal.openModal();
   };
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
-    mutationFn: async () => {
-      const formData = new FormData();
-      const salePriceNum = salePrice ? Number(salePrice) : null;
+  mutationFn: async () => {
+    const formData = new FormData();
+    const salePriceNum = salePrice ? Number(salePrice) : null;
 
-      // validate
-      if (Number(price) <= 0)
-        return toast({
-          title: "Invalid Price",
-          description: "Price must be greater than 0",
-          variant: "destructive",
-        });
+    // ✅ validate ONLY for simple products
+    if (type === "simple" && Number(price) <= 0) {
+      throw new Error("Price must be greater than 0");
+    }
 
-      if (Number(salePrice) < 0)
-        return toast({
-          title: "Invalid Stock",
-          description: "Stock must be greater than or equal to 0",
-          variant: "destructive",
-        });
+    if (type === "simple" && Number(price) <= 0) {
+      throw new Error("Stock must be greater than 0");
+    }
 
-      const token = await getToken();
-      // Convert search keys to array
-      const searchKeysArray = searchKeys
-        .split(",")
-        .map((key) => key.trim())
-        .filter((key) => key.length > 0);
+    if (type === "simple" && salePrice && Number(salePrice) < 0) {
+      throw new Error("Sale price cannot be negative");
+    }
 
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("category", category);
-      formData.append("type", type);
-      
+    const token = await getToken();
+
+    const searchKeysArray = searchKeys
+      .split(",")
+      .map((key) => key.trim())
+      .filter(Boolean);
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("type", type);
+    formData.append("search_keys", JSON.stringify(searchKeysArray));
+
+    // ✅ simple-only fields
+    if (type === "simple") {
       formData.append("price", price);
       formData.append(
         "salePrice",
@@ -150,60 +154,67 @@ const AddProduct = () => {
       );
       formData.append("sku", sku);
       formData.append("stock", stock);
-      // ADD THESE
-      formData.append("search_keys", JSON.stringify(searchKeysArray));
-      for (let i = 0; i < files.length; i++) {
-        formData.append("images", files[i]);
-      }
-      try {
-        const res = await axios.post("/api/product/add", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    } //====
 
-        const data = await res.data;
-        return data;
-      } catch (error: any) {
-        const serverMessage =
-          error?.response?.data?.message ||
-          error.message ||
-          "Failed to add product";
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
 
-        throw new Error(serverMessage);
-      }
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "✅ Success",
-        description: data.message,
-        variant: "default",
-      });
+    const res = await axios.post("/api/product/add", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      setFiles([]);
-      setName("");
-      setDescription("");
-      setCategory("Uncategorized");
-      setType("simple");
-      setPrice("");
-      setsalePrice("");
-      setSearchKeys("");
-      setSku("");
-      setStock("");
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+    return res.data;
+  },
+
+  onSuccess: (data) => {
+    toast({
+      title: "✅ Success",
+      description: data.message,
+    });
+
+    setFiles([]);
+    setName("");
+    setDescription("");
+    setCategory("Uncategorized");
+    setType("simple");
+    setPrice("");
+    setsalePrice("");
+    setSearchKeys("");
+    setSku("");
+    setStock("");
+  },
+
+  onError: (error: any) => {
+    toast({
+      title: "Error",
+      description: error.message,
+      variant: "destructive",
+    });
+  },
+});
+
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    await addProduct();
-  };
+  e.preventDefault();
+
+  if (type === "variation") {
+    if (finalVariations.length === 0) {
+      alert("No variations. Generate and confirm them first.");
+      return;
+    }
+
+    if (!finalVariations.every(v => v.price > 0 && v.stock >= 0)) {
+      alert("Please fix variation prices and stock.");
+      return;
+    }
+  }
+
+  await addProduct();
+};
+
 
   return (
     <>
@@ -352,8 +363,8 @@ const AddProduct = () => {
                   />
                 </div>
 
-                  <Activity mode={type === "simple" ? "visible" : "hidden"}>
-<>
+                <Activity mode={type === "simple" ? "visible" : "hidden"}>
+                  <>
                     {/* SKU */}
                     <div className="flex flex-col flex-1 gap-1 w-32">
                       <label className="text-base font-medium" htmlFor="sku">
@@ -397,13 +408,12 @@ const AddProduct = () => {
                       />
                     </div>
                   </>
-                  </Activity>
+                </Activity>
               </div>
 
               {/* type is simple product */}
               <Activity mode={type === "simple" ? "visible" : "hidden"}>
                 <>
-                
                   {/* Prices */}
                   <div className="flex items-center gap-5 flex-wrap">
                     {/* Product Price */}
@@ -471,26 +481,8 @@ const AddProduct = () => {
                       </div>
                     </div>
                   </div>
-
-                  <div>
-                    <Button
-                      type="submit"
-                      className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
-            ${loading ? "opacity-50" : "cursor-pointer"}`}
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <div className="mx-1 flex gap-1 items-center">
-                          <LoaderIcon className="animate-spin" size={16} />
-                          <span>Loading</span>
-                        </div>
-                      ) : (
-                        <span className="mx-6">ADD</span>
-                      )}
-                    </Button>
-                  </div>
                 </>
-                </Activity>
+              </Activity>
 
               <Activity mode={type === "variation" ? "visible" : "hidden"}>
                 {/* Variation A */}
@@ -533,6 +525,8 @@ const AddProduct = () => {
                 </div>
 
                 <div className="flex gap-5 items-center">
+                  {/* {variationA.trim() && (
+                    <> */}
                   <Button
                     type="button"
                     onClick={() => {
@@ -549,7 +543,11 @@ const AddProduct = () => {
                         setGenerateError("empty variation");
                         return;
                       }
-                      handleGenerateVariations();
+
+                      if (variationModal.generatedVariations.length === 0) {
+                        handleGenerateVariations();
+                      }
+                      variationModal.openModal();
                       setGenerateError("");
                     }}
                     className={`py-2.5 font-medium rounded 
@@ -567,7 +565,9 @@ const AddProduct = () => {
                       </div>
                     ) : (
                       <div className="text-gray-800/80">
-                        Generate Variations
+                        {variationModal.generatedVariations.length === 0
+                          ? "Generate Variations"
+                          : "Modify Variations"}
                       </div>
                     )}
                   </Button>
@@ -580,8 +580,27 @@ const AddProduct = () => {
                         "Please enter some variations first."}
                     </span>
                   )}
+                  {/* </>
+                  )} */}
                 </div>
               </Activity>
+              <div>
+                <Button
+                  type="submit"
+                  className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
+            ${loading ? "opacity-50" : "cursor-pointer"}`}
+                  disabled={loading || !name.trim()}
+                >
+                  {loading ? (
+                    <div className="mx-1 flex gap-1 items-center">
+                      <LoaderIcon className="animate-spin" size={16} />
+                      <span>Loading</span>
+                    </div>
+                  ) : (
+                    <span className="mx-6">ADD</span>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </form>
@@ -594,6 +613,7 @@ const AddProduct = () => {
         parentProductName={name}
         imageOptions={imageOptions}
         generatedVariations={variationModal.generatedVariations}
+        onConfirm={setFinalVariations}
       />
     </>
   );
