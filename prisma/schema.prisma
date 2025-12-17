@@ -46,7 +46,6 @@ model Product {
   sku         String?
   stock       Int?
   type        ProductType @default(SIMPLE)
-  // variations  String[]    @default([])
   isArchived  Boolean     @default(false)
   isFeatured  Boolean     @default(false)
   isOnSale    Boolean?    @default(false)
@@ -80,6 +79,7 @@ model ProductVariant {
 
   @@index([productId])
 }
+
 
 // WishList
 model Wishlist {

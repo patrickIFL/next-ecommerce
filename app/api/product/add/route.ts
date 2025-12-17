@@ -13,7 +13,6 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
-    /* ================= AUTH ================= */
     const { userId } = getAuth(request);
     const isSeller = await authSeller(userId);
 
@@ -24,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /* ================= PARSE ================= */
     const formData = await request.formData();
 
     const name = formData.get("name") as string | null;
@@ -34,18 +32,15 @@ export async function POST(request: NextRequest) {
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
-    const sku = formData.get("sku") as string | null;
+
+    // because "" will trigger unique constraint
+    const rawSku = formData.get("sku") as string | null;
+    const sku = rawSku && rawSku.trim() !== "" ? rawSku.trim() : null;
+
     const stock = formData.get("stock") as string | null;
-
     const searchKeysRaw = formData.get("search_keys") as string | null;
-    const variantsRaw = formData.get("variations") as string | null;
 
-    if (!name || !category) {
-      return NextResponse.json(
-        { success: false, message: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+    // validate
 
     if (!["simple", "variation"].includes(type)) {
       return NextResponse.json(
@@ -54,7 +49,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /* ================= SIMPLE VALIDATION ================= */
     if (type === "simple") {
       if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return NextResponse.json(
@@ -84,21 +78,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    /* ================= FILE UPLOAD ================= */
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {
       return NextResponse.json(
-        { success: false, message: "No images uploaded" },
+        { success: false, message: "No files uploaded" },
         { status: 400 }
       );
     }
 
-    const uploadResults = await Promise.all(
-      files.map(async (file) => {
-        const buffer = Buffer.from(await file.arrayBuffer());
+    const search_keys: string[] = searchKeysRaw
+      ? JSON.parse(searchKeysRaw)
+      : [];
 
-        return new Promise<any>((resolve, reject) => {
+    // Upload each image to Cloudinary
+    const uploadResults = await Promise.all(
+      files.map((file: File) => {
+        return new Promise<any>(async (resolve, reject) => {
+          const buffer = Buffer.from(await file.arrayBuffer());
+
           const stream = cloudinary.uploader.upload_stream(
             { resource_type: "auto" },
             (error, result) => {
@@ -112,83 +110,33 @@ export async function POST(request: NextRequest) {
       })
     );
 
+    // Extract URLs
     const imageUrls = uploadResults.map((r) => r.secure_url as string);
 
-    const search_keys: string[] = searchKeysRaw
-      ? JSON.parse(searchKeysRaw)
-      : [];
-
-    const variants = variantsRaw ? JSON.parse(variantsRaw) : [];
-
-    /* ================= TRANSACTION ================= */
-    const product = await prisma.$transaction(async (tx) => {
-      /* ---------- CREATE PARENT PRODUCT ---------- */
-      const parentProduct = await tx.product.create({
+    const parentProduct = await prisma.$transaction(async (tx) => {
+      return await tx.product.create({
         data: {
           userId: userId!,
-          name,
-          description,
-          category,
-          type: type === "simple" ? "SIMPLE" : "VARIATION",
-          image: imageUrls,
-          search_keys,
-
+          name: name!,
+          description: description!,
+          category: category!,
           price: type === "simple" ? Math.round(Number(price) * 100) : null,
           salePrice:
             type === "simple" && salePrice
               ? Math.round(Number(salePrice) * 100)
               : null,
-          stock: type === "simple" ? Number(stock) : null,
-          sku: type === "simple" ? sku : null,
+          sku: sku,
+          stock: Number(stock),
+          search_keys,
+          image: imageUrls,
         },
       });
-
-      /* ---------- CREATE VARIANTS ---------- */
-      if (type === "variation") {
-        if (!Array.isArray(variants) || variants.length === 0) {
-          throw new Error("Variation products require at least one variant");
-        }
-
-        const variantData = variants.map((v: any) => {
-          if (
-            !Number.isFinite(Number(v.price)) ||
-            Number(v.price) <= 0 ||
-            !Number.isFinite(Number(v.stock)) ||
-            Number(v.stock) < 0
-          ) {
-            throw new Error("Invalid variant price or stock");
-          }
-
-          return {
-            productId: parentProduct.id,
-            name: v.name,
-            sku: v.sku || null,
-            price: Math.round(Number(v.price) * 100),
-            salePrice: v.salePrice
-              ? Math.round(Number(v.salePrice) * 100)
-              : null,
-            stock: Number(v.stock),
-            image:
-              typeof v.imageIndex === "number"
-                ? imageUrls[v.imageIndex] ?? null
-                : null,
-          };
-        });
-
-        await tx.productVariant.createMany({
-          data: variantData,
-          skipDuplicates: true,
-        });
-      }
-
-      return parentProduct;
     });
 
-    /* ================= RESPONSE ================= */
     return NextResponse.json({
       success: true,
-      message: "Product created successfully",
-      productId: product.id,
+      message: "Upload Successful.",
+      product: parentProduct,
     });
   } catch (error: any) {
     console.error(error);

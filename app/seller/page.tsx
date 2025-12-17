@@ -141,6 +141,8 @@ const AddProduct = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
+      formData.append("type", type);
+      
       formData.append("price", price);
       formData.append(
         "salePrice",
@@ -150,7 +152,6 @@ const AddProduct = () => {
       formData.append("stock", stock);
       // ADD THESE
       formData.append("search_keys", JSON.stringify(searchKeysArray));
-      // formData.append("variations", JSON.stringify(variationsArray));
       for (let i = 0; i < files.length; i++) {
         formData.append("images", files[i]);
       }
@@ -183,6 +184,7 @@ const AddProduct = () => {
       setName("");
       setDescription("");
       setCategory("Uncategorized");
+      setType("simple");
       setPrice("");
       setsalePrice("");
       setSearchKeys("");
