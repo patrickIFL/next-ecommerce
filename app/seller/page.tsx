@@ -58,10 +58,9 @@ const AddProduct = () => {
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
-  
+
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
-
 
   const handleGenerateVariations = async () => {
     setisGeneratingVariations(true);
@@ -89,9 +88,9 @@ const AddProduct = () => {
           results.push({
             name: `${a}, ${b} - ${name}`,
             sku: "",
-            price: 0,
-            salePrice: 0,
-            stock: 0,
+            price: "",
+            salePrice: "",
+            stock: "",
             imageIndex: 0,
           });
         });
@@ -102,9 +101,9 @@ const AddProduct = () => {
         results.push({
           name: `${a} - ${name}`,
           sku: "",
-          price: 0,
-          salePrice: 0,
-          stock: 0,
+          price: "",
+          salePrice: "",
+          stock: "",
           imageIndex: 0,
         });
       });
@@ -115,102 +114,119 @@ const AddProduct = () => {
   };
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
-  mutationFn: async () => {
-    const formData = new FormData();
-    const salePriceNum = salePrice ? Number(salePrice) : null;
+    mutationFn: async () => {
+      const formData = new FormData();
+      const salePriceNum = salePrice ? Number(salePrice) : null;
 
-    // ✅ validate ONLY for simple products
-    if (type === "simple") {
-      if(Number(price) <= 0){throw new Error("Price must be greater than 0");}
-      if(Number(stock) <= 0){throw new Error("Stock must be greater than 0");} 
-      if(salePrice && Number(salePrice) < 0){throw new Error("Sale price cannot be negative");}
-    }
+      // ✅ validate ONLY for simple products
+      if (type === "simple") {
+        if (Number(price) <= 0) {
+          throw new Error("Price must be greater than 0");
+        }
+        if (Number(stock) <= 0) {
+          throw new Error("Stock must be greater than 0");
+        }
+        if (salePrice && Number(salePrice) < 0) {
+          throw new Error("Sale price cannot be negative");
+        }
+      }
 
-    const token = await getToken();
+      const token = await getToken();
 
-    const searchKeysArray = searchKeys
-      .split(",")
-      .map((key) => key.trim())
-      .filter(Boolean);
+      const searchKeysArray = searchKeys
+        .split(",")
+        .map((key) => key.trim())
+        .filter(Boolean);
 
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("type", type);
-    formData.append("variations", JSON.stringify(finalVariations));
+      const normalizedVariations = finalVariations.map((v) => ({
+        ...v,
+        stock: v.stock === "" ? 0 : Number(v.stock),
+        price: v.price === "" ? 0 : Number(v.price),
+        salePrice: v.salePrice === "" ? null : Number(v.salePrice),
+      }));
 
-    formData.append("search_keys", JSON.stringify(searchKeysArray));
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("type", type);
+      formData.append("variations", JSON.stringify(normalizedVariations));
 
-    // ✅ simple-only fields
-    if (type === "simple") {
-      formData.append("price", price);
-      formData.append(
-        "salePrice",
-        salePriceNum !== null ? salePriceNum.toString() : ""
-      );
-      formData.append("sku", sku);
-      formData.append("stock", stock);
-    } //====
+      formData.append("search_keys", JSON.stringify(searchKeysArray));
 
-    files.forEach((file) => {
-      formData.append("images", file);
-    });
+      // ✅ simple-only fields
+      if (type === "simple") {
+        formData.append("price", price);
+        formData.append(
+          "salePrice",
+          salePriceNum !== null ? salePriceNum.toString() : ""
+        );
+        formData.append("sku", sku);
+        formData.append("stock", stock);
+      } //====
 
-    const res = await axios.post("/api/product/add", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      files.forEach((file) => {
+        formData.append("images", file);
+      });
 
-    return res.data;
-  },
+      const res = await axios.post("/api/product/add", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  onSuccess: (data) => {
-    toast({
-      title: "✅ Success",
-      description: data.message,
-    });
+      return res.data;
+    },
 
-    setFiles([]);
-    setName("");
-    setDescription("");
-    setCategory("Uncategorized");
-    setType("simple");
-    setPrice("");
-    setsalePrice("");
-    setSearchKeys("");
-    setSku("");
-    setStock("");
-  },
+    onSuccess: (data) => {
+      toast({
+        title: "✅ Success",
+        description: data.message,
+      });
 
-  onError: (error: any) => {
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    });
-  },
-});
+      setFiles([]);
+      setName("");
+      setDescription("");
+      setCategory("Uncategorized");
+      setType("simple");
+      setPrice("");
+      setsalePrice("");
+      setSearchKeys("");
+      setSku("");
+      setStock("");
+      // clear the variations
+      variationModal.setGeneratedVariations([]);
+      setFinalVariations([]);
+      setVariationA("");
+      setVariationB("");
 
+    },
+
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = async (e: any) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (type === "variation") {
-    if (finalVariations.length === 0) {
-      alert("No variations. Generate and confirm them first.");
-      return;
+    if (type === "variation") {
+      if (finalVariations.length === 0) {
+        alert("No variations. Generate and confirm them first.");
+        return;
+      }
+
+      if (!finalVariations.every((v) => v.price > 0 && v.stock >= 0)) {
+        alert("Please fix variation prices and stock.");
+        return;
+      }
     }
 
-    if (!finalVariations.every(v => v.price > 0 && v.stock >= 0)) {
-      alert("Please fix variation prices and stock.");
-      return;
-    }
-  }
-
-  await addProduct();
-};
-
+    await addProduct();
+  };
 
   return (
     <>

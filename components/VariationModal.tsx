@@ -11,12 +11,7 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import {
-  PhilippinePeso,
-  SquareCheckBig,
-  SquarePen,
-  Trash2,
-} from "lucide-react";
+import { PhilippinePeso, Trash2 } from "lucide-react";
 import { ImagePicker } from "./ImagePicker";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
@@ -24,9 +19,9 @@ import { ScrollArea } from "./ui/scroll-area";
 type Variation = {
   name: string;
   sku: string;
-  price: number;
-  salePrice: number;
-  stock: number;
+  price: string;
+  salePrice: string;
+  stock: string;
   imageIndex: number;
 };
 
@@ -48,9 +43,8 @@ export function VariationModal({
   imageOptions,
   generatedVariations,
   parentProductName,
-  onConfirm
+  onConfirm,
 }: VariationModalProps) {
-
   const [variations, setVariations] = useState<Variation[]>([]);
 
   useEffect(() => {
@@ -73,6 +67,17 @@ export function VariationModal({
     setVariations((prev) => prev.filter((_, i) => i !== index));
   };
 
+  function normalizePositiveNumber(val: string) {
+    if (val === "") return "";
+    if (Number(val) < 0) return null;
+
+    if (val.length > 1 && val.startsWith("0")) {
+      return val.replace(/^0+/, "");
+    }
+
+    return val;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form>
@@ -91,11 +96,9 @@ export function VariationModal({
                   {/* sku, price, salePrice, stock, image */}
                   <div className="relative border p-4 rounded-md grid gap-2">
                     <Label className="font flex items-center gap-2">
-                      
-                        <div className="flex gap-1 p-0 items-center">
-                          {variation.name}
-                        </div>
-                      
+                      <div className="flex gap-1 p-0 items-center">
+                        {variation.name}
+                      </div>
                     </Label>
 
                     {/* divider */}
@@ -119,9 +122,9 @@ export function VariationModal({
                         <Input
                           value={variation.sku}
                           placeholder="Optional"
-                          onChange={(e) =>
-                            updateVariation(i, "sku", e.target.value)
-                          }
+                          onChange={(e) => {
+                            updateVariation(i, "sku", e.target.value);
+                          }}
                           className="focus-visible:ring-0 transition selection:bg-foreground/50"
                         />
                       </div>
@@ -130,12 +133,17 @@ export function VariationModal({
                         <Label className="font-normal text-xs">Stock</Label>
                         <Input
                           type="number"
+                          inputMode="numeric"
+                          min={0}
                           placeholder="0"
                           value={variation.stock}
-                          onChange={(e) =>
-                            updateVariation(i, "stock", Number(e.target.value))
-                          }
-                          className="focus-visible:ring-0 transition selection:bg-foreground/50"
+                          onChange={(e) => {
+                            const normalized = normalizePositiveNumber(
+                              e.target.value
+                            );
+                            if (normalized === null) return;
+                            updateVariation(i, "stock", normalized);
+                          }}
                         />
                       </div>
 
@@ -145,15 +153,17 @@ export function VariationModal({
                           <PhilippinePeso size={17} />
                           <Input
                             type="number"
+                            inputMode="decimal"
+                            min={0}
                             value={variation.price}
                             placeholder="0"
-                            onChange={(e) =>
-                              updateVariation(
-                                i,
-                                "price",
-                                Number(e.target.value)
-                              )
-                            }
+                            onChange={(e) => {
+                              const normalized = normalizePositiveNumber(
+                                e.target.value
+                              );
+                              if (normalized === null) return;
+                              updateVariation(i, "price", normalized);
+                            }}
                             className="focus-visible:ring-0 transition selection:bg-foreground/50"
                           />
                         </div>
@@ -167,15 +177,17 @@ export function VariationModal({
                           <PhilippinePeso size={17} />
                           <Input
                             type="number"
+                            inputMode="decimal"
+                            min={0}
                             value={variation.salePrice}
                             placeholder="Optional"
-                            onChange={(e) =>
-                              updateVariation(
-                                i,
-                                "salePrice",
-                                Number(e.target.value)
-                              )
-                            }
+                            onChange={(e) => {
+                              const normalized = normalizePositiveNumber(
+                                e.target.value
+                              );
+                              if (normalized === null) return;
+                              updateVariation(i, "salePrice", normalized);
+                            }}
                             className="focus-visible:ring-0 transition selection:bg-foreground/50"
                           />
                         </div>
@@ -201,18 +213,16 @@ export function VariationModal({
           <DialogFooter>
             <DialogClose asChild>
               <Button
-  type="button"
-  variant="outline"
-  onClick={() => {
-    onConfirm(variations); // ✅ push edited data up
-    onOpenChange(false);
-  }}
->
-  Done
-</Button>
-
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  onConfirm(variations); // ✅ push edited data up
+                  onOpenChange(false);
+                }}
+              >
+                Done
+              </Button>
             </DialogClose>
-            
           </DialogFooter>
         </DialogContent>
       </form>
