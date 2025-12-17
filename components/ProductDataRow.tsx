@@ -3,7 +3,6 @@
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
   Eye,
@@ -15,144 +14,29 @@ import {
   TicketPercent,
   Trash2,
 } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@clerk/nextjs";
-import { useToast } from "./ui/use-toast";
 import Confirmation from "./Confirmation";
+import useActionsProductHook from "@/hooks/useActionsProductHook";
 
 function ProductDataRow({ product }: { product: any }) {
   const router = useRouter();
-  const [isFeatured, setIsFeatured] = useState(product.isFeatured);
-  const [isArchived, setIsArchived] = useState(product.isArchived);
-  const [onSale, setOnSale] = useState(product.isOnSale);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
-  const { getToken } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: deleteProduct, isPending: isDeleting } = useMutation({
-    mutationFn: async (productId: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/delete/${productId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed Delete product");
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-    },
-    onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
-  });
-
-  const { mutateAsync: toggleArchive, isPending: isTogglingArchive } =
-    useMutation({
-      mutationFn: async (productId: string) => {
-        const token = await getToken();
-        const res = await fetch(`/api/product/toggle-archive/${productId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        if (!res.ok)
-          throw new Error(data.message || "Failed to toggle archive product");
-        return data;
-      },
-      onSuccess: (data: any) => {
-        // Update local state immediately
-        setIsArchived(data.product.isArchived);
-
-        // Optionally, refresh the query so other components stay in sync
-        queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-      },
-      onError: (error: any) =>
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        }),
-    });
-
-  const { mutateAsync: toggleSale, isPending: isTogglingSale } = useMutation({
-    mutationFn: async (productId: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-sale/${productId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to toggle archive product");
-      return data;
-    },
-    onSuccess: (data: any) => {
-      // Update local state immediately
-      setOnSale(data.product.isOnSale);
-
-      // Optionally, refresh the query so other components stay in sync
-      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-    },
-    onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
-  });
-
-  const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } = useMutation({
-    mutationFn: async (productId: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-featured/${productId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to toggle archive product");
-      return data;
-    },
-    onSuccess: (data: any) => {
-      // Update local state immediately
-      setIsFeatured(data.product.isFeatured);
-
-      // Optionally, refresh the query so other components stay in sync
-      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-    },
-    onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
-  });
+  const {
+    isFeatured,
+    isArchived,
+    onSale,
+    isDeleting,
+    deleteProduct,
+    toggleFeatured,
+    isTogglingFeatured,
+    toggleArchive,
+    isTogglingArchive,
+    toggleSale,
+    isTogglingSale,
+  } = useActionsProductHook({ product });
 
   return (
     <tr className="border-t border-gray-500/20">
-      <td className="py-3">
+      <td className={`py-3 ${product.type === "VARIATION" && "bg-amber-500"}`}>
         <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
           <Image
             src={product.image?.[0] ?? "/placeholder.png"}
@@ -168,16 +52,15 @@ function ProductDataRow({ product }: { product: any }) {
             </div>
           )}
           {isFeatured && (
-            
             <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
               <Tooltip>
-              <TooltipTrigger>
-                  <Star size={17} fill="var(--foreground)"/>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Featured</p>
-              </TooltipContent>
-            </Tooltip>
+                <TooltipTrigger>
+                  <Star size={17} fill="var(--foreground)" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Featured</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           )}
         </div>
@@ -289,14 +172,15 @@ function ProductDataRow({ product }: { product: any }) {
                   <button
                     className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md 
                       
-                      ${onSale
-                        ? isTogglingSale
-                          ? "bg-red-900"
-                          : "bg-red-600 hover:bg-red-700"
-                        : isTogglingSale
-                        ? "bg-amber-700"
-                        : "bg-amber-500 hover:bg-amber-600"
-                    }`}
+                      ${
+                        onSale
+                          ? isTogglingSale
+                            ? "bg-red-900"
+                            : "bg-red-600 hover:bg-red-700"
+                          : isTogglingSale
+                          ? "bg-amber-700"
+                          : "bg-amber-500 hover:bg-amber-600"
+                      }`}
                     disabled={isTogglingSale}
                   >
                     {isTogglingSale ? (
@@ -366,7 +250,10 @@ function ProductDataRow({ product }: { product: any }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => router.push(`/product/${product.id}`)}
+                onClick={() => {
+        router.push("/product/" + product.id);
+        scrollTo(0, 0);
+      }}
                 className="flex items-center gap-1 p-1.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white rounded-md"
               >
                 <SquareArrowOutUpRight size={16} />

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const name = formData.get("name") as string | null;
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
-    const type = formData.get("type") as "simple" | "variation";
+    const type = formData.get("type") as "SIMPLE" | "variation";
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
@@ -70,14 +70,14 @@ export async function POST(request: NextRequest) {
 
     // validate
 
-    if (!["simple", "variation"].includes(type)) {
+    if (!["SIMPLE", "variation"].includes(type)) {
       return NextResponse.json(
         { success: false, message: "Invalid product type" },
         { status: 400 }
       );
     }
 
-    if (type === "simple") {
+    if (type === "SIMPLE") {
       if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return NextResponse.json(
           { success: false, message: "Price must be greater than 0" },
@@ -158,15 +158,16 @@ export async function POST(request: NextRequest) {
           name: name!,
           description: description!,
           category: category!,
-          price: type === "simple" ? Math.round(Number(price) * 100) : null,
+          price: type === "SIMPLE" ? Math.round(Number(price) * 100) : null,
           salePrice:
-            type === "simple" && salePrice
+            type === "SIMPLE" && salePrice
               ? Math.round(Number(salePrice) * 100)
               : null,
           sku: sku,
-          stock: type === "simple" ? Number(stock) : null,
+          stock: type === "SIMPLE" ? Number(stock) : null,
           search_keys,
           image: imageUrls,
+          type: type.toUpperCase() as "SIMPLE" | "VARIATION",
         },
       });
 

@@ -354,7 +354,7 @@ const AddProduct = () => {
                 >
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="simple" id="r1" />
-                    <Label htmlFor="r1">Simple</Label>
+                    <Label htmlFor="r1">simple</Label>
                   </div>
 
                   <div className="flex items-center gap-3">
