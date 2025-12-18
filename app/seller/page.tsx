@@ -47,7 +47,7 @@ const AddProduct = () => {
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
-  const [type, setType] = useState<"simple" | "variation">("simple");
+  const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
   // =========================================
 
   const [category, setCategory] = useState("Uncategorized");
@@ -119,7 +119,7 @@ const AddProduct = () => {
       const salePriceNum = salePrice ? Number(salePrice) : null;
 
       // ✅ validate ONLY for simple products
-      if (type === "simple") {
+      if (type === "SIMPLE") {
         if (Number(price) <= 0) {
           throw new Error("Price must be greater than 0");
         }
@@ -138,23 +138,30 @@ const AddProduct = () => {
         .map((key) => key.trim())
         .filter(Boolean);
 
-      const normalizedVariations = finalVariations.map((v) => ({
-        ...v,
-        stock: v.stock === "" ? 0 : Number(v.stock),
-        price: v.price === "" ? 0 : Number(v.price),
-        salePrice: v.salePrice === "" ? null : Number(v.salePrice),
-      }));
-
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
       formData.append("type", type);
-      formData.append("variations", JSON.stringify(normalizedVariations));
+
+      // Make sure the variations are valid before passing
+      const safeVariations =
+        type === "VARIATION"
+          ? finalVariations.map((v) => ({
+              name: v.name,
+              sku: v.sku || null,
+              price: Number(v.price),
+              salePrice: v.salePrice === "" ? null : Number(v.salePrice),
+              stock: Number(v.stock),
+              imageIndex: v.imageIndex,
+            }))
+          : [];
+
+      formData.append("variations", JSON.stringify(safeVariations));
 
       formData.append("search_keys", JSON.stringify(searchKeysArray));
 
       // ✅ simple-only fields
-      if (type === "simple") {
+      if (type === "SIMPLE") {
         formData.append("price", price);
         formData.append(
           "salePrice",
@@ -187,18 +194,12 @@ const AddProduct = () => {
       setName("");
       setDescription("");
       setCategory("Uncategorized");
-      setType("simple");
+      setType("SIMPLE");
       setPrice("");
       setsalePrice("");
       setSearchKeys("");
       setSku("");
       setStock("");
-      // clear the variations
-      variationModal.setGeneratedVariations([]);
-      setFinalVariations([]);
-      setVariationA("");
-      setVariationB("");
-
     },
 
     onError: (error: any) => {
@@ -213,16 +214,39 @@ const AddProduct = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (type === "variation") {
+    if (type === "VARIATION") {
       if (finalVariations.length === 0) {
         alert("No variations. Generate and confirm them first.");
         return;
       }
 
-      if (!finalVariations.every((v) => v.price > 0 && v.stock >= 0)) {
-        alert("Please fix variation prices and stock.");
-        return;
-      }
+      const normalized = finalVariations.map((v) => {
+        const price = Number(v.price);
+        const stock = Number(v.stock);
+        const salePrice = v.salePrice === "" ? null : Number(v.salePrice);
+
+        if (Number.isNaN(price) || price <= 0) {
+          throw new Error(`Invalid price for ${v.name}`);
+        }
+
+        if (Number.isNaN(stock) || stock < 0) {
+          throw new Error(`Invalid stock for ${v.name}`);
+        }
+
+        if (salePrice !== null && salePrice < 0) {
+          throw new Error(`Invalid sale price for ${v.name}`);
+        }
+
+        return {
+          ...v,
+          price,
+          stock,
+          salePrice,
+        };
+      });
+
+      // ✅ overwrite with numeric-safe data
+      setFinalVariations(normalized);
     }
 
     await addProduct();
@@ -335,7 +359,7 @@ const AddProduct = () => {
             {/* Column 2 */}
             <div
               className={`${
-                type === "variation" ? "space-y-3" : "space-y-5"
+                type === "VARIATION" ? "space-y-3" : "space-y-5"
               } max-w-xl lg:max-w-md`}
             >
               <div className="flex gap-2">
@@ -349,16 +373,16 @@ const AddProduct = () => {
                   className="flex min-w-xs justify-around"
                   value={type}
                   onValueChange={(val) =>
-                    setType(val as "simple" | "variation")
+                    setType(val as "SIMPLE" | "VARIATION")
                   }
                 >
                   <div className="flex items-center gap-3">
-                    <RadioGroupItem value="simple" id="r1" />
-                    <Label htmlFor="r1">simple</Label>
+                    <RadioGroupItem value="SIMPLE" id="r1" />
+                    <Label htmlFor="r1">Simple</Label>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <RadioGroupItem value="variation" id="r2" />
+                    <RadioGroupItem value="VARIATION" id="r2" />
                     <Label htmlFor="r2">Variation</Label>
                   </div>
                 </RadioGroup>
@@ -375,7 +399,7 @@ const AddProduct = () => {
                   />
                 </div>
 
-                <Activity mode={type === "simple" ? "visible" : "hidden"}>
+                <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
                   <>
                     {/* SKU */}
                     <div className="flex flex-col flex-1 gap-1 w-32">
@@ -415,7 +439,7 @@ const AddProduct = () => {
                         className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                         onChange={(e) => setStock(e.target.value)}
                         value={stock}
-                        required={type === "simple"}
+                        required={type === "SIMPLE"}
                         autoComplete="off"
                       />
                     </div>
@@ -424,7 +448,7 @@ const AddProduct = () => {
               </div>
 
               {/* type is simple product */}
-              <Activity mode={type === "simple" ? "visible" : "hidden"}>
+              <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
                 <>
                   {/* Prices */}
                   <div className="flex items-center gap-5 flex-wrap">
@@ -455,7 +479,7 @@ const AddProduct = () => {
                           className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                           onChange={(e) => setPrice(e.target.value)}
                           value={price}
-                          required={type === "simple"}
+                          required={type === "SIMPLE"}
                           autoComplete="off"
                         />
                       </div>
@@ -496,7 +520,7 @@ const AddProduct = () => {
                 </>
               </Activity>
 
-              <Activity mode={type === "variation" ? "visible" : "hidden"}>
+              <Activity mode={type === "VARIATION" ? "visible" : "hidden"}>
                 {/* Variation A */}
                 <div className="flex flex-col gap-1">
                   <label

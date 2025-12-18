@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import EmptyState from "@/components/EmptyState";
 import { Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
+import VariationProductRow from "@/components/VariationProductRow";
 
 interface ProductType {
   id: string;
@@ -23,6 +24,7 @@ interface ProductType {
   price: number;
   salePrice: number | null;
   image: string[];
+  type: string;
 }
 
 const ProductList = () => {
@@ -32,6 +34,7 @@ const ProductList = () => {
 
   const { data: sellerProducts, isLoading } = useQuery<ProductType[]>({
     queryKey: ["sellerProducts"],
+
     queryFn: async () => {
       try {
         const token = await getToken();
@@ -128,9 +131,16 @@ const ProductList = () => {
                   </thead>
                   <tbody className="text-sm text-foreground z-10">
                     {sellerProducts && sellerProducts.length > 0 ? (
-                      sellerProducts.map((product) => (
-                        <ProductDataRow key={product.id} product={product} />
-                      ))
+                      sellerProducts.map((product) => {
+                        console.log(product)
+                        return (
+                          product.type === "SIMPLE" ? (
+                            <ProductDataRow key={product.id} product={product} />
+                          ) : (
+                            <VariationProductRow key={product.id} product={product} />
+                          )
+                        )
+})
                     ) : (
                       <tr>
                         <td colSpan={9} className="text-center">

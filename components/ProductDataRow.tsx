@@ -36,7 +36,7 @@ function ProductDataRow({ product }: { product: any }) {
 
   return (
     <tr className="border-t border-gray-500/20">
-      <td className={`py-3 ${product.type === "VARIATION" && "bg-amber-500"}`}>
+      <td className={`py-3`}>
         <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
           <Image
             src={product.image?.[0] ?? "/placeholder.png"}

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const name = formData.get("name") as string | null;
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
-    const type = formData.get("type") as "SIMPLE" | "variation";
+    const type = formData.get("type") as "SIMPLE" | "VARIATION";
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     let variations: any[] = [];
 
-    if (type === "variation") {
+    if (type === "VARIATION") {
       if (typeof variationsRaw !== "string") {
         return NextResponse.json(
           { success: false, message: "Variations are required" },
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     // validate
 
-    if (!["SIMPLE", "variation"].includes(type)) {
+    if (!["SIMPLE", "VARIATION"].includes(type)) {
       return NextResponse.json(
         { success: false, message: "Invalid product type" },
         { status: 400 }
@@ -171,10 +171,10 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      if (type === "variation") {
+      if (type === "VARIATION") {
         const variantData = variations.map((v) => {
           // Validate per-variant (IMPORTANT)
-          if (!v.name || typeof v.stock !== "number") {
+          if (!v.name || typeof Number(v.stock) !== "number") {
             throw new Error("Invalid variation data");
           }
 
