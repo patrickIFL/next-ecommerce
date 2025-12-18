@@ -6,11 +6,7 @@ import { useState } from "react";
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
   Eye,
   EyeOff,
@@ -51,29 +47,35 @@ function VariationProductRow({ product }: Props) {
   return (
     <>
       {/* ================= PARENT ROW ================= */}
-      <tr
-        className="border-t border-gray-500/20 hover:bg-muted/50 cursor-pointer"
-        onClick={() => setOpen((prev) => !prev)}
-      >
+      <tr className="border-t border-gray-500/20 hover:bg-muted/50">
         {/* IMAGE */}
         <td className="py-3">
           <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
-            <Image
-              src={product.image?.[0] ?? "/placeholder.png"}
-              alt="Product Image"
-              className="w-10"
-              width={1280}
-              height={720}
-            />
+            <div className="flex items-center justify-center gap-2">
+              <Image
+                src={product.image?.[0] ?? "/placeholder.png"}
+                alt="Product Image"
+                className="ml-5 w-10"
+                width={1280}
+                height={720}
+              />
+              <button className="cursor-pointer">
+                <ChevronDown
+                  onClick={() => setOpen((prev) => !prev)}
+                  size={16}
+                  className={`transition-transform ${open ? "rotate-180" : ""}`}
+                />
+              </button>
+            </div>
 
             {onSale && (
-              <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
+              <div className="absolute top-0 left-0 -translate-y-1/2 bg-red-600 px-1 py-0.5">
                 <p className="text-[10px] text-white font-bold">SALE</p>
               </div>
             )}
 
             {isFeatured && (
-              <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2">
+              <div className="absolute top-0 right-0 -translate-x-[15px] -translate-y-1/2">
                 <Star size={16} fill="var(--foreground)" />
               </div>
             )}
@@ -82,15 +84,7 @@ function VariationProductRow({ product }: Props) {
 
         {/* NAME + CHEVRON */}
         <td className="px-4 py-3 text-center">
-          <div className="flex items-center justify-center gap-2">
-            <ChevronDown
-              size={16}
-              className={`transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-            <span>{product.name}</span>
-          </div>
+          <span>{product.name}</span>
         </td>
 
         <td className="px-4 py-3 text-center">{product.category}</td>
@@ -113,10 +107,7 @@ function VariationProductRow({ product }: Props) {
                   {isTogglingFeatured ? (
                     <LoaderIcon className="animate-spin" size={16} />
                   ) : (
-                    <Star
-                      size={16}
-                      fill={isFeatured ? "white" : "none"}
-                    />
+                    <Star size={16} fill={isFeatured ? "white" : "none"} />
                   )}
                 </button>
               </TooltipTrigger>
@@ -132,9 +123,7 @@ function VariationProductRow({ product }: Props) {
                   onClick={() => toggleArchive(product.id)}
                   disabled={isTogglingArchive}
                   className={`p-1.5 rounded-md text-white ${
-                    isArchived
-                      ? "bg-red-600"
-                      : "bg-green-600"
+                    isArchived ? "bg-red-600" : "bg-green-600"
                   }`}
                 >
                   {isTogglingArchive ? (
@@ -248,6 +237,7 @@ function VariationProductRow({ product }: Props) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b">
+                    <th className="px-4 py-2 text-center">Image</th>
                     <th className="px-4 py-2 text-left">Variants</th>
                     <th className="px-4 py-2 text-center">SKU</th>
                     <th className="px-4 py-2 text-center">Price</th>
@@ -260,6 +250,23 @@ function VariationProductRow({ product }: Props) {
                 <tbody>
                   {product.variants.map((variant: any) => (
                     <tr key={variant.id} className="border-t">
+                      <td className="py-3">
+                        <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
+                          <div className="flex items-center justify-center gap-2">
+                            <Image
+                              src={
+                                product.image?.[variant.imageIndex] ??
+                                "/placeholder.png"
+                              }
+                              alt="Product Image"
+                              className="w-8"
+                              width={1280}
+                              height={720}
+                            />
+                          </div>
+                        </div>
+                      </td>
+
                       <td className="px-4 py-2">{variant.name}</td>
 
                       <td className="px-4 py-2 text-center">
@@ -273,69 +280,74 @@ function VariationProductRow({ product }: Props) {
 
                       <td className="px-4 py-2 text-center">
                         {variant.salePrice
-                          ? currency +
-                            formatMoney(variant.salePrice)
+                          ? currency + formatMoney(variant.salePrice)
                           : "-"}
                       </td>
 
-                      <td className="px-4 py-2 text-center">
-                        {variant.stock}
-                      </td>
+                      <td className="px-4 py-2 text-center">{variant.stock}</td>
 
                       {/* EDIT / DELETE / VIEW */}
-        <td className="px-2 py-3" onClick={(e) => e.stopPropagation()}>
-          <div className="flex justify-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() =>
-                    router.push(`/seller/edit-product/${product.id}`)
-                  }
-                  className="p-1.5 bg-blue-600 text-white rounded-md"
-                >
-                  <SquarePen size={16} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Edit</TooltipContent>
-            </Tooltip>
+                      <td
+                        className="px-2 py-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="flex justify-center gap-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() =>
+                                  router.push(
+                                    `/seller/edit-product/${product.id}`
+                                  )
+                                }
+                                className="p-1.5 bg-blue-600 text-white rounded-md"
+                              >
+                                <SquarePen size={16} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>Edit</TooltipContent>
+                          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Confirmation
-                  message="This action cannot be undone."
-                  onConfirm={() => deleteProduct(product.id)}
-                >
-                  <button
-                    disabled={isDeleting}
-                    className="p-1.5 bg-red-600 text-white rounded-md"
-                  >
-                    {isDeleting ? (
-                      <LoaderIcon className="animate-spin" size={16} />
-                    ) : (
-                      <Trash2 size={16} />
-                    )}
-                  </button>
-                </Confirmation>
-              </TooltipTrigger>
-              <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Confirmation
+                                message="This action cannot be undone."
+                                onConfirm={() => deleteProduct(product.id)}
+                              >
+                                <button
+                                  disabled={isDeleting}
+                                  className="p-1.5 bg-red-600 text-white rounded-md"
+                                >
+                                  {isDeleting ? (
+                                    <LoaderIcon
+                                      className="animate-spin"
+                                      size={16}
+                                    />
+                                  ) : (
+                                    <Trash2 size={16} />
+                                  )}
+                                </button>
+                              </Confirmation>
+                            </TooltipTrigger>
+                            <TooltipContent>Delete</TooltipContent>
+                          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    router.push(`/product/${product.id}`);
-                    scrollTo(0, 0);
-                  }}
-                  className="p-1.5 bg-orange-600 text-white rounded-md"
-                >
-                  <SquareArrowOutUpRight size={16} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>See product</TooltipContent>
-            </Tooltip>
-          </div>
-        </td>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => {
+                                  router.push(`/product/${product.id}`);
+                                  scrollTo(0, 0);
+                                }}
+                                className="p-1.5 bg-orange-600 text-white rounded-md"
+                              >
+                                <SquareArrowOutUpRight size={16} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>See product</TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
