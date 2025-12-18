@@ -68,11 +68,11 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(1 0 0);
 
-  /* blue
+  /* blue */
   --primary: oklch(0.5461 0.2152 262.88);
   --primary-hover: oklch(0.4882 0.2172 264.38);
   --primary-loading: oklch(0.38 0.24 36.5);
-*/
+
 
   /* green
   --primary:         oklch(0.5461 0.2152 146);
@@ -126,11 +126,11 @@
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
 
-  /* blue
+  /* blue */
   --primary: oklch(0.5461 0.2152 262.88);
   --primary-hover: oklch(0.4882 0.2172 264.38);
   --primary-loading: oklch(0.38 0.24 36.5);
-*/
+
   /* green
   --primary:         oklch(0.5461 0.2152 146);
 --primary-hover:   oklch(0.4882 0.2172 146);
@@ -143,10 +143,10 @@
 --primary-loading: oklch(0.38   0.24   40);
 */
 
-  /*orange*/
+  /* orange
   --primary: oklch(0.646 0.222 41.116);
   --primary-hover: oklch(0.553 0.195 38.402);
-  --primary-loading: oklch(0.408 0.123 38.172);
+  --primary-loading: oklch(0.408 0.123 38.172); */
 
   --primary-foreground: oklch(0.21 0.006 285.885);
   --secondary: oklch(0.274 0.006 286.033);
@@ -188,6 +188,7 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
 
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */

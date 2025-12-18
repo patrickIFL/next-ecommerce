@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import Confirmation from "./Confirmation";
 import useActionsProductHook from "@/hooks/useActionsProductHook";
+import { VariationActions } from "./VariationActions";
 
 type Props = {
   product: any;
@@ -50,7 +51,7 @@ function VariationProductRow({ product }: Props) {
       <tr className="border-t border-gray-500/20 hover:bg-muted/50">
         {/* IMAGE */}
         <td className="py-3">
-          <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
+          <div className="relative rounded w-fit mx-auto">
             <div className="flex items-center justify-center gap-2">
               <Image
                 src={product.image?.[0] ?? "/placeholder.png"}
@@ -95,36 +96,48 @@ function VariationProductRow({ product }: Props) {
 
         {/* ACTIONS */}
         <td className="px-2 py-3" onClick={(e) => e.stopPropagation()}>
-          <div className="flex justify-center gap-1">
-            {/* FEATURE */}
+          <div className="flex justify-center w-full mx-2 gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  onClick={() => toggleFeatured(product.id)}
+                  onClick={() => {
+                    toggleFeatured(product.id);
+                  }}
+                  className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-purple-600 `}
                   disabled={isTogglingFeatured}
-                  className="p-1.5 bg-purple-600 text-white rounded-md"
                 >
                   {isTogglingFeatured ? (
                     <LoaderIcon className="animate-spin" size={16} />
                   ) : (
-                    <Star size={16} fill={isFeatured ? "white" : "none"} />
+                    <Star
+                      size={16}
+                      color={isFeatured ? "none" : "white"}
+                      fill={isFeatured ? "white" : "none"}
+                    />
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent>
-                {isFeatured ? "Un-feature" : "Feature"}
-              </TooltipContent>
+              {!isTogglingFeatured && (
+                <TooltipContent>
+                  {isFeatured ? <p>Un-Feature</p> : <p>Feature</p>}
+                </TooltipContent>
+              )}
             </Tooltip>
 
-            {/* ARCHIVE */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => toggleArchive(product.id)}
-                  disabled={isTogglingArchive}
-                  className={`p-1.5 rounded-md text-white ${
-                    isArchived ? "bg-red-600" : "bg-green-600"
+                  className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                    isArchived
+                      ? isTogglingArchive
+                        ? "bg-red-900"
+                        : "bg-red-600 hover:bg-red-700"
+                      : isTogglingArchive
+                      ? "bg-green-900"
+                      : "bg-green-600 hover:bg-green-700"
                   }`}
+                  disabled={isTogglingArchive}
                 >
                   {isTogglingArchive ? (
                     <LoaderIcon className="animate-spin" size={16} />
@@ -135,95 +148,124 @@ function VariationProductRow({ product }: Props) {
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent>
-                {isArchived ? "Unarchive" : "Archive"}
-              </TooltipContent>
+              {!isTogglingArchive && (
+                <TooltipContent>
+                  {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
+                </TooltipContent>
+              )}
             </Tooltip>
 
-            {/* SALE */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Confirmation
-                  title={
-                    onSale
-                      ? `End SALE for ${product.name}?`
-                      : `Put ${product.name} on SALE?`
-                  }
-                  message="Customers will checkout using the SALE price."
-                  onConfirm={() => toggleSale(product.id)}
-                >
-                  <button
-                    disabled={isTogglingSale}
-                    className={`p-1.5 rounded-md text-white ${
-                      onSale ? "bg-red-600" : "bg-amber-500"
-                    }`}
+                <div>
+                  <Confirmation
+                    confirmMessage={onSale ? "End SALE" : "Put on SALE"}
+                    btnVariant={onSale ? "destructive" : "default"}
+                    title={
+                      onSale
+                        ? `End SALE for ${product.name}?`
+                        : `Put ${product.name} on SALE?`
+                    }
+                    message="Customers will checkout using the SALE price."
+                    onConfirm={() => toggleSale(product.id)}
                   >
-                    {isTogglingSale ? (
-                      <LoaderIcon className="animate-spin" size={16} />
-                    ) : (
-                      <TicketPercent size={16} />
-                    )}
-                  </button>
-                </Confirmation>
+                    <button
+                      className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md 
+                                
+                                ${
+                                  onSale
+                                    ? isTogglingSale
+                                      ? "bg-red-900"
+                                      : "bg-red-600 hover:bg-red-700"
+                                    : isTogglingSale
+                                    ? "bg-amber-700"
+                                    : "bg-amber-500 hover:bg-amber-600"
+                                }`}
+                      disabled={isTogglingSale}
+                    >
+                      {isTogglingSale ? (
+                        <LoaderIcon className="animate-spin" size={16} />
+                      ) : onSale ? (
+                        <TicketPercent size={16} />
+                      ) : (
+                        <TicketPercent size={16} />
+                      )}
+                    </button>
+                  </Confirmation>
+                </div>
               </TooltipTrigger>
-              <TooltipContent>
-                {onSale ? "End SALE" : "Put on SALE"}
-              </TooltipContent>
+              {!isTogglingSale && (
+                <TooltipContent>
+                  {onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
+                </TooltipContent>
+              )}
             </Tooltip>
           </div>
         </td>
 
         {/* EDIT / DELETE / VIEW */}
         <td className="px-2 py-3" onClick={(e) => e.stopPropagation()}>
-          <div className="flex justify-center gap-1">
+          <div className="flex w-full justify-center mx-2 gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() =>
                     router.push(`/seller/edit-product/${product.id}`)
                   }
-                  className="p-1.5 bg-blue-600 text-white rounded-md"
+                  className="flex items-center gap-1 p-1.5 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-md"
                 >
                   <SquarePen size={16} />
                 </button>
               </TooltipTrigger>
-              <TooltipContent>Edit</TooltipContent>
+              <TooltipContent>
+                <p>Edit</p>
+              </TooltipContent>
             </Tooltip>
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Confirmation
-                  message="This action cannot be undone."
-                  onConfirm={() => deleteProduct(product.id)}
-                >
-                  <button
-                    disabled={isDeleting}
-                    className="p-1.5 bg-red-600 text-white rounded-md"
+                <div>
+                  <Confirmation
+                    message="This action cannot be undone. This will permanently delete the item."
+                    onConfirm={() => deleteProduct(product.id)}
                   >
-                    {isDeleting ? (
-                      <LoaderIcon className="animate-spin" size={16} />
-                    ) : (
-                      <Trash2 size={16} />
-                    )}
-                  </button>
-                </Confirmation>
+                    <button
+                      disabled={isDeleting}
+                      className={`flex items-center gap-1 p-1.5 ${
+                        isDeleting
+                          ? "bg-red-900"
+                          : "bg-red-600 hover:bg-red-700"
+                      } cursor-pointer text-white rounded-md`}
+                    >
+                      {isDeleting ? (
+                        <LoaderIcon className="animate-spin" size={16} />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                    </button>
+                  </Confirmation>
+                </div>
               </TooltipTrigger>
-              <TooltipContent>Delete</TooltipContent>
+              <TooltipContent>
+                <p>Delete</p>
+              </TooltipContent>
             </Tooltip>
 
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => {
-                    router.push(`/product/${product.id}`);
+                    router.push("/product/" + product.id);
                     scrollTo(0, 0);
                   }}
-                  className="p-1.5 bg-orange-600 text-white rounded-md"
+                  className="flex items-center gap-1 p-1.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white rounded-md"
                 >
                   <SquareArrowOutUpRight size={16} />
                 </button>
               </TooltipTrigger>
-              <TooltipContent>See product</TooltipContent>
+              <TooltipContent>
+                <p>See Product</p>
+              </TooltipContent>
             </Tooltip>
           </div>
         </td>
@@ -292,60 +334,7 @@ function VariationProductRow({ product }: Props) {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="flex justify-center gap-1">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() =>
-                                  router.push(
-                                    `/seller/edit-product/${product.id}`
-                                  )
-                                }
-                                className="p-1.5 bg-blue-600 text-white rounded-md"
-                              >
-                                <SquarePen size={16} />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>Edit</TooltipContent>
-                          </Tooltip>
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Confirmation
-                                message="This action cannot be undone."
-                                onConfirm={() => deleteProduct(product.id)}
-                              >
-                                <button
-                                  disabled={isDeleting}
-                                  className="p-1.5 bg-red-600 text-white rounded-md"
-                                >
-                                  {isDeleting ? (
-                                    <LoaderIcon
-                                      className="animate-spin"
-                                      size={16}
-                                    />
-                                  ) : (
-                                    <Trash2 size={16} />
-                                  )}
-                                </button>
-                              </Confirmation>
-                            </TooltipTrigger>
-                            <TooltipContent>Delete</TooltipContent>
-                          </Tooltip>
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => {
-                                  router.push(`/product/${product.id}`);
-                                  scrollTo(0, 0);
-                                }}
-                                className="p-1.5 bg-orange-600 text-white rounded-md"
-                              >
-                                <SquareArrowOutUpRight size={16} />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>See product</TooltipContent>
-                          </Tooltip>
+                          <VariationActions />
                         </div>
                       </td>
                     </tr>

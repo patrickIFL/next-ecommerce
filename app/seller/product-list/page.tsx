@@ -100,7 +100,7 @@ const ProductList = () => {
             <ScrollArea className="flex flex-col items-center w-full rounded-md bg-accent border border-gray-500/20">
               <div className="max-h-[75vh]">
                 <table className="w-full">
-                  <thead className="text-foreground text-sm text-left sticky top-0 bg-accent z-48">
+                  <thead className="text-foreground text-sm text-left sticky top-0 bg-accent z-45">
                     <tr>
                       <th className="px-4 py-3 font-medium text-center">
                         Image

@@ -92,7 +92,7 @@ const Footer = () => {
       </div>
 
       <p className="py-4 text-center text-xs md:text-sm">
-        Copyright 2025 © <a href="https://github.com/Xepheree" target="_blank" className="hover:underline">Xepheree</a> All Rights Reserved.
+        Copyright 2025 © <a href="https://patrickperez.onrender.com/" target="_blank" className="hover:underline">Xepheree</a> All Rights Reserved.
       </p>
     </footer>
   );
