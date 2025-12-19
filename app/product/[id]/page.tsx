@@ -13,6 +13,8 @@ import { LoaderIcon, Star } from "lucide-react";
 import { VariationComboBox } from "@/components/VariationComboBox";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { QuantityInput } from "@/components/QuantityInput";
 
 type ProductType = {
   id: string;
@@ -128,17 +130,16 @@ const Product = () => {
   }, [variations]);
 
   useEffect(() => {
-  if (!productData) return;
+    if (!productData) return;
 
-  if (!selectedVariant) {
-    setMainImage(productData.image[0]);
-    return;
-  }
+    if (!selectedVariant) {
+      setMainImage(productData.image[0]);
+      return;
+    }
 
-  const index = selectedVariant.imageIndex;
-  setMainImage(productData.image[index] ?? productData.image[0]);
-}, [selectedVariant, productData]);
-
+    const index = selectedVariant.imageIndex;
+    setMainImage(productData.image[index] ?? productData.image[0]);
+  }, [selectedVariant, productData]);
 
   // Global loading state (products not ready yet)
   if (!products || products.length === 0) return <Loading />;
@@ -258,7 +259,7 @@ const Product = () => {
             <div className="flex gap-4 mt-4 flex-wrap">
               {variations.varA?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label>VarA</Label>
+                  <Label className="text-xs">VarA</Label>
                   <VariationComboBox
                     variantName="Size"
                     variants={variations.varA.map((v) => ({
@@ -273,7 +274,7 @@ const Product = () => {
 
               {variations.varB?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label>VarA</Label>
+                  <Label className="text-xs">VarA</Label>
                   <VariationComboBox
                     variantName="Material"
                     variants={variations.varB.map((v) => ({
@@ -287,6 +288,10 @@ const Product = () => {
               )}
             </div>
           )}
+          <div className="flex flex-col gap-1 mt-3">
+            <Label className="text-xs">Quantity</Label>
+            <QuantityInput max={displayStock ?? undefined} />
+          </div>
 
           <hr className="bg-gray-600 my-6" />
 
@@ -318,7 +323,7 @@ const Product = () => {
                 handleAddToCart(productData.id);
               }}
               disabled={!canPurchase || addToCartLoading}
-              className={`flex-1 py-3.5 text-gray-800/80 ${
+              className={`py-6 flex-1 text-gray-800/80 ${
                 addToCartLoading
                   ? "bg-gray-400"
                   : "cursor-pointer bg-gray-100 hover:bg-gray-200"
@@ -343,7 +348,7 @@ const Product = () => {
                 handleBuyNow(productData.id);
               }}
               disabled={!canPurchase || buyNowLoading}
-              className={`flex-1 py-3.5 text-white ${
+              className={`flex-1 py-6 text-white ${
                 buyNowLoading
                   ? "bg-primary-loading"
                   : "cursor-pointer bg-primary hover:bg-primary-hover"
