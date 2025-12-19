@@ -77,8 +77,8 @@
   /* green
   --primary:         oklch(0.5461 0.2152 146);
 --primary-hover:   oklch(0.4882 0.2172 146);
---primary-loading: oklch(0.38   0.24   146);
-*/
+--primary-loading: oklch(0.38   0.24   146); */
+
 
   /* redish
 --primary:         oklch(0.5461 0.2152 40);
@@ -86,10 +86,10 @@
 --primary-loading: oklch(0.38   0.24   40);
 */
 
-  /*orange*/
+  /* orange
   --primary: oklch(0.646 0.222 41.116);
   --primary-hover: oklch(0.553 0.195 38.402);
-  --primary-loading: oklch(0.408 0.123 38.172);
+  --primary-loading: oklch(0.408 0.123 38.172); */
 
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);

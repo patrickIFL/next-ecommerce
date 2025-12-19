@@ -8,6 +8,9 @@ export async function GET(request: NextRequest) {
     const products = await prisma.product.findMany({
       where: { isArchived: false },
       orderBy: { createdAt: "desc" },
+      include: {
+        variants: true,
+      },
     });
     return NextResponse.json({ success: true, products });
   } catch (error: any) {

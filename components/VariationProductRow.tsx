@@ -281,7 +281,7 @@ function VariationProductRow({ product }: Props) {
                   <tr className="border-b">
                     <th className="px-4 py-2 text-center">Image</th>
                     <th className="px-4 py-2 text-left">Variants</th>
-                    <th className="px-4 py-2 text-center">SKU</th>
+                    <th className="px-4 py-2 text-left">SKU</th>
                     <th className="px-4 py-2 text-center">Price</th>
                     <th className="px-4 py-2 text-center">Sale</th>
                     <th className="px-4 py-2 text-center">Stock</th>
@@ -311,7 +311,7 @@ function VariationProductRow({ product }: Props) {
 
                       <td className="px-4 py-2">{variant.name}</td>
 
-                      <td className="px-4 py-2 text-center">
+                      <td className="px-4 py-2 text-left">
                         {variant.sku ?? "-"}
                       </td>
 
