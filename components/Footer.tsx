@@ -1,6 +1,4 @@
 "use client";
-import { assets } from "@/assets/assets";
-import Image from "next/image";
 import { useTheme } from "./theme-provider";
 import NextLogo from "./svgs/NextLogo";
 
@@ -88,7 +86,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <p className="py-4 text-center text-xs md:text-sm">

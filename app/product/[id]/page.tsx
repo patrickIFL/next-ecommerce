@@ -43,8 +43,10 @@ type VariationsMap = {
 const Product = () => {
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
+
   const dummyRating: number = 4.5;
   const dummyRatingCount: number = 13;
+
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -53,11 +55,11 @@ const Product = () => {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [variations, setVariations] = useState<VariationsMap>({});
 
-  // Automatic Price Detection -- START A
 
+  // Automatic Price Detection -- START A
   const [selectedVarA, setSelectedVarA] = useState<string | null>(null);
   const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
-
+  
   function parseVariantName(name: string) {
     // Remove product suffix: " - Table"
     const clean = name.split(" - ")[0].trim();
@@ -80,7 +82,6 @@ const Product = () => {
 
       return true;
     }) || null;
-
   // Automatic Price Detection -- END A
 
   function extractVariations(variants: Variant[]): VariationsMap {
@@ -120,6 +121,7 @@ const Product = () => {
     }
   }, [id, products]);
 
+  // Automaticelly Select the first variation when variations change
   useEffect(() => {
     if (variations.varA?.length > 0) {
       setSelectedVarA(variations.varA[0]);
@@ -129,6 +131,7 @@ const Product = () => {
     }
   }, [variations]);
 
+  // Change main image when selected variant changes
   useEffect(() => {
     if (!productData) return;
 
@@ -136,7 +139,6 @@ const Product = () => {
       setMainImage(productData.image[0]);
       return;
     }
-
     const index = selectedVariant.imageIndex;
     setMainImage(productData.image[index] ?? productData.image[0]);
   }, [selectedVariant, productData]);
@@ -147,8 +149,6 @@ const Product = () => {
   // Product not found
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
-
-  const isSale = productData.isOnSale;
 
   const displayPrice = selectedVariant
     ? productData.isOnSale
