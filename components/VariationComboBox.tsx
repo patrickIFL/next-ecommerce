@@ -1,7 +1,13 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
-import { Check, ChevronsUpDown } from "lucide-react";
 
+type VariationComboBoxProps = {
+  variantName: string;
+  variants: { value: string; label: string }[];
+  value: string | null;
+  onChange: (value: string) => void;
+};
+
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +24,13 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 
-export function VariationComboBox({variantName, variants}:{variantName:string, variants:any[]}) {
+export function VariationComboBox({
+  variantName,
+  variants,
+  value,
+  onChange,
+}: VariationComboBoxProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -32,30 +42,31 @@ export function VariationComboBox({variantName, variants}:{variantName:string, v
           className="w-[150px] justify-between"
         >
           {value
-            ? variants.find((framework) => framework.value === value)?.label
+            ? variants.find((v) => v.value === value)?.label
             : `Select ${variantName}`}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent className="w-[150px] p-0">
         <Command>
           <CommandList>
             <CommandEmpty>No {variantName}s found.</CommandEmpty>
             <CommandGroup>
-              {variants.map((framework) => (
+              {variants.map((item) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                  key={item.value}
+                  value={item.value}
+                  onSelect={() => {
+                    onChange(item.value); // 🔥 notify parent
                     setOpen(false);
                   }}
                 >
-                  {framework.label}
+                  {item.label}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      value === item.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

@@ -13,8 +13,40 @@ const ProductCard = ({ product }: { product: any }) => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
 
+  function getMinMaxPrice(product: any) {
+    // VARIATION PRODUCT
+    if (Array.isArray(product.variants) && product.variants.length > 0) {
+      const prices = product.variants
+        .map((variant: any) => {
+          if (product.isOnSale) {
+            return variant.salePrice ?? variant.price;
+          }
+          return variant.price;
+        })
+        .filter((price: number | null) => typeof price === "number");
 
-  const { wishlist, toggleWishlist, isPending} = useWishlist();
+      if (prices.length === 0) {
+        return { min: 0, max: 0 };
+      }
+
+      return {
+        min: Math.min(...prices),
+        max: Math.max(...prices),
+      };
+    }
+
+    // SIMPLE PRODUCT
+    const price = product.isOnSale
+      ? product.salePrice ?? product.price
+      : product.price;
+
+    return {
+      min: price,
+      max: price,
+    };
+  }
+
+  const { wishlist, toggleWishlist, isPending } = useWishlist();
 
   const isWishlisted = wishlist.includes(product.id);
 
@@ -35,27 +67,28 @@ const ProductCard = ({ product }: { product: any }) => {
             width={800}
             height={800}
           />
-          <button onClick={(e) => {
-            e.stopPropagation();
-            toggleWishlist(product.id);
-          }} 
-          className="cursor-pointer absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
-          disabled={isPending}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleWishlist(product.id);
+            }}
+            className="cursor-pointer absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
+            disabled={isPending}
           >
             {false ? (
-              <LoaderIcon className="h-3 w-3 text-gray-500 animate-spin"  />
+              <LoaderIcon className="h-3 w-3 text-gray-500 animate-spin" />
             ) : (
-              
-            <Heart className="h-3 w-3 text-gray-500" 
-            fill={isWishlisted ? "#F91880" : "none"} 
-            color={isWishlisted ? "#F91880" : "#6B7280"} 
-            strokeWidth={3} 
-            />
+              <Heart
+                className="h-3 w-3 text-gray-500"
+                fill={isWishlisted ? "#F91880" : "none"}
+                color={isWishlisted ? "#F91880" : "#6B7280"}
+                strokeWidth={3}
+              />
             )}
           </button>
         </div>
         {/* Sale flag */}
-        { isSale && (
+        {isSale && (
           <div className="shadow-lg rounded-xs absolute top-0 left-0 -translate-x-1 -translate-y-1 bg-red-600 px-1 py-0.5">
             <p className="text-[10px] text-white font-bold">SALE</p>
           </div>
@@ -63,66 +96,65 @@ const ProductCard = ({ product }: { product: any }) => {
       </div>
 
       {/* info */}
-      <div className="w-full p-2">
-        <p className="md:text-base font-medium w-full truncate">
-          {product.name}
-        </p>
-        <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
-          {product.description}
-        </p>
-        <div className="flex items-center gap-2">
-          <p className="text-xs">{4.5}</p>
-          <div className="flex items-center gap-0.5">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Star
-                key={index}
-                className="h-3 w-3"
-                fill={index < 4 ? "orange" : "lightgray"}
-                stroke="none"
-              />
-            ))}
-          </div>
-        </div>
+      <div className="flex flex-col justify-between w-full p-2">
 
-        <div className="flex items-end justify-between w-full mt-1">
-          <p className="text-foreground font-medium">
-            <span className="text-md">
-              {currency}
-              {formatMoney(isSale ? product.salePrice : product.price)}{" "}
-            </span>
-
-            {isSale && (
-              <span className="text-xs text-foreground/40 font-normal line-through">
-                {currency}
-                {formatMoney(product.price)}
-              </span>
-            )}
+          <p className="md:text-base font-medium w-full truncate">
+            {product.name}
           </p>
-
-          <button
-            disabled={buyNowLoading}
-            onClick={(e) => {
-              e.stopPropagation(); // prevent navigation
-              handleBuyNow(product.id);
-            }}
-            className={`max-sm:hidden px-3 py-1.5 text-foreground border ${
-              buyNowLoading
-                ? "border-foreground/50"
-                : "cursor-pointer border-foreground hover:bg-foreground hover:text-background"
-            } rounded-full text-xs transition`}
-          >
-            {buyNowLoading ? (
-              <div className="w-[47px]">
-                <LoaderIcon
-                  className="animate-spin text-foreground/50 mx-auto"
-                  size={16}
+          <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
+            {product.description}
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs">{4.5}</p>
+            <div className="flex items-center gap-0.5">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Star
+                  key={index}
+                  className="h-3 w-3"
+                  fill={index < 4 ? "orange" : "lightgray"}
+                  stroke="none"
                 />
-              </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+
+            {product.type === "SIMPLE" ? (
+              // SIMPLE PRODUCT
+              <>
+                <p className="text-foreground font-medium">
+                  <span className="text-md">
+                    {currency}
+                    {formatMoney(isSale ? product.salePrice : product.price)}{" "}
+                  </span>
+
+                  {isSale && (
+                    <span className="text-xs text-foreground/40 font-normal line-through">
+                      {currency}
+                      {formatMoney(product.price)}
+                    </span>
+                  )}
+                </p>
+              </>
             ) : (
-              "Buy Now"
+              // VARIATION PRODUCT
+              <>
+                <p className="text-foreground font-medium">
+                  <span className="text-md">
+                    {currency}
+                    {formatMoney(getMinMaxPrice(product).min)}{/*" - "*/}
+                  </span>
+
+                  {/* <span className="text-md">
+                    {currency}
+                    {formatMoney(getMinMaxPrice(product).max)}
+                  </span> */}
+                </p>
+              </>
             )}
-          </button>
-        </div>
+          <p className="text-xs text-foreground/50">123 sold</p>
+          </div>
+
       </div>
     </div>
   );

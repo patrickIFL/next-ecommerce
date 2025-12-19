@@ -42,48 +42,63 @@ const Product = () => {
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
   const dummyRating: number = 4.5;
+  const dummyRatingCount: number = 13;
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
-
   const [variations, setVariations] = useState<VariationsMap>({});
 
+  // Automatic Price Detection -- START A
+
+  const [selectedVarA, setSelectedVarA] = useState<string | null>(null);
+  const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
+
   function parseVariantName(name: string) {
-  // Remove product suffix: " - Table"
-  const clean = name.split(" - ")[0].trim();
+    // Remove product suffix: " - Table"
+    const clean = name.split(" - ")[0].trim();
 
-  // Split by comma if exists
-  const parts = clean.split(",").map((p) => p.trim());
+    // Split by comma if exists
+    const parts = clean.split(",").map((p) => p.trim());
 
-  return {
-    varA: parts[0] || null,
-    varB: parts[1] || null,
-  };
-}
+    return {
+      varA: parts[0] || null,
+      varB: parts[1] || null,
+    };
+  }
 
+  const selectedVariant =
+    productData?.variants?.find((variant) => {
+      const parsed = parseVariantName(variant.name);
+
+      if (selectedVarA && parsed.varA !== selectedVarA) return false;
+      if (selectedVarB && parsed.varB !== selectedVarB) return false;
+
+      return true;
+    }) || null;
+
+  // Automatic Price Detection -- END A
 
   function extractVariations(variants: Variant[]): VariationsMap {
-  const varA = new Set<string>();
-  const varB = new Set<string>();
+    const varA = new Set<string>();
+    const varB = new Set<string>();
 
-  variants.forEach((variant) => {
-    const parsed = parseVariantName(variant.name);
+    variants.forEach((variant) => {
+      const parsed = parseVariantName(variant.name);
 
-    if (parsed.varA) varA.add(parsed.varA);
-    if (parsed.varB) varB.add(parsed.varB);
-  });
+      if (parsed.varA) varA.add(parsed.varA);
+      if (parsed.varB) varB.add(parsed.varB);
+    });
 
-  const result: VariationsMap = {};
+    const result: VariationsMap = {};
 
-  if (varA.size > 1) result.varA = Array.from(varA);
-  if (varB.size > 0) result.varB = Array.from(varB);
+    if (varA.size > 0) result.varA = Array.from(varA);
+    if (varB.size > 0) result.varB = Array.from(varB);
 
-  return result;
-}
-
+    return result;
+  }
 
   // Fetch product when products arrive OR id changes
   useEffect(() => {
@@ -103,6 +118,28 @@ const Product = () => {
     }
   }, [id, products]);
 
+  useEffect(() => {
+    if (variations.varA?.length > 0) {
+      setSelectedVarA(variations.varA[0]);
+    }
+    if (variations.varB?.length > 0) {
+      setSelectedVarB(variations.varB[0]);
+    }
+  }, [variations]);
+
+  useEffect(() => {
+  if (!productData) return;
+
+  if (!selectedVariant) {
+    setMainImage(productData.image[0]);
+    return;
+  }
+
+  const index = selectedVariant.imageIndex;
+  setMainImage(productData.image[index] ?? productData.image[0]);
+}, [selectedVariant, productData]);
+
+
   // Global loading state (products not ready yet)
   if (!products || products.length === 0) return <Loading />;
 
@@ -111,6 +148,19 @@ const Product = () => {
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const isSale = productData.isOnSale;
+
+  const displayPrice = selectedVariant
+    ? productData.isOnSale
+      ? selectedVariant.salePrice ?? selectedVariant.price
+      : selectedVariant.price
+    : productData.isOnSale
+    ? productData.salePrice ?? productData.price
+    : productData.price;
+
+  const displayStock = selectedVariant?.stock ?? null;
+  const requiresVariation = productData.type === "VARIATION";
+
+  const canPurchase = !requiresVariation || selectedVariant;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -168,6 +218,15 @@ const Product = () => {
               ))}
             </div>
             <p>{dummyRating}</p>
+            <span className="text-sm text-foreground/50">
+              {dummyRatingCount > 0 && (
+                <p>
+                  {" | "}
+                  {dummyRatingCount}
+                  {dummyRatingCount > 1 ? " Reviews" : " Review"}
+                </p>
+              )}
+            </span>
           </div>
 
           {/* DESCRIPTION */}
@@ -178,47 +237,51 @@ const Product = () => {
           {/* PRICE */}
           <p className="text-3xl font-medium mt-6">
             {currency}
-            {formatMoney(
-              isSale
-                ? productData.salePrice
-                  ? productData.salePrice
-                  : productData.price
-                : productData.price
-            )}
+            {formatMoney(displayPrice)}
 
-            {isSale && productData.salePrice && (
+            {productData.isOnSale && selectedVariant?.salePrice && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}
-                {formatMoney(productData.price)}
+                {formatMoney(selectedVariant.price)}
               </span>
             )}
           </p>
 
+          {displayStock !== null && (
+            <p className="text-sm text-foreground/60 mt-1">
+              Stock: {displayStock}
+            </p>
+          )}
+
           {/* Variations */}
-          {(variations.varA || variations.varB) && (
+          {(variations.varA?.length > 0 || variations.varB?.length > 0) && (
             <div className="flex gap-4 mt-4 flex-wrap">
-              {variations.varA && (
+              {variations.varA?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
                   <Label>VarA</Label>
                   <VariationComboBox
-                    variantName="varA"
+                    variantName="Size"
                     variants={variations.varA.map((v) => ({
                       value: v,
                       label: v,
                     }))}
+                    value={selectedVarA}
+                    onChange={setSelectedVarA}
                   />
                 </div>
               )}
 
-              {variations.varB && (
+              {variations.varB?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label>VarB</Label>
+                  <Label>VarA</Label>
                   <VariationComboBox
-                    variantName="varB"
+                    variantName="Material"
                     variants={variations.varB.map((v) => ({
                       value: v,
                       label: v,
                     }))}
+                    value={selectedVarB}
+                    onChange={setSelectedVarB}
                   />
                 </div>
               )}
@@ -250,8 +313,11 @@ const Product = () => {
           {/* BUTTONS */}
           <div className="flex items-center mt-10 gap-4">
             <Button
-              onClick={() => handleAddToCart(productData.id)}
-              disabled={addToCartLoading}
+              onClick={() => {
+                if (!canPurchase) return;
+                handleAddToCart(productData.id);
+              }}
+              disabled={!canPurchase || addToCartLoading}
               className={`flex-1 py-3.5 text-gray-800/80 ${
                 addToCartLoading
                   ? "bg-gray-400"
@@ -272,8 +338,11 @@ const Product = () => {
             </Button>
 
             <Button
-              onClick={() => handleBuyNow(productData.id)}
-              disabled={buyNowLoading}
+              onClick={() => {
+                if (!canPurchase) return;
+                handleBuyNow(productData.id);
+              }}
+              disabled={!canPurchase || buyNowLoading}
               className={`flex-1 py-3.5 text-white ${
                 buyNowLoading
                   ? "bg-primary-loading"
