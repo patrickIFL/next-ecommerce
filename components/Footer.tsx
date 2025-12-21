@@ -26,8 +26,8 @@ const Footer = () => {
     },
   ];
 
-  const contactNumber = "+1-234-567-890";
-  const contactEmail = "contact@greatstack.dev";
+  const contactNumber = "0918-732-7746";
+  const contactEmail = "patrickperez.iformatlogic@gmail.com";
 
   return (
     <footer>

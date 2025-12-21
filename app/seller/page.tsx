@@ -10,7 +10,13 @@ import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Info, LoaderIcon, PhilippinePeso } from "lucide-react";
+import {
+  Info,
+  LoaderIcon,
+  PhilippinePeso,
+  SquareCheckBig,
+  SquarePen,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -48,6 +54,12 @@ const AddProduct = () => {
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
   const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
+
+  const [varAName, setVarAName] = useState("Variation A");
+  const [varBName, setVarBName] = useState("Variation B");
+
+  const [isModifyingA, setisModifyingA] = useState(false);
+  const [isModifyingB, setisModifyingB] = useState(false);
   // =========================================
 
   const [category, setCategory] = useState("Uncategorized");
@@ -82,7 +94,7 @@ const AddProduct = () => {
     // console.log(listB);
 
     if (listB.length) {
-      console.log("both have values");
+      // console.log("both have values");
       listA.forEach((a) => {
         listB.forEach((b) => {
           results.push({
@@ -142,6 +154,8 @@ const AddProduct = () => {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("type", type);
+      
+      formData.append("attributes", JSON.stringify([varAName, varBName]));
 
       // Make sure the variations are valid before passing
       const safeVariations =
@@ -523,12 +537,44 @@ const AddProduct = () => {
               <Activity mode={type === "VARIATION" ? "visible" : "hidden"}>
                 {/* Variation A */}
                 <div className="flex flex-col gap-1">
-                  <label
+                  <Label
                     className="text-base font-medium"
                     htmlFor="product-description"
                   >
-                    - Variation A
-                  </label>
+                    <div className="flex items-center justify-between">
+                      {isModifyingA ? (
+                        <>
+                          <Input
+                            className="w-30 text-md"
+                            onChange={(e) => {
+                              setVarAName(e.target.value);
+                            }}
+                            value={varAName}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <span className="w-30">• {varAName}</span>
+                        </>
+                      )}
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => setisModifyingA(!isModifyingA)}
+                        type="button"
+                        className="cursor-pointer"
+                      >
+                        {isModifyingA ? (
+                          <>
+                            <SquareCheckBig size={16}/>
+                          </>
+                        ) : (
+                          <>
+                            <SquarePen size={16} />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </Label>
                   <Input
                     id="product-variations"
                     className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
@@ -540,12 +586,46 @@ const AddProduct = () => {
 
                 {/* Variation B */}
                 <div className="flex flex-col gap-1">
-                  <label
-                    className="text-base font-medium"
-                    htmlFor="product-description"
+                  <Label
+                  htmlFor="product-description"
+                  className={`font-medium
+                     ${!variationA.trim() ? "text-foreground/40" : "text-base"} `}
                   >
-                    {"- Variation B (Optional)"}
-                  </label>
+                    <div className="flex items-center gap-2">
+                      {isModifyingB ? (
+                        <>
+                          <Input
+                            className="w-30 text-md"
+                            onChange={(e) => {
+                              setVarBName(e.target.value);
+                            }}
+                            value={varBName}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <span className="w-30">• {varBName}</span>
+                        </>
+                      )}
+                      <Button
+                        variant={"ghost"}
+                        disabled={!variationA.trim()}
+                        onClick={() => setisModifyingB(!isModifyingB)}
+                        type="button"
+                        className="cursor-pointer"
+                      >
+                        {isModifyingB ? (
+                          <>
+                            <SquareCheckBig size={16}/>
+                          </>
+                        ) : (
+                          <>
+                            <SquarePen size={16} />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </Label>
                   <div
                     className={`${!variationA.trim() && "cursor-not-allowed"} `}
                   >

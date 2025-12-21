@@ -3214,6 +3214,7 @@ export namespace Prisma {
     isArchived: number
     isFeatured: number
     isOnSale: number
+    attributes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3284,6 +3285,7 @@ export namespace Prisma {
     isArchived?: true
     isFeatured?: true
     isOnSale?: true
+    attributes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3391,6 +3393,7 @@ export namespace Prisma {
     isArchived: boolean
     isFeatured: boolean
     isOnSale: boolean | null
+    attributes: string[]
     createdAt: Date
     updatedAt: Date
     _count: ProductCountAggregateOutputType | null
@@ -3430,6 +3433,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
+    attributes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     orders?: boolean | Product$ordersArgs<ExtArgs>
@@ -3457,6 +3461,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
+    attributes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3478,6 +3483,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
+    attributes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -3499,11 +3505,12 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean
+    attributes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "category" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "attributes" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     wishlist?: boolean | Product$wishlistArgs<ExtArgs>
@@ -3546,6 +3553,7 @@ export namespace Prisma {
       isArchived: boolean
       isFeatured: boolean
       isOnSale: boolean | null
+      attributes: string[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["product"]>
@@ -3992,6 +4000,7 @@ export namespace Prisma {
     readonly isArchived: FieldRef<"Product", 'Boolean'>
     readonly isFeatured: FieldRef<"Product", 'Boolean'>
     readonly isOnSale: FieldRef<"Product", 'Boolean'>
+    readonly attributes: FieldRef<"Product", 'String[]'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
   }
@@ -13779,6 +13788,7 @@ export namespace Prisma {
     isArchived: 'isArchived',
     isFeatured: 'isFeatured',
     isOnSale: 'isOnSale',
+    attributes: 'attributes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -14143,6 +14153,7 @@ export namespace Prisma {
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
+    attributes?: StringNullableListFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -14169,6 +14180,7 @@ export namespace Prisma {
     isArchived?: SortOrder
     isFeatured?: SortOrder
     isOnSale?: SortOrderInput | SortOrder
+    attributes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orders?: OrderItemOrderByRelationAggregateInput
@@ -14198,6 +14210,7 @@ export namespace Prisma {
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
+    attributes?: StringNullableListFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -14224,6 +14237,7 @@ export namespace Prisma {
     isArchived?: SortOrder
     isFeatured?: SortOrder
     isOnSale?: SortOrderInput | SortOrder
+    attributes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -14252,6 +14266,7 @@ export namespace Prisma {
     isArchived?: BoolWithAggregatesFilter<"Product"> | boolean
     isFeatured?: BoolWithAggregatesFilter<"Product"> | boolean
     isOnSale?: BoolNullableWithAggregatesFilter<"Product"> | boolean | null
+    attributes?: StringNullableListFilter<"Product">
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
   }
@@ -14976,6 +14991,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -15002,6 +15018,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -15026,6 +15043,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -15052,6 +15070,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -15077,6 +15096,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15096,6 +15116,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15116,6 +15137,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16033,6 +16055,7 @@ export namespace Prisma {
     isArchived?: SortOrder
     isFeatured?: SortOrder
     isOnSale?: SortOrder
+    attributes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16856,6 +16879,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ProductCreateattributesInput = {
+    set: string[]
+  }
+
   export type OrderItemCreateNestedManyWithoutProductInput = {
     create?: XOR<OrderItemCreateWithoutProductInput, OrderItemUncheckedCreateWithoutProductInput> | OrderItemCreateWithoutProductInput[] | OrderItemUncheckedCreateWithoutProductInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutProductInput | OrderItemCreateOrConnectWithoutProductInput[]
@@ -16960,6 +16987,11 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
+  }
+
+  export type ProductUpdateattributesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type OrderItemUpdateManyWithoutProductNestedInput = {
@@ -17673,6 +17705,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -17697,6 +17730,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -17917,6 +17951,7 @@ export namespace Prisma {
     isArchived?: BoolFilter<"Product"> | boolean
     isFeatured?: BoolFilter<"Product"> | boolean
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
+    attributes?: StringNullableListFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
@@ -18422,6 +18457,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18447,6 +18483,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18486,6 +18523,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18511,6 +18549,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -18567,6 +18606,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18592,6 +18632,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18670,6 +18711,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18695,6 +18737,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -18751,6 +18794,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -18776,6 +18820,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -18854,6 +18899,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -18879,6 +18925,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19337,6 +19384,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistCreateNestedManyWithoutProductInput
@@ -19362,6 +19410,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistUncheckedCreateNestedManyWithoutProductInput
@@ -19436,6 +19485,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUpdateManyWithoutProductNestedInput
@@ -19461,6 +19511,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUncheckedUpdateManyWithoutProductNestedInput
@@ -19606,6 +19657,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -19631,6 +19683,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -19670,6 +19723,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -19695,6 +19749,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19718,6 +19773,7 @@ export namespace Prisma {
     isArchived?: boolean
     isFeatured?: boolean
     isOnSale?: boolean | null
+    attributes?: ProductCreateattributesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19792,6 +19848,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -19816,6 +19873,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -19840,6 +19898,7 @@ export namespace Prisma {
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    attributes?: ProductUpdateattributesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -1,5 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
+export type Variant = {
+  id: string;
+  name: string;
+  price: number;
+  salePrice?: number | null;
+  stock: number;
+  imageIndex: number;
+};
+
 export interface Product {
   id: string;
   name: string;
@@ -13,7 +22,29 @@ export interface Product {
   sku?: string;
   stock?: number;
   isOnSale: boolean;
+  variants: Variant[];
 }
+
+export type ProductType = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  salePrice?: number | null;
+  category: string;
+  image: string[];
+  isOnSale: boolean;
+  variants: Variant[];
+  type: "SIMPLE" | "VARIATION";
+  stock?: number | null;
+  attributes: string[];
+};
+
+
+export type VariationsMap = {
+  varA?: string[];
+  varB?: string[];
+};
 
 function useProductHook() {
   const { data: products = [], isLoading: productsLoading } = useQuery({

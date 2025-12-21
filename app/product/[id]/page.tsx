@@ -1,44 +1,22 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import Loading from "@/components/Loading";
-import useProductHook from "@/hooks/useProductHook";
+import useProductHook, {
+  ProductType,
+  Variant,
+  VariationsMap,
+} from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
 import { LoaderIcon, Star } from "lucide-react";
 import { VariationComboBox } from "@/components/VariationComboBox";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { QuantityInput } from "@/components/QuantityInput";
-
-type ProductType = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  salePrice: number;
-  category: string;
-  image: string[];
-  isOnSale: boolean;
-  variants: any[];
-};
-
-type Variant = {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-};
-
-type VariationsMap = {
-  varA?: string[];
-  varB?: string[];
-};
 
 const Product = () => {
   const { id } = useParams() as { id: string };
@@ -53,13 +31,16 @@ const Product = () => {
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
-  const [variations, setVariations] = useState<VariationsMap>({});
 
+  const [variations, setVariations] = useState<Required<VariationsMap>>({
+    varA: [],
+    varB: [],
+  });
 
   // Automatic Price Detection -- START A
   const [selectedVarA, setSelectedVarA] = useState<string | null>(null);
   const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
-  
+
   function parseVariantName(name: string) {
     // Remove product suffix: " - Table"
     const clean = name.split(" - ")[0].trim();
@@ -81,26 +62,23 @@ const Product = () => {
       if (selectedVarB && parsed.varB !== selectedVarB) return false;
 
       return true;
-    }) || null;
+    }) ?? null;
   // Automatic Price Detection -- END A
 
-  function extractVariations(variants: Variant[]): VariationsMap {
+  function extractVariations(variants: Variant[]): Required<VariationsMap> {
     const varA = new Set<string>();
     const varB = new Set<string>();
 
     variants.forEach((variant) => {
       const parsed = parseVariantName(variant.name);
-
       if (parsed.varA) varA.add(parsed.varA);
       if (parsed.varB) varB.add(parsed.varB);
     });
 
-    const result: VariationsMap = {};
-
-    if (varA.size > 0) result.varA = Array.from(varA);
-    if (varB.size > 0) result.varB = Array.from(varB);
-
-    return result;
+    return {
+      varA: Array.from(varA),
+      varB: Array.from(varB),
+    };
   }
 
   // Fetch product when products arrive OR id changes
@@ -150,6 +128,7 @@ const Product = () => {
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
+  // this is the price for the computed variant product
   const displayPrice = selectedVariant
     ? productData.isOnSale
       ? selectedVariant.salePrice ?? selectedVariant.price
@@ -254,12 +233,18 @@ const Product = () => {
             </p>
           )}
 
+          {productData.type === "SIMPLE" && productData.stock !== null && (
+            <p className="text-sm text-foreground/60 mt-1">
+              Stock: {productData.stock}
+            </p>
+          )}
+
           {/* Variations */}
           {(variations.varA?.length > 0 || variations.varB?.length > 0) && (
             <div className="flex gap-4 mt-4 flex-wrap">
               {variations.varA?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label className="text-xs">VarA</Label>
+                  <Label className="text-xs">{productData.attributes[0]}</Label>
                   <VariationComboBox
                     variantName="Size"
                     variants={variations.varA.map((v) => ({
@@ -274,7 +259,7 @@ const Product = () => {
 
               {variations.varB?.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label className="text-xs">VarA</Label>
+                  <Label className="text-xs">{productData.attributes[1]}</Label>
                   <VariationComboBox
                     variantName="Material"
                     variants={variations.varB.map((v) => ({

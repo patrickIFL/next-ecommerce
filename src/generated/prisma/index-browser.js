@@ -146,6 +146,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   isArchived: 'isArchived',
   isFeatured: 'isFeatured',
   isOnSale: 'isOnSale',
+  attributes: 'attributes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

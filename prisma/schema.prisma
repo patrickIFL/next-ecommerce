@@ -33,12 +33,13 @@ enum ProductType {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   userId      String
   name        String
   description String?
-  category    String      @default("Uncategorized")
+  category    String   @default("Uncategorized")
   image       String[]
+
   price       Int?
   salePrice   Int?
   // new
@@ -49,6 +50,7 @@ model Product {
   isArchived  Boolean     @default(false)
   isFeatured  Boolean     @default(false)
   isOnSale    Boolean?    @default(false)
+  attributes  String[]    @default(["VarA", "VarB"])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

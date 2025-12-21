@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
     const type = formData.get("type") as "SIMPLE" | "VARIATION";
+    const attributesRaw = formData.get("attributes") as string | null;
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
@@ -128,6 +129,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    let attributes: string[] = [];
+
+    if (attributesRaw) {
+      try {
+        attributes = JSON.parse(attributesRaw);
+      } catch {
+        return NextResponse.json(
+          { success: false, message: "Invalid attributes format" },
+          { status: 400 }
+        );
+      }
+    }
+
     // Upload each image to Cloudinary
     const uploadResults = await Promise.all(
       files.map((file: File) => {
@@ -166,6 +180,7 @@ export async function POST(request: NextRequest) {
           sku: sku,
           stock: type === "SIMPLE" ? Number(stock) : null,
           search_keys,
+          attributes,
           image: imageUrls,
           type: type.toUpperCase() as "SIMPLE" | "VARIATION",
         },

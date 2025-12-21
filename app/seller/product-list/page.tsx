@@ -116,7 +116,7 @@ const ProductList = () => {
                         Price
                       </th>
                       <th className="px-4 py-3 font-medium text-center">
-                        Sale Price
+                        Sale
                       </th>
                       <th className="px-4 py-3 font-medium text-center">
                         Stock
@@ -132,7 +132,7 @@ const ProductList = () => {
                   <tbody className="text-sm text-foreground z-10">
                     {sellerProducts && sellerProducts.length > 0 ? (
                       sellerProducts.map((product) => {
-                        console.log(product)
+                        // console.log(product)
                         return (
                           product.type === "SIMPLE" ? (
                             <ProductDataRow key={product.id} product={product} />

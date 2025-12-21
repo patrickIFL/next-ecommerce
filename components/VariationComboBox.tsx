@@ -39,7 +39,7 @@ export function VariationComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[150px] justify-between"
+          className="w-[150px] justify-between font-normal"
         >
           {value
             ? variants.find((v) => v.value === value)?.label
