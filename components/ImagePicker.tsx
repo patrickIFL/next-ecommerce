@@ -55,7 +55,9 @@ export function ImagePicker({ images, value, onChange }: Props) {
 
       <PopoverContent className="w-48 p-2">
         <div className="grid grid-cols-2 gap-2">
-          {images.length === 0 && <p className="text-xs col-span-2 text-center">No images found.</p>}
+          {images.length === 0 && (
+            <p className="text-xs col-span-2 text-center">No images found.</p>
+          )}
           {images.map((img) => {
             const isSelected = img.index === value;
             return (

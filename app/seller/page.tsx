@@ -70,6 +70,7 @@ const AddProduct = () => {
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
+  const [addingError, setAddingError] = useState("");
 
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
@@ -230,7 +231,7 @@ const AddProduct = () => {
 
     if (type === "VARIATION") {
       if (finalVariations.length === 0) {
-        alert("No variations. Generate and confirm them first.");
+        setAddingError("empty variations")
         return;
       }
 
@@ -700,7 +701,7 @@ const AddProduct = () => {
                   )} */}
                 </div>
               </Activity>
-              <div>
+              <div className="flex gap-5 items-center">
                 <Button
                   type="submit"
                   className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
@@ -716,6 +717,11 @@ const AddProduct = () => {
                     <span className="mx-6">ADD</span>
                   )}
                 </Button>
+                {addingError && (
+                    <span className="text-destructive">
+                      {addingError === "empty variations" && "No variations. Generate and confirm first."}
+                    </span>
+                  )}
               </div>
             </div>
           </div>

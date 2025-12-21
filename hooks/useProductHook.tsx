@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any*/
+import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export type Variant = {
   id: string;
@@ -40,13 +44,14 @@ export type ProductType = {
   attributes: string[];
 };
 
-
 export type VariationsMap = {
   varA?: string[];
   varB?: string[];
 };
 
 function useProductHook() {
+  const { getToken } = useAuth();
+
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
@@ -60,9 +65,45 @@ function useProductHook() {
     },
   });
 
+  const { data: sellerProducts, isLoading:sellerProductsIsLoading } = useQuery<ProductType[]>({
+    queryKey: ["sellerProducts"],
+
+    queryFn: async () => {
+
+      try {
+        const token = await getToken();
+        const { data } = await axios.get("/api/product/seller-list", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!data.success) {
+          toast({
+            title: "Error",
+            description: data.message,
+            variant: "destructive",
+          });
+          return [];
+        }
+
+        return data.products;
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return [];
+      }
+    },
+  });
+
   return {
     products,
     productsLoading,
+    sellerProducts,
+    sellerProductsIsLoading
   };
 }
 

@@ -15,8 +15,7 @@ import {
   CommandGroup,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-
-import { useQuery } from "@tanstack/react-query";
+import useCategoryHook from "@/hooks/useCategoryHook";
 
 interface CategoryComboBoxProps {
   className?: string;
@@ -31,19 +30,7 @@ export default function SellerCategoryFilter({
 }: CategoryComboBoxProps) {
   const [open, setOpen] = useState(false);
   // Fetch categories from API
-
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const res = await fetch("/api/product/categories");
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to load categories");
-      }
-      return json.data;
-    },
-  });
+  const { categories, categoriesLoading } = useCategoryHook();
 
   const selected = categories?.find((c: any) => c.slug === value);
   return (

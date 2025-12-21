@@ -46,49 +46,43 @@ function NavBar() {
     setIsOpen(false);
   }, [pathname]);
 
-
   // Close the Hamburger Menu When Resizing to Large
   useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 1024) {
-      setIsOpen(false); // lg breakpoint and above
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(false); // lg breakpoint and above
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    // Run once on mount
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Detect click outside of the mobile menu
+  const handleOutsideClick = (e: MouseEvent) => {
+    const menu = document.getElementById("mobile-menu");
+    const hamburger = document.getElementById("hamburger-btn");
+
+    // ⭐ NEW: allow clicks inside Clerk portal menu
+    const clerkMenu = document.querySelector(".cl-userButton-popover");
+
+    if (
+      isOpen &&
+      menu &&
+      !menu.contains(e.target as Node) &&
+      hamburger &&
+      !hamburger.contains(e.target as Node) &&
+      (!clerkMenu || !clerkMenu.contains(e.target as Node)) // <-- ignore Clerk popup clicks
+    ) {
+      setIsOpen(false);
     }
   };
-  window.addEventListener("resize", handleResize);
-  // Run once on mount
-  handleResize();
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
 
-// Detect click outside of the mobile menu
-const handleOutsideClick = (e: MouseEvent) => {
-  const menu = document.getElementById("mobile-menu");
-  const hamburger = document.getElementById("hamburger-btn");
-
-  // ⭐ NEW: allow clicks inside Clerk portal menu
-  const clerkMenu = document.querySelector(".cl-userButton-popover");
-
-  if (
-    isOpen &&
-    menu &&
-    !menu.contains(e.target as Node) &&
-    hamburger &&
-    !hamburger.contains(e.target as Node) &&
-    (!clerkMenu || !clerkMenu.contains(e.target as Node)) // <-- ignore Clerk popup clicks
-  ) {
-    setIsOpen(false);
-  }
-};
-
-
-useEffect(() => {
-  document.addEventListener("mousedown", handleOutsideClick);
-  return () => document.removeEventListener("mousedown", handleOutsideClick);
-});
-
-
-
-
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  });
 
   // For the Nav links
   const menus = [
@@ -179,17 +173,11 @@ useEffect(() => {
       >
         {/* Logo will Change Depending on Theme. */}
         <Link href={"/"}>
-          {isDark ? (
-            <NextLogo size={150} />
-          ) : (
-            <NextLogo size={150}/>
-          )}
+          {isDark ? <NextLogo size={150} /> : <NextLogo size={150} />}
         </Link>
         <div className="relative hidden lg:block">
           <NavLinks menus={menus} />
         </div>
-
-
 
         <NavigationMenu
           viewport={false}
@@ -233,15 +221,15 @@ useEffect(() => {
             <NavigationMenuItem className="hidden lg:flex items-center p-2 rounded-full">
               {user ? (
                 <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div>
-                          <ClerkUserButton />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>My Account</p>
-                      </TooltipContent>
-                    </Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <ClerkUserButton />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>My Account</p>
+                  </TooltipContent>
+                </Tooltip>
               ) : (
                 <button
                   onClick={() => openSignIn()}
@@ -307,7 +295,7 @@ useEffect(() => {
           </>
         )}
       </AnimatePresence>
-            
+
       {/* Mobile Menu */}
       <div id="mobile-menu">
         <AccordionMenu
@@ -315,7 +303,7 @@ useEffect(() => {
           isOpen={isOpen}
           menus={menus}
           openSignIn={openSignIn}
-        // accountMenu={accountMenu}
+          // accountMenu={accountMenu}
         />
       </div>
     </>
@@ -336,17 +324,20 @@ const SearchBar = () => {
     }
   }, [params.cat, setSearchQuery]);
 
-
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      handleSearch();
-    }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearch();
+      }}
+    >
       <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
         <button type="submit">
-          {searchLoading 
-          ? <LoaderIcon className="animate-spin size-4 shrink-0 opacity-50 text-foreground" /> 
-          : <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />}
+          {searchLoading ? (
+            <LoaderIcon className="animate-spin size-4 shrink-0 opacity-50 text-foreground" />
+          ) : (
+            <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />
+          )}
         </button>
         <input
           type="text"
@@ -358,7 +349,7 @@ const SearchBar = () => {
           className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden 
           disabled:cursor-not-allowed disabled:opacity-50"
           onChange={(e) => {
-            setSearchQuery(e.target.value)
+            setSearchQuery(e.target.value);
           }}
         />
       </div>

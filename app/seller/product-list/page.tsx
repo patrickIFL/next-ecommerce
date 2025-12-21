@@ -1,11 +1,6 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
-import { useAuth } from "@clerk/nextjs";
-import axios from "axios";
-import { toast } from "@/components/ui/use-toast";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import ProductDataRow from "@/components/ProductDataRow";
-import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 import SellerSearch from "@/components/SellerSearch";
 import SellerCategoryFilter from "@/components/SellerCategoryFilter";
@@ -16,58 +11,16 @@ import EmptyState from "@/components/EmptyState";
 import { Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
 import VariationProductRow from "@/components/VariationProductRow";
-
-interface ProductType {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  salePrice: number | null;
-  image: string[];
-  type: string;
-}
+import useProductHook from "@/hooks/useProductHook";
 
 const ProductList = () => {
-  const { getToken } = useAuth();
   const [filterCategory, setFilterCategory] = useState("All");
   const router = useRouter();
-
-  const { data: sellerProducts, isLoading } = useQuery<ProductType[]>({
-    queryKey: ["sellerProducts"],
-
-    queryFn: async () => {
-      try {
-        const token = await getToken();
-        const { data } = await axios.get("/api/product/seller-list", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!data.success) {
-          toast({
-            title: "Error",
-            description: data.message,
-            variant: "destructive",
-          });
-          return [];
-        }
-
-        return data.products;
-      } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        return [];
-      }
-    },
-  });
+  const {sellerProducts ,sellerProductsIsLoading} = useProductHook();
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
-      {isLoading ? (
+      {sellerProductsIsLoading ? (
         <Loading />
       ) : (
         <>

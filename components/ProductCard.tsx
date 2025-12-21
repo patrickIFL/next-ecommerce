@@ -1,50 +1,15 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import useCartHook from "@/hooks/useCartHook";
 import useWishlist from "@/hooks/useWishlist";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, getMinMaxPrice } from "@/lib/utils";
 import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: any }) => {
-  const { handleBuyNow, buyNowLoading } = useCartHook();
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
-
-  function getMinMaxPrice(product: any) {
-    // VARIATION PRODUCT
-    if (Array.isArray(product.variants) && product.variants.length > 0) {
-      const prices = product.variants
-        .map((variant: any) => {
-          if (product.isOnSale) {
-            return variant.salePrice ?? variant.price;
-          }
-          return variant.price;
-        })
-        .filter((price: number | null) => typeof price === "number");
-
-      if (prices.length === 0) {
-        return { min: 0, max: 0 };
-      }
-
-      return {
-        min: Math.min(...prices),
-        max: Math.max(...prices),
-      };
-    }
-
-    // SIMPLE PRODUCT
-    const price = product.isOnSale
-      ? product.salePrice ?? product.price
-      : product.price;
-
-    return {
-      min: price,
-      max: price,
-    };
-  }
 
   const { wishlist, toggleWishlist, isPending } = useWishlist();
 
