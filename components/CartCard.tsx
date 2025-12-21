@@ -64,7 +64,7 @@ function CartCard({ item }: CartCardProps) {
           />
         </div>
 
-        <div className="text-sm hidden md:block">
+        <div className="text-sm block">
           <p className="text-foreground">{item.product.name}</p>
           <button
             className="text-xs text-primary mt-1 cursor-pointer hover:underline"

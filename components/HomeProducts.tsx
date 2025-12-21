@@ -8,10 +8,12 @@ import { useEffect, useState } from "react";
 import EmptyState from "./EmptyState"; // <- import the empty component
 import { Archive } from "lucide-react";
 import useUserStore from "@/stores/useUserStore";
+import useWishlist from "@/hooks/useWishlist";
 
 const HomeProducts = () => {
   const [count, setCount] = useState(4); // skeleton count
   const {isSeller} = useUserStore()
+  const {wishlist} = useWishlist()
 
   const updateCount = () => {
     const width = window.innerWidth;
@@ -55,7 +57,7 @@ const HomeProducts = () => {
       ) : (
         <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
           {products.map((product, index) => (
-            <ProductCard key={index} product={product} />
+            <ProductCard key={index} product={product} wishlist={wishlist} />
           ))}
         </div>
       )}

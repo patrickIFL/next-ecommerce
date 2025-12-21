@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const { userId } = getAuth(request);
 
     if (!userId) {
-      return Response.json(
+      return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 }
       );
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
-      return Response.json(
+      return NextResponse.json(
         {
           success: false,
           message: "User does not exist in database. Create user first.",
@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
     });
 
     // 5. Return the updated/created cart item
-    return Response.json({ success: true, cartItems });
+    return NextResponse.json({ success: true, cartItems });
   } catch (error) {
     console.error("FETCH CART ERROR:", error);
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         message: "Server error",

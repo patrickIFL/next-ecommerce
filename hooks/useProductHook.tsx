@@ -45,8 +45,8 @@ export type ProductType = {
 };
 
 export type VariationsMap = {
-  varA?: string[];
-  varB?: string[];
+  varA?: string[] | null;
+  varB?: string[] | null;
 };
 
 function useProductHook() {
@@ -65,11 +65,12 @@ function useProductHook() {
     },
   });
 
-  const { data: sellerProducts, isLoading:sellerProductsIsLoading } = useQuery<ProductType[]>({
+  const { data: sellerProducts, isLoading: sellerProductsIsLoading } = useQuery<
+    ProductType[]
+  >({
     queryKey: ["sellerProducts"],
 
     queryFn: async () => {
-
       try {
         const token = await getToken();
         const { data } = await axios.get("/api/product/seller-list", {
@@ -103,7 +104,7 @@ function useProductHook() {
     products,
     productsLoading,
     sellerProducts,
-    sellerProductsIsLoading
+    sellerProductsIsLoading,
   };
 }
 

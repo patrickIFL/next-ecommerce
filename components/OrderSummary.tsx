@@ -22,7 +22,7 @@ const OrderSummary = ({
   };
 
   return (
-    <div className="w-full md:w-96 bg-accent p-5">
+    <div className="w-full lg:w-96 bg-accent p-5">
       <h2 className="text-xl md:text-2xl font-medium text-foreground">
         Order Summary
       </h2>

@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import useProductHook from "@/hooks/useProductHook";
 import useSearchHook from "@/hooks/useSearchHook";
+import useWishlist from "@/hooks/useWishlist";
 import useUserStore from "@/stores/useUserStore";
 import { Archive, SearchX } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ const DisplayProducts = () => {
   const { searchResults, searchLoading, search } = useSearchHook(params.cat);
   const { isSeller } = useUserStore();
   const router = useRouter();
+  const {wishlist} = useWishlist()
 
   useEffect(() => {
     if (params.cat !== "all") {
@@ -88,7 +90,7 @@ const DisplayProducts = () => {
           </div>
         ) : (
           productsToDisplay.map((product: any, index: number) => (
-            <ProductCard key={index} product={product} />
+            <ProductCard key={index} product={product} wishlist={wishlist} />
           ))
         )}
       </div>

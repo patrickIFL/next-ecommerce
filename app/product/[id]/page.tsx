@@ -17,10 +17,12 @@ import { VariationComboBox } from "@/components/VariationComboBox";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { QuantityInput } from "@/components/QuantityInput";
+import useWishlist from "@/hooks/useWishlist";
 
 const Product = () => {
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
+  const { wishlist } = useWishlist();
 
   const dummyRating: number = 4.5;
   const dummyRatingCount: number = 13;
@@ -42,9 +44,11 @@ const Product = () => {
   const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
 
   function parseVariantName(name: string) {
-    // Remove product suffix: " - Table"
+    // Remove product suffix: " - Tshirt"
+    //  Small, Red
     const clean = name.split(" - ")[0].trim();
-
+    
+    //  parts[0] = Small, parts[1] = Red
     // Split by comma if exists
     const parts = clean.split(",").map((p) => p.trim());
 
@@ -91,7 +95,7 @@ const Product = () => {
     if (product?.variants?.length) {
       setVariations(extractVariations(product.variants));
     } else {
-      setVariations({});
+      setVariations({varA: null, varB: null});
     }
 
     if (product?.image?.length) {
@@ -363,7 +367,7 @@ const Product = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
           {products.slice(0, 5).map((prod, index) => (
-            <ProductCard key={index} product={prod} />
+            <ProductCard key={index} product={prod} wishlist={wishlist} />
           ))}
         </div>
 

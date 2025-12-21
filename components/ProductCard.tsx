@@ -6,12 +6,12 @@ import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const ProductCard = ({ product }: { product: any }) => {
+const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => {
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
 
-  const { wishlist, toggleWishlist, isPending } = useWishlist();
+  const { toggleWishlist, isPending } = useWishlist();
 
   const isWishlisted = wishlist.includes(product.id);
 
