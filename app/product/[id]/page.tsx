@@ -47,7 +47,7 @@ const Product = () => {
     // Remove product suffix: " - Tshirt"
     //  Small, Red
     const clean = name.split(" - ")[0].trim();
-    
+
     //  parts[0] = Small, parts[1] = Red
     // Split by comma if exists
     const parts = clean.split(",").map((p) => p.trim());
@@ -95,7 +95,7 @@ const Product = () => {
     if (product?.variants?.length) {
       setVariations(extractVariations(product.variants));
     } else {
-      setVariations({varA: null, varB: null});
+      setVariations({ varA: null, varB: null });
     }
 
     if (product?.image?.length) {
@@ -309,7 +309,10 @@ const Product = () => {
             <Button
               onClick={() => {
                 if (!canPurchase) return;
-                handleAddToCart(productData.id);
+                handleAddToCart({
+                  productId: productData.id,
+                  variantId: selectedVariant?.id,
+                });
               }}
               disabled={!canPurchase || addToCartLoading}
               className={`py-6 flex-1 text-gray-800/80 ${
@@ -334,7 +337,10 @@ const Product = () => {
             <Button
               onClick={() => {
                 if (!canPurchase) return;
-                handleBuyNow(productData.id);
+                handleBuyNow({
+                  productId: productData.id,
+                  variantId: selectedVariant?.id,
+                });
               }}
               disabled={!canPurchase || buyNowLoading}
               className={`flex-1 py-6 text-white ${

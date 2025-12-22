@@ -215,6 +215,7 @@ const AddProduct = () => {
       setSearchKeys("");
       setSku("");
       setStock("");
+      setGenerateError("");
     },
 
     onError: (error: any) => {

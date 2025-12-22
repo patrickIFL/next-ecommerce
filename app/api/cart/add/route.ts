@@ -4,48 +4,77 @@ import { getAuth } from "@clerk/nextjs/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Auth
     const { userId } = getAuth(request);
     if (!userId) {
-      return Response.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return Response.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Parse body
-    const { productId, quantity = 1 } = await request.json();
+    const { productId, variantId, quantity = 1 } = await request.json();
 
     if (!productId) {
       return Response.json(
-        { success: false, message: "Product ID is required" },
+        { message: "Product ID is required" },
         { status: 400 }
       );
     }
 
-    // 3. Ensure user exists in Prisma
-    // Clerk users do NOT automatically exist in your DB.
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
 
-    if (!user) {
-      return Response.json(
-        {
-          success: false,
-          message: "User does not exist in database. Create user first.",
+    if (!product) {
+      return Response.json({ message: "Product not found" }, { status: 404 });
+    }
+
+    /* =====================================================
+       SIMPLE PRODUCT (variantId = NULL)
+       ===================================================== */
+    if (product.type === "SIMPLE") {
+      const existing = await prisma.cartItem.findFirst({
+        where: {
+          userId,
+          productId,
+          variantId: null,
         },
-        { status: 404 }
+      });
+
+      const cartItem = existing
+        ? await prisma.cartItem.update({
+            where: { id: existing.id },
+            data: {
+              quantity: { increment: quantity },
+            },
+            include: { product: true },
+          })
+        : await prisma.cartItem.create({
+            data: {
+              userId,
+              productId,
+              variantId: null,
+              quantity,
+            },
+            include: { product: true },
+          });
+
+      return Response.json({ success: true, cartItem });
+    }
+
+    /* =====================================================
+       VARIATION PRODUCT
+       ===================================================== */
+    if (!variantId) {
+      return Response.json(
+        { message: "Variant is required" },
+        { status: 400 }
       );
     }
 
-    // 4. Upsert Cart Item (create or update)
-    // if the item exists in the cart, increment the quantity
-    // if the item does not exist in the cart, create it
-    
     const cartItem = await prisma.cartItem.upsert({
       where: {
-        userId_productId: {
+        userId_productId_variantId: {
           userId,
           productId,
+          variantId,
         },
       },
       update: {
@@ -54,24 +83,18 @@ export async function POST(request: NextRequest) {
       create: {
         userId,
         productId,
+        variantId,
         quantity,
       },
       include: {
         product: true,
+        variant: true,
       },
     });
 
-    // 5. Return the updated/created cart item
     return Response.json({ success: true, cartItem });
   } catch (error) {
     console.error("ADD TO CART ERROR:", error);
-    return Response.json(
-      {
-        success: false,
-        message: "Server error",
-        error: JSON.stringify(error),
-      },
-      { status: 500 }
-    );
+    return Response.json({ message: "Server error" }, { status: 500 });
   }
 }

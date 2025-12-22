@@ -8,6 +8,7 @@ import useCartHook from "@/hooks/useCartHook";
 import { MoveLeft, ShoppingCart } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 import Loading from "@/components/Loading";
+import { Button } from "@/components/ui/button";
 
 const Cart = () => {
   const router = useRouter();
@@ -53,7 +54,7 @@ const Cart = () => {
     <div className="mt-16 flex flex-col lg:flex-row gap-10 px-6 md:px-16 pt-14 mb-20">
       <div className="flex-1">
         <div className="flex items-center justify-between mb-8 border-b border-gray-500/30 pb-6">
-          <p className="text-2xl md:text-3xl text-foreground/80">
+          <p className="text-2xl md:text-3xl text-foreground/80 font-semibold">
             Your <span className="font-medium text-primary">Cart</span>
           </p>
           <p className="text-lg md:text-xl text-foreground/80">{cartCount} Items</p>
@@ -66,9 +67,9 @@ const Cart = () => {
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">
                   Product Details
                 </th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Price</th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Quantity</th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium">Subtotal</th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Price</th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Quantity</th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Item Total</th>
               </tr>
             </thead>
 
@@ -78,13 +79,14 @@ const Cart = () => {
           </table>
         </div>
 
-        <button
+        <Button
+          variant={"ghost"}
           onClick={() => router.push("/all/products")}
-          className="cursor-pointer group flex items-center mt-6 gap-2 text-primary"
+          className="cursor-pointer group flex items-center mt-6 gap-2 text-primary hover:text-primary"
         >
           <MoveLeft className="group-hover:-translate-x-1 transition" color={"var(--primary)"} />
           Continue Shopping
-        </button>
+        </Button>
       </div>
 
       <OrderSummary cartCount={cartCount} cartAmount={cartAmount} />

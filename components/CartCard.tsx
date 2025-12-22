@@ -1,22 +1,39 @@
-import useCartHook from '@/hooks/useCartHook';
-import { formatMoney } from '@/lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
-import { useState, useCallback, useEffect } from 'react';
+import useCartHook from "@/hooks/useCartHook";
+import { formatMoney } from "@/lib/utils";
+import {
+  ChevronLeft,
+  ChevronRight,
+  SquareCheckBig,
+  SquarePen,
+  Trash2,
+} from "lucide-react";
+import Image from "next/image";
+import { useState, useCallback, useEffect } from "react";
+import { Button } from "./ui/button";
 
 interface CartProduct {
   id: string;
   name: string;
   image: string[];
-  salePrice: number;
   price: number;
+  salePrice?: number | null;
   isOnSale: boolean;
+}
+
+interface CartVariant {
+  id: string;
+  name: string;
+  price?: number | null;
+  salePrice?: number | null;
+  stock: number;
+  imageIndex: number;
 }
 
 interface CartItem {
   id: string;
   quantity: number;
   product: CartProduct;
+  variant?: CartVariant | null;
 }
 
 interface CartCardProps {
@@ -25,79 +42,144 @@ interface CartCardProps {
 
 function CartCard({ item }: CartCardProps) {
   const { updateCartQuantity } = useCartHook();
-  const [quantity, setQuantity] = useState(item.quantity);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
-  // Sync local state if item.quantity changes externally
+  const [quantity, setQuantity] = useState(item.quantity);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const product = item.product;
+  const variant = item.variant ?? null;
+
+  /* ================= SYNC ================= */
   useEffect(() => {
     setQuantity(item.quantity);
   }, [item.quantity]);
 
+  /* ================= PRICE RESOLUTION ================= */
+  const unitPrice = variant
+    ? product.isOnSale
+      ? variant.salePrice ?? variant.price
+      : variant.price
+    : product.isOnSale
+    ? product.salePrice ?? product.price
+    : product.price;
+
+  const totalPrice = formatMoney((unitPrice ?? 0) * quantity);
+
+  const productImageIndex = variant ? variant.imageIndex : 0;
+
+  /* ================= ACTIONS ================= */
   const updateQuantity = useCallback(
     (newQuantity: number) => {
-      setQuantity(newQuantity);
-      updateCartQuantity({ cartItemId: item.id, quantity: newQuantity });
+      updateCartQuantity({
+        cartItemId: item.id,
+        quantity: newQuantity,
+      });
     },
     [item.id, updateCartQuantity]
   );
 
-  const increment = () => updateQuantity(quantity + 1);
-  const decrement = () => updateQuantity(Math.max(0, quantity - 1));
+  const increment = () => setQuantity((q) => q + 1);
+  const decrement = () => setQuantity((q) => Math.max(1, q - 1));
   const remove = () => updateQuantity(0);
-
-  const totalPrice = formatMoney( 
-    (item.product.isOnSale 
-    ? item.product.salePrice ? item.product.salePrice : item.product.price
-    : item.product.price) * quantity
-  );
 
   return (
     <tr>
+      {/* PRODUCT */}
       <td className="flex items-center gap-4 py-4 md:px-4 px-1">
         <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
           <Image
-            src={item.product.image?.[0] ?? "/placeholder.png"}
-            alt={item.product.name}
+            src={product.image?.[productImageIndex] ?? "/placeholder.png"}
+            alt={product.name}
             className="w-16 h-auto object-cover"
             width={1280}
             height={720}
           />
         </div>
 
-        <div className="text-sm block">
-          <p className="text-foreground">{item.product.name}</p>
-          <button
-            className="text-xs text-primary mt-1 cursor-pointer hover:underline"
-            onClick={remove}
-          >
-            Remove
-          </button>
+        <div className="text-sm flex flex-col">
+          <p className="text-foreground">{product.name}</p>
+
+          {variant && (
+            <p className="text-xs text-foreground/50">
+              {variant.name.split(" - ")[0].trim()}
+            </p>
+          )}
         </div>
       </td>
 
+      {/* UNIT PRICE */}
       <td className="py-4 md:px-4 px-1 text-foreground/80">
-        {currency}{formatMoney(
-          item.product.isOnSale 
-          ? item.product.salePrice ? item.product.salePrice : item.product.price 
-          : item.product.price)} /pc
+        {currency}
+        {formatMoney(unitPrice)} / pc
       </td>
 
+      {/* QUANTITY */}
       <td className="py-4 md:px-4 px-1">
-        <div className="flex items-center gap-2">
-          <button onClick={decrement}>
-            <ChevronLeft size={20} color="var(--color-foreground)" />
-          </button>
+        <div className="flex items-center justify-center gap-2">
+          {isEditing && (
+            <button onClick={decrement}>
+              <ChevronLeft size={20} />
+            </button>
+          )}
 
           <p className="text-foreground">{quantity}</p>
 
-          <button onClick={increment}>
-            <ChevronRight size={20} color="var(--color-foreground)" />
-          </button>
+          {isEditing && (
+            <button onClick={increment}>
+              <ChevronRight size={20} />
+            </button>
+          )}
         </div>
       </td>
 
+      {/* TOTAL */}
+      <td className="py-4 md:px-4 px-1 text-foreground text-center">
+        {currency}
+        {totalPrice}
+      </td>
+
+      {/* ACTIONS */}
       <td className="py-4 md:px-4 px-1 text-foreground">
-        {currency}{totalPrice}
+        <div className="flex flex-col">
+          {!isEditing && (
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="h-7 flex gap-2 justify-start"
+              variant="ghost"
+            >
+              <SquarePen size={12} />
+              Edit
+            </Button>
+          )}
+
+          {isEditing && (
+            <>
+              <Button
+                onClick={() => {
+                  if (quantity !== item.quantity) {
+                    updateQuantity(quantity);
+                  }
+                  setIsEditing(false);
+                }}
+                className="h-7 flex gap-2 justify-start text-success hover:text-success/80"
+                variant="ghost"
+              >
+                <SquareCheckBig size={12} />
+                Done
+              </Button>
+
+              <Button
+                onClick={remove}
+                className="h-7 flex gap-2 justify-start text-destructive hover:text-destructive/80"
+                variant="ghost"
+              >
+                <Trash2 size={12} />
+                Delete
+              </Button>
+            </>
+          )}
+        </div>
       </td>
     </tr>
   );

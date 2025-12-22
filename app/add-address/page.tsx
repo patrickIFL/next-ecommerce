@@ -1,5 +1,8 @@
 "use client";
 import AddAddressIcon from "@/components/svgs/AddAddressIcon";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import useAddressHook from "@/hooks/useAddressHook";
 import { LoaderIcon } from "lucide-react";
 
@@ -17,18 +20,18 @@ export default function Page() {
   };
 
   return (
-    <div className="mt-16 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-center">
+    <div className="mt-10 px-6 md:px-16 lg:px-32 py-16 flex flex-col md:flex-row justify-center">
       <form
         onSubmit={handleAddAddress}
         className="w-full flex flex-col items-center pt-5 order-2 md:order-1 md:items-start"
       >
-        <p className="text-2xl md:text-3xl text-foreground/80">
+        <p className="text-2xl md:text-3xl text-foreground/80 font-semibold">
           Add Shipping{" "}
           <span className="font-semibold text-primary">Address</span>
         </p>
 
         <div className="space-y-3 max-w-xl md:max-w-sm mt-10">
-          <input
+          <Input
             className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Full name"
@@ -38,7 +41,7 @@ export default function Page() {
             }
           />
 
-          <input
+          <Input
             className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Phone number"
@@ -48,7 +51,7 @@ export default function Page() {
             }
           />
 
-          <input
+          <Input
             className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
             type="text"
             placeholder="Zip code"
@@ -58,7 +61,7 @@ export default function Page() {
             }
           />
 
-          <textarea
+          <Textarea
             className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground resize-none placeholder:text-foreground/50"
             rows={4}
             placeholder="Address (Area and Street)"
@@ -69,7 +72,7 @@ export default function Page() {
           />
 
           <div className="flex space-x-3">
-            <input
+            <Input
               className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
               type="text"
               placeholder="City/District/Town"
@@ -79,7 +82,7 @@ export default function Page() {
               }
             />
 
-            <input
+            <Input
               className="px-2 py-2.5 focus:border-primary transition border border-foreground/30 rounded outline-none w-full text-foreground placeholder:text-foreground/50"
               type="text"
               placeholder="Province"
@@ -89,7 +92,7 @@ export default function Page() {
               }
             />
           </div>
-          <button
+          <Button
             type="submit"
             className={`md:max-w-sm w-full mt-6 text-white py-3 uppercase 
             ${
@@ -106,11 +109,11 @@ export default function Page() {
             ) : (
               "Save address"
             )}
-          </button>
+          </Button>
         </div>
       </form>
       <div className="w-full flex items-center order-1 md:order-2 justify-center">
-        <AddAddressIcon size={400} />
+        <AddAddressIcon size={350} />
       </div>
     </div>
   );
