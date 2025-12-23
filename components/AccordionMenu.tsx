@@ -52,40 +52,6 @@ function AccordionMenu({
             className="w-full"
             defaultValue="account"
           >
-            {/* Dynamic Menus */}
-            {menus.map((menu: any, i: number) => {
-              const isDirectLink =
-                menu.mainLink !== "" && menu.menuLinks.length === 0;
-
-              const accordionValue = `menu-${i}`;
-
-              return isDirectLink ? (
-                // ⭐ Direct Link
-                <AccordionItem value={accordionValue} key={i}>
-                  {/* Fake trigger look without arrow */}
-                  <Link href={menu.mainLink}>
-                    <div className={`${menuItemClass} text-sm ml-px py-4`}>
-                      {menu.mainTitle}
-                    </div>
-                  </Link>
-                </AccordionItem>
-              ) : (
-                // ⭐ Dropdown
-                <AccordionItem value={accordionValue} key={i}>
-                  <AccordionTrigger>{menu.mainTitle}</AccordionTrigger>
-
-                  <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
-                    {menu.menuLinks.map((link: any, j: number) => (
-                      <Link key={j} href={link.linkRef || "#"}>
-                        <div className={`${menuItemClass} px-4`}>
-                          {link.linkName}
-                        </div>
-                      </Link>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
             {/* Dark mode and Search */}
             <AccordionItem className="border-none pt-3" value="theme-search">
               <div className="flex justify-between">
@@ -139,6 +105,42 @@ function AccordionMenu({
                 </div>
               </div>
             </AccordionItem>
+            
+            {/* Dynamic Menus */}
+            {menus.map((menu: any, i: number) => {
+              const isDirectLink =
+                menu.mainLink !== "" && menu.menuLinks.length === 0;
+
+              const accordionValue = `menu-${i}`;
+
+              return isDirectLink ? (
+                // ⭐ Direct Link
+                <AccordionItem value={accordionValue} key={i}>
+                  {/* Fake trigger look without arrow */}
+                  <Link href={menu.mainLink}>
+                    <div className={`${menuItemClass} text-sm ml-px py-4`}>
+                      {menu.mainTitle}
+                    </div>
+                  </Link>
+                </AccordionItem>
+              ) : (
+                // ⭐ Dropdown
+                <AccordionItem value={accordionValue} key={i}>
+                  <AccordionTrigger>{menu.mainTitle}</AccordionTrigger>
+
+                  <AccordionContent className="flex flex-col gap-1 text-balance font-normal">
+                    {menu.menuLinks.map((link: any, j: number) => (
+                      <Link key={j} href={link.linkRef || "#"}>
+                        <div className={`${menuItemClass} px-4`}>
+                          {link.linkName}
+                        </div>
+                      </Link>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+            
           </Accordion>
         </motion.div>
       )}

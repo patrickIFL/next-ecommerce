@@ -214,9 +214,10 @@ exports.Prisma.OrderItemScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
   productId: 'productId',
+  variantId: 'variantId',
+  quantity: 'quantity',
   name: 'name',
-  price: 'price',
-  quantity: 'quantity'
+  price: 'price'
 };
 
 exports.Prisma.ShippingAddressScalarFieldEnum = {
@@ -235,6 +236,7 @@ exports.Prisma.ShippingAddressScalarFieldEnum = {
 exports.Prisma.StockReservationScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
+  variantId: 'variantId',
   userId: 'userId',
   quantity: 'quantity',
   createdAt: 'createdAt',
