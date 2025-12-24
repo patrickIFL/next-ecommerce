@@ -59,7 +59,7 @@ function useOrderHook() {
   const { cartItems } = useCartHook();
   const { selectedAddressId } = useAddressStore()
 
-  const { mutate: placeOrder } = useMutation({
+  const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: async () => {
       if (!cartItems || cartItems.length === 0) {
         throw new Error("Cart Empty");
@@ -71,44 +71,53 @@ function useOrderHook() {
 
       const token = await getToken();
 
+      // 🔐 Send variant-aware payload
+      const payload = {
+        selectedAddressId,
+        platform: "web",
+        items: cartItems.map((item) => ({
+          productId: item.product,
+          variantId: item.variant ?? null, // ✅ nullable
+          quantity: item.quantity,
+        })),
+      };
+
       const res = await fetch("/api/order/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ selectedAddressId, platform: "web" }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-        let errorJson: any = null;
-        try {
-          errorJson = await res.json();
-        } catch { }
-
+        const errorJson = await res.json().catch(() => null);
         throw new Error(errorJson?.message || "Failed to create order");
       }
-      const data = await res.json();
 
-      return data;
+      return res.json();
     },
+
     onSuccess: (data) => {
-      const { checkoutUrl } = data;
-      if (checkoutUrl) {
-        router.push(checkoutUrl);
-      }
-      else {
+      if (!data.checkoutUrl) {
         throw new Error("Invalid Checkout URL");
       }
+      router.push(data.checkoutUrl);
     },
 
-    onError: (error) => {
-      let message: string = "";
-      if (error.message === "Cart Empty") { message = "Your Cart is empty." }
-      else if (error.message === "Undefined Address") { message = "Select address or add a new one to proceed" }
+    onError: (error: any) => {
+      let description = "";
+
+      if (error.message === "Cart Empty") {
+        description = "Your cart is empty.";
+      } else if (error.message === "Undefined Address") {
+        description = "Please select a shipping address.";
+      }
+
       toast({
         title: error.message,
-        description: message,
+        description,
         variant: "destructive",
       });
     },
@@ -128,6 +137,7 @@ function useOrderHook() {
   })
   return {
     placeOrder,
+    isPending,
     myOrders,
     myOrdersLoading,
     refetchMyOrders,

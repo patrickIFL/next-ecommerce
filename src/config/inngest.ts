@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Inngest } from "inngest";
 import prisma from "@/app/db/prisma";
 
@@ -181,8 +182,9 @@ export const createUserOrder = inngest.createFunction(
   { event: "order/created" },
   async ({ events }) => {
     for (const event of events) {
-      const data: OrderCreatedEventData = event.data;
+      const data = event.data;
 
+      /* ================= CREATE ORDER ================= */
       const order = await prisma.order.create({
         data: {
           userId: data.userId,
@@ -190,28 +192,46 @@ export const createUserOrder = inngest.createFunction(
           amount: Math.floor(data.amount),
           orderDate: data.orderDate,
           shippingMethod: data.shippingMethod,
+
           items: {
-            create: data.items,
+            create: data.items.map((item: any) => ({
+              productId: item.productId,
+              variantId: item.variantId ?? null, // ✅ VARIANT SAFE
+              quantity: item.quantity,
+              name: item.name,
+              price: item.price,
+            })),
           },
         },
       });
 
+      /* ================= CREATE PAYMENT ================= */
       await prisma.payment.create({
         data: {
           userId: data.userId,
-          orderId: order.id, // <-- linking payment to order
+          orderId: order.id,
+
           paymongo_payment_id: data.paymongoPaymentId,
           paymongo_checkout_id: data.paymongoCheckoutId,
           paymongo_payment_intent_id: data.paymongoIntentId,
-          amount: data.amount,
-          tax: data.tax,
-          shipping: data.shipping,
+
+          amount: Math.floor(data.amount),
+          tax: Math.floor(data.tax ?? 0),
+          shipping: Math.floor(data.shipping ?? 0),
+
           payer_name: data.payerName ?? "",
           payer_email: data.payerEmail ?? "",
           payer_phone: data.payerPhone ?? "",
+
           method: data.method,
           currency: data.currency,
-          line_items: JSON.parse(data.line_items),
+
+          line_items:
+            typeof data.line_items === "string"
+              ? JSON.parse(data.line_items)
+              : Array.isArray(data.line_items)
+              ? data.line_items
+              : [],
         },
       });
     }

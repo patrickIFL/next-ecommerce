@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -36,7 +35,6 @@ type AddToCartPayload = {
 
 function useCartHook() {
   const { toast } = useToast();
-  const { getToken } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -44,15 +42,14 @@ function useCartHook() {
   const { mutateAsync: handleAddToCart, isPending: addToCartLoading } =
     useMutation({
       mutationFn: async (payload: AddToCartPayload) => {
-        const token = await getToken();
 
         const res = await fetch("/api/cart/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         });
 
         const data = await res.json();
@@ -77,15 +74,14 @@ function useCartHook() {
   /* ================= BUY NOW ================= */
   const { mutateAsync: handleBuyNow, isPending: buyNowLoading } = useMutation({
     mutationFn: async (payload: AddToCartPayload) => {
-      const token = await getToken();
 
       const res = await fetch("/api/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -109,11 +105,11 @@ function useCartHook() {
   } = useQuery<CartItem[]>({
     queryKey: ["cartItems"],
     queryFn: async () => {
-      const token = await getToken();
       const res = await fetch("/api/cart/get", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -125,15 +121,14 @@ function useCartHook() {
   /* ================= UPDATE QUANTITY ================= */
   const { mutate: updateCartQuantity } = useMutation({
     mutationFn: async (data: { cartItemId: string; quantity: number }) => {
-      const token = await getToken();
 
       const res = await fetch(`/api/cart/update/${data.cartItemId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ quantity: data.quantity }),
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Failed to update quantity");

@@ -69,16 +69,18 @@ model Product {
 }
 
 model ProductVariant {
-  id         String     @id @default(cuid())
+  id         String      @id @default(cuid())
   productId  String
   name       String
-  sku        String?    @unique
+  sku        String?     @unique
   price      Int?
   salePrice  Int?
   stock      Int
   imageIndex Int?
-  product    Product    @relation(fields: [productId], references: [id])
+  product    Product     @relation(fields: [productId], references: [id])
   cartItems  CartItem[]
+  orderItems OrderItem[]
+  stockReservations StockReservation[]
 
   @@index([productId])
 }
@@ -107,20 +109,17 @@ model CartItem {
   productId String
   variantId String?
 
-  quantity  Int @default(1)
+  quantity Int @default(1)
 
-  user     User            @relation(fields: [userId], references: [id])
-  product  Product         @relation(fields: [productId], references: [id])
-  variant  ProductVariant? @relation(fields: [variantId], references: [id])
+  user    User            @relation(fields: [userId], references: [id])
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, productId, variantId])
 }
-
-
-
 
 enum ShippingStatus {
   pending
@@ -177,13 +176,19 @@ model Payment {
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  productId String? // nullable
-  name      String // snapshot of product name
-  price     Int // snapshot of product price
+  productId String
+  variantId String? // 👈 KEY ADDITION
   quantity  Int
+  name      String
+  price     Int
 
-  order   Order    @relation(fields: [orderId], references: [id])
-  product Product? @relation(fields: [productId], references: [id])
+  order   Order           @relation(fields: [orderId], references: [id])
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([variantId])
 }
 
 // ShippingAddress
@@ -206,14 +211,19 @@ model ShippingAddress {
 }
 
 model StockReservation {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
+  variantId String?
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
   userId    String
   quantity  Int
   createdAt DateTime @default(now())
   expiresAt DateTime
   fulfilled Boolean  @default(false)
-  restored  Boolean  @default(false) // true if we restored stock due to expire/failure
-  meta      Json? // optional: store extra metadata (cart item snapshot, etc.)
+  restored  Boolean  @default(false)
+  meta      Json?
+
+  @@index([variantId])
+
 }
