@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/app/db/prisma";
 import { paymongo } from "@/lib/paymongo";
+// import { inngest } from "@/src/config/inngest";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,13 +24,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    /* ================= CART ================= */
+    // 1️⃣ Get cart items
     const cartItems = await prisma.cartItem.findMany({
       where: { userId },
-      include: {
-        product: true,
-        variant: true,
-      },
     });
 
     if (!cartItems.length) {
@@ -39,117 +36,121 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* ================= RESERVE STOCK ================= */
-    const reservationIds = await prisma.$transaction(async (tx) => {
-      const ids: string[] = [];
+    // 🔥 2️⃣ ATOMIC STOCK VALIDATION + RESERVATIONS
+    let reservationIds: string[] = [];
 
-      for (const item of cartItems) {
-        const isVariant = !!item.variantId;
+    try {
+      reservationIds = await prisma.$transaction(async (tx) => {
+        const createdReservations: string[] = [];
 
-        // 1️⃣ Load stock source
-        const stockSource = isVariant
-          ? await tx.productVariant.findUnique({
-              where: { id: item.variantId! },
-              select: { stock: true, name: true },
-            })
-          : await tx.product.findUnique({
-              where: { id: item.productId },
-              select: { stock: true, name: true },
-            });
-
-        if (!stockSource) {
-          throw new Error("Product not found");
-        }
-
-        // 2️⃣ Sum existing reservations
-        const reserved = await tx.stockReservation.aggregate({
-          where: {
-            productId: item.productId,
-            variantId: item.variantId ?? null,
-            fulfilled: false,
-            restored: false,
-          },
-          _sum: { quantity: true },
-        });
-
-        const reservedQty = reserved._sum.quantity ?? 0;
-        const available = stockSource.stock - reservedQty;
-
-        if (available < item.quantity) {
-          throw new Error(
-            `Insufficient stock for ${stockSource.name}. Available: ${available}`
-          );
-        }
-
-        // 3️⃣ Decrement stock
-        if (isVariant) {
-          await tx.productVariant.update({
-            where: { id: item.variantId! },
-            data: { stock: { decrement: item.quantity } },
+        for (const item of cartItems) {
+          // ALWAYS fetch latest stock inside transaction
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { stock: true, name: true, price: true },
           });
-        } else {
+
+          if (!product) {
+            throw new Error("Product not found: " + item.productId);
+          }
+
+          // ❗ 1. Early check
+          if (product.stock < item.quantity) {
+            throw new Error(
+              `Insufficient stock for ${product.name}. Available: ${product.stock}`
+            );
+          }
+
+          // ❗ 2. Check EXISTING reservations
+          const reserved = await tx.stockReservation.aggregate({
+            where: {
+              productId: item.productId,
+              fulfilled: false,
+              restored: false,
+            },
+            _sum: { quantity: true },
+          });
+
+          const reservedQty = reserved._sum.quantity ?? 0;
+          const availableBefore = product.stock - reservedQty;
+
+          if (availableBefore < item.quantity) {
+            throw new Error(
+              `Insufficient stock for ${product.name}. Available: ${availableBefore}`
+            );
+          }
+
+          // ❗ 3. ATOMIC decrement stock
           await tx.product.update({
             where: { id: item.productId },
             data: { stock: { decrement: item.quantity } },
           });
+
+          // ❗ 4. Create reservation (store ID)
+          const reservation = await tx.stockReservation.create({
+            data: {
+              productId: item.productId,
+              userId,
+              quantity: item.quantity,
+              expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+            },
+          });
+
+          createdReservations.push(reservation.id);
         }
 
-        // 4️⃣ Create reservation
-        const reservation = await tx.stockReservation.create({
-          data: {
-            productId: item.productId,
-            variantId: item.variantId ?? null,
-            userId,
-            quantity: item.quantity,
-            expiresAt: new Date(Date.now() + 10 * 60 * 1000),
-          },
-        });
+        return createdReservations;
+      });
+    } catch (err: any) {
+      return NextResponse.json(
+        { success: false, message: err.message },
+        { status: 400 }
+      );
+    }
 
-        ids.push(reservation.id);
-      }
-
-      return ids;
+    // User's Cart is valid, you may now include the products
+    const cartItemsWithProduct = await prisma.cartItem.findMany({
+      where: { userId },
+      include: { product: true },
     });
 
-    /* ================= TOTALS ================= */
-    const subtotal = cartItems.reduce((acc, item) => {
-      const price =
-        item.variant?.salePrice ??
-        item.variant?.price ??
-        item.product.salePrice ??
-        item.product.price ??
-        0;
+    // 2️⃣ Calculate totals
+    const subtotal = cartItemsWithProduct.reduce(
+      (acc, item) => acc + item.quantity * 
+      (item.product.isOnSale 
+        ? item.product.salePrice ? item.product.salePrice : item.product.price  
+        : item.product.price),
+      0
+    );
 
-      return acc + price * item.quantity;
-    }, 0);
+    // Apply TAX and SHIPPING
 
-    const taxRate = Number(process.env.NEXT_PUBLIC_TAX || 0);
-    const shipping = Number(process.env.NEXT_PUBLIC_SHIPPING || 0);
+    const tax = Math.floor(Number(process.env.NEXT_PUBLIC_TAX) || 0);
+    const shipping = Math.floor(Number(process.env.NEXT_PUBLIC_SHIPPING) || 0);
 
-    const taxValue = Math.floor(subtotal * (taxRate / 100));
+    const taxValue = Math.floor(subtotal * (tax / 100));
+    // const total = subtotal + taxValue + shipping;
 
-    /* ================= PAYMONGO ================= */
     const lineItems = [
-      ...cartItems.map((item) => ({
-        name: item.variant?.name ?? item.product.name,
+      ...cartItemsWithProduct.map((item) => ({
+        name: item.product.name,
         quantity: item.quantity,
-        amount:
-          item.variant?.salePrice ??
-          item.variant?.price ??
-          item.product.salePrice ??
-          item.product.price,
+        amount: Math.floor(
+          item.product.isOnSale 
+          ? item.product.salePrice ? item.product.salePrice : item.product.price 
+          : item.product.price), // Already converted
         currency: "PHP",
       })),
       {
         name: "Tax",
         quantity: 1,
-        amount: taxValue,
+        amount: taxValue, // Remove if no tax
         currency: "PHP",
       },
       {
         name: "Shipping",
         quantity: 1,
-        amount: shipping * 100,
+        amount: shipping * 100, // Remove if no shipping
         currency: "PHP",
       },
     ];
@@ -168,27 +169,28 @@ export async function POST(req: NextRequest) {
           description: "Next-Ecommerce",
           success_url:
             platform === "mobile"
-              ? process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}`
               : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
           cancel_url:
             platform === "mobile"
-              ? process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}`
               : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
           metadata: {
             userId,
             selectedAddressId,
-            reservations: JSON.stringify({ list: reservationIds }),
-            cartItems: JSON.stringify(
-              cartItems.map((item) => ({
-                productId: item.productId,
-                variantId: item.variantId ?? null,
+            reservations: JSON.stringify({list: reservationIds}),
+            cartItems: JSON.stringify(cartItemsWithProduct),
+            lineItems: JSON.stringify(
+              cartItemsWithProduct.map((item) => ({
+                name: item.product.name,
                 quantity: item.quantity,
-                name: item.variant?.name ?? item.product.name,
-                price:
-                  item.variant?.salePrice ??
-                  item.variant?.price ??
-                  item.product.salePrice ??
-                  item.product.price,
+                amount: Math.floor(
+                          item.product.isOnSale 
+                             ? item.product.salePrice ? item.product.salePrice : item.product.price 
+                             : item.product.price),
+                currency: "PHP",
+                images: item.product.image ? [item.product.image] : [],
+                description: item.product.description || "",
               }))
             ),
           },
@@ -196,9 +198,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const session = checkoutSession.data.data;
+
     return NextResponse.json({
-      checkoutUrl: checkoutSession.data.data.attributes.checkout_url,
-      totalAmount: subtotal + taxValue + shipping,
+      checkoutUrl: session.attributes.checkout_url,
+      totalAmount: subtotal,
     });
   } catch (error: any) {
     console.error("Order creation error:", error);

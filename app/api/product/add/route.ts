@@ -5,11 +5,6 @@ import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/app/db/prisma";
 import authSeller from "@/lib/authSeller";
 
-// Revamp, separated the 3 sections of this route,
-// 1 Upload the Images, slow, wait to finish
-// 2 Prisma tx
-// 3 Respond
-
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
   api_key: process.env.CLOUDINARY_API_KEY!,
@@ -18,16 +13,16 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
-    /* ================= AUTH ================= */
     const { userId } = getAuth(request);
-    if (!userId || !(await authSeller(userId))) {
+    const isSeller = await authSeller(userId);
+
+    if (!isSeller) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    /* ================= PARSE ================= */
     const formData = await request.formData();
 
     const name = formData.get("name") as string | null;
@@ -38,11 +33,12 @@ export async function POST(request: NextRequest) {
 
     const price = formData.get("price") as string | null;
     const salePrice = formData.get("salePrice") as string | null;
-    const stock = formData.get("stock") as string | null;
 
+    // because "" will trigger unique constraint
     const rawSku = formData.get("sku") as string | null;
     const sku = rawSku && rawSku.trim() !== "" ? rawSku.trim() : null;
 
+    const stock = formData.get("stock") as string | null;
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations");
 
@@ -53,41 +49,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!["SIMPLE", "VARIATION"].includes(type)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid product type" },
-        { status: 400 }
-      );
-    }
-
-    /* ================= SIMPLE VALIDATION ================= */
-    if (type === "SIMPLE") {
-      if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
-        return NextResponse.json(
-          { success: false, message: "Price must be greater than 0" },
-          { status: 400 }
-        );
-      }
-
-      if (!Number.isFinite(Number(stock)) || Number(stock) < 0) {
-        return NextResponse.json(
-          { success: false, message: "Stock must be 0 or greater" },
-          { status: 400 }
-        );
-      }
-
-      if (sku) {
-        const skuExists = await prisma.product.findUnique({ where: { sku } });
-        if (skuExists) {
-          return NextResponse.json(
-            { success: false, message: "SKU already exists" },
-            { status: 400 }
-          );
-        }
-      }
-    }
-
-    /* ================= VARIATIONS ================= */
     let variations: any[] = [];
 
     if (type === "VARIATION") {
@@ -108,87 +69,170 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    /* ================= SEARCH KEYS ================= */
-    const search_keys = searchKeysRaw ? JSON.parse(searchKeysRaw) : [];
+    // validate
 
-    /* ================= ATTRIBUTES ================= */
-    const attributes = attributesRaw ? JSON.parse(attributesRaw) : [];
-
-    /* ================= IMAGES (OUTSIDE TX) ================= */
-    const files = formData.getAll("images") as File[];
-    if (!files.length) {
+    if (!["SIMPLE", "VARIATION"].includes(type)) {
       return NextResponse.json(
-        { success: false, message: "No images uploaded" },
+        { success: false, message: "Invalid product type" },
         { status: 400 }
       );
     }
 
+    if (type === "SIMPLE") {
+      if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
+        return NextResponse.json(
+          { success: false, message: "Price must be greater than 0" },
+          { status: 400 }
+        );
+      }
+
+      if (!Number.isFinite(Number(stock)) || Number(stock) < 0) {
+        return NextResponse.json(
+          { success: false, message: "Stock must be 0 or greater" },
+          { status: 400 }
+        );
+      }
+
+      if (sku) {
+        const skuExist = await prisma.product.findUnique({
+          where: { sku },
+        });
+
+        if (skuExist) {
+          return NextResponse.json(
+            { success: false, message: "SKU already exists" },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    const files = formData.getAll("images") as File[];
+
+    if (!files || files.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "No Images uploaded. Upload some." },
+        { status: 400 }
+      );
+    }
+
+    let search_keys: string[] = [];
+
+    if (searchKeysRaw) {
+      try {
+        search_keys = JSON.parse(searchKeysRaw);
+      } catch {
+        return NextResponse.json(
+          { success: false, message: "Invalid search keys format" },
+          { status: 400 }
+        );
+      }
+    }
+
+    let attributes: string[] = [];
+
+    if (attributesRaw) {
+      try {
+        attributes = JSON.parse(attributesRaw);
+      } catch {
+        return NextResponse.json(
+          { success: false, message: "Invalid attributes format" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Upload each image to Cloudinary
     const uploadResults = await Promise.all(
-      files.map(async (file) => {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        return new Promise<any>((resolve, reject) => {
+      files.map((file: File) => {
+        return new Promise<any>(async (resolve, reject) => {
+          const buffer = Buffer.from(await file.arrayBuffer());
+
           const stream = cloudinary.uploader.upload_stream(
             { resource_type: "auto" },
-            (err, result) => (err ? reject(err) : resolve(result))
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
           );
+
           stream.end(buffer);
         });
       })
     );
 
-    const imageUrls = uploadResults.map((r) => r.secure_url);
+    // Extract URLs
+    const imageUrls = uploadResults.map((r) => r.secure_url as string);
 
-    /* ================= DATABASE (FAST TX) ================= */
     const product = await prisma.$transaction(async (tx) => {
-      const parent = await tx.product.create({
+      // Create the Parent Product First,
+      const parentProduct = await tx.product.create({
         data: {
-          userId,
-          name,
-          description,
-          category,
-          type,
-          image: imageUrls,
-          search_keys,
-          attributes,
-          sku,
+          userId: userId!,
+          name: name!,
+          description: description!,
+          category: category!,
           price: type === "SIMPLE" ? Math.round(Number(price) * 100) : null,
           salePrice:
             type === "SIMPLE" && salePrice
               ? Math.round(Number(salePrice) * 100)
               : null,
+          sku: sku,
           stock: type === "SIMPLE" ? Number(stock) : null,
+          search_keys,
+          attributes,
+          image: imageUrls,
+          type: type.toUpperCase() as "SIMPLE" | "VARIATION",
         },
       });
 
       if (type === "VARIATION") {
-        await tx.productVariant.createMany({
-          data: variations.map((v) => ({
-            productId: parent.id,
+        const variantData = variations.map((v) => {
+          // Validate per-variant (IMPORTANT)
+          if (!v.name || typeof Number(v.stock) !== "number") {
+            throw new Error("Invalid variation data");
+          }
+
+          if (!Number.isFinite(v.price) || v.price <= 0) {
+            throw new Error(`Invalid price for variation: ${v.name}`);
+          }
+
+          if (!Number.isFinite(v.stock) || v.stock < 0) {
+            throw new Error(`Invalid stock for variation: ${v.name}`);
+          }
+
+          return {
+            productId: parentProduct.id,
             name: v.name,
-            sku: v.sku || null,
+            sku: v.sku && v.sku.trim() !== "" ? v.sku.trim() : null,
             price: Math.round(v.price * 100),
             salePrice:
               v.salePrice && v.salePrice > 0
                 ? Math.round(v.salePrice * 100)
                 : null,
             stock: v.stock,
-            imageIndex: v.imageIndex,
-          })),
+            imageIndex: v.imageIndex, // 👈 index of parent image
+          };
+        });
+
+        await tx.productVariant.createMany({
+          data: variantData,
+          skipDuplicates: true, // avoids SKU conflicts crashing everything
         });
       }
 
-      return parent;
+      return parentProduct;
     });
 
     return NextResponse.json({
       success: true,
-      message: "Upload Successful",
+      message: "Upload Successful.",
       product: product.id,
     });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json(
-      { success: false, message: error.message || "Server error" },
+      { success: false, message: error.message },
       { status: 400 }
     );
   }

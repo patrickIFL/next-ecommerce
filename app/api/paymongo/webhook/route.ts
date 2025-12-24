@@ -6,33 +6,35 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const eventType = body.data?.attributes?.type;
 
-    console.log("🔔 PayMongo Event:", eventType);
+    const eventType = body.data?.attributes?.type;
+    console.log("🔔 Event type:", eventType);
 
     if (eventType === "checkout_session.payment.paid") {
       const session = body.data.attributes.data;
+      const checkout_id = session.id;
       const payment = session.attributes.payments[0];
-      const metadata = session.attributes.metadata;
-
-      /* ================= PAYMENT INFO ================= */
-      const checkoutId = session.id;
-      const paymentId = payment.id;
-      const paymentIntentId = session.attributes.payment_intent.id;
-
-      const payer = payment.attributes.billing;
-
-      /* ================= METADATA ================= */
-      const userId = metadata.userId;
-      const shippingAddressId = metadata.selectedAddressId;
-
-      const cartItems = JSON.parse(metadata.cartItems);
-      const reservations = JSON.parse(metadata.reservations).list;
-
-      const amount = payment.attributes.amount;
       const currency = payment.attributes.currency;
+      const payment_intent = session.attributes.payment_intent;
+      const payment_intent_id = payment_intent.id;
+      const payment_id = payment.id;
+      const customer_name = payment.attributes.billing.name;
+      const customer_email = payment.attributes.billing.email;
+      const customer_phone = payment.attributes.billing.phone;
+      const payment_method = payment.attributes.source.type;
+      const payment_date = payment.attributes.paid_at;
 
-      /* ================= RESERVATIONS ================= */
+      const metadata = session.attributes.metadata;
+      const amount = payment.attributes.amount;
+      const userId = metadata.userId;
+      const selectedAddressId = metadata.selectedAddressId;
+      const cartItems = JSON.parse(metadata.cartItems);
+      const reservations_obj = JSON.parse(metadata.reservations);
+      const reservations = reservations_obj.list;
+      const line_items = metadata.lineItems;
+
+      // Update reservations
+      // Update reservations
       await prisma.$transaction(
         reservations.map((id: string) =>
           prisma.stockReservation.update({
@@ -42,76 +44,64 @@ export async function POST(req: NextRequest) {
         )
       );
 
-      /* ================= ORDER ITEMS ================= */
+      // Prepare items for nested create
       const items = cartItems.map((item: any) => ({
-        productId: item.productId,
-        variantId: item.variantId ?? null,
-        quantity: Math.floor(item.quantity),
-        name: item.name,
-        price: Math.floor(item.price),
+        productId: item.productId ?? null,
+        quantity: Math.floor(item.quantity ?? 1),
+        name: item.product?.name ?? "Unknown Product",
+        price: Math.floor(item.product?.salePrice ?? 0),
       }));
 
-      /* ================= EMIT ORDER EVENT ================= */
       await inngest.send({
         name: "order/created",
         data: {
           userId,
-          shippingAddressId,
+          shippingAddressId: selectedAddressId,
           amount,
           orderDate: new Date(),
           shippingMethod: "standard",
           items,
-
-          // payment metadata
-          paymongoPaymentId: paymentId,
-          paymongoCheckoutId: checkoutId,
-          paymongoIntentId: paymentIntentId,
-          payerName: payer.name,
-          payerEmail: payer.email,
-          payerPhone: payer.phone,
-          method: payment.attributes.source.type,
-          payment_date: payment.attributes.paid_at,
+          // values for payment object
+          paymongoPaymentId: payment_id,
+          paymongoCheckoutId: checkout_id,
+          paymongoIntentId: payment_intent_id,
+          payerName: customer_name,
+          payerEmail: customer_email,
+          payerPhone: customer_phone,
+          method: payment_method,
+          payment_date,
+          tax: 123,
+          shipping: 123,
           currency,
-
-          // optional accounting
-          tax: 0,
-          shipping: 0,
-          line_items: metadata.lineItems
-            ? JSON.parse(metadata.lineItems)
-            : [],
+          line_items: line_items,
         },
       });
 
-      /* ================= CLEAR CART ================= */
-      await prisma.cartItem.deleteMany({
-        where: { userId },
-      });
+      // 5️⃣ Clear cart
+      await prisma.cartItem.deleteMany({ where: { userId } });
 
       return NextResponse.json({ success: true });
-    }
-
-    /* ================= PAYMENT FAILED ================= */
-    if (eventType === "payment.failed") {
+    } else if (eventType === "payment.failed") {
       const session = body.data.attributes.data;
-      const reservations = JSON.parse(
-        session.attributes.metadata.reservations
-      ).list;
+      const metadata = session.attributes.metadata;
+      const reservations_obj = JSON.parse(metadata.reservations);
+      const reservations = reservations_obj.list;
 
+      // Update reservations
       await prisma.$transaction(
-        reservations.map((id: string) =>
+        reservations.map((id: any) =>
           prisma.stockReservation.update({
             where: { id },
-            data: { restored: true },
+            data: { fulfilled: true },
           })
         )
       );
-
       return NextResponse.json({ success: true });
     }
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
-    console.error("❌ Webhook error:", error);
-    return new NextResponse("Webhook error", { status: 500 });
+    console.error("❌ Error in webhook handler:", error);
+    return new NextResponse("Server error", { status: 500 });
   }
 }
