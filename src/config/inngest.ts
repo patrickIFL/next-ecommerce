@@ -243,9 +243,9 @@ export const restoreExpiredReservations = inngest.createFunction(
     id: "restore-expired-stock-reservations",
   },
   {
-    cron: "*/5 * * * *", // runs every 5 minutes
+    cron: "*/5 * * * *", // every 5 minutes
   },
-  async ({ step }) => {
+  async () => {
     console.log("[Stock Cron] Running expired reservation cleanup...");
 
     const now = new Date();
@@ -266,65 +266,76 @@ export const restoreExpiredReservations = inngest.createFunction(
         break;
       }
 
-      const restoreMap: Record<string, number> = {};
+      // Split reservations by target
+      const productRestoreMap: Record<string, number> = {};
+      const variantRestoreMap: Record<string, number> = {};
+
       for (const r of expiredBatch) {
-        restoreMap[r.productId] = (restoreMap[r.productId] ?? 0) + r.quantity;
+        if (r.variantId) {
+          variantRestoreMap[r.variantId] =
+            (variantRestoreMap[r.variantId] ?? 0) + r.quantity;
+        } else {
+          productRestoreMap[r.productId] =
+            (productRestoreMap[r.productId] ?? 0) + r.quantity;
+        }
       }
 
-      // Restore stock
       await prisma.$transaction(async (tx) => {
-        for (const [productId, qty] of Object.entries(restoreMap)) {
+        // 🔁 Restore SIMPLE product stock
+        for (const [productId, qty] of Object.entries(productRestoreMap)) {
           await tx.product.update({
             where: { id: productId },
             data: { stock: { increment: qty } },
           });
+        }
 
-          await tx.stockReservation.updateMany({
-            where: {
-              productId,
-              expiresAt: { lt: now },
-              fulfilled: false,
-              restored: false,
-            },
-            data: { restored: true },
+        // 🔁 Restore VARIANT stock
+        for (const [variantId, qty] of Object.entries(variantRestoreMap)) {
+          await tx.productVariant.update({
+            where: { id: variantId },
+            data: { stock: { increment: qty } },
           });
         }
+
+        // ✅ Mark reservations as restored
+        await tx.stockReservation.updateMany({
+          where: {
+            id: { in: expiredBatch.map((r) => r.id) },
+          },
+          data: { restored: true },
+        });
       });
 
       console.log(
-        `[Stock Cron] Restored stock for ${expiredBatch.length} expired reservations.`
+        `[Stock Cron] Restored ${expiredBatch.length} expired reservations.`
       );
     }
 
-    // Archive only products that STILL have stock = 0 after restoration
+    // 🧹 ARCHIVE SIMPLE PRODUCTS
     await prisma.product.updateMany({
       where: {
-        stock: 0,
         type: "SIMPLE",
-        isArchived: false, // avoid unnecessary writes
+        stock: 0,
+        isArchived: false,
       },
-      data: {
-        isArchived: true,
-      },
+      data: { isArchived: true },
     });
 
+    // 🧹 ARCHIVE VARIATION PRODUCTS (ALL variants OOS)
     await prisma.product.updateMany({
       where: {
         type: "VARIATION",
         isArchived: false,
         variants: {
           none: {
-            stock: {
-              gt: 0, // ❗ no variant with stock > 0
-            },
+            stock: { gt: 0 },
           },
         },
       },
-      data: {
-        isArchived: true,
-      },
+      data: { isArchived: true },
     });
 
-    console.log("[Stock Cron] Finished expired reservation and OOS cleanup.");
+    console.log("[Stock Cron] Finished expired reservation & OOS cleanup.");
   }
 );
+
