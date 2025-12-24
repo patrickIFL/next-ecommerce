@@ -24,19 +24,21 @@ const Product = () => {
   const { products } = useProductHook();
   const { wishlist } = useWishlist();
 
+  const [qty, setQty] = useState(1);
+
   const dummyRating: number = 4.5;
   const dummyRatingCount: number = 13;
 
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
-  const currency = process.env.NEXT_PUBLIC_CURRENCY;
+  const currency = process.env.NEXT_PUBLIC_CURRENCY ?? "";
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
 
-  const [variations, setVariations] = useState<Required<VariationsMap>>({
-    varA: [],
-    varB: [],
+  const [variations, setVariations] = useState<VariationsMap>({
+    varA: null,
+    varB: null,
   });
 
   // Automatic Price Detection -- START A
@@ -67,6 +69,7 @@ const Product = () => {
 
       return true;
     }) ?? null;
+
   // Automatic Price Detection -- END A
 
   function extractVariations(variants: Variant[]): Required<VariationsMap> {
@@ -105,10 +108,11 @@ const Product = () => {
 
   // Automaticelly Select the first variation when variations change
   useEffect(() => {
-    if (variations.varA?.length > 0) {
+    if (variations.varA && variations.varA.length > 0) {
       setSelectedVarA(variations.varA[0]);
     }
-    if (variations.varB?.length > 0) {
+
+    if (variations.varB && variations.varB.length > 0) {
       setSelectedVarB(variations.varB[0]);
     }
   }, [variations]);
@@ -141,10 +145,19 @@ const Product = () => {
     ? productData.salePrice ?? productData.price
     : productData.price;
 
-  const displayStock = selectedVariant?.stock ?? null;
+  const displayStock: number | undefined = selectedVariant?.stock ?? undefined;
+
   const requiresVariation = productData.type === "VARIATION";
 
   const canPurchase = !requiresVariation || selectedVariant;
+
+  const varA = variations.varA ?? [];
+  const varB = variations.varB ?? [];
+
+  const maxQty: number | undefined =
+    productData.type === "SIMPLE"
+      ? productData.stock ?? undefined
+      : displayStock;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -153,7 +166,7 @@ const Product = () => {
         <div className="px-5 lg:px-16 xl:px-20">
           <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
             <Image
-              src={mainImage || productData.image[0]}
+              src={mainImage ?? productData.image?.[0] ?? ""}
               alt={productData.name}
               className="w-full h-full object-cover"
               width={1280}
@@ -231,7 +244,7 @@ const Product = () => {
             )}
           </p>
 
-          {displayStock !== null && (
+          {productData.type === "VARIATION" && displayStock !== null && (
             <p className="text-sm text-foreground/60 mt-1">
               Stock: {displayStock}
             </p>
@@ -244,14 +257,17 @@ const Product = () => {
           )}
 
           {/* Variations */}
-          {(variations.varA?.length > 0 || variations.varB?.length > 0) && (
+          {(varA.length > 0 || varB.length > 0) && (
             <div className="flex gap-4 mt-4 flex-wrap">
-              {variations.varA?.length > 0 && (
+              {varA.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label className="text-xs">{productData.attributes[0]}</Label>
+                  <Label className="text-xs">
+                    {productData.attributes?.[0] ?? "VarA"}
+                  </Label>
+
                   <VariationComboBox
                     variantName="Size"
-                    variants={variations.varA.map((v) => ({
+                    variants={varA.map((v) => ({
                       value: v,
                       label: v,
                     }))}
@@ -261,12 +277,15 @@ const Product = () => {
                 </div>
               )}
 
-              {variations.varB?.length > 0 && (
+              {varB.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
-                  <Label className="text-xs">{productData.attributes[1]}</Label>
+                  <Label className="text-xs">
+                    {productData.attributes?.[1] ?? "VarB"}
+                  </Label>
+
                   <VariationComboBox
                     variantName="Material"
-                    variants={variations.varB.map((v) => ({
+                    variants={varB.map((v) => ({
                       value: v,
                       label: v,
                     }))}
@@ -277,9 +296,14 @@ const Product = () => {
               )}
             </div>
           )}
+
           <div className="flex flex-col gap-1 mt-3">
             <Label className="text-xs">Quantity</Label>
-            <QuantityInput max={displayStock ?? undefined} />
+            <QuantityInput
+              value={qty}
+              onChange={setQty}
+              max={maxQty}
+            />
           </div>
 
           <hr className="bg-gray-600 my-6" />
@@ -312,6 +336,7 @@ const Product = () => {
                 handleAddToCart({
                   productId: productData.id,
                   variantId: selectedVariant?.id,
+                  quantity: qty,
                 });
               }}
               disabled={!canPurchase || addToCartLoading}
@@ -340,6 +365,7 @@ const Product = () => {
                 handleBuyNow({
                   productId: productData.id,
                   variantId: selectedVariant?.id,
+                  quantity: qty,
                 });
               }}
               disabled={!canPurchase || buyNowLoading}

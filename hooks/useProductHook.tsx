@@ -52,7 +52,9 @@ export type VariationsMap = {
 function useProductHook() {
   const { getToken } = useAuth();
 
-  const { data: products = [], isLoading: productsLoading } = useQuery({
+  const { data: products = [], isLoading: productsLoading } = useQuery<
+    ProductType[]
+  >({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await fetch("/api/product/list");
@@ -61,7 +63,8 @@ function useProductHook() {
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Failed to load products");
       }
-      return data.products as Product[];
+
+      return data.products;
     },
   });
 

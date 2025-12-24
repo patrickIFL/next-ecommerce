@@ -73,6 +73,11 @@ export async function POST(req: NextRequest) {
         });
 
         const reservedQty = reserved._sum.quantity ?? 0;
+        
+        if (stockSource.stock === null) {
+          throw new Error(`Stock not set for ${stockSource.name}`);
+        }
+
         const available = stockSource.stock - reservedQty;
 
         if (available < item.quantity) {

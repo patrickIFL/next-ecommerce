@@ -16,20 +16,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const QUANTITIES = Array.from({ length: 10 }, (_, i) => i + 1);
+type QuantityInputProps = {
+  value: number;
+  onChange: (value: number) => void;
+  max?: number;
+};
 
-export function QuantityInput({ max = 10 }: { max?: number }) {
+export function QuantityInput({
+  value,
+  onChange,
+  max = 10,
+}: QuantityInputProps) {
   const [open, setOpen] = React.useState(false);
-  const [qty, setQty] = React.useState(1);
+
+  const quantities = React.useMemo(
+    () => Array.from({ length: max }, (_, i) => i + 1),
+    [max]
+  );
 
   const decrease = () => {
-    setQty((prev) => Math.max(1, prev - 1));
+    onChange(Math.max(1, value - 1));
   };
 
   const increase = () => {
-    setQty((prev) => Math.min(max, prev + 1));
+    onChange(Math.min(max, value + 1));
   };
 
   return (
@@ -40,7 +52,7 @@ export function QuantityInput({ max = 10 }: { max?: number }) {
         variant="ghost"
         size="icon"
         onClick={decrease}
-        disabled={qty <= 1}
+        disabled={value <= 1}
         className="h-[25px] w-[25px]"
       >
         <Minus size={14} />
@@ -55,38 +67,38 @@ export function QuantityInput({ max = 10 }: { max?: number }) {
             aria-expanded={open}
             className="h-[25px] w-[50px] text-center"
           >
-            {qty}
+            {value}
           </Button>
         </PopoverTrigger>
 
         <PopoverContent className="w-[50px] p-0">
-                <Command>
-                  <ScrollArea className="h-40">
-                    <CommandList className="scrollbar-hide">
-                      <CommandGroup>
-                        {QUANTITIES.filter((n) => n <= max).map((n) => (
-                          <CommandItem
-                            key={n}
-                            value={n.toString()}
-                            onSelect={() => {
-                              setQty(n);
-                              setOpen(false);
-                            }}
-                            className="justify-between"
-                          >
-                            {n}
-                            <Check
-                              className={cn(
-                                "h-4 w-4",
-                                qty === n ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </ScrollArea>
-                </Command>
+          <Command>
+            <ScrollArea className="h-40">
+              <CommandList className="scrollbar-hide">
+                <CommandGroup>
+                  {quantities.map((n) => (
+                    <CommandItem
+                      key={n}
+                      value={n.toString()}
+                      onSelect={() => {
+                        onChange(n);
+                        setOpen(false);
+                      }}
+                      className="justify-between"
+                    >
+                      {n}
+                      <Check
+                        className={cn(
+                          "h-4 w-4",
+                          value === n ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </ScrollArea>
+          </Command>
         </PopoverContent>
       </Popover>
 
@@ -96,7 +108,7 @@ export function QuantityInput({ max = 10 }: { max?: number }) {
         variant="ghost"
         size="icon"
         onClick={increase}
-        disabled={qty >= max}
+        disabled={value >= max}
         className="h-[25px] w-[25px]"
       >
         <Plus size={14} />
