@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       const shippingAddressId = metadata.selectedAddressId;
 
       // const cartItems = JSON.parse(metadata.cartItems);
-      const reservations = JSON.parse(metadata.reservations);
+      const reservations = JSON.parse(metadata.reservations).list;
 
       const reservedItems = await prisma.stockReservation.findMany({
         where: { id: { in: reservations } },
