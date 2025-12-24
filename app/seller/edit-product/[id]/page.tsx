@@ -30,7 +30,7 @@ const EditProduct = () => {
   const [salePrice, setsalePrice] = useState("");
 
   // NEW =====================================
-  const [variations, setVariations] = useState("");
+  // const [variations, setVariations] = useState("");
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
@@ -61,7 +61,7 @@ const EditProduct = () => {
     // Convert array → "val1, val2, val3"
     setSearchKeys(productData.search_keys.join(", "));
     // If you also have variations:
-    setVariations(productData.variations.join(", "));
+    // setVariations(productData.variations.join(", "));
 
     // images
     setFiles([]);
@@ -97,10 +97,10 @@ const EditProduct = () => {
         .filter((key) => key.length > 0);
 
       // Convert variations if needed
-      const variationsArray = variations
-        .split(",")
-        .map((v) => v.trim())
-        .filter((v) => v.length > 0);
+      // const variationsArray = variations
+      //   .split(",")
+      //   .map((v) => v.trim())
+      //   .filter((v) => v.length > 0);
 
       formData.append("name", name);
       formData.append("description", description);
@@ -111,7 +111,7 @@ const EditProduct = () => {
       formData.append("stock", stock);
       // ADD THESE
       formData.append("search_keys", JSON.stringify(searchKeysArray));
-      formData.append("variations", JSON.stringify(variationsArray));
+      // formData.append("variations", JSON.stringify(variationsArray));
 
       // Append images with indexed keys to match backend
       files.forEach((file: File, index: number) => {
@@ -233,7 +233,7 @@ const EditProduct = () => {
             ></Textarea>
           </div>
 
-          <div className="flex flex-col gap-1 w-full">
+          {/* <div className="flex flex-col gap-1 w-full">
             <label className="text-base font-medium" htmlFor="product-variations">
               Product Variations
             </label>
@@ -245,7 +245,7 @@ const EditProduct = () => {
               onChange={(e) => setVariations(e.target.value)}
               value={variations}
             ></Textarea>
-          </div>
+          </div> */}
         </div>
 
         {/* Column 2 */}

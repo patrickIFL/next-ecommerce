@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest) {
     const sku = formData.get("sku") as string | null;
     const stock = formData.get("stock") as string | null;
     const searchKeysRaw = formData.get("search_keys") as string | null;
-    const variationsRaw = formData.get("variations") as string | null;
+    // const variationsRaw = formData.get("variations") as string | null;
 
     // validate
 
@@ -97,9 +97,9 @@ export async function PATCH(request: NextRequest) {
       ? JSON.parse(searchKeysRaw)
       : oldProduct.search_keys;
 
-    const variations: string[] = variationsRaw
-      ? JSON.parse(variationsRaw)
-      : oldProduct.variations;
+    // const variations: string[] = variationsRaw
+    //   ? JSON.parse(variationsRaw)
+    //   : oldProduct.variations;
 
     // ---- Image Handling ----
     const newFiles: (File | null)[] = [];
@@ -143,7 +143,7 @@ export async function PATCH(request: NextRequest) {
       oldProduct.sku !== sku ||
       oldProduct.stock !== Number(stock) ||
       JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
-      JSON.stringify(oldProduct.variations) !== JSON.stringify(variations) ||
+      // JSON.stringify(oldProduct.variations) !== JSON.stringify(variations) ||
       imagesChanged;
 
     if (!changesMade) {
@@ -166,7 +166,7 @@ export async function PATCH(request: NextRequest) {
         sku: sku!,
         stock: Number(stock),
         search_keys,
-        variations,
+        // variations,
         image: finalImages,
       },
     });
