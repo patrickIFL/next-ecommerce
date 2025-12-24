@@ -10,31 +10,7 @@ import {
 import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
-
-interface CartProduct {
-  id: string;
-  name: string;
-  image: string[];
-  price: number;
-  salePrice?: number | null;
-  isOnSale: boolean;
-}
-
-interface CartVariant {
-  id: string;
-  name: string;
-  price?: number | null;
-  salePrice?: number | null;
-  stock: number;
-  imageIndex: number;
-}
-
-interface CartItem {
-  id: string;
-  quantity: number;
-  product: CartProduct;
-  variant?: CartVariant | null;
-}
+import { CartItem } from "@/types/cart";
 
 interface CartCardProps {
   item: CartItem;
@@ -56,13 +32,17 @@ function CartCard({ item }: CartCardProps) {
   }, [item.quantity]);
 
   /* ================= PRICE RESOLUTION ================= */
-  const unitPrice = variant
-    ? product.isOnSale
-      ? variant.salePrice ?? variant.price
-      : variant.price
-    : product.isOnSale
-    ? product.salePrice ?? product.price
-    : product.price;
+  const unitPrice: number = (() => {
+    if (variant) {
+      return product.isOnSale
+        ? variant.salePrice ?? variant.price ?? 0
+        : variant.price ?? 0;
+    }
+
+    return product.isOnSale
+      ? product.salePrice ?? product.price ?? 0
+      : product.price ?? 0;
+  })();
 
   const totalPrice = formatMoney((unitPrice ?? 0) * quantity);
 

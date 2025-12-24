@@ -9,6 +9,7 @@ import { MoveLeft, ShoppingCart } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { CartItem } from "@/types/cart";
 
 const Cart = () => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const Cart = () => {
     );
   } else {
     cartContent = cartItems.map(item => (
-      <CartCard key={item.id} item={item} />
+      <CartCard key={item.id} item={item as CartItem} />
     ));
   }
 
