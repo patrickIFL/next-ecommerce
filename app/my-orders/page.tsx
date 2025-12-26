@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronDown, PackageOpen } from "lucide-react";
@@ -76,7 +76,7 @@ const MyOrders: React.FC = () => {
                 const isOpen = openOrder === order.id;
 
                 /* ================= PRODUCT CIRCLES ================= */
-                const productUrls = order.items.map((item: any) => {
+                const productUrls = order.items.slice(0, 5).map((item: any) => {
                   const product = item.product;
                   const variant = item.variant ?? null;
                   const imageIndex = variant?.imageIndex ?? 0;
@@ -93,7 +93,7 @@ const MyOrders: React.FC = () => {
                 const firstVariant = firstItem?.variant ?? null;
 
                 return (
-                  <>
+                  <React.Fragment key={order.id}>
                     {/* ================= PARENT ROW ================= */}
                     <tr className="border-b border-accent align-top">
                       {/* ORDER */}
@@ -119,9 +119,10 @@ const MyOrders: React.FC = () => {
                                   </>
                                 ) : (
                                   <>
-                                    <span className="text-foreground">
+                                    <span className="text-foreground max-w-[200px] truncate">
                                       {firstProduct?.name}
                                     </span>
+
                                     <span className="text-foreground/50">
                                       × {firstItem.quantity}
                                     </span>
@@ -135,13 +136,13 @@ const MyOrders: React.FC = () => {
                                 </span>
                               )}
 
-                              {firstVariant && (
+                              {firstVariant && !isOpen && (
                                 <p className="text-xs text-foreground/50">
                                   {firstVariant.name.split(" - ")[0].trim()}{" "}
                                 </p>
                               )}
                             </div>
-                            {/* MAX CIRCLES = 5 */}
+                            {/* MAX CIRCLES = 5, to change, numProducts, map slice */}
                             <ProductCircles
                               numProducts={Math.max(order.items.length - 5, 0)}
                               className="scale-75 origin-left"
@@ -236,7 +237,7 @@ const MyOrders: React.FC = () => {
                       {/* CHEVRON */}
                       <td className="p-3 text-center">
                         <Tooltip>
-                          <TooltipTrigger>
+                          <TooltipTrigger asChild>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -374,7 +375,7 @@ const MyOrders: React.FC = () => {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })
             )}
