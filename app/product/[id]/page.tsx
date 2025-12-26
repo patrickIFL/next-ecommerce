@@ -246,7 +246,7 @@ const Product = () => {
 
           {productData.type === "VARIATION" && displayStock !== null && (
             <p className="text-sm text-foreground/60 mt-1">
-              Stock: {displayStock}
+              {displayStock > 0 ? `Stock: ${displayStock}` : "SOLD OUT"}
             </p>
           )}
 
@@ -339,7 +339,9 @@ const Product = () => {
                   quantity: qty,
                 });
               }}
-              disabled={!canPurchase || addToCartLoading}
+              disabled={!canPurchase || addToCartLoading || 
+                productData.type === "VARIATION" && selectedVariant?.stock < qty ||
+                productData.type === "SIMPLE" && productData?.stock < qty}
               className={`py-6 flex-1 text-gray-800/80 ${
                 addToCartLoading
                   ? "bg-gray-400"
@@ -368,7 +370,9 @@ const Product = () => {
                   quantity: qty,
                 });
               }}
-              disabled={!canPurchase || buyNowLoading}
+              disabled={!canPurchase || buyNowLoading || 
+                productData.type === "VARIATION" && selectedVariant?.stock < qty ||
+                productData.type === "SIMPLE" && productData?.stock < qty}
               className={`flex-1 py-6 text-white ${
                 buyNowLoading
                   ? "bg-primary-loading"

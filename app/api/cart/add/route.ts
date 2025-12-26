@@ -18,12 +18,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Fetch product
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });
 
     if (!product) {
       return Response.json({ message: "Product not found" }, { status: 404 });
+    }
+
+    // SIMPLE PRODUCT STOCK CHECK
+    if (product.type === "SIMPLE") {
+      if (product.stock !== null && product.stock < quantity) {
+        return Response.json(
+          { message: `Insufficient stock. Available: ${product.stock}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // VARIATION PRODUCT STOCK CHECK
+    if (product.type === "VARIATION") {
+      if (!variantId) {
+        return Response.json(
+          { message: "Variant is required" },
+          { status: 400 }
+        );
+      }
+
+      const variant = await prisma.productVariant.findUnique({
+        where: { id: variantId },
+      });
+
+      if (!variant) {
+        return Response.json({ message: "Variant not found" }, { status: 404 });
+      }
+
+      if (variant.stock !== null && variant.stock < quantity) {
+        return Response.json(
+          { message: `Insufficient stock. Available: ${variant.stock}` },
+          { status: 400 }
+        );
+      }
     }
 
     /* =====================================================
@@ -63,10 +99,7 @@ export async function POST(request: NextRequest) {
        VARIATION PRODUCT
        ===================================================== */
     if (!variantId) {
-      return Response.json(
-        { message: "Variant is required" },
-        { status: 400 }
-      );
+      return Response.json({ message: "Variant is required" }, { status: 400 });
     }
 
     const cartItem = await prisma.cartItem.upsert({

@@ -78,7 +78,7 @@ function CartCard({ item }: CartCardProps) {
         </div>
 
         <div className="text-sm flex flex-col">
-          <p className="text-foreground">{product.name}</p>
+          <p className="text-foreground max-w-[200px] truncate">{product.name}</p>
 
           {variant && (
             <p className="text-xs text-foreground/50">

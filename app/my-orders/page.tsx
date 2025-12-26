@@ -19,10 +19,12 @@ import {
 import useOrderHook from "@/hooks/useOrderHook";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import useCartHook from "@/hooks/useCartHook";
 
 const MyOrders: React.FC = () => {
   const router = useRouter();
   const [openOrder, setOpenOrder] = useState<string | null>(null);
+  const { handleBuyNow } = useCartHook();
 
   const {
     myOrders: orders,
@@ -289,6 +291,22 @@ const MyOrders: React.FC = () => {
                                   const product = item.product;
                                   const variant = item.variant ?? null;
 
+                                  const isOutOfStock = (() => {
+                                    // VARIATION PRODUCT
+                                    if (variant) {
+                                      return (
+                                        variant.stock !== null &&
+                                        variant.stock <= 0
+                                      );
+                                    }
+
+                                    // SIMPLE PRODUCT
+                                    return (
+                                      product.stock !== null &&
+                                      product.stock <= 0
+                                    );
+                                  })();
+
                                   const unitPrice: number = (() => {
                                     if (variant) {
                                       return product.isOnSale
@@ -361,9 +379,28 @@ const MyOrders: React.FC = () => {
 
                                       {/* ACTION */}
                                       <td className="py-4 px-4 text-center">
-                                        <Button className="h-8 text-white cursor-pointer">
-                                          Buy Again
-                                        </Button>
+                                        {isOutOfStock ? (
+                                          <Button
+                                            disabled
+                                            variant="outline"
+                                            className="h-8 cursor-not-allowed text-foreground border-destructive"
+                                          >
+                                            Sold out
+                                          </Button>
+                                        ) : (
+                                          <Button
+                                            onClick={() => {
+                                              handleBuyNow({
+                                                productId: product.id,
+                                                variantId: variant?.id ?? null,
+                                                quantity: 1,
+                                              });
+                                            }}
+                                            className="h-8 text-white cursor-pointer"
+                                          >
+                                            Buy Again
+                                          </Button>
+                                        )}
                                       </td>
                                     </tr>
                                   );

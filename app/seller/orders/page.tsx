@@ -10,7 +10,11 @@ import { formatMoney } from "@/lib/utils";
 import EmptyState from "@/components/EmptyState";
 import Box_icon from "@/components/svgs/Box_icon";
 import { ProductCircles } from "@/components/ui/avatar-circles";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 
 const Orders: React.FC = () => {
@@ -45,10 +49,12 @@ const Orders: React.FC = () => {
       />
     );
   }
-
   return (
-    <div className="px-6 md:px-16 lg:px-32 py-6 min-h-screen mt-16">
-      <h2 className="text-lg font-medium mb-6">My Orders</h2>
+    <div className="px-6 py-6 min-h-screen w-full mt-16">
+      <div className="flex flex-col mb-5">
+        <p className="text-2xl font-medium">Orders</p>
+        <div className="w-16 h-0.5 bg-primary rounded-full"></div>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse">
@@ -196,9 +202,7 @@ const Orders: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() =>
-                            setOpenOrder(isOpen ? null : order.id)
-                          }
+                          onClick={() => setOpenOrder(isOpen ? null : order.id)}
                         >
                           <ChevronDown
                             size={16}
@@ -265,9 +269,7 @@ const Orders: React.FC = () => {
                                       </td>
                                       <td className="p-3 text-center font-medium">
                                         {currency}
-                                        {formatMoney(
-                                          unitPrice * item.quantity
-                                        )}
+                                        {formatMoney(unitPrice * item.quantity)}
                                       </td>
                                       <td className="p-3 text-center">
                                         <Button size="sm">Buy Again</Button>
@@ -283,7 +285,7 @@ const Orders: React.FC = () => {
                         </td>
                       </tr>
                     )}
-                  </ React.Fragment>
+                  </React.Fragment>
                 );
               })
             )}
