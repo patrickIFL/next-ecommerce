@@ -59,7 +59,7 @@ function useOrderHook() {
   const { cartItems } = useCartHook();
   const { selectedAddressId } = useAddressStore()
 
-  const { mutate: placeOrder, isPending } = useMutation({
+  const { mutate: placeOrder, isPending:isPlacingOrder } = useMutation({
     mutationFn: async () => {
       if (!cartItems || cartItems.length === 0) {
         throw new Error("Cart Empty");
@@ -137,7 +137,7 @@ function useOrderHook() {
   })
   return {
     placeOrder,
-    isPending,
+    isPlacingOrder,
     myOrders,
     myOrdersLoading,
     refetchMyOrders,

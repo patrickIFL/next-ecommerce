@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import OrderSummary from "@/components/OrderSummary";
 import { useRouter } from "next/navigation";
@@ -39,14 +39,14 @@ const Cart = () => {
         <td colSpan={4}>
           <EmptyState
             icon={ShoppingCart}
-            title="Your Cart is Empty"
-            description="Check our wide range of items and find great deals."
+            title="Your cart is empty"
+            description="Items you add to your cart will appear here."
           />
         </td>
       </tr>
     );
   } else {
-    cartContent = cartItems.map(item => (
+    cartContent = cartItems.map((item) => (
       <CartCard key={item.id} item={item as CartItem} />
     ));
   }
@@ -58,7 +58,9 @@ const Cart = () => {
           <p className="text-2xl md:text-3xl text-foreground/80 font-semibold">
             Your <span className="font-medium text-primary">Cart</span>
           </p>
-          <p className="text-lg md:text-xl text-foreground/80">{cartCount} Items</p>
+          <p className="text-lg md:text-xl text-foreground/80">
+            {cartCount} Items
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -68,15 +70,19 @@ const Cart = () => {
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">
                   Product Details
                 </th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Price</th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Quantity</th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">Item Total</th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
+                  Price
+                </th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
+                  Quantity
+                </th>
+                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
+                  Item Total
+                </th>
               </tr>
             </thead>
 
-            <tbody>
-              {cartContent}
-            </tbody>
+            <tbody>{cartContent}</tbody>
           </table>
         </div>
 
@@ -85,7 +91,10 @@ const Cart = () => {
           onClick={() => router.push("/all/products")}
           className="cursor-pointer group flex items-center mt-6 gap-2 text-primary hover:text-primary"
         >
-          <MoveLeft className="group-hover:-translate-x-1 transition" color={"var(--primary)"} />
+          <MoveLeft
+            className="group-hover:-translate-x-1 transition"
+            color={"var(--primary)"}
+          />
           Continue Shopping
         </Button>
       </div>

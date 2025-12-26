@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import useOrderHook from "@/hooks/useOrderHook";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { LoaderIcon } from "lucide-react";
 
 const OrderSummary = ({
   cartCount,
@@ -12,7 +13,7 @@ const OrderSummary = ({
   cartCount: any;
   cartAmount: any;
 }) => {
-  const { placeOrder } = useOrderHook();
+  const { placeOrder, isPlacingOrder } = useOrderHook();
   const tax = Number(process.env.NEXT_PUBLIC_TAX);
   const shipping = Number(process.env.NEXT_PUBLIC_SHIPPING);
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -65,7 +66,8 @@ const OrderSummary = ({
           <div className="flex justify-between text-base font-medium">
             <p className="uppercase text-foreground">Items {cartCount}</p>
             <p className="text-foreground">
-              {currency}{formatMoney(cartAmount)}
+              {currency}
+              {formatMoney(cartAmount)}
             </p>
           </div>
 
@@ -77,16 +79,18 @@ const OrderSummary = ({
           </div>
 
           <div className="flex justify-between">
-            <p className="text-foreground/80">Tax ({tax}%)</p>
+            <p className="text-foreground/80">VAT ({tax}%)</p>
             <p className="font-medium text-foreground">
-              {currency}{formatMoney(Math.floor(cartAmount * (tax / 100)))}
+              {currency}
+              {formatMoney(Math.floor(cartAmount * (tax / 100)))}
             </p>
           </div>
 
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
-              {currency}{formatMoney(cartAmount + Math.floor(cartAmount * 0.02))}
+              {currency}
+              {formatMoney(cartAmount + Math.floor(cartAmount * 0.02))}
             </p>
           </div>
         </div>
@@ -94,9 +98,22 @@ const OrderSummary = ({
 
       <Button
         onClick={handlePlaceOrder}
-        className="cursor-pointer w-full bg-primary text-white py-3 mt-5 hover:bg-primary-hover"
+        disabled={isPlacingOrder}
+        className={`w-full 
+                ${
+                  isPlacingOrder
+                    ? "bg-primary-loading"
+                    : "cursor-pointer bg-primary hover:bg-primary-hover"
+                } text-white py-3 mt-5 hover:bg-primary-hover`}
       >
-        Place Order
+        {isPlacingOrder ? (
+          <div className="flex gap-2 justify-center items-center">
+            <LoaderIcon className="animate-spin text-white" size={16} />
+            <span>Please wait</span>
+          </div>
+        ) : (
+          "Place Order"
+        )}
       </Button>
     </div>
   );

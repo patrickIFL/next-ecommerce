@@ -1,13 +1,12 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { assets } from "@/assets/assets";
-import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { formatMoney } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Archive } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
+import Box_icon from "@/components/svgs/Box_icon";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -59,11 +58,7 @@ const Orders: React.FC = () => {
                               {/* PRODUCT */}
                               <td className="p-3 align-top">
                                 <div className="flex gap-3">
-                                  <Image
-                                    className="w-16 h-16 object-cover"
-                                    src={assets.box_icon}
-                                    alt="box_icon"
-                                  />
+                                  <Box_icon />
                                   <div className="flex flex-col gap-2">
                                     <span className="font-medium">
                                       {order.items

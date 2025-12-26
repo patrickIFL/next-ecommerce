@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { toast } from "@/components/ui/use-toast";
+import useUserStore from "@/stores/useUserStore";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -51,6 +52,7 @@ export type VariationsMap = {
 
 function useProductHook() {
   const { getToken } = useAuth();
+  const {isSeller } = useUserStore();
 
   const { data: products = [], isLoading: productsLoading } = useQuery<
     ProductType[]
@@ -72,7 +74,7 @@ function useProductHook() {
     ProductType[]
   >({
     queryKey: ["sellerProducts"],
-
+    enabled: isSeller,
     queryFn: async () => {
       try {
         const token = await getToken();

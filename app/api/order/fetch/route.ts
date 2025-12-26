@@ -15,9 +15,11 @@ export async function GET(req: NextRequest) {
     include: {
         shippingAddress: true,
         user: true,
+        payment: true,
         items: {
             include: {
-                product: true
+                product: true,
+                variant: true
             }
         }
     }
