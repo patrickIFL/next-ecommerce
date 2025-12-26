@@ -145,7 +145,12 @@ const Product = () => {
     ? productData.salePrice ?? productData.price
     : productData.price;
 
-  const displayStock: number | undefined = selectedVariant?.stock ?? undefined;
+  const displayStock =
+    productData.type === "VARIATION"
+      ? selectedVariant?.stock ?? null
+      : productData.stock ?? null;
+
+  const isOutOfStock = displayStock !== null && displayStock < qty;
 
   const requiresVariation = productData.type === "VARIATION";
 
@@ -154,10 +159,13 @@ const Product = () => {
   const varA = variations.varA ?? [];
   const varB = variations.varB ?? [];
 
-  const maxQty: number | undefined =
+  const normalizeStock = (stock?: number | null): number | undefined =>
+    stock ?? undefined;
+
+  const maxQty =
     productData.type === "SIMPLE"
-      ? productData.stock ?? undefined
-      : displayStock;
+      ? normalizeStock(productData.stock)
+      : normalizeStock(displayStock);
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -244,7 +252,7 @@ const Product = () => {
             )}
           </p>
 
-          {productData.type === "VARIATION" && displayStock !== null && (
+          {displayStock !== null && (
             <p className="text-sm text-foreground/60 mt-1">
               {displayStock > 0 ? `Stock: ${displayStock}` : "SOLD OUT"}
             </p>
@@ -299,11 +307,7 @@ const Product = () => {
 
           <div className="flex flex-col gap-1 mt-3">
             <Label className="text-xs">Quantity</Label>
-            <QuantityInput
-              value={qty}
-              onChange={setQty}
-              max={maxQty}
-            />
+            <QuantityInput value={qty} onChange={setQty} max={maxQty} />
           </div>
 
           <hr className="bg-gray-600 my-6" />
@@ -339,9 +343,7 @@ const Product = () => {
                   quantity: qty,
                 });
               }}
-              disabled={!canPurchase || addToCartLoading || 
-                productData.type === "VARIATION" && selectedVariant?.stock < qty ||
-                productData.type === "SIMPLE" && productData?.stock < qty}
+              disabled={!canPurchase || addToCartLoading || isOutOfStock}
               className={`py-6 flex-1 text-gray-800/80 ${
                 addToCartLoading
                   ? "bg-gray-400"
@@ -370,9 +372,7 @@ const Product = () => {
                   quantity: qty,
                 });
               }}
-              disabled={!canPurchase || buyNowLoading || 
-                productData.type === "VARIATION" && selectedVariant?.stock < qty ||
-                productData.type === "SIMPLE" && productData?.stock < qty}
+              disabled={!canPurchase || addToCartLoading || isOutOfStock}
               className={`flex-1 py-6 text-white ${
                 buyNowLoading
                   ? "bg-primary-loading"
