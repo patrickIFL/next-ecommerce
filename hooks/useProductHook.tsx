@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import { toast } from "@/components/ui/use-toast";
 import useUserStore from "@/stores/useUserStore";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export type Variant = {
   id: string;
@@ -85,21 +85,13 @@ function useProductHook() {
         });
 
         if (!data.success) {
-          toast({
-            title: "Error",
-            description: data.message,
-            variant: "destructive",
-          });
+          toast.error(data.message);
           return [];
         }
 
         return data.products;
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast.error(error.message);
         return [];
       }
     },

@@ -5,7 +5,6 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
-import { toast } from "@/components/ui/use-toast";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +27,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { VariationModal } from "@/components/VariationModal";
 import { useVariationModal } from "@/hooks/useVariationModal";
 import { ProductVariation } from "@/hooks/useVariationModal";
+import { toast } from "react-hot-toast";
 
 const AddProduct = () => {
   const { getToken } = useAuth();
@@ -200,10 +200,8 @@ const AddProduct = () => {
     },
 
     onSuccess: (data) => {
-      toast({
-        title: "✅ Success",
-        description: data.message,
-      });
+
+      toast.success(data.message)
 
       setFiles([]);
       setName("");
@@ -219,11 +217,7 @@ const AddProduct = () => {
     },
 
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error(error.message);
     },
   });
 

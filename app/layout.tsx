@@ -6,8 +6,8 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { shadcn } from "@clerk/themes";
 import { ClerkProvider } from '@clerk/nextjs'
-import { Toaster } from "@/components/ui/toaster";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,11 +46,13 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ThemeProvider>
               <NavBar />
+          <Toaster
+  position="top-center"
+/>
               {children}
               <Footer />
             </ThemeProvider>
           </ReactQueryProvider>
-          <Toaster />
 
         </body>
       </html>

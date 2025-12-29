@@ -96,6 +96,15 @@ const MyOrders: React.FC = () => {
 
                 return (
                   <React.Fragment key={order.id}>
+                    {isOpen && (
+                      
+                    <tr>
+                      <td colSpan={6} className="py-4">
+                        <div className="w-full border-t-2 border-dashed border-primary" />
+                      </td>
+                    </tr>
+                    )}
+
                     {/* ================= PARENT ROW ================= */}
                     <tr className="border-b border-accent align-top">
                       {/* ORDER */}
@@ -383,7 +392,7 @@ const MyOrders: React.FC = () => {
                                           <Button
                                             disabled
                                             variant="outline"
-                                            className="h-8 cursor-not-allowed text-foreground border-destructive"
+                                            className="h-8 cursor-not-allowed text-foreground border-foreground/50"
                                           >
                                             Sold out
                                           </Button>

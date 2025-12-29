@@ -18,6 +18,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { QuantityInput } from "@/components/QuantityInput";
 import useWishlist from "@/hooks/useWishlist";
+import { Lens } from "@/components/ui/lens";
 
 const Product = () => {
   const { id } = useParams() as { id: string };
@@ -173,13 +174,15 @@ const Product = () => {
         {/* LEFT IMAGES */}
         <div className="px-5 lg:px-16 xl:px-20">
           <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
-            <Image
-              src={mainImage ?? productData.image?.[0] ?? ""}
-              alt={productData.name}
-              className="w-full h-full object-cover"
-              width={1280}
-              height={720}
-            />
+            <Lens>
+              <Image
+                src={mainImage ?? productData.image?.[0] ?? ""}
+                alt={productData.name}
+                className="object-cover"
+                width={1280}
+                height={720}
+              />
+            </Lens>
           </div>
 
           {/* THUMBNAILS */}
@@ -240,7 +243,11 @@ const Product = () => {
           </p>
 
           {/* PRICE */}
-          <p className="text-3xl font-medium mt-6">
+          <p
+            className={`text-3xl font-medium mt-6 ${
+              isOutOfStock ? "text-foreground/50" : "text-foreground"
+            }`}
+          >
             {currency}
             {formatMoney(displayPrice)}
 
@@ -252,12 +259,14 @@ const Product = () => {
             )}
           </p>
 
-          {displayStock !== null && (
+          {/* Stock display for VARIATION PRODUCTS */}
+          {displayStock !== null && productData.type === "VARIATION" && (
             <p className="text-sm text-foreground/60 mt-1">
               {displayStock > 0 ? `Stock: ${displayStock}` : "SOLD OUT"}
             </p>
           )}
 
+          {/* Stock display for SIMPLE PRODUCTS */}
           {productData.type === "SIMPLE" && productData.stock !== null && (
             <p className="text-sm text-foreground/60 mt-1">
               Stock: {productData.stock}
@@ -326,7 +335,13 @@ const Product = () => {
                 </tr>
                 <tr>
                   <td className="foreground font-medium">Category</td>
-                  <td className="text-foreground">{productData.category}</td>
+                  {/* Start with a capital letter */}
+                  <td className="text-foreground">
+                    {productData.category
+                      ? productData.category.charAt(0).toUpperCase() +
+                        productData.category.slice(1)
+                      : ""}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -338,6 +353,7 @@ const Product = () => {
               onClick={() => {
                 if (!canPurchase) return;
                 handleAddToCart({
+                  image: mainImage,
                   productId: productData.id,
                   variantId: selectedVariant?.id,
                   quantity: qty,
@@ -358,6 +374,8 @@ const Product = () => {
                   />
                   Adding
                 </div>
+              ) : isOutOfStock ? (
+                "Out of Stock"
               ) : (
                 "Add to cart"
               )}
@@ -384,6 +402,8 @@ const Product = () => {
                   <LoaderIcon className="animate-spin text-white" size={16} />
                   Loading
                 </div>
+              ) : isOutOfStock ? (
+                "Out of Stock"
               ) : (
                 "Buy Now"
               )}

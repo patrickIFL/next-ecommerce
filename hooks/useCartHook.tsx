@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 type CartProduct = {
   id: string;
@@ -33,16 +35,19 @@ type AddToCartPayload = {
   quantity: number;
 };
 
+type AddToCartPayloadWithImage = AddToCartPayload & {
+  image: string;
+};
+
+
 function useCartHook() {
-  const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   /* ================= ADD TO CART ================= */
   const { mutateAsync: handleAddToCart, isPending: addToCartLoading } =
     useMutation({
-      mutationFn: async (payload: AddToCartPayload) => {
-
+      mutationFn: async (payload: AddToCartPayloadWithImage) => {
         const res = await fetch("/api/cart/add", {
           method: "POST",
           headers: {
@@ -56,25 +61,58 @@ function useCartHook() {
         if (!res.ok) throw new Error(data.message);
         return data;
       },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
-        toast({
-          title: "Added to cart",
-          description: "Product successfully added to cart.",
-        });
-      },
-      onError: (error: any) =>
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        }),
+     onSuccess: (data, variables) => {
+  queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+
+  toast.custom((t) => (
+    <div
+      className={`${
+        t.visible ? "animate-custom-enter" : "animate-custom-leave"
+      } max-w-md w-full bg-accent shadow-lg rounded-lg pointer-events-auto flex`}
+    >
+      <div className="flex-1 w-0 p-4">
+        <div className="flex items-start">
+          <div className="shrink-0 pt-0.5">
+            <Image
+              src={variables.image}
+              alt={data.cartItem.product.name}
+              width={40}
+              height={40}
+              className="rounded-full object-cover max-w-10 max-h-10"
+            />
+          </div>
+
+          <div className="ml-3 flex-1">
+            <p className="text-sm font-medium">✅ Success!</p>
+            <p className="mt-1 text-sm text-foreground/50">
+              Product was added to your cart
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center border-l border-foreground/10">
+        <Button
+          variant="ghost"
+          onClick={() => {
+            toast.dismiss(t.id);
+            router.push("/cart");
+          }}
+          className="cursor-pointer w-full rounded-none rounded-r-lg p-4 text-sm font-medium text-primary hover:text-primary-hover"
+        >
+          View Cart
+        </Button>
+      </div>
+    </div>
+  ));
+},
+
+      onError: (error: any) => toast.error(error.message),
     });
 
   /* ================= BUY NOW ================= */
   const { mutateAsync: handleBuyNow, isPending: buyNowLoading } = useMutation({
     mutationFn: async (payload: AddToCartPayload) => {
-
       const res = await fetch("/api/cart/add", {
         method: "POST",
         headers: {
@@ -89,12 +127,7 @@ function useCartHook() {
       return data;
     },
     onSuccess: () => router.push("/cart"),
-    onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
+    onError: (error: any) => toast.error(error.message),
   });
 
   /* ================= FETCH CART ================= */
@@ -121,7 +154,6 @@ function useCartHook() {
   /* ================= UPDATE QUANTITY ================= */
   const { mutate: updateCartQuantity } = useMutation({
     mutationFn: async (data: { cartItemId: string; quantity: number }) => {
-
       const res = await fetch(`/api/cart/update/${data.cartItemId}`, {
         method: "PATCH",
         headers: {
@@ -167,3 +199,5 @@ function useCartHook() {
 }
 
 export default useCartHook;
+
+

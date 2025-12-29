@@ -35,6 +35,9 @@ export async function PATCH(request: NextRequest) {
 
     const oldProduct = await prisma.product.findUnique({
       where: { id: productId },
+      include: {
+        variants: true, // ✅ ADDED (required for variation products)
+      },
     });
 
     if (!oldProduct) {
@@ -61,28 +64,46 @@ export async function PATCH(request: NextRequest) {
     const sku = formData.get("sku") as string | null;
     const stock = formData.get("stock") as string | null;
     const searchKeysRaw = formData.get("search_keys") as string | null;
-    // const variationsRaw = formData.get("variations") as string | null;
 
-    // validate
+    // ===================== ADDED (VARIATION INPUTS) =====================
+    const attributesRaw = formData.get("attributes") as string | null;
+    const variationsRaw = formData.get("variations") as string | null;
 
-    if (Number(price) <= 0) {
-      return NextResponse.json(
-        { success: false, message: "Price cannot be set to equal or less than 0" },
-        { status: 401 }
-      );
+    const attributes = attributesRaw
+      ? JSON.parse(attributesRaw)
+      : oldProduct.attributes;
+
+    const variations = variationsRaw ? JSON.parse(variationsRaw) : [];
+    // ===================================================================
+
+    // ===================== VALIDATION (UNCHANGED + SAFE GUARD) =====================
+    if (oldProduct.type === "SIMPLE") {
+      if (Number(price) <= 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Price cannot be set to equal or less than 0",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (Number(stock) < 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Stock cannot be set to less than 0",
+          },
+          { status: 400 }
+        );
+      }
     }
-
-    if (Number(stock) < 0) {
-      return NextResponse.json(
-        { success: false, message: "Stock cannot be set to less than 0" },
-        { status: 401 }
-      );
-    }
+    // ==============================================================================
 
     const skuExist = await prisma.product.findFirst({
-      where: {   
+      where: {
         sku: sku!,
-        NOT: { id: productId }, 
+        NOT: { id: productId },
       },
     });
 
@@ -96,10 +117,6 @@ export async function PATCH(request: NextRequest) {
     const search_keys: string[] = searchKeysRaw
       ? JSON.parse(searchKeysRaw)
       : oldProduct.search_keys;
-
-    // const variations: string[] = variationsRaw
-    //   ? JSON.parse(variationsRaw)
-    //   : oldProduct.variations;
 
     // ---- Image Handling ----
     const newFiles: (File | null)[] = [];
@@ -120,7 +137,7 @@ export async function PATCH(request: NextRequest) {
 
       const uploaded = await new Promise<any>((resolve, reject) => {
         cloudinary.uploader
-          .upload_stream({ resource_type: "auto" }, (err: any, result: any) =>
+          .upload_stream({ resource_type: "auto" }, (err, result) =>
             err ? reject(err) : resolve(result)
           )
           .end(buffer);
@@ -129,7 +146,6 @@ export async function PATCH(request: NextRequest) {
       finalImages[i] = uploaded.secure_url;
     }
 
-    // ---- Updated changesMade check ----
     const imagesChanged = finalImages.some(
       (url, i) => url !== oldProduct.image[i]
     );
@@ -142,34 +158,57 @@ export async function PATCH(request: NextRequest) {
       oldProduct.salePrice !== salePrice ||
       oldProduct.sku !== sku ||
       oldProduct.stock !== Number(stock) ||
-      JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
-      // JSON.stringify(oldProduct.variations) !== JSON.stringify(variations) ||
+      JSON.stringify(oldProduct.search_keys) !==
+        JSON.stringify(search_keys) ||
       imagesChanged;
 
-    if (!changesMade) {
+    if (!changesMade && oldProduct.type === "SIMPLE") {
       return NextResponse.json({
         success: false,
         message: "No changes made",
       });
     }
 
-    // 5. Update DB
+    // ===================== UPDATE DB =====================
     const updated = await prisma.product.update({
       where: { id: productId },
       data: {
         userId: userId!,
-        name: name!,
-        description: description!,
-        category: category!,
-        price: Number(price)*100, // cents
-        salePrice: salePrice ? Number(salePrice)*100 : null, // cents
-        sku: sku!,
-        stock: Number(stock),
+        name,
+        description,
+        category,
+
+        ...(oldProduct.type === "SIMPLE"
+          ? {
+              price: Number(price) * 100,
+              salePrice: salePrice ? Number(salePrice) * 100 : null,
+              sku,
+              stock: Number(stock),
+            }
+          : {
+              attributes,
+              variants: {
+                deleteMany: {}, // reset existing variants
+                createMany: {
+                  data: variations.map((v: any) => ({
+                    name: v.name,
+                    sku: v.sku,
+                    price: Number(v.price) * 100,
+                    salePrice: v.salePrice
+                      ? Number(v.salePrice) * 100
+                      : null,
+                    stock: Number(v.stock),
+                    imageIndex: v.imageIndex,
+                  })),
+                },
+              },
+            }),
+
         search_keys,
-        // variations,
         image: finalImages,
       },
     });
+    // =====================================================
 
     return NextResponse.json({
       success: true,

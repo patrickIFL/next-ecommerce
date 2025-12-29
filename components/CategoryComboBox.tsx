@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "./ui/use-toast";
+import { toast } from "react-hot-toast";
 
 interface CategoryComboBoxProps {
   className?: string;
@@ -79,11 +79,7 @@ export default function CategoryComboBox({
       setNewCategory({ name: "", slug: "" });
     },
     onError: () => {
-      toast({
-        title: "Category Already Exist",
-        description: "Try another one.",
-        variant: "default",
-      });
+      toast.error("Failed to add category");
     },
   });
 

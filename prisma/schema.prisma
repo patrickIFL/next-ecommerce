@@ -124,9 +124,17 @@ model CartItem {
 enum ShippingStatus {
   pending
   toShip
-  toReceive
-  toRate
+  toReceive  
+  toRate 
 }
+
+// enum ShippingStatus {
+//   PENDING,     // order placed, unpaid or processing
+//   PREPARING,   // packing / readying shipment
+//   SHIPPED,     // in transit
+//   DELIVERED,   // received by customer
+//   COMPLETED,   // rated / closed
+// }
 
 // Order
 model Order {

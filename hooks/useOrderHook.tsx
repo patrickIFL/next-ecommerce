@@ -4,7 +4,7 @@ import useCartHook from "./useCartHook";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import useAddressStore from "@/stores/useAddressStore";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "react-hot-toast";
 
 export interface Product {
   id: string;
@@ -53,7 +53,6 @@ export interface Order {
 }
 
 function useOrderHook() {
-  const { toast } = useToast();
   const { getToken } = useAuth();
   const router = useRouter();
   const { cartItems } = useCartHook();
@@ -115,11 +114,7 @@ function useOrderHook() {
         description = "Please select a shipping address.";
       }
 
-      toast({
-        title: error.message,
-        description,
-        variant: "destructive",
-      });
+      toast.error(description || error.message);
     },
   });
 

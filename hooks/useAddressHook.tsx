@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface Address {
   id: string;
@@ -37,7 +37,6 @@ interface AddressForm {
 
 function useAddressHook() {
   const { getToken } = useAuth();
-  const { toast } = useToast();
   const [address, setAddress] = useState<AddressForm>({
     fullName: "",
     phoneNumber: "",
@@ -64,11 +63,7 @@ function useAddressHook() {
     },
 
     onSuccess: (data) => {
-      toast({
-        title: "✅ Success",
-        description: data.message,
-        variant: "default",
-      });
+      toast.success(data.message);
       setAddress({
         fullName: "",
         phoneNumber: "",
@@ -80,11 +75,7 @@ function useAddressHook() {
     },
 
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error(error.message);
     },
   });
 

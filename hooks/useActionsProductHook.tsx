@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 function useActionsProduct({ product }: { product: any }) {
   const [isFeatured, setIsFeatured] = useState(product.isFeatured);
   const [isArchived, setIsArchived] = useState(product.isArchived);
   const [onSale, setOnSale] = useState(product.isOnSale);
   const { getToken } = useAuth();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { mutateAsync: deleteProduct, isPending: isDeleting } = useMutation({
@@ -32,11 +31,7 @@ function useActionsProduct({ product }: { product: any }) {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
     onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
+      toast.error(error.message || "Failed to delete product"),
   });
 
   const { mutateAsync: toggleArchive, isPending: isTogglingArchive } =
@@ -64,11 +59,7 @@ function useActionsProduct({ product }: { product: any }) {
         queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
       },
       onError: (error: any) =>
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        }),
+        toast.error(error.message || "Failed to toggle archive product"),
     });
 
   const { mutateAsync: toggleSale, isPending: isTogglingSale } = useMutation({
@@ -95,11 +86,7 @@ function useActionsProduct({ product }: { product: any }) {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
     onError: (error: any) =>
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      }),
+      toast.error(error.message || "Failed to put on SALE"),
   });
 
   const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } =
@@ -127,11 +114,7 @@ function useActionsProduct({ product }: { product: any }) {
         queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
       },
       onError: (error: any) =>
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        }),
+        toast.error(error.message || "Failed to toggle featured product"),
     });
   return {
     isFeatured,

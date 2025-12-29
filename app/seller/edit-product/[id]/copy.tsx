@@ -1,3 +1,334 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { useMutation } from "@tanstack/react-query";
+
+import { assets } from "@/assets/assets";
+import useProductHook from "@/hooks/useProductHook";
+import { useVariationModal } from "@/hooks/useVariationModal";
+
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import CategoryComboBox from "@/components/CategoryComboBox";
+import { VariationModal } from "@/components/VariationModal";
+import { toast } from "@/components/ui/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import { Info, LoaderIcon, PhilippinePeso } from "lucide-react";
+
+/* ===================================================== */
+
+const EditProduct = () => {
+  const { id } = useParams() as { id: string };
+  const router = useRouter();
+  const { getToken } = useAuth();
+  const { products } = useProductHook();
+  const variationModal = useVariationModal();
+
+  /* ===================== STATE ===================== */
+
+  const [productData, setProductData] = useState<any>(null);
+
+  const [files, setFiles] = useState<File[]>([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+
+  const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
+
+  const [price, setPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
+  const [sku, setSku] = useState("");
+  const [stock, setStock] = useState("");
+
+  const [searchKeys, setSearchKeys] = useState("");
+
+  const [attributes, setAttributes] = useState<string[]>([]);
+  const [variations, setVariations] = useState<any[]>([]);
+
+  /* ===================== LOAD PRODUCT ===================== */
+
+  useEffect(() => {
+    const product = products.find((p) => p.id === id);
+    if (product) setProductData(product);
+  }, [id, products]);
+
+  useEffect(() => {
+    if (!productData) return;
+
+    setName(productData.name);
+    setDescription(productData.description);
+    setCategory(productData.category);
+    setType(productData.type);
+    setSearchKeys(productData.search_keys.join(", "));
+
+    setFiles([]);
+
+    if (productData.type === "SIMPLE") {
+      setPrice(String(productData.price / 100));
+      setSalePrice(
+        productData.salePrice ? String(productData.salePrice / 100) : ""
+      );
+      setSku(productData.sku ?? "");
+      setStock(String(productData.stock ?? 0));
+    }
+
+    if (productData.type === "VARIATION") {
+      setAttributes(productData.attributes || []);
+      setVariations(
+        productData.variants.map((v: any) => ({
+          ...v,
+          price: v.price / 100,
+          salePrice: v.salePrice ? v.salePrice / 100 : "",
+        }))
+      );
+    }
+  }, [productData]);
+
+  /* ===================== IMAGE OPTIONS ===================== */
+
+  const imageOptions = [
+    ...(productData?.image || []).map((url: string, index: number) => ({
+      index,
+      url,
+    })),
+    ...files.map((file, index) => ({
+      index,
+      url: URL.createObjectURL(file),
+    })),
+  ];
+
+  /* ===================== MUTATION ===================== */
+
+  const { mutateAsync: updateProduct, isPending } = useMutation({
+    mutationFn: async () => {
+      const formData = new FormData();
+      const token = await getToken();
+
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+
+      formData.append(
+        "search_keys",
+        JSON.stringify(
+          searchKeys
+            .split(",")
+            .map((k) => k.trim())
+            .filter(Boolean)
+        )
+      );
+
+      if (type === "SIMPLE") {
+        if (Number(price) <= 0) {
+          throw new Error("Price must be greater than 0");
+        }
+
+        formData.append("price", price);
+        formData.append("salePrice", salePrice || "");
+        formData.append("sku", sku);
+        formData.append("stock", stock);
+      }
+
+      if (type === "VARIATION") {
+        formData.append("attributes", JSON.stringify(attributes));
+        formData.append(
+          "variations",
+          JSON.stringify(
+            variations.map((v) => ({
+              id: v.id,
+              name: v.name,
+              sku: v.sku || null,
+              price: Number(v.price),
+              salePrice: v.salePrice === "" ? null : Number(v.salePrice),
+              stock: Number(v.stock),
+              imageIndex: v.imageIndex,
+            }))
+          )
+        );
+      }
+
+      files.forEach((file, index) => {
+        if (file) formData.append(`images[${index}]`, file);
+      });
+
+      const res = await axios.patch(
+        `/api/product/edit/${id}`,
+        formData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      return res.data;
+    },
+
+    onSuccess: (data) => {
+      toast({ title: "Success", description: data.message });
+      router.push("/seller/product-list");
+    },
+
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  /* ===================== UI ===================== */
+
+  if (!productData) {
+    return (
+      <div className="p-10 text-center text-xl">Product not found.</div>
+    );
+  }
+
+  return (
+    <>
+      <div className="min-h-screen px-6 py-8 mt-16">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateProduct();
+          }}
+          className="space-y-8"
+        >
+          <div>
+            <h1 className="text-2xl font-medium">{productData.name}</h1>
+            <div className="w-16 h-0.5 bg-primary mt-1" />
+          </div>
+
+          {/* Images */}
+          <div>
+            <p className="font-medium">Product Images</p>
+            <div className="flex gap-3 mt-2">
+              {[...Array(4)].map((_, index) => {
+                const existing = productData.image?.[index];
+                const preview = files[index]
+                  ? URL.createObjectURL(files[index])
+                  : existing || assets.upload_area;
+
+                return (
+                  <label key={index}>
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e: any) => {
+                        const updated = [...files];
+                        updated[index] = e.target.files[0];
+                        setFiles(updated);
+                      }}
+                    />
+                    <Image
+                      src={preview}
+                      alt=""
+                      width={100}
+                      height={100}
+                      className="h-24 w-24 object-cover rounded cursor-pointer"
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Name / Description */}
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+          {/* Search Keys */}
+          <Textarea
+            value={searchKeys}
+            onChange={(e) => setSearchKeys(e.target.value)}
+            placeholder="comma separated"
+          />
+
+          <CategoryComboBox value={category} onChange={setCategory} />
+
+          {/* SIMPLE */}
+          {type === "SIMPLE" && (
+            <div className="grid grid-cols-2 gap-4">
+              <Input value={sku} onChange={(e) => setSku(e.target.value)} />
+              <Input value={stock} onChange={(e) => setStock(e.target.value)} />
+
+              <div className="flex items-center gap-2">
+                <PhilippinePeso size={16} />
+                <Input
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <PhilippinePeso size={16} />
+                <Input
+                  value={salePrice}
+                  onChange={(e) => setSalePrice(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* VARIATION */}
+          {type === "VARIATION" && (
+            <Button
+              type="button"
+              onClick={() => variationModal.openModal()}
+              variant="outline"
+            >
+              Edit Variations
+            </Button>
+          )}
+
+          <div className="flex gap-3">
+            <Button disabled={isPending}>
+              {isPending ? (
+                <LoaderIcon className="animate-spin" size={16} />
+              ) : (
+                "UPDATE"
+              )}
+            </Button>
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => router.back()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      <VariationModal
+        open={variationModal.open}
+        onOpenChange={variationModal.setOpen}
+        parentProductName={name}
+        imageOptions={imageOptions}
+        generatedVariations={variations}
+        onConfirm={setVariations}
+      />
+    </>
+  );
+};
+
+export default EditProduct;
+
+// ======================================================================================================================================
+// ======================================================================================================================================
 
 
 "use client";
@@ -19,6 +350,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import CategoryComboBox from "@/components/CategoryComboBox";
 import { VariationModal } from "@/components/VariationModal";
+import { toast } from "@/components/ui/use-toast";
 
 import {
   Tooltip,
@@ -36,7 +368,6 @@ import {
   SquareCheckBig,
   SquarePen,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
 
 /* ===================================================== */
 
@@ -112,8 +443,8 @@ const EditProduct = () => {
     }
 
     if (productData.type === "VARIATION") {
-      setVarAName(productData.attributes[0] || "Variation A");
-      setVarBName(productData.attributes[1] || "Variation B");
+      setVarAName(productData.attributes?.[0] || "Variation A");
+      setVarBName(productData.attributes?.[1] || "Variation B");
       setAttributes(productData.attributes || []);
 
       setVariations(
@@ -304,12 +635,16 @@ const EditProduct = () => {
     },
 
     onSuccess: (data) => {
-      toast.success(data.message);
+      toast({ title: "Success", description: data.message });
       router.push("/seller/product-list");
     },
 
     onError: (err: any) => {
-      toast.error(err.message);
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -319,12 +654,20 @@ const EditProduct = () => {
   // SIMPLE validation
   if (type === "SIMPLE") {
     if (!name.trim()) {
-      toast.error("Product name is required.");
+      toast({
+        title: "Invalid name",
+        description: "Product name is required.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (Number(price) <= 0) {
-      toast.error("Price must be greater than 0.");
+      toast({
+        title: "Invalid price",
+        description: "Price must be greater than 0.",
+        variant: "destructive",
+      });
       return;
     }
   }
@@ -335,7 +678,11 @@ const EditProduct = () => {
       (finalVariations.length === 0 && variations.length === 0) ||
       ![varAName, varBName].some(Boolean)
     ) {
-      toast.error("Please generate and confirm variations.");
+      toast({
+        title: "Invalid variations",
+        description: "Please generate and confirm variations first.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -346,7 +693,11 @@ const EditProduct = () => {
       );
       setFinalVariations(normalized);
     } catch (err: any) {
-      toast.error(err.message);
+      toast({
+        title: "Variation error",
+        description: err.message,
+        variant: "destructive",
+      });
       return;
     }
   }
@@ -471,6 +822,19 @@ const EditProduct = () => {
             type === "VARIATION" ? "space-y-3" : "space-y-5"
           } max-w-xl lg:max-w-md`}
         >
+          <div className="flex gap-2">
+            <label className="text-base font-medium">Product Type</label>
+            <RadioGroup className="flex min-w-xs justify-around" value={type}>
+              <div className="flex items-center gap-3">
+                <RadioGroupItem value="SIMPLE" id="r1" disabled />
+                <Label htmlFor="r1">Simple</Label>
+              </div>
+              <div className="flex items-center gap-3">
+                <RadioGroupItem value="VARIATION" id="r2" disabled />
+                <Label htmlFor="r2">Variation</Label>
+              </div>
+            </RadioGroup>
+          </div>
 
           <div className="flex items-center gap-5 flex-wrap">
             <div className="flex flex-col flex-1 gap-1 w-32">

@@ -71,8 +71,8 @@ function CartCard({ item }: CartCardProps) {
           <Image
             src={product.image?.[productImageIndex] ?? "/placeholder.png"}
             alt={product.name}
-            className="w-16 h-auto object-cover"
-            width={1280}
+            className="w-16 h-16 object-cover"
+            width={720}
             height={720}
           />
         </div>
