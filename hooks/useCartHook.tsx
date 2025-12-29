@@ -64,47 +64,26 @@ function useCartHook() {
      onSuccess: (data, variables) => {
   queryClient.invalidateQueries({ queryKey: ["cartItems"] });
 
-  toast.custom((t) => (
-    <div
-      className={`${
-        t.visible ? "animate-custom-enter" : "animate-custom-leave"
-      } max-w-md w-full bg-accent shadow-lg rounded-lg pointer-events-auto flex`}
-    >
-      <div className="flex-1 w-0 p-4">
-        <div className="flex items-start">
-          <div className="shrink-0 pt-0.5">
-            <Image
-              src={variables.image}
-              alt={data.cartItem.product.name}
-              width={40}
-              height={40}
-              className="rounded-full object-cover max-w-10 max-h-10"
-            />
-          </div>
 
-          <div className="ml-3 flex-1">
-            <p className="text-sm font-medium">✅ Success!</p>
-            <p className="mt-1 text-sm text-foreground/50">
-              Product was added to your cart
-            </p>
-          </div>
-        </div>
-      </div>
+toast(() => (
+  <div className="flex items-center gap-4">
+    <Image
+        src={variables.image}
+        alt={data.cartItem.product.name}
+        width={40}
+        height={40}
+        className="h-10 w-10 rounded-full object-cover border border-border"
+      />
 
-      <div className="flex items-center border-l border-foreground/10">
-        <Button
-          variant="ghost"
-          onClick={() => {
-            toast.dismiss(t.id);
-            router.push("/cart");
-          }}
-          className="cursor-pointer w-full rounded-none rounded-r-lg p-4 text-sm font-medium text-primary hover:text-primary-hover"
-        >
-          View Cart
-        </Button>
-      </div>
-    </div>
-  ));
+  <span>
+    Added to Cart!
+  </span>
+    <Button className="cursor-pointer" variant={"ghost"} onClick={() => router.push("/cart")}>
+      View Cart
+    </Button>
+  </div>
+));
+
 },
 
       onError: (error: any) => toast.error(error.message),

@@ -707,10 +707,10 @@ const AddProduct = () => {
                   {loading ? (
                     <div className="mx-1 flex gap-1 items-center">
                       <LoaderIcon className="animate-spin" size={16} />
-                      <span>Loading</span>
+                      <span>Creating Product...</span>
                     </div>
                   ) : (
-                    <span className="mx-6">ADD</span>
+                    <span className="mx-14.5">ADD</span>
                   )}
                 </Button>
                 {addingError && (

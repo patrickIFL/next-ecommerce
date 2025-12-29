@@ -1,6 +1,7 @@
 import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 const products = [
   {
@@ -61,7 +62,7 @@ const FeaturedProduct = () => {
 
               <button className="flex items-center gap-1.5 bg-primary hover:bg-primary-hover cursor-pointer px-4 py-2 rounded">
                 Buy now
-                <Image className="h-3 w-3" src={assets.redirect_icon} alt="Redirect Icon" />
+                <SquareArrowOutUpRight size={16} />
               </button>
             </div>
           </div>

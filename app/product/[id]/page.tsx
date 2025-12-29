@@ -1,5 +1,6 @@
 "use client";
 
+import { assets } from "@/assets/assets";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -176,7 +177,7 @@ const Product = () => {
           <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
             <Lens>
               <Image
-                src={mainImage ?? productData.image?.[0] ?? ""}
+                src={mainImage ?? productData.image?.[0] ?? assets.upload_area}
                 alt={productData.name}
                 className="object-cover"
                 width={1280}
@@ -353,7 +354,7 @@ const Product = () => {
               onClick={() => {
                 if (!canPurchase) return;
                 handleAddToCart({
-                  image: mainImage,
+                  image: mainImage ?? "placeholder.png",
                   productId: productData.id,
                   variantId: selectedVariant?.id,
                   quantity: qty,
