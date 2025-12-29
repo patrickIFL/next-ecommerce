@@ -2,6 +2,14 @@ import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { SquareArrowOutUpRight } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel";
 
 const products = [
   {
@@ -32,45 +40,53 @@ const products = [
 
 const FeaturedProduct = () => {
   return (
-    <div className="mt-14">
+    <div className="mt-14 flex flex-col items-center">
       <div className="flex flex-col items-center">
         <p className="text-3xl font-medium">Featured Products</p>
-        <div className="w-28 h-0.5 bg-primary hover:bg-primary-hover my-5"></div>
+        <div className="w-28 h-0.5 bg-primary hover:bg-primary-hover my-5" />
       </div>
 
-      <div className="flex overflow-x-scroll scrollbar-hide gap-8 lg:gap-14">
-        {products.map(({ id, image, title, description }) => (
-          <div
-            key={id}
-            className="relative 
-        min-w-full
-        sm:min-w-[50%]
-        md:min-w-[calc((100%-7rem)/3)]
-        xl:min-w-[calc((100%-11rem)/4)]"
-          >
-            <Image
-              src={image}
-              alt={title}
-              className="group-hover:brightness-75 transition duration-300 w-full h-auto object-cover"
-            />
+      {/* ✅ NO overflow wrapper */}
+      <Carousel
+        opts={{ align: "start" }}
+        className="relative w-[70vw] sm:w-[80vw]"
+      >
+        <CarouselContent>
+          {products.map(({ id, image, title, description }) => (
+            <CarouselItem
+              key={id}
+              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+            >
+              <div className="relative group">
+                <Image
+                  src={image}
+                  alt={title}
+                  className="transition duration-300 w-full h-auto object-cover rounded-md"
+                />
 
-            <div className="group-hover:-translate-y-4 transition duration-300 absolute bottom-8 left-8 text-white space-y-2">
-              <p className="font-medium text-xl lg:text-2xl">{title}</p>
-              <p className="text-sm lg:text-base leading-5 max-w-60">
-                {description}
-              </p>
+                <div className="absolute bottom-8 left-8 text-white space-y-2 transition group-hover:-translate-y-1">
+                  <p className="font-medium text-xl lg:text-2xl">{title}</p>
+                  <p className="text-sm lg:text-base leading-5 max-w-60">
+                    {description}
+                  </p>
 
-              <button className="flex items-center gap-1.5 bg-primary hover:bg-primary-hover cursor-pointer px-4 py-2 rounded">
-                Buy now
-                <SquareArrowOutUpRight size={16} />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+                  <Button className="flex text-white cursor-pointer items-center gap-1.5 bg-primary hover:bg-primary-hover px-4 py-2">
+                    Buy now
+                    <SquareArrowOutUpRight size={16} />
+                  </Button>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
+        {/* ✅ Now visible */}
+        <CarouselPrevious className="cursor-pointer"/>
+        <CarouselNext className="cursor-pointer"/>
+      </Carousel>
     </div>
   );
 };
+
 
 export default FeaturedProduct;

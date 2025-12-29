@@ -1,6 +1,6 @@
 "use client";
 
-import { assets } from "@/assets/assets";
+import {assets} from "@/assets/assets"
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -394,7 +394,7 @@ const Product = () => {
               disabled={!canPurchase || addToCartLoading || isOutOfStock}
               className={`flex-1 py-6 text-white ${
                 buyNowLoading
-                  ? "bg-primary-loading"
+                  ? "bg-primary-loading/50 hover:bg-primary-loading/50"
                   : "cursor-pointer bg-primary hover:bg-primary-hover"
               } transition`}
             >

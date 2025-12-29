@@ -34,6 +34,8 @@
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.24",
     "inngest": "^3.45.1",
     "ioredis": "^5.8.2",

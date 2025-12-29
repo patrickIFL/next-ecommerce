@@ -102,7 +102,7 @@ const OrderSummary = ({
         className={`w-full 
                 ${
                   isPlacingOrder
-                    ? "bg-primary-loading"
+                    ? "bg-primary-loading/50"
                     : "cursor-pointer bg-primary hover:bg-primary-hover"
                 } text-white py-3 mt-5 hover:bg-primary-hover`}
       >

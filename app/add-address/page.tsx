@@ -97,7 +97,7 @@ export default function Page() {
             className={`md:max-w-sm w-full mt-6 text-white py-3 uppercase 
             ${
               isPending
-                ? "bg-primary-loading"
+                ? "bg-primary-loading/50"
                 : "bg-primary cursor-pointer hover:bg-primary-hover"
             }`}
           >
