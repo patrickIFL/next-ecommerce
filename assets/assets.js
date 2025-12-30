@@ -11,8 +11,12 @@ import md_controller_image from "./md_controller_image.png";
 import sm_controller_image from "./sm_controller_image.png";
 import jbl_soundbox_image from "./jbl_soundbox_image.png";
 import checkmark from "./checkmark.png";
+import tablet_ad from "./tablet-ad.jpg";
+
 
 export const assets = {
+  tablet_ad,
+
   header_headphone_image,
   header_playstation_image,
   header_macbook_image,
