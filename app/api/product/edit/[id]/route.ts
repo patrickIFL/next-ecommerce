@@ -57,9 +57,7 @@ export async function PATCH(request: NextRequest) {
       (formData.get("category") as string) || oldProduct.category;
 
     const price = Number(formData.get("price") ?? oldProduct.price);
-    const salePrice = Number(
-      formData.get("salePrice") ?? oldProduct.salePrice
-    );
+    const salePrice = Number(formData.get("salePrice") ?? oldProduct.salePrice);
 
     const sku = formData.get("sku") as string | null;
     const stock = formData.get("stock") as string | null;
@@ -100,18 +98,20 @@ export async function PATCH(request: NextRequest) {
     }
     // ==============================================================================
 
-    const skuExist = await prisma.product.findFirst({
-      where: {
-        sku: sku!,
-        NOT: { id: productId },
-      },
-    });
+    if (oldProduct.type === "SIMPLE" && sku) {
+      const skuExist = await prisma.product.findFirst({
+        where: {
+          sku,
+          NOT: { id: productId },
+        },
+      });
 
-    if (skuExist) {
-      return NextResponse.json(
-        { success: false, message: "SKU already exists" },
-        { status: 400 }
-      );
+      if (skuExist) {
+        return NextResponse.json(
+          { success: false, message: "SKU already exists" },
+          { status: 400 }
+        );
+      }
     }
 
     const search_keys: string[] = searchKeysRaw
@@ -158,8 +158,7 @@ export async function PATCH(request: NextRequest) {
       oldProduct.salePrice !== salePrice ||
       oldProduct.sku !== sku ||
       oldProduct.stock !== Number(stock) ||
-      JSON.stringify(oldProduct.search_keys) !==
-        JSON.stringify(search_keys) ||
+      JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
       imagesChanged;
 
     if (!changesMade && oldProduct.type === "SIMPLE") {
@@ -188,15 +187,13 @@ export async function PATCH(request: NextRequest) {
           : {
               attributes,
               variants: {
-                deleteMany: {}, // reset existing variants
+                deleteMany: {},
                 createMany: {
                   data: variations.map((v: any) => ({
                     name: v.name,
-                    sku: v.sku,
+                    sku: v.sku?.trim() || null,
                     price: Number(v.price) * 100,
-                    salePrice: v.salePrice
-                      ? Number(v.salePrice) * 100
-                      : null,
+                    salePrice: v.salePrice ? Number(v.salePrice) * 100 : null,
                     stock: Number(v.stock),
                     imageIndex: v.imageIndex,
                   })),

@@ -41,7 +41,7 @@ function ProductDataRow({ product }: { product: any }) {
           <Image
             src={product.image?.[0] ?? "/placeholder.png"}
             alt="Product Image"
-            className="w-10"
+            className="w-10 h-10 object-cover"
             width={1280}
             height={720}
           />
@@ -66,7 +66,7 @@ function ProductDataRow({ product }: { product: any }) {
         </div>
       </td>
 
-      <td className="md:px-4 pl-2 md:pl-4 py-3 text-center">
+      <td className="md:px-4 pl-2 md:pl-4 py-3 text-left">
         <span>{product.name}</span>
       </td>
 

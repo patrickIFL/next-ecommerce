@@ -70,7 +70,6 @@ const AddProduct = () => {
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
-  const [addingError, setAddingError] = useState("");
 
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
@@ -144,6 +143,12 @@ const AddProduct = () => {
         }
       }
 
+      if (type === "VARIATION") {
+        if (finalVariations.length === 0) {
+          throw new Error("Empty variations");
+        }
+      }
+
       const token = await getToken();
 
       const searchKeysArray = searchKeys
@@ -155,7 +160,7 @@ const AddProduct = () => {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("type", type);
-      
+
       formData.append("attributes", JSON.stringify([varAName, varBName]));
 
       // Make sure the variations are valid before passing
@@ -200,8 +205,7 @@ const AddProduct = () => {
     },
 
     onSuccess: (data) => {
-
-      toast.success(data.message)
+      toast.success(data.message);
 
       setFiles([]);
       setName("");
@@ -226,7 +230,7 @@ const AddProduct = () => {
 
     if (type === "VARIATION") {
       if (finalVariations.length === 0) {
-        setAddingError("empty variations")
+        toast.error("Empty variations");
         return;
       }
 
@@ -264,7 +268,6 @@ const AddProduct = () => {
 
   return (
     <>
-    
       <div className="px-6 py-6 min-h-screen w-full mt-16">
         <form onSubmit={handleSubmit} className="p-5 sm:p-10">
           <div className="flex flex-col mb-5">
@@ -532,6 +535,9 @@ const AddProduct = () => {
               </Activity>
 
               <Activity mode={type === "VARIATION" ? "visible" : "hidden"}>
+                <Label className="text-lg underline underline-offset-2">
+                  Product Attributes
+                </Label>
                 {/* Variation A */}
                 <div className="flex flex-col gap-1">
                   <Label
@@ -562,7 +568,7 @@ const AddProduct = () => {
                       >
                         {isModifyingA ? (
                           <>
-                            <SquareCheckBig size={16}/>
+                            <SquareCheckBig size={16} />
                           </>
                         ) : (
                           <>
@@ -584,11 +590,13 @@ const AddProduct = () => {
                 {/* Variation B */}
                 <div className="flex flex-col gap-1">
                   <Label
-                  htmlFor="product-description"
-                  className={`font-medium
-                     ${!variationA.trim() ? "text-foreground/40" : "text-base"} `}
+                    htmlFor="product-description"
+                    className={`font-medium
+                     ${
+                       !variationA.trim() ? "text-foreground/40" : "text-base"
+                     } `}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center">
                       {isModifyingB ? (
                         <>
                           <Input
@@ -613,7 +621,7 @@ const AddProduct = () => {
                       >
                         {isModifyingB ? (
                           <>
-                            <SquareCheckBig size={16}/>
+                            <SquareCheckBig size={16} />
                           </>
                         ) : (
                           <>
@@ -663,7 +671,7 @@ const AddProduct = () => {
                       variationModal.openModal();
                       setGenerateError("");
                     }}
-                    className={`py-2.5 font-medium rounded 
+                    className={`w-full max-w-[200px] font-medium 
                       ${
                         isGeneratingVariations
                           ? "hover:bg-gray-100/80 bg-gray-100/80" // disabled look
@@ -697,28 +705,21 @@ const AddProduct = () => {
                   )} */}
                 </div>
               </Activity>
-              <div className="flex gap-5 items-center">
-                <Button
-                  type="submit"
-                  className={`py-2.5 bg-primary hover:bg-primary-hover text-white font-medium rounded
+              <Button
+                type="submit"
+                className={`w-full max-w-[200px] bg-primary hover:bg-primary-hover text-white font-medium
             ${loading ? "opacity-50" : "cursor-pointer"}`}
-                  disabled={loading || !name.trim()}
-                >
-                  {loading ? (
-                    <div className="mx-1 flex gap-1 items-center">
-                      <LoaderIcon className="animate-spin" size={16} />
-                      <span>Creating Product...</span>
-                    </div>
-                  ) : (
-                    <span className="mx-14.5">ADD</span>
-                  )}
-                </Button>
-                {addingError && (
-                    <span className="text-destructive">
-                      {addingError === "empty variations" && "No variations. Generate and confirm first."}
-                    </span>
-                  )}
-              </div>
+                disabled={loading || !name.trim()}
+              >
+                {loading ? (
+                  <div className="mx-1 flex gap-1 items-center">
+                    <LoaderIcon className="animate-spin" size={16} />
+                    <span>Creating Product...</span>
+                  </div>
+                ) : (
+                  <span className="mx-14.5">Add Product</span>
+                )}
+              </Button>
             </div>
           </div>
         </form>

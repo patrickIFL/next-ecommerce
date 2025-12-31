@@ -56,7 +56,7 @@ function VariationProductRow({ product }: Props) {
               <Image
                 src={product.image?.[0] ?? "/placeholder.png"}
                 alt="Product Image"
-                className="ml-5 w-10"
+                className="ml-5 w-10 h-10 object-cover"
                 width={1280}
                 height={720}
               />
@@ -84,7 +84,7 @@ function VariationProductRow({ product }: Props) {
         </td>
 
         {/* NAME + CHEVRON */}
-        <td className="px-4 py-3 text-center">
+        <td className="px-4 py-3 text-left">
           <span>{product.name}</span>
         </td>
 

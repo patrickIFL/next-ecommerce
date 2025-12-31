@@ -48,10 +48,19 @@ export function VariationModal({
   const [variations, setVariations] = useState<Variation[]>([]);
 
   useEffect(() => {
-    if (generatedVariations.length > 0) {
-      setVariations(generatedVariations);
-    }
-  }, [generatedVariations]);
+  if (generatedVariations.length > 0) {
+    setVariations(
+      generatedVariations.map((v) => ({
+        ...v,
+        sku: v.sku ?? "",
+        price: v.price ?? "",
+        salePrice: v.salePrice ?? "",
+        stock: v.stock ?? "",
+      }))
+    );
+  }
+}, [generatedVariations]);
+
 
   const updateVariation = (
     index: number,

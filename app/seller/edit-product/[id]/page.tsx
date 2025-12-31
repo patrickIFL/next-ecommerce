@@ -1,5 +1,3 @@
-
-
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -12,7 +10,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { assets } from "@/assets/assets";
 import useProductHook from "@/hooks/useProductHook";
-import { useVariationModal } from "@/hooks/useVariationModal";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,7 +24,6 @@ import {
 } from "@/components/ui/tooltip";
 
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import {
   Info,
@@ -37,6 +33,7 @@ import {
   SquarePen,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useEditVariationModal } from "@/hooks/useEditVariationModal";
 
 /* ===================================================== */
 
@@ -44,8 +41,9 @@ const EditProduct = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
   const { getToken } = useAuth();
-  const { products } = useProductHook();
-  const variationModal = useVariationModal();
+  const { sellerProducts } = useProductHook();
+  const variationModal = useEditVariationModal();
+  const [addingNewVariations, setAddingNewVariations] = useState(false);
 
   /* ===================== CORE STATE ===================== */
 
@@ -81,16 +79,17 @@ const EditProduct = () => {
 
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
-  const [addingError, setAddingError] = useState("");
+  // const [addingError, setAddingError] = useState("");
 
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
 
   /* ===================== LOAD PRODUCT ===================== */
 
   useEffect(() => {
-    const product = products.find((p) => p.id === id);
+    if (!sellerProducts) return;
+    const product = sellerProducts.find((p) => p.id === id);
     if (product) setProductData(product);
-  }, [id, products]);
+  }, [id, sellerProducts]);
 
   useEffect(() => {
     if (!productData) return;
@@ -141,24 +140,30 @@ const EditProduct = () => {
 
   /* ===================== VARIATION GENERATOR ===================== */
 
-  const handleGenerateVariations = async () => {
-    setisGeneratingVariations(true);
-
+  const handleGenerateVariations = () => {
     const listA = variationA
       .split(",")
       .map((v) => v.trim())
       .filter(Boolean);
 
     const listB = variationB
-      ? variationB.split(",").map((v) => v.trim()).filter(Boolean)
+      ? variationB
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean)
       : [];
 
-    const results: any[] = [];
+    if (!listA.length) {
+      toast.error("Please enter variation values.");
+      return;
+    }
+    
+    const generated: any[] = [];
 
     if (listB.length) {
       listA.forEach((a) => {
         listB.forEach((b) => {
-          results.push({
+          generated.push({
             name: `${a}, ${b} - ${name}`,
             sku: "",
             price: "",
@@ -170,7 +175,7 @@ const EditProduct = () => {
       });
     } else {
       listA.forEach((a) => {
-        results.push({
+        generated.push({
           name: `${a} - ${name}`,
           sku: "",
           price: "",
@@ -181,8 +186,19 @@ const EditProduct = () => {
       });
     }
 
-    variationModal.setGeneratedVariations(results);
-    setisGeneratingVariations(false);
+    // ✅ Append to existing variations (no modal)
+    setFinalVariations((prev) => {
+      const base = prev.length ? prev : variations;
+      const existingNames = new Set(base.map((v) => v.name));
+
+      return [...base, ...generated.filter((v) => !existingNames.has(v.name))];
+    });
+    toast.success("Variations generated");
+
+    // ✅ Clear inputs
+    setVariationA("");
+    setVariationB("");
+    setAddingNewVariations(false);
   };
 
   /* ===================== VALIDATION ===================== */
@@ -196,9 +212,7 @@ const EditProduct = () => {
       const price = Number(v.price);
       const stock = Number(v.stock);
       const salePrice =
-        v.salePrice === "" || v.salePrice === null
-          ? null
-          : Number(v.salePrice);
+        v.salePrice === "" || v.salePrice === null ? null : Number(v.salePrice);
 
       if (!Number.isFinite(price) || price <= 0) {
         throw new Error(`Invalid price for ${v.name}`);
@@ -230,7 +244,10 @@ const EditProduct = () => {
     setVariations((prev) =>
       prev.map((v) => {
         const base = v.name.split(" - ").pop();
-        const parts = v.name.split(" - ")[0].split(",").map((p) => p.trim());
+        const parts = v.name
+          .split(" - ")[0]
+          .split(",")
+          .map((p: any) => p.trim());
 
         return {
           ...v,
@@ -264,7 +281,10 @@ const EditProduct = () => {
       formData.append(
         "search_keys",
         JSON.stringify(
-          searchKeys.split(",").map((k) => k.trim()).filter(Boolean)
+          searchKeys
+            .split(",")
+            .map((k) => k.trim())
+            .filter(Boolean)
         )
       );
 
@@ -294,11 +314,9 @@ const EditProduct = () => {
 
       appendImagesSafely(formData);
 
-      const res = await axios.patch(
-        `/api/product/edit/${id}`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await axios.patch(`/api/product/edit/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       return res.data;
     },
@@ -314,390 +332,424 @@ const EditProduct = () => {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // SIMPLE validation
-  if (type === "SIMPLE") {
-    if (!name.trim()) {
-      toast.error("Product name is required.");
-      return;
+    // SIMPLE validation
+    if (type === "SIMPLE") {
+      if (!name.trim()) {
+        toast.error("Product name is required.");
+        return;
+      }
+
+      if (Number(price) <= 0) {
+        toast.error("Price must be greater than 0.");
+        return;
+      }
     }
 
-    if (Number(price) <= 0) {
-      toast.error("Price must be greater than 0.");
-      return;
+    // VARIATION validation
+    if (type === "VARIATION") {
+      if (
+        (finalVariations.length === 0 && variations.length === 0) ||
+        ![varAName, varBName].some(Boolean)
+      ) {
+        toast.error("Please generate and confirm variations.");
+        return;
+      }
+
+      try {
+        // normalize before submit
+        const normalized = validateVariations(
+          finalVariations.length ? finalVariations : variations
+        );
+        setFinalVariations(normalized);
+      } catch (err: any) {
+        toast.error(err.message);
+        return;
+      }
     }
-  }
 
-  // VARIATION validation
-  if (type === "VARIATION") {
-    if (
-      (finalVariations.length === 0 && variations.length === 0) ||
-      ![varAName, varBName].some(Boolean)
-    ) {
-      toast.error("Please generate and confirm variations.");
-      return;
-    }
-
-    try {
-      // normalize before submit
-      const normalized = validateVariations(
-        finalVariations.length ? finalVariations : variations
-      );
-      setFinalVariations(normalized);
-    } catch (err: any) {
-      toast.error(err.message);
-      return;
-    }
-  }
-
-  await updateProduct();
-};
-
+    await updateProduct();
+  };
 
   /* ===================== UI ===================== */
 
   if (!productData) {
-    return (
-      <div className="p-10 text-center text-xl">Product not found.</div>
-    );
+    return <div className="p-10 text-center text-xl">Product not found.</div>;
   }
-
 
   return (
     <>
-  <div className="px-6 py-6 min-h-screen w-full mt-16">
-    <form onSubmit={handleSubmit} className="p-5 sm:p-10">
-      <div className="flex flex-col mb-5">
-        <p className="text-2xl font-medium">
-          {type === "VARIATION" ? "Edit Product (Variation)" : "Edit Product"}
-        </p>
-        <div className="w-16 h-0.5 bg-primary rounded-full"></div>
-      </div>
-
-      {/* Main Wrapper */}
-      <div className="flex flex-col xl:flex-row space-x-10 space-y-5 w-full mb-10">
-        {/* Column 1 */}
-        <div className="space-y-5 w-full max-w-xl lg:max-w-md">
-          <div>
-            <p className="text-base font-medium">Product Image</p>
-            <div className="flex flex-wrap items-center gap-3 mt-2 min-w-xl">
-              {[...Array(4)].map((_, index) => (
-                <label key={index} htmlFor={`image${index}`}>
-                  <input
-                    type="file"
-                    id={`image${index}`}
-                    hidden
-                    onChange={(e: any) => {
-                      const updatedFiles: any = [...files];
-                      updatedFiles[index] = e.target.files[0];
-                      setFiles(updatedFiles);
-                    }}
-                  />
-                  <Image
-                    className="max-w-24 h-24 object-cover rounded cursor-pointer"
-                    src={
-                      files[index]
-                        ? URL.createObjectURL(files[index])
-                        : productData?.image?.[index] || assets.upload_area
-                    }
-                    alt=""
-                    width={100}
-                    height={100}
-                  />
-                </label>
-              ))}
-            </div>
+      <div className="px-6 py-6 min-h-screen w-full mt-16">
+        <form onSubmit={handleSubmit} className="p-5 sm:p-10">
+          <div className="flex flex-col mb-5">
+            <p className="text-2xl font-medium">Edit: {productData.name}</p>
+            <div className="w-16 h-0.5 bg-primary rounded-full"></div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-base font-medium" htmlFor="product-name">
-              Product Name
-            </label>
-            <Input
-              id="product-name"
-              type="text"
-              placeholder="Enter your product's name"
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-base font-medium" htmlFor="product-description">
-              Product Description
-            </label>
-            <Textarea
-              id="product-description"
-              rows={4}
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-              placeholder="(Optional) Describe your product"
-              onChange={(e) => setDescription(e.target.value)}
-              value={description}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-base font-medium">
-              <div className="flex gap-1.5 items-center">
-                <span>Search Keys</span>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info size={12} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-[11px]">
-                      Enter keywords to help customers find this product
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
+          {/* Main Wrapper */}
+          <div className="flex flex-col xl:flex-row space-x-10 space-y-5 w-full mb-10">
+            {/* Column 1 */}
+            <div className="space-y-5 w-full max-w-xl lg:max-w-md">
+              <div>
+                <p className="text-base font-medium">Product Image</p>
+                <div className="flex flex-wrap items-center gap-3 mt-2 min-w-xl">
+                  {[...Array(4)].map((_, index) => (
+                    <label key={index} htmlFor={`image${index}`}>
+                      <input
+                        type="file"
+                        id={`image${index}`}
+                        hidden
+                        onChange={(e: any) => {
+                          const updatedFiles: any = [...files];
+                          updatedFiles[index] = e.target.files[0];
+                          setFiles(updatedFiles);
+                        }}
+                      />
+                      <Image
+                        className="max-w-24 h-24 object-cover rounded cursor-pointer"
+                        src={
+                          files[index]
+                            ? URL.createObjectURL(files[index])
+                            : productData?.image?.[index] || assets.upload_area
+                        }
+                        alt=""
+                        width={100}
+                        height={100}
+                      />
+                    </label>
+                  ))}
+                </div>
               </div>
-            </label>
-            <Textarea
-              rows={4}
-              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
-              placeholder="(Optional) Separate each with a comma"
-              onChange={(e) => setSearchKeys(e.target.value)}
-              value={searchKeys}
-            />
-          </div>
-        </div>
 
-        {/* Column 2 */}
-        <div
-          className={`${
-            type === "VARIATION" ? "space-y-3" : "space-y-5"
-          } max-w-xl lg:max-w-md`}
-        >
+              <div className="flex flex-col gap-1">
+                <label className="text-base font-medium" htmlFor="product-name">
+                  Product Name
+                </label>
+                <Input
+                  id="product-name"
+                  type="text"
+                  placeholder="Enter your product's name"
+                  className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                  required
+                />
+              </div>
 
-          <div className="flex items-center gap-5 flex-wrap">
-            <div className="flex flex-col flex-1 gap-1 w-32">
-              <label className="text-base font-medium">Category</label>
-              <CategoryComboBox
-                value={category}
-                onChange={(val) => setCategory(val)}
-              />
+              <div className="flex flex-col gap-1">
+                <label
+                  className="text-base font-medium"
+                  htmlFor="product-description"
+                >
+                  Product Description
+                </label>
+                <Textarea
+                  id="product-description"
+                  rows={4}
+                  className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+                  placeholder="(Optional) Describe your product"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-base font-medium">
+                  <div className="flex gap-1.5 items-center">
+                    <span>Search Keys</span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={12} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[11px]">
+                          Enter keywords to help customers find this product
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </label>
+                <Textarea
+                  rows={4}
+                  className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+                  placeholder="(Optional) Separate each with a comma"
+                  onChange={(e) => setSearchKeys(e.target.value)}
+                  value={searchKeys}
+                />
+              </div>
             </div>
 
-            <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
-              <>
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium">SKU</label>
-                  <Input
-                    type="text"
-                    placeholder="(Optional)"
-                    className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                    onChange={(e) => setSku(e.target.value)}
-                    value={sku}
-                  />
-                </div>
-
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium">Stock</label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                    onChange={(e) => setStock(e.target.value)}
-                    value={stock}
-                  />
-                </div>
-              </>
-            </Activity>
-          </div>
-
-          {/* SIMPLE prices */}
-          <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
-            <>
+            {/* Column 2 */}
+            <div
+              className={`${
+                type === "VARIATION" ? "space-y-3" : "space-y-5"
+              } w-full max-w-xl lg:max-w-md flex flex-col`}
+            >
+              {/* Category + SKU + Stock */}
               <div className="flex items-center gap-5 flex-wrap">
                 <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium">Product Price</label>
-                  <div className="flex items-center gap-2">
-                    <PhilippinePeso size={18} />
-                    <Input
-                      type="number"
-                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                      onChange={(e) => setPrice(e.target.value)}
-                      value={price}
-                    />
-                  </div>
+                  <label className="text-base font-medium">Category</label>
+                  <CategoryComboBox
+                    value={category}
+                    onChange={(val) => setCategory(val)}
+                  />
                 </div>
 
-                <div className="flex flex-col flex-1 gap-1 w-32">
-                  <label className="text-base font-medium">SALE Price</label>
-                  <div className="flex items-center gap-2">
-                    <PhilippinePeso size={18} />
-                    <Input
-                      type="number"
-                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                      onChange={(e) => setsalePrice(e.target.value)}
-                      value={salePrice}
-                    />
-                  </div>
-                </div>
+                <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
+                  <>
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium">SKU</label>
+                      <Input
+                        type="text"
+                        placeholder="(Optional)"
+                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setSku(e.target.value)}
+                        value={sku}
+                      />
+                    </div>
+
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium">Stock</label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setStock(e.target.value)}
+                        value={stock}
+                      />
+                    </div>
+                  </>
+                </Activity>
               </div>
-            </>
-          </Activity>
 
-          {/* VARIATION */}
-          <Activity mode={type === "VARIATION" ? "visible" : "hidden"}>
-            {/* Variation A */}
-            <div className="flex flex-col gap-1">
-              <Label className="text-base font-medium">
-                <div className="flex items-center justify-between">
-                  {isModifyingA ? (
+              {/* SIMPLE Prices */}
+              <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
+                <>
+                  <div className="flex items-center gap-5 flex-wrap">
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium">
+                        Product Price
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <PhilippinePeso size={18} />
+                        <Input
+                          type="number"
+                          className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                          onChange={(e) => setPrice(e.target.value)}
+                          value={price}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col flex-1 gap-1 w-32">
+                      <label className="text-base font-medium">
+                        SALE Price
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <PhilippinePeso size={18} />
+                        <Input
+                          type="number"
+                          className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                          onChange={(e) => setsalePrice(e.target.value)}
+                          value={salePrice}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              </Activity>
+
+              {/* VARIATION */}
+              <Activity mode={type === "VARIATION" ? "visible" : "hidden"}>
+                <Label className="text-lg underline underline-offset-2">
+                  Product Attributes
+                </Label>
+                {/* Variation A */}
+                <div className="flex flex-col gap-1">
+                  <Label className="text-base font-medium">
+                    <div className="flex items-center justify-between">
+                      {isModifyingA ? (
+                        <Input
+                          className="w-30 text-md"
+                          value={varAName}
+                          onChange={(e) => setVarAName(e.target.value)}
+                        />
+                      ) : (
+                        <span className="w-30">• {varAName}</span>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          if (isModifyingA) {
+                            setAttributes([varAName, varBName].filter(Boolean));
+                          }
+                          setisModifyingA(!isModifyingA);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        {isModifyingA ? (
+                          <SquareCheckBig size={16} />
+                        ) : (
+                          <SquarePen size={16} />
+                        )}
+                      </Button>
+                    </div>
+                  </Label>
+                  <Activity mode={addingNewVariations ? "visible" : "hidden"}>
                     <Input
-                      className="w-30 text-md"
-                      value={varAName}
-                      onChange={(e) => setVarAName(e.target.value)}
+                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40 resize-none"
+                      placeholder="eg. Sml, Med, Lrg"
+                      onChange={(e) => setVariationA(e.target.value)}
+                      value={variationA}
                     />
-                  ) : (
-                    <span>• {varAName}</span>
+                  </Activity>
+                </div>
+
+                {/* Variation B */}
+                <div className="flex flex-col gap-1">
+                  <Label className={`font-medium text-base`}>
+                    <div className="flex items-center">
+                      {isModifyingB ? (
+                        <Input
+                          className="w-30 text-md"
+                          value={varBName}
+                          onChange={(e) => setVarBName(e.target.value)}
+                        />
+                      ) : (
+                        <span className="w-30">• {varBName}</span>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          if (isModifyingB) {
+                            setAttributes([varAName, varBName].filter(Boolean));
+                          }
+                          setisModifyingB(!isModifyingB);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        {isModifyingB ? (
+                          <SquareCheckBig size={16} />
+                        ) : (
+                          <SquarePen size={16} />
+                        )}
+                      </Button>
+                    </div>
+                  </Label>
+
+                  <Activity mode={addingNewVariations ? "visible" : "hidden"}>
+                    <Input
+                      placeholder="eg. Red, Blue, Yellow"
+                      disabled={!variationA.trim()}
+                      value={variationB}
+                      onChange={(e) => setVariationB(e.target.value)}
+                      className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                    />
+                  </Activity>
+                </div>
+
+                  {!addingNewVariations && (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setAddingNewVariations(true);
+                      }}
+                      className={`max-w-[200px] cursor-pointer bg-gray-100 hover:bg-gray-200 transition`}
+                    >
+                      Add Variations
+                    </Button>
                   )}
+
+                  {addingNewVariations && (
+                    <Button
+                      type="button"
+                      disabled={isGeneratingVariations}
+                      onClick={() => {
+                        handleGenerateVariations();
+                        setGenerateError("");
+                      }}
+                      className="max-w-[200px] cursor-pointer bg-gray-100 hover:bg-gray-200 transition"
+                    >
+                      Generate New Variations
+                    </Button>
+                  )}
+
+                  {generateError && (
+                    <span className="text-destructive">
+                      {generateError === "empty name" && "Please enter a name."}
+                      {generateError === "empty variation" &&
+                        "Please enter some variations first."}
+                    </span>
+                  )}
+              </Activity>
+
+              {/* Submit */}
+                {productData.type === "VARIATION" && (
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant={"secondary"}
+                    className="cursor-pointer max-w-[200px]"
                     onClick={() => {
-                      if (isModifyingA) {
-                        setAttributes([varAName, varBName].filter(Boolean));
-                      }
-                      setisModifyingA(!isModifyingA);
+                      variationModal.openEdit(
+                        finalVariations.length ? finalVariations : variations
+                      );
                     }}
                   >
-                    {isModifyingA ? (
-                      <SquareCheckBig size={16} />
-                    ) : (
-                      <SquarePen size={16} />
-                    )}
+                    Modify Variations
                   </Button>
-                </div>
-              </Label>
-
-              <Input
-                placeholder="eg. Sml, Med, Lrg"
-                onChange={(e) => setVariationA(e.target.value)}
-                value={variationA}
-              />
-            </div>
-
-            {/* Variation B */}
-            <div className="flex flex-col gap-1">
-              <Label
-                className={`font-medium ${
-                  !variationA.trim()
-                    ? "text-foreground/40"
-                    : "text-base"
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  {isModifyingB ? (
-                    <Input
-                      className="w-30 text-md"
-                      value={varBName}
-                      onChange={(e) => setVarBName(e.target.value)}
-                    />
-                  ) : (
-                    <span>• {varBName}</span>
-                  )}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    disabled={!variationA.trim()}
-                    onClick={() => {
-                      if (isModifyingB) {
-                        setAttributes([varAName, varBName].filter(Boolean));
-                      }
-                      setisModifyingB(!isModifyingB);
-                    }}
-                  >
-                    {isModifyingB ? (
-                      <SquareCheckBig size={16} />
-                    ) : (
-                      <SquarePen size={16} />
-                    )}
-                  </Button>
-                </div>
-              </Label>
-
-              <Input
-                placeholder="eg. Red, Blue, Yellow"
-                disabled={!variationA.trim()}
-                value={variationB}
-                onChange={(e) => setVariationB(e.target.value)}
-              />
-            </div>
-
-            <div className="flex gap-5 items-center">
-              <Button
-                type="button"
-                disabled={isGeneratingVariations}
-                onClick={() => {
-                  if (!name) return setGenerateError("empty name");
-                  if (!variationA) return setGenerateError("empty variation");
-
-                  if (variationModal.generatedVariations.length === 0) {
-  // EDIT MODE: preload existing variants into modal
-  variationModal.setGeneratedVariations(
-    (finalVariations.length ? finalVariations : variations).map((v) => ({
-      ...v,
-      price: String(v.price),
-      salePrice: v.salePrice === null ? "" : String(v.salePrice),
-      stock: String(v.stock),
-    }))
-  );
-}
-
-variationModal.openModal();
-
-                  setGenerateError("");
-                }}
-              >
-                {isGeneratingVariations ? (
-                  <LoaderIcon className="animate-spin" size={16} />
-                ) : (
-                  "Modify Variations"
                 )}
-              </Button>
 
-              {generateError && (
-                <span className="text-destructive">
-                  {generateError === "empty name" && "Please enter a name."}
-                  {generateError === "empty variation" &&
-                    "Please enter some variations first."}
-                </span>
-              )}
+                <Button className="cursor-pointer text-white max-w-[200px]" type="submit" disabled={loading}>
+                  {loading ? (
+                    <>
+                    <LoaderIcon className="animate-spin" size={16} />
+                    <span>Saving</span>
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
             </div>
-          </Activity>
-
-          <div className="flex gap-5 items-center">
-            <Button type="submit" disabled={loading}>
-              {loading ? (
-                <LoaderIcon className="animate-spin" size={16} />
-              ) : (
-                "UPDATE"
-              )}
-            </Button>
           </div>
-        </div>
+        </form>
       </div>
-    </form>
-  </div>
 
-  <VariationModal
-  open={variationModal.open}
-  onOpenChange={variationModal.setOpen}
-  parentProductName={name}
-  imageOptions={imageOptions}
-  generatedVariations={variationModal.generatedVariations}
-  onConfirm={setFinalVariations}
-/>
+      <VariationModal
+        open={variationModal.open}
+        onOpenChange={(open) => {
+          if (!open) variationModal.close();
+        }}
+        parentProductName={name}
+        imageOptions={imageOptions}
+        generatedVariations={variationModal.generatedVariations}
+        onConfirm={(confirmed) => {
+          if (variationModal.mode === "ADD") {
+            // append, avoid duplicates
+            setFinalVariations((prev) => {
+              const existingNames = new Set(
+                (prev.length ? prev : variations).map((v) => v.name)
+              );
 
-</>
+              const merged = [
+                ...(prev.length ? prev : variations),
+                ...confirmed.filter((v) => !existingNames.has(v.name)),
+              ];
 
+              return merged;
+            });
+          } else {
+            // EDIT mode replaces
+            setFinalVariations(confirmed);
+          }
+
+          variationModal.close();
+        }}
+      />
+    </>
   );
 };
 
 export default EditProduct;
-

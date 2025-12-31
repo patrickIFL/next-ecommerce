@@ -58,7 +58,7 @@ const ProductList = () => {
                       <th className="px-4 py-3 font-medium text-center">
                         Image
                       </th>
-                      <th className="px-4 py-3 font-medium text-center">
+                      <th className="px-4 py-3 font-medium text-left">
                         Product
                       </th>
                       <th className="px-4 py-3 font-medium text-center">

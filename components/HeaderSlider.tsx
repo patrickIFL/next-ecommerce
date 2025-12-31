@@ -199,8 +199,8 @@ const HeaderSlider = () => {
       </CarouselContent>
 
       {/* Arrows */}
-      <CarouselPrevious className="left-3 cursor-pointer" />
-      <CarouselNext className="right-3 cursor-pointer" />
+      <CarouselPrevious className="-translate-x-1/2 left-0 cursor-pointer" />
+      <CarouselNext className="translate-x-1/2 right-0 cursor-pointer" />
 
       {/* Dots */}
       <div className="mt-6 flex justify-center gap-2">
