@@ -1,7 +1,7 @@
 "use client";
 
 import { assets } from "@/assets/assets";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
