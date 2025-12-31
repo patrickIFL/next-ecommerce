@@ -22,7 +22,6 @@
  * =========================================================
  */
 
-import * as React from "react";
 import Image from "next/image";
 import { MoveRight } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -39,13 +38,14 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 import ImageBanner from "./ImageBanner";
+import { useEffect, useRef, useState } from "react";
 
 const HeaderSlider = () => {
   /* ---------------------------------------------
    * Autoplay configuration
    * ------------------------------------------- */
   const sliderInterval = 5; // seconds
-  const plugin = React.useRef(
+  const plugin = useRef(
     Autoplay({
       delay: sliderInterval * 1000,
       stopOnInteraction: true,
@@ -55,23 +55,30 @@ const HeaderSlider = () => {
   /* ---------------------------------------------
    * Embla API state (for dots)
    * ------------------------------------------- */
-  const [api, setApi] = React.useState<CarouselApi | null>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
+  const [api, setApi] = useState<CarouselApi | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  React.useEffect(() => {
-    if (!api) return;
+  useEffect(() => {
+  if (!api) return;
 
-    setScrollSnaps(api.scrollSnapList());
+  const onSelect = () => {
     setSelectedIndex(api.selectedScrollSnap());
+  };
 
-    const onSelect = () => {
-      setSelectedIndex(api.selectedScrollSnap());
-    };
+  setScrollSnaps(api.scrollSnapList());
+  setSelectedIndex(api.selectedScrollSnap());
 
-    api.on("select", onSelect);
-    return () => api.off("select", onSelect);
-  }, [api]);
+  api.on("select", onSelect);
+
+  return () => {
+    if (api) {
+      api.off("select", onSelect);
+    }
+  };
+}, [api]);
+
+
 
   /* ---------------------------------------------
    * Fixed banner heights (JPG slides)
