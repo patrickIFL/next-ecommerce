@@ -40,6 +40,29 @@ import {
 import ImageBanner from "./ImageBanner";
 import { useEffect, useRef, useState } from "react";
 
+import type { StaticImageData } from "next/image";
+
+type PngSlide = {
+  id: number;
+  type: "png";
+  title: string;
+  offer: string;
+  buttonText1: string;
+  buttonText2: string;
+  imgSrc: StaticImageData;
+};
+
+type JpgSlide = {
+  id: number;
+  type: "jpg";
+  desktopImg: string;
+  tabletImg: string;
+  mobileImg: string;
+};
+
+type Slide = PngSlide | JpgSlide;
+
+
 const HeaderSlider = () => {
   /* ---------------------------------------------
    * Autoplay configuration
@@ -78,57 +101,46 @@ const HeaderSlider = () => {
   };
 }, [api]);
 
+  const sliderData: Slide[] = [
+  {
+    id: 1,
+    type: "png",
+    title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
+    offer: "Limited Time Offer 30% Off",
+    buttonText1: "Buy now",
+    buttonText2: "Find more",
+    imgSrc: assets.header_headphone_image,
+  },
+  {
+    id: 2,
+    type: "png",
+    title: "Next-Level Gaming Starts Here - Discover PlayStation 5 Today!",
+    offer: "Hurry up only few lefts!",
+    buttonText1: "Buy now",
+    buttonText2: "Explore Deals",
+    imgSrc: assets.header_playstation_image,
+  },
+  {
+    id: 3,
+    type: "png",
+    title: "Power Meets Elegance - Apple MacBook Pro is Here for you!",
+    offer: "Exclusive Deal 40% Off",
+    buttonText1: "Order Now",
+    buttonText2: "Learn More",
+    imgSrc: assets.header_macbook_image,
+  },
+  {
+    id: 4,
+    type: "jpg",
+    desktopImg:
+      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067748/desktopBanner_smgktn.jpg",
+    tabletImg:
+      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067746/tabletBanner_beekpz.jpg",
+    mobileImg:
+      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067747/mobileBanner_brwneo.jpg",
+  },
+];
 
-
-  /* ---------------------------------------------
-   * Fixed banner heights (JPG slides)
-   * ------------------------------------------- *
-  /* ---------------------------------------------
-   * Slider data
-   * ------------------------------------------- */
-  const sliderData = [
-    {
-      id: 1,
-      type: "png",
-      title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
-      offer: "Limited Time Offer 30% Off",
-      buttonText1: "Buy now",
-      buttonText2: "Find more",
-      imgSrc: assets.header_headphone_image,
-    },
-    {
-      id: 2,
-      type: "png",
-      title: "Next-Level Gaming Starts Here - Discover PlayStation 5 Today!",
-      offer: "Hurry up only few lefts!",
-      buttonText1: "Buy now",
-      buttonText2: "Explore Deals",
-      imgSrc: assets.header_playstation_image,
-    },
-    {
-      id: 3,
-      type: "png",
-      title: "Power Meets Elegance - Apple MacBook Pro is Here for you!",
-      offer: "Exclusive Deal 40% Off",
-      buttonText1: "Order Now",
-      buttonText2: "Learn More",
-      imgSrc: assets.header_macbook_image,
-    },
-    {
-      id: 4,
-      type: "jpg",
-      desktopImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067748/desktopBanner_smgktn.jpg",
-      tabletImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067746/tabletBanner_beekpz.jpg",
-        mobileImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067747/mobileBanner_brwneo.jpg",
-      },
-  ];
-
-  /* ---------------------------------------------
-   * Render
-   * ------------------------------------------- */
   return (
     <Carousel
       setApi={setApi}
