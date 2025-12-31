@@ -1,16 +1,12 @@
 "use client";
 
-import {assets} from "@/assets/assets"
-import { useEffect, useState } from "react";
+import { assets } from "@/assets/assets";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import Loading from "@/components/Loading";
-import useProductHook, {
-  ProductType,
-  Variant,
-  VariationsMap,
-} from "@/hooks/useProductHook";
+import useProductHook, { ProductType, Variant } from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
 import { LoaderIcon, Star } from "lucide-react";
@@ -21,86 +17,70 @@ import { QuantityInput } from "@/components/QuantityInput";
 import useWishlist from "@/hooks/useWishlist";
 import { Lens } from "@/components/ui/lens";
 
+/* =========================
+   VARIANT MATRIX
+========================= */
+
+type VariantMatrix = Record<string, Variant>;
+
+function buildVariantMatrix(variants: Variant[]): VariantMatrix {
+  const matrix: VariantMatrix = {};
+
+  variants.forEach((variant) => {
+    const clean = variant.name.split(" - ")[0];
+    const parts = clean.split(",").map((p) => p.trim());
+
+    const key = parts.length === 2 ? `${parts[0]}|${parts[1]}` : `${parts[0]}|`;
+
+    matrix[key] = variant;
+  });
+
+  return matrix;
+}
+
+/* =========================
+   COMPONENT
+========================= */
+
 const Product = () => {
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
   const { wishlist } = useWishlist();
-
-  const [qty, setQty] = useState(1);
-
-  const dummyRating: number = 4.5;
-  const dummyRatingCount: number = 13;
-
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
+
   const currency = process.env.NEXT_PUBLIC_CURRENCY ?? "";
+
+  /* =========================
+     CORE STATE
+  ========================= */
 
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
+  const [qty, setQty] = useState(1);
 
-  const [variations, setVariations] = useState<VariationsMap>({
-    varA: null,
-    varB: null,
-  });
+  /* =========================
+     VARIANT MATRIX STATE
+  ========================= */
 
-  // Automatic Price Detection -- START A
+  const [variantMatrix, setVariantMatrix] = useState<VariantMatrix>({});
   const [selectedVarA, setSelectedVarA] = useState<string | null>(null);
   const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
 
-  function parseVariantName(name: string) {
-    // Remove product suffix: " - Tshirt"
-    //  Small, Red
-    const clean = name.split(" - ")[0].trim();
+  /* =========================
+     LOAD PRODUCT
+  ========================= */
 
-    //  parts[0] = Small, parts[1] = Red
-    // Split by comma if exists
-    const parts = clean.split(",").map((p) => p.trim());
-
-    return {
-      varA: parts[0] || null,
-      varB: parts[1] || null,
-    };
-  }
-
-  const selectedVariant =
-    productData?.variants?.find((variant) => {
-      const parsed = parseVariantName(variant.name);
-
-      if (selectedVarA && parsed.varA !== selectedVarA) return false;
-      if (selectedVarB && parsed.varB !== selectedVarB) return false;
-
-      return true;
-    }) ?? null;
-
-  // Automatic Price Detection -- END A
-
-  function extractVariations(variants: Variant[]): Required<VariationsMap> {
-    const varA = new Set<string>();
-    const varB = new Set<string>();
-
-    variants.forEach((variant) => {
-      const parsed = parseVariantName(variant.name);
-      if (parsed.varA) varA.add(parsed.varA);
-      if (parsed.varB) varB.add(parsed.varB);
-    });
-
-    return {
-      varA: Array.from(varA),
-      varB: Array.from(varB),
-    };
-  }
-
-  // Fetch product when products arrive OR id changes
   useEffect(() => {
     if (!products || products.length === 0) return;
 
-    const product = products.find((p) => p.id === id) || null;
+    const product = products.find((p) => p.id === id) ?? null;
     setProductData(product);
 
     if (product?.variants?.length) {
-      setVariations(extractVariations(product.variants));
+      setVariantMatrix(buildVariantMatrix(product.variants));
     } else {
-      setVariations({ varA: null, varB: null });
+      setVariantMatrix({});
     }
 
     if (product?.image?.length) {
@@ -108,37 +88,95 @@ const Product = () => {
     }
   }, [id, products]);
 
-  // Automaticelly Select the first variation when variations change
+  /* =========================
+     DERIVED OPTIONS
+  ========================= */
+
+  const availableVarA = useMemo(() => {
+    return Array.from(
+      new Set(Object.keys(variantMatrix).map((k) => k.split("|")[0]))
+    );
+  }, [variantMatrix]);
+
+  const availableVarB = useMemo(() => {
+    if (!selectedVarA) return [];
+
+    return Array.from(
+      new Set(
+        Object.keys(variantMatrix)
+          .filter((k) => k.startsWith(`${selectedVarA}|`))
+          .map((k) => k.split("|")[1])
+          .filter(Boolean)
+      )
+    );
+  }, [variantMatrix, selectedVarA]);
+
+  /* =========================
+     AUTO-SELECTION LOGIC
+  ========================= */
+
   useEffect(() => {
-    if (variations.varA && variations.varA.length > 0) {
-      setSelectedVarA(variations.varA[0]);
+    if (!selectedVarA && availableVarA.length > 0) {
+      setSelectedVarA(availableVarA[0]);
+    }
+  }, [availableVarA, selectedVarA]);
+
+  useEffect(() => {
+    if (!selectedVarA) return;
+
+    // VarA has NO VarB → clear it
+    if (availableVarB.length === 0) {
+      if (selectedVarB !== null) {
+        setSelectedVarB(null);
+      }
+      return;
     }
 
-    if (variations.varB && variations.varB.length > 0) {
-      setSelectedVarB(variations.varB[0]);
+    // VarA has VarB but current selection is invalid
+    if (!availableVarB.includes(selectedVarB ?? "")) {
+      setSelectedVarB(availableVarB[0]);
     }
-  }, [variations]);
+  }, [availableVarA, availableVarB, selectedVarA, selectedVarB]);
 
-  // Change main image when selected variant changes
+  /* =========================
+     SELECTED VARIANT
+  ========================= */
+
+  const selectedVariant = useMemo(() => {
+    if (!selectedVarA) return null;
+
+    const key =
+      selectedVarB !== null
+        ? `${selectedVarA}|${selectedVarB}`
+        : `${selectedVarA}|`;
+
+    return variantMatrix[key] ?? null;
+  }, [variantMatrix, selectedVarA, selectedVarB]);
+
+  /* =========================
+     IMAGE SYNC
+  ========================= */
+
   useEffect(() => {
     if (!productData) return;
 
     if (!selectedVariant) {
-      setMainImage(productData.image[0]);
+      setMainImage(productData.image?.[0] ?? null);
       return;
     }
+
     const index = selectedVariant.imageIndex;
     setMainImage(productData.image[index] ?? productData.image[0]);
   }, [selectedVariant, productData]);
 
-  // Global loading state (products not ready yet)
-  if (!products || products.length === 0) return <Loading />;
+  /* =========================
+     PRICE & STOCK
+  ========================= */
 
-  // Product not found
+  if (!products || products.length === 0) return <Loading />;
   if (!productData)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
-  // this is the price for the computed variant product
   const displayPrice = selectedVariant
     ? productData.isOnSale
       ? selectedVariant.salePrice ?? selectedVariant.price
@@ -153,21 +191,13 @@ const Product = () => {
       : productData.stock ?? null;
 
   const isOutOfStock = displayStock !== null && displayStock < qty;
-
   const requiresVariation = productData.type === "VARIATION";
-
   const canPurchase = !requiresVariation || selectedVariant;
-
-  const varA = variations.varA ?? [];
-  const varB = variations.varB ?? [];
-
-  const normalizeStock = (stock?: number | null): number | undefined =>
-    stock ?? undefined;
 
   const maxQty =
     productData.type === "SIMPLE"
-      ? normalizeStock(productData.stock)
-      : normalizeStock(displayStock);
+      ? productData.stock ?? undefined
+      : displayStock ?? undefined;
 
   return (
     <div className="mt-16 px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -219,20 +249,18 @@ const Product = () => {
                 <Star
                   key={index}
                   className="h-5 w-5"
-                  fill={
-                    index < Math.floor(dummyRating) ? "orange" : "lightgray"
-                  }
+                  fill={index < Math.floor(4.5) ? "orange" : "lightgray"}
                   stroke="none"
                 />
               ))}
             </div>
-            <p>{dummyRating}</p>
+            <p>{4.5}</p>
             <span className="text-sm text-foreground/50">
-              {dummyRatingCount > 0 && (
+              {13 > 0 && ( // replace 13 with reviews count
                 <p>
                   {" | "}
-                  {dummyRatingCount}
-                  {dummyRatingCount > 1 ? " Reviews" : " Review"}
+                  {13}
+                  {13 > 1 ? " Reviews" : " Review"}
                 </p>
               )}
             </span>
@@ -275,17 +303,17 @@ const Product = () => {
           )}
 
           {/* Variations */}
-          {(varA.length > 0 || varB.length > 0) && (
+          {availableVarA.length > 0 && (
             <div className="flex gap-4 mt-4 flex-wrap">
-              {varA.length > 0 && (
+              {availableVarA.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
                   <Label className="text-xs">
                     {productData.attributes?.[0] ?? "VarA"}
                   </Label>
 
                   <VariationComboBox
-                    variantName="Size"
-                    variants={varA.map((v) => ({
+                    variantName=""
+                    variants={availableVarA.map((v) => ({
                       value: v,
                       label: v,
                     }))}
@@ -295,15 +323,15 @@ const Product = () => {
                 </div>
               )}
 
-              {varB.length > 0 && (
+              {availableVarB.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
                   <Label className="text-xs">
                     {productData.attributes?.[1] ?? "VarB"}
                   </Label>
 
                   <VariationComboBox
-                    variantName="Material"
-                    variants={varB.map((v) => ({
+                    variantName=""
+                    variants={availableVarB.map((v) => ({
                       value: v,
                       label: v,
                     }))}
