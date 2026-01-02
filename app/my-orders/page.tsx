@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronDown, PackageOpen } from "lucide-react";
 
-import Loading from "@/components/Loading";
-import EmptyState from "@/components/EmptyState";
+import Loading from "@/components/common/Loading";
+import EmptyState from "@/components/common/EmptyState";
 import Box_icon from "@/components/svgs/Box_icon";
 import { ProductCircles } from "@/components/ui/avatar-circles";
 import {

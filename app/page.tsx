@@ -1,8 +1,8 @@
-import Banner from "@/components/Banner";
-import FeaturedProduct from "@/components/FeaturedProduct";
-import HeaderSlider from "@/components/HeaderSlider";
-import HomeProducts from "@/components/HomeProducts";
-import Newsletter from "@/components/Newsletter";
+import Banner from "@/components/homepage/Banner";
+import FeaturedProduct from "@/components/homepage/FeaturedProduct";
+import HeaderSlider from "@/components/homepage/HeaderSlider";
+import HomeProducts from "@/components/homepage/HomeProducts";
+import Newsletter from "@/components/homepage/Newsletter";
 
 export default function Home() {
   return (

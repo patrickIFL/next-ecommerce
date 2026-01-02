@@ -1,6 +1,7 @@
 "use client";
-import { useTheme } from "./theme-provider";
-import NextLogo from "./svgs/NextLogo";
+
+import NextLogo from "../svgs/NextLogo";
+import { useTheme } from "../theme-provider";
 
 const Footer = () => {
   const { isDark } = useTheme();

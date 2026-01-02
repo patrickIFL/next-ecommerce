@@ -27,8 +27,8 @@ import { MoveRight } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 
 import { assets } from "@/assets/assets";
-import { Button } from "./ui/button";
-import { InteractiveHoverButton } from "./ui/interactive-hover-button";
+import { Button } from "../ui/button";
+import { InteractiveHoverButton } from "../ui/interactive-hover-button";
 import {
   Carousel,
   CarouselApi,
@@ -36,7 +36,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "./ui/carousel";
+} from "../ui/carousel";
 import ImageBanner from "./ImageBanner";
 import { useEffect, useRef, useState } from "react";
 

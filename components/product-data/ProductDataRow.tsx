@@ -3,7 +3,7 @@
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
   Eye,
   EyeOff,
@@ -14,7 +14,7 @@ import {
   TicketPercent,
   Trash2,
 } from "lucide-react";
-import Confirmation from "./Confirmation";
+import Confirmation from "../common/Confirmation";
 import useActionsProductHook from "@/hooks/useActionsProductHook";
 
 function ProductDataRow({ product }: { product: any }) {

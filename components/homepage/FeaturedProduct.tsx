@@ -2,14 +2,14 @@ import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { SquareArrowOutUpRight } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "./ui/carousel";
+} from "../ui/carousel";
 
 const products = [
   {

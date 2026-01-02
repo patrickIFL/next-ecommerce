@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { CartItem } from "@/types/cart";
 
 interface CartCardProps {

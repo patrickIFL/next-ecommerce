@@ -14,7 +14,7 @@ import useProductHook from "@/hooks/useProductHook";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import CategoryComboBox from "@/components/CategoryComboBox";
+import CategoryComboBox from "@/components/common/CategoryComboBox";
 import { VariationModal } from "@/components/VariationModal";
 
 import {

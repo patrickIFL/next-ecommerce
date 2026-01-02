@@ -1,16 +1,16 @@
 "use client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import ProductDataRow from "@/components/ProductDataRow";
-import Loading from "@/components/Loading";
-import SellerSearch from "@/components/SellerSearch";
-import SellerCategoryFilter from "@/components/SellerCategoryFilter";
+import ProductDataRow from "@/components/product-data/ProductDataRow";
+import Loading from "@/components/common/Loading";
+import SellerSearch from "@/components/seller/SellerSearch";
+import SellerCategoryFilter from "@/components/seller/SellerCategoryFilter";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/common/EmptyState";
 import { Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
-import VariationProductRow from "@/components/VariationProductRow";
+import VariationProductRow from "@/components/product-data/VariationProductRow";
 import useProductHook from "@/hooks/useProductHook";
 
 const ProductList = () => {

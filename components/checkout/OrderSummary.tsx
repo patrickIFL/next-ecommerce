@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import AddressComboBox from "@/components/AddressComboBox";
-import { Input } from "./ui/input";
+import AddressComboBox from "@/components/common/AddressComboBox";
+import { Input } from "../ui/input";
 import useOrderHook from "@/hooks/useOrderHook";
 import { formatMoney } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { LoaderIcon } from "lucide-react";
 
 const OrderSummary = ({

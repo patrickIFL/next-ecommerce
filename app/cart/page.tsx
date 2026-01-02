@@ -1,13 +1,13 @@
 "use client";
 
-import OrderSummary from "@/components/OrderSummary";
+import OrderSummary from "@/components/checkout/OrderSummary";
 import { useRouter } from "next/navigation";
-import CartCard from "@/components/CartCard";
+import CartCard from "@/components/common/CartCard";
 import { useEffect } from "react";
 import useCartHook from "@/hooks/useCartHook";
 import { MoveLeft, ShoppingCart } from "lucide-react";
-import EmptyState from "@/components/EmptyState";
-import Loading from "@/components/Loading";
+import EmptyState from "@/components/common/EmptyState";
+import Loading from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/cart";
 

@@ -1,7 +1,7 @@
 "use client";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/common/EmptyState";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/common/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import useProductHook from "@/hooks/useProductHook";
 import useSearchHook from "@/hooks/useSearchHook";

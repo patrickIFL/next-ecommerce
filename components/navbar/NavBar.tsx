@@ -1,7 +1,7 @@
 "use client";
 import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { useTheme } from "./theme-provider";
+import { useTheme } from "../theme-provider";
 import {
   LoaderIcon,
   Menu,
@@ -25,15 +25,15 @@ import {
   // NavigationMenuLink,
   NavigationMenuList,
   // NavigationMenuTrigger,
-} from "./ui/navigation-menu";
-import AccordionMenu from "./AccordionMenu";
+} from "../ui/navigation-menu";
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
 import useSearchStore from "@/stores/useSearchStore";
 // import { useRouter } from "next/navigation";
 import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
-import NextLogo from "./svgs/NextLogo";
+import NextLogo from "../svgs/NextLogo";
+import AccordionMenu from "./AccordionMenu";
 
 function NavBar() {
   const { isDark } = useTheme();

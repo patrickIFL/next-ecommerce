@@ -5,7 +5,7 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
-import CategoryComboBox from "@/components/CategoryComboBox";
+import CategoryComboBox from "@/components/common/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,10 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { VariationModal } from "@/components/VariationModal";
 import { useVariationModal } from "@/hooks/useVariationModal";
 import { ProductVariation } from "@/hooks/useVariationModal";
 import { toast } from "react-hot-toast";
+import { VariationModal } from "@/components/seller/VariationModal";
 
 const AddProduct = () => {
   const { getToken } = useAuth();

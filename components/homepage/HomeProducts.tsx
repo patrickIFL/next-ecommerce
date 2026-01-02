@@ -1,11 +1,11 @@
 "use client";
 
 import useProductHook from "@/hooks/useProductHook";
-import ProductCard from "./ProductCard";
+import ProductCard from "../common/ProductCard";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 import { useEffect, useState } from "react";
-import EmptyState from "./EmptyState"; // <- import the empty component
+import EmptyState from "../common/EmptyState"; // <- import the empty component
 import { Archive } from "lucide-react";
 import useUserStore from "@/stores/useUserStore";
 import useWishlist from "@/hooks/useWishlist";

@@ -5,14 +5,14 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "./ui/accordion";
+} from "../ui/accordion";
 import Link from "next/link";
-import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import { MessageCircleMore, User } from "lucide-react";
 // import { UserButton } from "@clerk/nextjs";
-import ClerkUserButton from "./ClerkUserButton";
 import { useClerk } from "@clerk/nextjs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import ClerkUserButton from "./ClerkUserButton";
 
 function AccordionMenu({
   isOpen,

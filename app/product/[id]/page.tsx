@@ -4,18 +4,18 @@ import { assets } from "@/assets/assets";
 import {useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import ProductCard from "@/components/ProductCard";
-import Loading from "@/components/Loading";
+import ProductCard from "@/components/common/ProductCard";
+import Loading from "@/components/common/Loading";
 import useProductHook, { ProductType, Variant } from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
 import { LoaderIcon, Star } from "lucide-react";
-import { VariationComboBox } from "@/components/VariationComboBox";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { QuantityInput } from "@/components/QuantityInput";
+import { QuantityInput } from "@/components/common/QuantityInput";
 import useWishlist from "@/hooks/useWishlist";
 import { Lens } from "@/components/ui/lens";
+import { VariationComboBox } from "@/components/product-page/VariationComboBox";
 
 /* =========================
    VARIANT MATRIX

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ChevronDown, PackageOpen } from "lucide-react";
 
 import { formatMoney } from "@/lib/utils";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/common/EmptyState";
 import Box_icon from "@/components/svgs/Box_icon";
 import { ProductCircles } from "@/components/ui/avatar-circles";
 import {

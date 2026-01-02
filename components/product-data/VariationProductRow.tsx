@@ -6,7 +6,7 @@ import { useState } from "react";
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
   Eye,
   EyeOff,
@@ -18,9 +18,9 @@ import {
   Trash2,
   ChevronDown,
 } from "lucide-react";
-import Confirmation from "./Confirmation";
+import Confirmation from "../common/Confirmation";
 import useActionsProductHook from "@/hooks/useActionsProductHook";
-import { VariationActions } from "./VariationActions";
+import { VariationActions } from "../seller/VariationActions";
 
 type Props = {
   product: any;
