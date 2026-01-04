@@ -56,7 +56,7 @@ function useProductHook() {
   >({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await fetch("/api/product/list");
+      const res = await fetch("/api/product/list/all");
       const data = await res.json();
 
       if (!res.ok || !data.success) {

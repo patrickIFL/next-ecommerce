@@ -5,7 +5,6 @@ import { useTheme } from "../theme-provider";
 import {
   LoaderIcon,
   Menu,
-  MessageCircleMore,
   SearchIcon,
   User,
   X,
@@ -34,6 +33,7 @@ import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
 import NextLogo from "../svgs/NextLogo";
 import AccordionMenu from "./AccordionMenu";
+import { SheetDemo } from "../SheetDemo";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -206,14 +206,11 @@ function NavBar() {
               <Tooltip>
                 <TooltipTrigger>
                   <div className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full">
-                    <MessageCircleMore
-                      color={"var(--color-foreground)"}
-                      size={18}
-                    />
+                    <SheetDemo />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Chat</p>
+                  <p>Cart</p>
                 </TooltipContent>
               </Tooltip>
             </NavigationMenuItem>

@@ -1,6 +1,6 @@
 import useUserHook from '@/hooks/useUserHook';
 import { UserButton } from '@clerk/nextjs';
-import { Heart, LayoutDashboard, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { Heart, LayoutDashboard, Package2, ShoppingBag, } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 function ClerkUserButton() {
@@ -21,8 +21,8 @@ function ClerkUserButton() {
 
       <UserButton.MenuItems>
         <UserButton.Action
-          label="Cart"
-          labelIcon={<ShoppingCart size={16}/>}
+          label="Checkout"
+          labelIcon={<Package2 size={16}/>}
           onClick={() => router.push("/cart")}
         />
       </UserButton.MenuItems>

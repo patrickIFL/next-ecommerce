@@ -8,11 +8,12 @@ import {
 } from "../ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
-import { MessageCircleMore, User } from "lucide-react";
+import { User } from "lucide-react";
 // import { UserButton } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ClerkUserButton from "./ClerkUserButton";
+import { SheetDemo } from "../SheetDemo";
 
 function AccordionMenu({
   isOpen,
@@ -69,15 +70,11 @@ function AccordionMenu({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
-                        <MessageCircleMore
-                          color={"var(--color-foreground)"}
-                          size={18}
-                          className="m-2"
-                        />
+                        <SheetDemo />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Chats</p>
+                      <p>Cart</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
