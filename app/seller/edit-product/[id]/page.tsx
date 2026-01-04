@@ -3,7 +3,6 @@
 
 import { Activity, useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import CategoryComboBox from "@/components/common/CategoryComboBox";
-import { VariationModal } from "@/components/VariationModal";
 
 import {
   Tooltip,
@@ -34,6 +32,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useEditVariationModal } from "@/hooks/useEditVariationModal";
+import { VariationModal } from "@/components/seller/VariationModal";
 
 /* ===================================================== */
 
@@ -314,11 +313,19 @@ const EditProduct = () => {
 
       appendImagesSafely(formData);
 
-      const res = await axios.patch(`/api/product/edit/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await fetch(`/api/product/edit/${id}`, {
+        method: "PATCH",
+        body: formData,
+        credentials: "include",
       });
 
-      return res.data;
+      if (!res.ok) {
+        throw new Error("Failed to edit product");
+      }
+
+      const data = await res.json();
+
+      return data;
     },
 
     onSuccess: (data) => {

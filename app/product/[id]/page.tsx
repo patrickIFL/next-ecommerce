@@ -38,14 +38,11 @@ function buildVariantMatrix(variants: Variant[]): VariantMatrix {
   return matrix;
 }
 
-/* =========================
-   COMPONENT
-========================= */
-
 const Product = () => {
   const { id } = useParams() as { id: string };
   const { products } = useProductHook();
   const { wishlist } = useWishlist();
+  
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
 

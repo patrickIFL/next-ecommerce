@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import useUserStore from "@/stores/useUserStore";
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 
 export type Variant = {
@@ -51,8 +49,7 @@ export type VariationsMap = {
 };
 
 function useProductHook() {
-  const { getToken } = useAuth();
-  const {isSeller } = useUserStore();
+  const { isSeller } = useUserStore();
 
   const { data: products = [], isLoading: productsLoading } = useQuery<
     ProductType[]
@@ -77,21 +74,25 @@ function useProductHook() {
     enabled: isSeller,
     queryFn: async () => {
       try {
-        const token = await getToken();
-        const { data } = await axios.get("/api/product/seller-list", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await fetch("/api/product/seller-list", {
+          method: "GET",
+          credentials: "include", // safe to include if you use cookies elsewhere
         });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch seller products");
+        }
+
+        const data = await res.json();
 
         if (!data.success) {
           toast.error(data.message);
           return [];
         }
 
-        return data.products;
+        return data.products as ProductType[];
       } catch (error: any) {
-        toast.error(error.message);
+        toast.error(error.message ?? "Something went wrong");
         return [];
       }
     },

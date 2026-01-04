@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/app/db/prisma";
-import { paymongo } from "@/lib/paymongo";
+import { PayMongoCheckoutSession, paymongoFetch } from "@/lib/paymongo";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         });
 
         const reservedQty = reserved._sum.quantity ?? 0;
-        
+
         if (stockSource.stock === null) {
           throw new Error(`Stock not set for ${stockSource.name}`);
         }
@@ -159,50 +159,54 @@ export async function POST(req: NextRequest) {
       },
     ];
 
-    const checkoutSession = await paymongo.post("/checkout_sessions", {
-      data: {
-        attributes: {
-          line_items: lineItems,
-          payment_method_types: [
-            "gcash",
-            "card",
-            "paymaya",
-            "grab_pay",
-            "billease",
-          ],
-          description: "Next-Ecommerce",
-          success_url:
-            platform === "mobile"
-              ? process.env.NEXT_PUBLIC_SITE_URL
-              : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
-          cancel_url:
-            platform === "mobile"
-              ? process.env.NEXT_PUBLIC_SITE_URL
-              : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
-          metadata: {
-            userId,
-            selectedAddressId,
-            reservations: JSON.stringify({ list: reservationIds }),
-            cartItems: JSON.stringify(
-              cartItems.map((item) => ({
-                productId: item.productId,
-                variantId: item.variantId ?? null,
-                quantity: item.quantity,
-                name: item.variant?.name ?? item.product.name,
-                price:
-                  item.variant?.salePrice ??
-                  item.variant?.price ??
-                  item.product.salePrice ??
-                  item.product.price,
-              }))
-            ),
+    const checkoutSession = await paymongoFetch<PayMongoCheckoutSession>({
+      path: "/checkout_sessions",
+      method: "POST",
+      body: {
+        data: {
+          attributes: {
+            line_items: lineItems,
+            payment_method_types: [
+              "gcash",
+              "card",
+              "paymaya",
+              "grab_pay",
+              "billease",
+            ],
+            description: "Next-Ecommerce",
+            success_url:
+              platform === "mobile"
+                ? process.env.NEXT_PUBLIC_SITE_URL
+                : `${process.env.NEXT_PUBLIC_SITE_URL}/order-placed`,
+            cancel_url:
+              platform === "mobile"
+                ? process.env.NEXT_PUBLIC_SITE_URL
+                : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
+            metadata: {
+              userId,
+              selectedAddressId,
+              reservations: JSON.stringify({ list: reservationIds }),
+              cartItems: JSON.stringify(
+                cartItems.map((item) => ({
+                  productId: item.productId,
+                  variantId: item.variantId ?? null,
+                  quantity: item.quantity,
+                  name: item.variant?.name ?? item.product.name,
+                  price:
+                    item.variant?.salePrice ??
+                    item.variant?.price ??
+                    item.product.salePrice ??
+                    item.product.price,
+                }))
+              ),
+            },
           },
         },
       },
     });
 
     return NextResponse.json({
-      checkoutUrl: checkoutSession.data.data.attributes.checkout_url,
+      checkoutUrl: checkoutSession.data.attributes.checkout_url,
       totalAmount: subtotal + taxValue + shipping,
     });
   } catch (error: any) {

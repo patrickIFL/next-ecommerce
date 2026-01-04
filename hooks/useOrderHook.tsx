@@ -2,7 +2,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useCartHook from "./useCartHook";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import useAddressStore from "@/stores/useAddressStore";
 import { toast } from "react-hot-toast";
 
@@ -53,7 +52,6 @@ export interface Order {
 }
 
 function useOrderHook() {
-  const { getToken } = useAuth();
   const router = useRouter();
   const { cartItems } = useCartHook();
   const { selectedAddressId } = useAddressStore()
@@ -67,16 +65,13 @@ function useOrderHook() {
       if (!selectedAddressId) {
         throw new Error("Undefined Address");
       }
-
-      const token = await getToken();
-
       // 🔐 Send variant-aware payload
       const payload = {
         selectedAddressId,
         platform: "web",
         items: cartItems.map((item) => ({
-          productId: item.product,
-          variantId: item.variant ?? null, // ✅ nullable
+          productId: item.product.id, // from item.product
+          variantId: item.variant ?? null,
           quantity: item.quantity,
         })),
       };
@@ -85,9 +80,9 @@ function useOrderHook() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
         },
         body: JSON.stringify(payload),
+        credentials: "include",
       });
 
       if (!res.ok) {

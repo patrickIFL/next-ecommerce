@@ -3,8 +3,6 @@
 import { Activity, useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
-import { useAuth } from "@clerk/nextjs";
-import axios from "axios";
 import CategoryComboBox from "@/components/common/CategoryComboBox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,7 +28,7 @@ import { toast } from "react-hot-toast";
 import { VariationModal } from "@/components/seller/VariationModal";
 
 const AddProduct = () => {
-  const { getToken } = useAuth();
+  // Value States
   const [files, setFiles] = useState([]);
   const imageOptions = files
     .map((file, index) => {
@@ -42,34 +40,27 @@ const AddProduct = () => {
       };
     })
     .filter(Boolean);
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
-  // NEW =====================================
   const [variationA, setVariationA] = useState("");
   const [variationB, setVariationB] = useState("");
-
   const [searchKeys, setSearchKeys] = useState("");
   const [stock, setStock] = useState("");
   const [sku, setSku] = useState("");
   const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
-
   const [varAName, setVarAName] = useState("Variation A");
   const [varBName, setVarBName] = useState("Variation B");
-
-  const [isModifyingA, setisModifyingA] = useState(false);
-  const [isModifyingB, setisModifyingB] = useState(false);
-  // =========================================
-
   const [category, setCategory] = useState("Uncategorized");
   const [price, setPrice] = useState("");
   const [salePrice, setsalePrice] = useState("");
 
-  const variationModal = useVariationModal();
-
+  // Tracker States
+  const [isModifyingA, setisModifyingA] = useState(false);
+  const [isModifyingB, setisModifyingB] = useState(false);
   const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
   const [generateError, setGenerateError] = useState("");
+
+  const variationModal = useVariationModal();
 
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
@@ -149,8 +140,6 @@ const AddProduct = () => {
         }
       }
 
-      const token = await getToken();
-
       const searchKeysArray = searchKeys
         .split(",")
         .map((key) => key.trim())
@@ -195,13 +184,19 @@ const AddProduct = () => {
         formData.append("images", file);
       });
 
-      const res = await axios.post("/api/product/add", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch("/api/product/add", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
       });
 
-      return res.data;
+      if (!res.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      const data = await res.json();
+
+      return data;
     },
 
     onSuccess: (data) => {
