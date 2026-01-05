@@ -16,9 +16,10 @@ import useWishlist from "@/hooks/useWishlist";
 import { Lens } from "@/components/ui/lens";
 import { VariationComboBox } from "@/components/product-page/VariationComboBox";
 import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
-import { useFeaturedProducts } from "@/hooks/FetchProduct/useFeaturedProducts";
+// import { useFeaturedProducts } from "@/hooks/FetchProduct/useFeaturedProducts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Product, Variant } from "@/lib/types";
+import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
 
 /* =========================
    VARIANT MATRIX
@@ -41,10 +42,11 @@ function buildVariantMatrix(variants: Variant[]): VariantMatrix {
   return matrix;
 }
 
-const Product = () => {
+const IndividualProduct = () => {
   const { id } = useParams() as { id: string };
   const { product } = useIndividualFetch(id);
-  const { featuredProducts, featuredProductsLoading } = useFeaturedProducts();
+  // const { featuredProducts, featuredProductsLoading } = useFeaturedProducts();
+  const {homeProducts, homeProductsLoading} = useHomeProducts();
   const { wishlist } = useWishlist();
   
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
@@ -184,6 +186,8 @@ const Product = () => {
     ? product.salePrice ?? product.price
     : product.price;
 
+  const originalPrice = selectedVariant && product.price;
+
   const displayStock =
     product.type === "VARIATION"
       ? selectedVariant?.stock ?? null
@@ -279,10 +283,10 @@ const Product = () => {
             {currency}
             {formatMoney(displayPrice)}
 
-            {product.isOnSale && selectedVariant?.salePrice && (
+            {product.isOnSale && product?.salePrice && originalPrice && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}
-                {formatMoney(selectedVariant.price)}
+                {formatMoney(originalPrice)}
               </span>
             )}
           </p>
@@ -355,11 +359,16 @@ const Product = () => {
               <tbody className="text-sm">
                 <tr>
                   <td className="text-foreground font-medium">Brand</td>
-                  <td className="text-foreground">Generic</td>
+                  <td className="text-foreground">
+                    {product.brand
+                      ? product.brand.charAt(0).toUpperCase() +
+                        product.brand.slice(1)
+                      : ""}
+                  </td>
                 </tr>
                 <tr>
-                  <td className="text-foreground font-medium">Color</td>
-                  <td className="text-foreground">Multi</td>
+                  <td className="text-foreground font-medium">Condition</td>
+                  <td className="text-foreground">Brand-new</td>
                 </tr>
                 <tr>
                   <td className="foreground font-medium">Category</td>
@@ -444,12 +453,12 @@ const Product = () => {
 <div className="flex flex-col items-center">
   <div className="flex flex-col items-center mb-4 mt-16">
     <p className="text-3xl font-medium">
-      Featured <span className="font-medium text-primary">Products</span>
+      Similar <span className="font-medium text-primary">Products</span>
     </p>
     <div className="w-28 h-0.5 bg-primary mt-2"></div>
   </div>
 
-  {featuredProductsLoading ? (
+  {homeProductsLoading ? (
     /* ================= SKELETON STATE ================= */
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
       {Array.from({ length: 5 }).map((_, i) => (
@@ -460,21 +469,21 @@ const Product = () => {
         </div>
       ))}
     </div>
-  ) : featuredProducts?.length === 0 ? (
+  ) : homeProducts?.length === 0 ? (
     /* ================= EMPTY STATE ================= */
     <div className="py-20 text-center text-foreground/60">
       No featured products available.
     </div>
   ) : (
     /* ================= DATA STATE ================= */
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
-      {featuredProducts.slice(0, 5).map((prod:Product, index) => (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
+      {homeProducts.slice(0, 6).map((prod:Product, index:number) => (
         <ProductCard key={index} product={prod} wishlist={wishlist} />
       ))}
     </div>
   )}
 
-  {!featuredProductsLoading && featuredProducts?.length > 0 && (
+  {!homeProductsLoading && homeProducts?.length > 0 && (
     <button className="  px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
       See more
     </button>
@@ -485,4 +494,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default IndividualProduct;

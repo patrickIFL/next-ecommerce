@@ -55,6 +55,8 @@ export async function PATCH(request: NextRequest) {
       (formData.get("description") as string) || oldProduct.description;
     const category =
       (formData.get("category") as string) || oldProduct.category;
+    const brand =
+      (formData.get("brand") as string) || oldProduct.brand;
 
     const price = Number(formData.get("price") ?? oldProduct.price);
     const salePrice = Number(formData.get("salePrice") ?? oldProduct.salePrice);
@@ -154,6 +156,7 @@ export async function PATCH(request: NextRequest) {
       oldProduct.name !== name ||
       oldProduct.description !== description ||
       oldProduct.category !== category ||
+      oldProduct.brand !== brand ||
       oldProduct.price !== price ||
       oldProduct.salePrice !== salePrice ||
       oldProduct.sku !== sku ||
@@ -172,9 +175,10 @@ export async function PATCH(request: NextRequest) {
     const updated = await prisma.product.update({
       where: { id: productId },
       data: {
-        userId: userId!,
+        sellerId: userId!,
         name,
         description,
+        brand,
         category,
 
         ...(oldProduct.type === "SIMPLE"

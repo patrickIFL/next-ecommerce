@@ -26,6 +26,7 @@ import { useVariationModal } from "@/hooks/useVariationModal";
 import { ProductVariation } from "@/hooks/useVariationModal";
 import { toast } from "react-hot-toast";
 import { VariationModal } from "@/components/seller/VariationModal";
+import BrandComboBox from "@/components/common/BrandComboBox";
 
 const AddProduct = () => {
   // Value States
@@ -50,6 +51,7 @@ const AddProduct = () => {
   const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
   const [varAName, setVarAName] = useState("Variation A");
   const [varBName, setVarBName] = useState("Variation B");
+  const [brand, setBrand] = useState("Generic");
   const [category, setCategory] = useState("Uncategorized");
   const [price, setPrice] = useState("");
   const [salePrice, setsalePrice] = useState("");
@@ -148,6 +150,7 @@ const AddProduct = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
+      formData.append("brand", brand);
       formData.append("type", type);
 
       formData.append("attributes", JSON.stringify([varAName, varBName]));
@@ -408,6 +411,16 @@ const AddProduct = () => {
                   />
                 </div>
 
+                <div className="flex flex-col flex-1  gap-1 w-32">
+                  <label className="text-base font-medium" htmlFor="category">
+                    Brand
+                  </label>
+                  <BrandComboBox
+                    value={brand}
+                    onChange={(val) => setBrand(val)}
+                  />
+                </div>
+
                 <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
                   <>
                     {/* SKU */}
@@ -435,23 +448,6 @@ const AddProduct = () => {
                         value={sku}
                       />
                     </div>
-
-                    {/* Stock */}
-                    <div className="flex flex-col flex-1 gap-1 w-32">
-                      <label className="text-base font-medium" htmlFor="stock">
-                        Stock
-                      </label>
-                      <Input
-                        id="stock"
-                        type="number"
-                        placeholder="0"
-                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                        onChange={(e) => setStock(e.target.value)}
-                        value={stock}
-                        required={type === "SIMPLE"}
-                        autoComplete="off"
-                      />
-                    </div>
                   </>
                 </Activity>
               </div>
@@ -461,6 +457,19 @@ const AddProduct = () => {
                 <>
                   {/* Prices */}
                   <div className="flex items-center gap-5 flex-wrap">
+                    {/* Stock */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-base font-medium" htmlFor="stock">
+                        Stock
+                      </label>
+                      <Input
+                        type="number"
+                        className="w-20 outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setStock(e.target.value)}
+                        value={stock}
+                        required={type === "SIMPLE"}
+                      />
+                    </div>
                     {/* Product Price */}
                     <div className="flex flex-col flex-1 gap-1 w-32">
                       <label

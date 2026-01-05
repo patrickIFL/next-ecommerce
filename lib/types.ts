@@ -12,6 +12,7 @@ export interface Product {
   name: string;
   description: string;
   category: string;
+  brand: string;
   price: number;
   salePrice: number;
   image: string[];
@@ -30,6 +31,7 @@ export type ProductType = {
   price: number;
   salePrice?: number | null;
   category: string;
+  brand: string;
   image: string[];
   isOnSale: boolean;
   variants: Variant[];

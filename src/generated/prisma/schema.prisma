@@ -34,15 +34,15 @@ enum ProductType {
 
 model Product {
   id          String   @id @default(cuid())
-  userId      String
+  sellerId    String
   name        String
   description String?
   category    String   @default("Uncategorized")
+  brand       String   @default("Generic")
   image       String[]
 
   price       Int?
   salePrice   Int?
-  // new
   search_keys String[]    @default([])
   sku         String?
   stock       Int?
@@ -57,15 +57,15 @@ model Product {
 
   orders            OrderItem[]
   wishlist          Wishlist[]
-  user              User               @relation(fields: [userId], references: [id])
+  seller            User               @relation(fields: [sellerId], references: [id])
   cartItems         CartItem[]
   stockReservations StockReservation[]
   variants          ProductVariant[]
 
   @@unique([sku])
-  @@index([userId])
+  @@index([sellerId])
   @@index([category])
-  @@index([search_keys], type: Gin) // improves search on array of text
+  @@index([search_keys], type: Gin)
 }
 
 model ProductVariant {
@@ -127,6 +127,14 @@ enum ShippingStatus {
   toReceive
   toRate
 }
+
+// enum ShippingStatus {
+//   PENDING,     // order placed, unpaid or processing
+//   PREPARING,   // packing / readying shipment
+//   SHIPPED,     // in transit
+//   DELIVERED,   // received by customer
+//   COMPLETED,   // rated / closed
+// }
 
 // Order
 model Order {

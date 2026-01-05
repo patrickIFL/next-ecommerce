@@ -8,7 +8,6 @@ import { useAuth } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 
 import { assets } from "@/assets/assets";
-import useProductHook from "@/hooks/useProductHook";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,6 +32,8 @@ import {
 import { toast } from "react-hot-toast";
 import { useEditVariationModal } from "@/hooks/useEditVariationModal";
 import { VariationModal } from "@/components/seller/VariationModal";
+import useSellerProducts from "@/hooks/FetchProduct/useSellerProducts";
+import BrandComboBox from "@/components/common/BrandComboBox";
 
 /* ===================================================== */
 
@@ -40,7 +41,7 @@ const EditProduct = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
   const { getToken } = useAuth();
-  const { sellerProducts } = useProductHook();
+  const { sellerProducts } = useSellerProducts();
   const variationModal = useEditVariationModal();
   const [addingNewVariations, setAddingNewVariations] = useState(false);
 
@@ -52,6 +53,7 @@ const EditProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [brand, setBrand] = useState("");
 
   const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
 
@@ -96,6 +98,7 @@ const EditProduct = () => {
     setName(productData.name);
     setDescription(productData.description);
     setCategory(productData.category);
+    setBrand(productData.brand);
     setType(productData.type);
     setSearchKeys(productData.search_keys.join(", "));
     setFiles([]);
@@ -276,6 +279,7 @@ const EditProduct = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
+      formData.append("brand", brand);
 
       formData.append(
         "search_keys",
@@ -503,6 +507,14 @@ const EditProduct = () => {
                   />
                 </div>
 
+                <div className="flex flex-col flex-1 gap-1 w-32">
+                  <label className="text-base font-medium">Brand</label>
+                  <BrandComboBox
+                    value={brand}
+                    onChange={(val) => setBrand(val)}
+                  />
+                </div>
+
                 <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
                   <>
                     <div className="flex flex-col flex-1 gap-1 w-32">
@@ -516,16 +528,7 @@ const EditProduct = () => {
                       />
                     </div>
 
-                    <div className="flex flex-col flex-1 gap-1 w-32">
-                      <label className="text-base font-medium">Stock</label>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-                        onChange={(e) => setStock(e.target.value)}
-                        value={stock}
-                      />
-                    </div>
+                    
                   </>
                 </Activity>
               </div>
@@ -534,6 +537,17 @@ const EditProduct = () => {
               <Activity mode={type === "SIMPLE" ? "visible" : "hidden"}>
                 <>
                   <div className="flex items-center gap-5 flex-wrap">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-base font-medium">Stock</label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        className="w-20 outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        onChange={(e) => setStock(e.target.value)}
+                        value={stock}
+                      />
+                    </div>
+
                     <div className="flex flex-col flex-1 gap-1 w-32">
                       <label className="text-base font-medium">
                         Product Price

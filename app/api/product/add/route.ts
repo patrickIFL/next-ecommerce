@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     const name = formData.get("name") as string | null;
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
+    const brand = formData.get("brand") as string | null;
     const type = formData.get("type") as "SIMPLE" | "VARIATION";
     const attributesRaw = formData.get("attributes") as string | null;
 
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
     const searchKeysRaw = formData.get("search_keys") as string | null;
     const variationsRaw = formData.get("variations");
 
-    if (!name || !category) {
+    if (!name || !category || !brand) {
       return NextResponse.json(
         { success: false, message: "Name and category are required" },
         { status: 400 }
@@ -142,9 +143,10 @@ export async function POST(request: NextRequest) {
     const product = await prisma.$transaction(async (tx) => {
       const parent = await tx.product.create({
         data: {
-          userId,
+          sellerId: userId,
           name,
           description,
+          brand,
           category,
           type,
           image: imageUrls,

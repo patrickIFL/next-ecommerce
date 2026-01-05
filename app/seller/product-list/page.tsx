@@ -11,12 +11,12 @@ import EmptyState from "@/components/common/EmptyState";
 import { Archive } from "lucide-react";
 import { useRouter } from "next/navigation";
 import VariationProductRow from "@/components/product-data/VariationProductRow";
-import useProductHook from "@/hooks/useProductHook";
+import useSellerProducts from "@/hooks/FetchProduct/useSellerProducts";
 
 const ProductList = () => {
   const [filterCategory, setFilterCategory] = useState("All");
   const router = useRouter();
-  const {sellerProducts ,sellerProductsIsLoading} = useProductHook();
+  const {sellerProducts ,sellerProductsIsLoading} = useSellerProducts();
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
