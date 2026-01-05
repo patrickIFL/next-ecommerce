@@ -3,14 +3,7 @@ import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
-export type Variant = {
-  id: string;
-  name: string;
-  price: number;
-  salePrice?: number | null;
-  stock: number;
-  imageIndex: number;
-};
+
 
 export interface Product {
   id: string;

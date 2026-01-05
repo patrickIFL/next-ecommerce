@@ -7,11 +7,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const page = Math.max(Number(searchParams.get("page") ?? 1), 1);
-    const limit = Math.min(
-      Math.max(Number(searchParams.get("limit") ?? 10), 1),
-      50 // hard cap to protect API
-    );
-
+    const limit = 10; // 🔒 server-enforced limit
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([
@@ -20,14 +16,14 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: "desc" },
         skip,
         take: limit,
-        include: {
-          variants: true,
-        },
+        include: { variants: true },
       }),
       prisma.product.count({
         where: { isArchived: false },
       }),
     ]);
+
+    const totalPages = Math.ceil(total / limit);
 
     return NextResponse.json({
       success: true,
@@ -36,13 +32,12 @@ export async function GET(request: NextRequest) {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNextPage: page * limit < total,
+        totalPages,
         hasPrevPage: page > 1,
+        hasNextPage: page < totalPages,
       },
     });
   } catch (error: any) {
-    console.error(error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

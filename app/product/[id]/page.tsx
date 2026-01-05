@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/common/ProductCard";
 import Loading from "@/components/common/Loading";
-import useProductHook, { ProductType, Variant } from "@/hooks/useProductHook";
 import useCartHook from "@/hooks/useCartHook";
 import { formatMoney } from "@/lib/utils";
 import { LoaderIcon, Star } from "lucide-react";
@@ -19,6 +18,7 @@ import { VariationComboBox } from "@/components/product-page/VariationComboBox";
 import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
 import { useFeaturedProducts } from "@/hooks/FetchProduct/useFeaturedProducts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Product, Variant } from "@/lib/types";
 
 /* =========================
    VARIANT MATRIX
@@ -468,7 +468,7 @@ const Product = () => {
   ) : (
     /* ================= DATA STATE ================= */
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
-      {featuredProducts.slice(0, 5).map((prod, index) => (
+      {featuredProducts.slice(0, 5).map((prod:Product, index) => (
         <ProductCard key={index} product={prod} wishlist={wishlist} />
       ))}
     </div>

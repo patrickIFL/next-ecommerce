@@ -61,7 +61,7 @@ const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => 
       </div>
 
       {/* info */}
-      <div className="flex flex-col justify-between w-full p-2">
+      <div className="flex flex-col justify-between w-full h-full p-2">
 
           <p className="md:text-base font-medium w-full truncate">
             {product.name}
@@ -82,6 +82,7 @@ const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => 
               ))}
             </div>
           </div>
+
           <div className="flex items-end justify-between">
 
             {product.type === "SIMPLE" ? (

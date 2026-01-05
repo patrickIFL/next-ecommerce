@@ -1,39 +1,37 @@
 "use client";
-import EmptyState from "@/components/common/EmptyState";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { SearchX } from "lucide-react";
+
 import ProductCard from "@/components/common/ProductCard";
+import EmptyState from "@/components/common/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
-import useProductHook from "@/hooks/useProductHook";
+
 import useSearchHook from "@/hooks/useSearchHook";
 import useWishlist from "@/hooks/useWishlist";
-import useUserStore from "@/stores/useUserStore";
-import { Archive, SearchX } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const DisplayProducts = () => {
-  const params = useParams();
-  const { products, productsLoading } = useProductHook();
+  const params = useParams<{ cat: string }>();
+  const { wishlist } = useWishlist();
+
   const { searchResults, searchLoading, search } = useSearchHook(params.cat);
-  const { isSeller } = useUserStore();
-  const router = useRouter();
-  const {wishlist} = useWishlist()
+
+  /* =========================
+     TRIGGER SEARCH
+  ========================= */
 
   useEffect(() => {
-    if (params.cat !== "all") {
-      search(); // fetch search results for this URL
-    }
+    search();
   }, [params.cat, search]);
 
-  // Determine displayed products (derived state — no need for useState)
-  const productsToDisplay =
-    params.cat === "all" ? products : searchResults || [];
+  /* =========================
+     SKELETON COUNT
+  ========================= */
 
-  // Combined loading state
-  const isLoading = productsLoading || searchLoading;
-
-  // Skeleton count logic
   const [count, setCount] = useState(4);
+
   useEffect(() => {
     const updateCount = () => {
       const width = window.innerWidth;
@@ -48,25 +46,24 @@ const DisplayProducts = () => {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
+  /* =========================
+     RENDER
+  ========================= */
+
   return (
     <div className="mt-16 flex flex-col items-start px-6 md:px-16 lg:px-32">
+      {/* HEADER */}
       <div className="flex flex-col pt-12">
         <p className="text-2xl font-medium">
-          {params.cat === "all" ? (
-            "All Products"
-          ) : (
-            <>
-              Search results for{" "}
-              <span className="italic">{`"${params.cat}"`}</span>
-            </>
-          )}
+          Search results for{" "}
+          <span className="italic">{`"${params.cat}"`}</span>
         </p>
-
-        <div className="w-16 h-0.5 bg-primary rounded-full"></div>
+        <div className="w-16 h-0.5 bg-primary rounded-full" />
       </div>
 
+      {/* RESULTS */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
-        {isLoading ? (
+        {searchLoading ? (
           Array.from({ length: count }).map((_, i) => (
             <div key={i} className="flex flex-col space-y-3 w-full">
               <Skeleton className="w-full h-40 rounded-xl" />
@@ -74,23 +71,21 @@ const DisplayProducts = () => {
               <Skeleton className="h-4 w-1/2 rounded-md" />
             </div>
           ))
-        ) : productsToDisplay.length === 0 ? (
-          <div className="col-span-full w-full justify-center items-center">
-
+        ) : !searchResults || searchResults.length === 0 ? (
+          <div className="col-span-full w-full">
             <EmptyState
-              icon={params.cat === "all" ? Archive : SearchX}
+              icon={SearchX}
               title="No Products Found"
-              description={params.cat === "all" 
-                ? "We couldn't find any products at the moment. Check back later!" 
-                
-                : `We couldn't find any product that matches "${params.cat}"`}
-              actionText={isSeller ? "Add Products" : null}
-              onAction={() => router.push("/seller")}
+              description={`We couldn't find any product that matches "${params.cat}"`}
             />
           </div>
         ) : (
-          productsToDisplay.map((product: any, index: number) => (
-            <ProductCard key={index} product={product} wishlist={wishlist} />
+          searchResults.map((product: any) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              wishlist={wishlist}
+            />
           ))
         )}
       </div>

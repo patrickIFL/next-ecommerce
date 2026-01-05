@@ -8,6 +8,16 @@ export async function GET(request: NextRequest) {
   try {
     const products = await prisma.product.findMany({
       where: { isArchived: false },
+      include: {
+        variants: {
+          select: {
+            id: true,
+            price: true,
+            salePrice: true,
+            stock: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
       take: 10, // ✅ LIMIT TO 10
     });
