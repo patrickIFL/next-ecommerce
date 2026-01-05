@@ -208,7 +208,7 @@ export function VariationModal({
                       <Button
                         type="button"
                         onClick={() => deleteVariation(i)}
-                        className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                        className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white  "
                       >
                         <Trash2 />
                       </Button>

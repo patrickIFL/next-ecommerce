@@ -53,7 +53,7 @@ const OrderSummary = ({
               placeholder="Enter promo code"
               className="grow w-full outline-none p-2.5"
             />
-            <Button className="cursor-pointer bg-primary text-white px-9 py-2 hover:bg-primary-hover">
+            <Button className="  bg-primary text-white px-9 py-2 hover:bg-primary-hover">
               Apply
             </Button>
           </div>
@@ -103,7 +103,7 @@ const OrderSummary = ({
                 ${
                   isPlacingOrder
                     ? "bg-primary-loading/50"
-                    : "cursor-pointer bg-primary hover:bg-primary-hover"
+                    : "  bg-primary hover:bg-primary-hover"
                 } text-white py-3 mt-5 hover:bg-primary-hover`}
       >
         {isPlacingOrder ? (

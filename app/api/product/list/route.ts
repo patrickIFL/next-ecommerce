@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const page = Math.max(Number(searchParams.get("page") ?? 1), 1);
-    const limit = 10; // 🔒 server-enforced limit
+    const limit = 20; // server-enforced limit
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([

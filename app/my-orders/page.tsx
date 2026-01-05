@@ -252,7 +252,7 @@ const MyOrders: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="cursor-pointer"
+                              className=" "
                               onClick={() =>
                                 setOpenOrder(isOpen ? null : order.id)
                               }
@@ -405,7 +405,7 @@ const MyOrders: React.FC = () => {
                                                 quantity: 1,
                                               });
                                             }}
-                                            className="h-8 text-white cursor-pointer"
+                                            className="h-8 text-white  "
                                           >
                                             Buy Again
                                           </Button>

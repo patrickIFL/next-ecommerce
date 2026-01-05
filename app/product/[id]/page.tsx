@@ -391,7 +391,7 @@ const Product = () => {
               className={`py-6 flex-1 text-gray-800/80 ${
                 addToCartLoading
                   ? "bg-gray-400"
-                  : "cursor-pointer bg-gray-100 hover:bg-gray-200"
+                  : "  bg-gray-100 hover:bg-gray-200"
               } transition`}
             >
               {addToCartLoading ? (
@@ -422,7 +422,7 @@ const Product = () => {
               className={`flex-1 py-6 text-white ${
                 buyNowLoading
                   ? "bg-primary-loading/50 hover:bg-primary-loading/50"
-                  : "cursor-pointer bg-primary hover:bg-primary-hover"
+                  : "  bg-primary hover:bg-primary-hover"
               } transition`}
             >
               {buyNowLoading ? (
@@ -475,7 +475,7 @@ const Product = () => {
   )}
 
   {!featuredProductsLoading && featuredProducts?.length > 0 && (
-    <button className="cursor-pointer px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
+    <button className="  px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
       See more
     </button>
   )}

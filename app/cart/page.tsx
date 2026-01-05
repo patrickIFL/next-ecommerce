@@ -89,7 +89,7 @@ const Cart = () => {
         <Button
           variant={"ghost"}
           onClick={() => router.push("/all/products")}
-          className="cursor-pointer group flex items-center mt-6 gap-2 text-primary hover:text-primary"
+          className="  group flex items-center mt-6 gap-2 text-primary hover:text-primary"
         >
           <MoveLeft
             className="group-hover:-translate-x-1 transition"

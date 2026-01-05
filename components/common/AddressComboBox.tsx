@@ -67,7 +67,7 @@ export default function AddressComboBox({ className, link }: AddressComboBoxProp
             <Button
               size="sm"
               onClick={() => router.push(link)}
-              className="cursor-pointer bg-accent rounded-full hover:bg-accent/80"
+              className="  bg-accent rounded-full hover:bg-accent/80"
             >
               <Plus className="text-foreground" />
             </Button>

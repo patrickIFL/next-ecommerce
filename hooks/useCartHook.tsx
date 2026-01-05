@@ -78,7 +78,7 @@ toast(() => (
   <span>
     Added to Cart!
   </span>
-    <Button className="cursor-pointer" variant={"ghost"} onClick={() => router.push("/cart")}>
+    <Button className=" " variant={"ghost"} onClick={() => router.push("/cart")}>
       View Cart
     </Button>
   </div>

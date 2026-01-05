@@ -98,7 +98,7 @@ export default function Page() {
             ${
               isPending
                 ? "bg-primary-loading/50"
-                : "bg-primary cursor-pointer hover:bg-primary-hover"
+                : "bg-primary   hover:bg-primary-hover"
             }`}
           >
             {isPending ? (

@@ -103,7 +103,7 @@ function ProductDataRow({ product }: { product: any }) {
                 onClick={() => {
                   toggleFeatured(product.id);
                 }}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-purple-600 `}
+                className={`flex items-center gap-1 p-1.5   text-white rounded-md bg-purple-600 `}
                 disabled={isTogglingFeatured}
               >
                 {isTogglingFeatured ? (
@@ -128,7 +128,7 @@ function ProductDataRow({ product }: { product: any }) {
             <TooltipTrigger asChild>
               <button
                 onClick={() => toggleArchive(product.id)}
-                className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                className={`flex items-center gap-1 p-1.5   text-white rounded-md ${
                   isArchived
                     ? isTogglingArchive
                       ? "bg-red-900"
@@ -170,7 +170,7 @@ function ProductDataRow({ product }: { product: any }) {
                   onConfirm={() => toggleSale(product.id)}
                 >
                   <button
-                    className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md 
+                    className={`flex items-end justify-center gap-1 p-1.5   text-white rounded-md 
                       
                       ${
                         onSale
@@ -210,7 +210,7 @@ function ProductDataRow({ product }: { product: any }) {
                 onClick={() =>
                   router.push(`/seller/edit-product/${product.id}`)
                 }
-                className="flex items-center gap-1 p-1.5 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-md"
+                className="flex items-center gap-1 p-1.5 bg-blue-600   hover:bg-blue-700 text-white rounded-md"
               >
                 <SquarePen size={16} />
               </button>
@@ -231,7 +231,7 @@ function ProductDataRow({ product }: { product: any }) {
                     disabled={isDeleting}
                     className={`flex items-center gap-1 p-1.5 ${
                       isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
-                    } cursor-pointer text-white rounded-md`}
+                    }   text-white rounded-md`}
                   >
                     {isDeleting ? (
                       <LoaderIcon className="animate-spin" size={16} />
@@ -254,7 +254,7 @@ function ProductDataRow({ product }: { product: any }) {
         router.push("/product/" + product.id);
         scrollTo(0, 0);
       }}
-                className="flex items-center gap-1 p-1.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white rounded-md"
+                className="flex items-center gap-1 p-1.5 bg-orange-600   hover:bg-orange-700 text-white rounded-md"
               >
                 <SquareArrowOutUpRight size={16} />
               </button>

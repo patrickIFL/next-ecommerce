@@ -125,7 +125,7 @@ function CartCard({ item }: CartCardProps) {
           {!isEditing && (
             <Button
               onClick={() => setIsEditing(true)}
-              className="cursor-pointer h-7 flex gap-2 justify-start"
+              className="  h-7 flex gap-2 justify-start"
               variant="ghost"
             >
               <SquarePen size={12} />
@@ -142,7 +142,7 @@ function CartCard({ item }: CartCardProps) {
                   }
                   setIsEditing(false);
                 }}
-                className="cursor-pointer h-7 flex gap-2 justify-start text-success hover:text-success/80"
+                className="  h-7 flex gap-2 justify-start text-success hover:text-success/80"
                 variant="ghost"
               >
                 <SquareCheckBig size={12} />
@@ -151,7 +151,7 @@ function CartCard({ item }: CartCardProps) {
 
               <Button
                 onClick={remove}
-                className="cursor-pointer h-7 flex gap-2 justify-start text-destructive hover:text-destructive/80"
+                className="  h-7 flex gap-2 justify-start text-destructive hover:text-destructive/80"
                 variant="ghost"
               >
                 <Trash2 size={12} />

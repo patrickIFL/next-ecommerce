@@ -594,7 +594,7 @@ const EditProduct = () => {
                           }
                           setisModifyingA(!isModifyingA);
                         }}
-                        className="cursor-pointer"
+                        className=" "
                       >
                         {isModifyingA ? (
                           <SquareCheckBig size={16} />
@@ -636,7 +636,7 @@ const EditProduct = () => {
                           }
                           setisModifyingB(!isModifyingB);
                         }}
-                        className="cursor-pointer"
+                        className=" "
                       >
                         {isModifyingB ? (
                           <SquareCheckBig size={16} />
@@ -664,7 +664,7 @@ const EditProduct = () => {
                       onClick={() => {
                         setAddingNewVariations(true);
                       }}
-                      className={`max-w-[200px] cursor-pointer bg-gray-100 hover:bg-gray-200 transition`}
+                      className={`max-w-[200px]   bg-gray-100 hover:bg-gray-200 transition`}
                     >
                       Add Variations
                     </Button>
@@ -678,7 +678,7 @@ const EditProduct = () => {
                         handleGenerateVariations();
                         setGenerateError("");
                       }}
-                      className="max-w-[200px] cursor-pointer bg-gray-100 hover:bg-gray-200 transition"
+                      className="max-w-[200px]   bg-gray-100 hover:bg-gray-200 transition"
                     >
                       Generate New Variations
                     </Button>
@@ -698,7 +698,7 @@ const EditProduct = () => {
                   <Button
                     type="button"
                     variant={"secondary"}
-                    className="cursor-pointer max-w-[200px]"
+                    className="  max-w-[200px]"
                     onClick={() => {
                       variationModal.openEdit(
                         finalVariations.length ? finalVariations : variations
@@ -709,7 +709,7 @@ const EditProduct = () => {
                   </Button>
                 )}
 
-                <Button className="cursor-pointer text-white max-w-[200px]" type="submit" disabled={loading}>
+                <Button className="  text-white max-w-[200px]" type="submit" disabled={loading}>
                   {loading ? (
                     <>
                     <LoaderIcon className="animate-spin" size={16} />

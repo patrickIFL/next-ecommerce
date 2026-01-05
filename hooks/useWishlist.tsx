@@ -26,6 +26,7 @@ export default function useWishlist() {
   });
 
   const {mutateAsync: toggleWishlist, isPending} = useMutation({
+
     onMutate: async (productId) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist"] });
 
@@ -43,6 +44,7 @@ export default function useWishlist() {
     mutationFn: async (productId: string) => {
       const res = await fetch(`/api/wishlist/toggle/${productId}`, {
         method: "POST",
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Failed to toggle wishlist");
@@ -54,9 +56,7 @@ export default function useWishlist() {
         context?.previousWishlist
       );
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
-    },
+
   });;
 
   return {  

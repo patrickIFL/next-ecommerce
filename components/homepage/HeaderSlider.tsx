@@ -182,7 +182,7 @@ const HeaderSlider = () => {
 
                       <Button
                         variant="ghost"
-                        className="group flex items-center gap-2 rounded-full cursor-pointer"
+                        className="group flex items-center gap-2 rounded-full  "
                       >
                         {slide.buttonText2}
                         <MoveRight className="group-hover:translate-x-1 transition" />

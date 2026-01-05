@@ -18,7 +18,7 @@ const HomeProducts = () => {
 
   const updateCount = () => {
     const width = window.innerWidth;
-    if (width >= 1280) setCount(10); // xl
+    if (width >= 1280) setCount(12); // xl
     else if (width >= 1024) setCount(8); // lg
     else if (width >= 640) setCount(6); // sm
     else setCount(4); // xs
@@ -38,7 +38,7 @@ const HomeProducts = () => {
       <p className="text-2xl font-medium text-left w-full">Popular products</p>
 
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
           {Array.from({ length: count }).map((_, i) => (
             <div key={i} className="flex flex-col space-y-3 w-full">
               <Skeleton className="w-full h-40 rounded-xl" />
@@ -56,7 +56,7 @@ const HomeProducts = () => {
           onAction={() => router.push("/seller")}
         />
       ) : (
-        <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
+        <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
           {homeProducts?.map((product:any, index:number) => (
             <ProductCard key={index} product={product} wishlist={wishlist} />
           ))}
@@ -66,7 +66,7 @@ const HomeProducts = () => {
       {homeProducts?.length > 0 && (
         <button
           onClick={() => router.push("/all/products")}
-          className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition cursor-pointer mt-6"
+          className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition   mt-6"
         >
           See more
         </button>

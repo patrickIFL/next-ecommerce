@@ -93,7 +93,7 @@ function AccordionMenu({
                   ) : (
                     <button
                       onClick={openSignIn}
-                      className="w-full cursor-pointer hover:bg-accent rounded-md py-2 px-3 flex items-center justify-center gap-2 transition border"
+                      className="w-full   hover:bg-accent rounded-md py-2 px-3 flex items-center justify-center gap-2 transition border"
                     >
                       <User color={"var(--color-foreground)"} size={18} />
                       <span className="text-sm ml-0.5">Account</span>

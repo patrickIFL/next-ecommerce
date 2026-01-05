@@ -27,7 +27,7 @@ export default function EmptyState({
         <p className="text-sm text-gray-500">{description}</p>
 
         {actionText && onAction && (
-          <Button className="cursor-pointer hover:bg-accent" variant="outline" onClick={onAction}>
+          <Button className="  hover:bg-accent" variant="outline" onClick={onAction}>
             {actionText}
           </Button>
         )}

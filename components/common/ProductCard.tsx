@@ -6,7 +6,13 @@ import { Heart, LoaderIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => {
+const ProductCard = ({
+  product,
+  wishlist,
+}: {
+  product: any;
+  wishlist: any;
+}) => {
   const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const isSale = product.salePrice ? product.isOnSale : false;
@@ -37,14 +43,14 @@ const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => 
               e.stopPropagation();
               toggleWishlist(product.id);
             }}
-            className="cursor-pointer absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
+            className="  absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
             disabled={isPending}
           >
-            {false ? (
-              <LoaderIcon className="h-3 w-3 text-gray-500 animate-spin" />
+            {isPending ? (
+              <LoaderIcon className="h-3 w-3 animate-spin text-gray-500" />
             ) : (
               <Heart
-                className="h-3 w-3 text-gray-500"
+                className="h-3 w-3"
                 fill={isWishlisted ? "#F91880" : "none"}
                 color={isWishlisted ? "#F91880" : "#6B7280"}
                 strokeWidth={3}
@@ -62,65 +68,63 @@ const ProductCard = ({ product, wishlist }: { product: any, wishlist: any }) => 
 
       {/* info */}
       <div className="flex flex-col justify-between w-full h-full p-2">
-
-          <p className="md:text-base font-medium w-full truncate">
-            {product.name}
-          </p>
-          <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
-            {product.description}
-          </p>
-          <div className="flex items-center gap-2">
-            <p className="text-xs">{4.5}</p>
-            <div className="flex items-center gap-0.5">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Star
-                  key={index}
-                  className="h-3 w-3"
-                  fill={index < 4 ? "orange" : "lightgray"}
-                  stroke="none"
-                />
-              ))}
-            </div>
+        <p className="md:text-base font-medium w-full truncate">
+          {product.name}
+        </p>
+        <p className="w-full text-xs text-gray-500 max-sm:hidden truncate">
+          {product.description}
+        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs">{4.5}</p>
+          <div className="flex items-center gap-0.5">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star
+                key={index}
+                className="h-3 w-3"
+                fill={index < 4 ? "orange" : "lightgray"}
+                stroke="none"
+              />
+            ))}
           </div>
+        </div>
 
-          <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between">
+          {product.type === "SIMPLE" ? (
+            // SIMPLE PRODUCT
+            <>
+              <p className="text-foreground font-medium">
+                <span className="text-md">
+                  {currency}
+                  {formatMoney(isSale ? product.salePrice : product.price)}{" "}
+                </span>
 
-            {product.type === "SIMPLE" ? (
-              // SIMPLE PRODUCT
-              <>
-                <p className="text-foreground font-medium">
-                  <span className="text-md">
+                {isSale && (
+                  <span className="text-xs text-foreground/40 font-normal line-through">
                     {currency}
-                    {formatMoney(isSale ? product.salePrice : product.price)}{" "}
+                    {formatMoney(product.price)}
                   </span>
+                )}
+              </p>
+            </>
+          ) : (
+            // VARIATION PRODUCT
+            <>
+              <p className="text-foreground font-medium">
+                <span className="text-md">
+                  {currency}
+                  {formatMoney(getMinMaxPrice(product).min)}
+                  {/*" - "*/}
+                </span>
 
-                  {isSale && (
-                    <span className="text-xs text-foreground/40 font-normal line-through">
-                      {currency}
-                      {formatMoney(product.price)}
-                    </span>
-                  )}
-                </p>
-              </>
-            ) : (
-              // VARIATION PRODUCT
-              <>
-                <p className="text-foreground font-medium">
-                  <span className="text-md">
-                    {currency}
-                    {formatMoney(getMinMaxPrice(product).min)}{/*" - "*/}
-                  </span>
-
-                  {/* <span className="text-md">
+                {/* <span className="text-md">
                     {currency}
                     {formatMoney(getMinMaxPrice(product).max)}
                   </span> */}
-                </p>
-              </>
-            )}
+              </p>
+            </>
+          )}
           <p className="text-xs text-foreground/50">123 sold</p>
-          </div>
-
+        </div>
       </div>
     </div>
   );

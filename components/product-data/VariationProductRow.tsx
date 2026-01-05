@@ -60,7 +60,7 @@ function VariationProductRow({ product }: Props) {
                 width={1280}
                 height={720}
               />
-              <button className="cursor-pointer">
+              <button className=" ">
                 <ChevronDown
                   onClick={() => setOpen((prev) => !prev)}
                   size={16}
@@ -103,7 +103,7 @@ function VariationProductRow({ product }: Props) {
                   onClick={() => {
                     toggleFeatured(product.id);
                   }}
-                  className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md bg-purple-600 `}
+                  className={`flex items-center gap-1 p-1.5   text-white rounded-md bg-purple-600 `}
                   disabled={isTogglingFeatured}
                 >
                   {isTogglingFeatured ? (
@@ -128,7 +128,7 @@ function VariationProductRow({ product }: Props) {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => toggleArchive(product.id)}
-                  className={`flex items-center gap-1 p-1.5 cursor-pointer text-white rounded-md ${
+                  className={`flex items-center gap-1 p-1.5   text-white rounded-md ${
                     isArchived
                       ? isTogglingArchive
                         ? "bg-red-900"
@@ -170,7 +170,7 @@ function VariationProductRow({ product }: Props) {
                     onConfirm={() => toggleSale(product.id)}
                   >
                     <button
-                      className={`flex items-end justify-center gap-1 p-1.5 cursor-pointer text-white rounded-md 
+                      className={`flex items-end justify-center gap-1 p-1.5   text-white rounded-md 
                                 
                                 ${
                                   onSale
@@ -212,7 +212,7 @@ function VariationProductRow({ product }: Props) {
                   onClick={() =>
                     router.push(`/seller/edit-product/${product.id}`)
                   }
-                  className="flex items-center gap-1 p-1.5 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-md"
+                  className="flex items-center gap-1 p-1.5 bg-blue-600   hover:bg-blue-700 text-white rounded-md"
                 >
                   <SquarePen size={16} />
                 </button>
@@ -235,7 +235,7 @@ function VariationProductRow({ product }: Props) {
                         isDeleting
                           ? "bg-red-900"
                           : "bg-red-600 hover:bg-red-700"
-                      } cursor-pointer text-white rounded-md`}
+                      }   text-white rounded-md`}
                     >
                       {isDeleting ? (
                         <LoaderIcon className="animate-spin" size={16} />
@@ -258,7 +258,7 @@ function VariationProductRow({ product }: Props) {
                     router.push("/product/" + product.id);
                     scrollTo(0, 0);
                   }}
-                  className="flex items-center gap-1 p-1.5 bg-orange-600 cursor-pointer hover:bg-orange-700 text-white rounded-md"
+                  className="flex items-center gap-1 p-1.5 bg-orange-600   hover:bg-orange-700 text-white rounded-md"
                 >
                   <SquareArrowOutUpRight size={16} />
                 </button>

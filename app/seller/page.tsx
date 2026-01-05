@@ -559,7 +559,7 @@ const AddProduct = () => {
                         variant={"ghost"}
                         onClick={() => setisModifyingA(!isModifyingA)}
                         type="button"
-                        className="cursor-pointer"
+                        className=" "
                       >
                         {isModifyingA ? (
                           <>
@@ -612,7 +612,7 @@ const AddProduct = () => {
                         disabled={!variationA.trim()}
                         onClick={() => setisModifyingB(!isModifyingB)}
                         type="button"
-                        className="cursor-pointer"
+                        className=" "
                       >
                         {isModifyingB ? (
                           <>
@@ -670,7 +670,7 @@ const AddProduct = () => {
                       ${
                         isGeneratingVariations
                           ? "hover:bg-gray-100/80 bg-gray-100/80" // disabled look
-                          : "cursor-pointer bg-gray-100 hover:bg-gray-200"
+                          : "  bg-gray-100 hover:bg-gray-200"
                       } transition`}
                     disabled={isGeneratingVariations}
                   >
@@ -703,7 +703,7 @@ const AddProduct = () => {
               <Button
                 type="submit"
                 className={`w-full max-w-[200px] bg-primary hover:bg-primary-hover text-white font-medium
-            ${loading ? "opacity-50" : "cursor-pointer"}`}
+            ${loading ? "opacity-50" : " "}`}
                 disabled={loading || !name.trim()}
               >
                 {loading ? (

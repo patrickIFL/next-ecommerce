@@ -17,7 +17,7 @@ export function VariationActions() {
           <Settings
           strokeWidth={1.5}
             size={20}
-            className={`cursor-pointer transition-transform duration-300 ${
+            className={`  transition-transform duration-300 ${
               open ? "rotate-180" : "rotate-0"
             }`}
           />

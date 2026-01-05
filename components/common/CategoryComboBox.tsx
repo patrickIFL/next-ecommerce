@@ -127,7 +127,7 @@ export default function CategoryComboBox({
                             queryKey: ["categories"],
                           });
                         }}
-                        className="ml-auto cursor-pointer"
+                        className="ml-auto  "
                       >
                         <X />
                       </button>
@@ -163,7 +163,7 @@ export default function CategoryComboBox({
                 await addCategory(newCategory);
                 queryClient.invalidateQueries({ queryKey: ["categories"] });
               }}
-              className="cursor-pointer"
+              className=" "
             >
               <Plus className="size-4 shrink-0 opacity-50 text-foreground" />
             </button>

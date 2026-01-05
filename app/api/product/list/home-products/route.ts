@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: { createdAt: "desc" },
-      take: 10, // ✅ LIMIT TO 10
+      take: 12, // ✅ LIMIT TO 10
     });
 
     return NextResponse.json({ success: true, products });

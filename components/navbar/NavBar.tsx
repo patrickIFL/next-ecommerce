@@ -230,7 +230,7 @@ function NavBar() {
               ) : (
                 <button
                   onClick={() => openSignIn()}
-                  className="cursor-pointer hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
+                  className="  hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
                 >
                   <User color={"var(--color-foreground)"} size={18} />
                   <span>Account</span>
@@ -243,7 +243,7 @@ function NavBar() {
         {/* Mobile Hamburger/Accordion Trigger */}
         <button
           id="hamburger-btn"
-          className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center cursor-pointer"
+          className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center  "
           onClick={() => setIsOpen(!isOpen)}
         >
           <AnimatePresence>
