@@ -69,7 +69,7 @@ function AccordionMenu({
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="hover:bg-accent flex items-center border rounded-full cursor-pointer">
+                      <div className="hover:bg-accent p-2 flex items-center border rounded-full cursor-pointer">
                         <SheetDemo />
                       </div>
                     </TooltipTrigger>

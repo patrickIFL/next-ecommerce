@@ -17,7 +17,6 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 2. Get product ID
-    // 2. Get product ID
     const productId = request.url.split("/").pop();
     if (!productId) {
       return NextResponse.json(

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 3. Fetch the CartItems User has
-    const cartItems = await prisma.wishlist.findMany({
+    const wishlist = await prisma.wishlist.findMany({
       where: {
         userId,
         product: {
@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
     });
 
     // 5. Return the updated/created cart item
-    return NextResponse.json({ success: true, cartItems });
+    return NextResponse.json({ success: true, wishlist });
   } catch (error) {
-    console.error("FETCH CART ERROR:", error);
+    console.error("FETCH WISHLIST ERROR:", error);
     return NextResponse.json(
       {
         success: false,

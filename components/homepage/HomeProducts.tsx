@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import useProductHook from "@/hooks/useProductHook";
 import ProductCard from "../common/ProductCard";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
@@ -9,6 +9,7 @@ import EmptyState from "../common/EmptyState"; // <- import the empty component
 import { Archive } from "lucide-react";
 import useUserStore from "@/stores/useUserStore";
 import useWishlist from "@/hooks/useWishlist";
+import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
 
 const HomeProducts = () => {
   const [count, setCount] = useState(4); // skeleton count
@@ -29,7 +30,7 @@ const HomeProducts = () => {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const { products, productsLoading: loading } = useProductHook();
+  const { homeProducts, homeProductsLoading: loading } = useHomeProducts();
   const router = useRouter();
 
   return (
@@ -46,7 +47,7 @@ const HomeProducts = () => {
             </div>
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : homeProducts?.length === 0 ? (
         <EmptyState
           icon={Archive}
           title="No Products Found"
@@ -56,13 +57,13 @@ const HomeProducts = () => {
         />
       ) : (
         <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
-          {products.map((product, index) => (
+          {homeProducts?.map((product:any, index:number) => (
             <ProductCard key={index} product={product} wishlist={wishlist} />
           ))}
         </div>
       )}
 
-      {products.length > 0 && (
+      {homeProducts?.length > 0 && (
         <button
           onClick={() => router.push("/all/products")}
           className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition cursor-pointer mt-6"

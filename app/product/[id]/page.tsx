@@ -16,6 +16,9 @@ import { QuantityInput } from "@/components/common/QuantityInput";
 import useWishlist from "@/hooks/useWishlist";
 import { Lens } from "@/components/ui/lens";
 import { VariationComboBox } from "@/components/product-page/VariationComboBox";
+import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
+import { useFeaturedProducts } from "@/hooks/FetchProduct/useFeaturedProducts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /* =========================
    VARIANT MATRIX
@@ -40,7 +43,8 @@ function buildVariantMatrix(variants: Variant[]): VariantMatrix {
 
 const Product = () => {
   const { id } = useParams() as { id: string };
-  const { products } = useProductHook();
+  const { product } = useIndividualFetch(id);
+  const { featuredProducts, featuredProductsLoading } = useFeaturedProducts();
   const { wishlist } = useWishlist();
   
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
@@ -52,7 +56,6 @@ const Product = () => {
      CORE STATE
   ========================= */
 
-  const [productData, setProductData] = useState<ProductType | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
 
@@ -69,21 +72,20 @@ const Product = () => {
   ========================= */
 
   useEffect(() => {
-    if (!products || products.length === 0) return;
+  if (!product) return;
 
-    const product = products.find((p) => p.id === id) ?? null;
-    setProductData(product);
+  if (product.variants?.length) {
+    setVariantMatrix(buildVariantMatrix(product.variants));
+  } else {
+    setVariantMatrix({});
+  }
 
-    if (product?.variants?.length) {
-      setVariantMatrix(buildVariantMatrix(product.variants));
-    } else {
-      setVariantMatrix({});
-    }
+  setMainImage(product.image?.[0] ?? null);
+  setSelectedVarA(null);
+  setSelectedVarB(null);
+  setQty(1);
+}, [product]);
 
-    if (product?.image?.length) {
-      setMainImage(product.image[0]);
-    }
-  }, [id, products]);
 
   /* =========================
      DERIVED OPTIONS
@@ -155,45 +157,45 @@ const Product = () => {
   ========================= */
 
   useEffect(() => {
-    if (!productData) return;
+    if (!product) return;
 
     if (!selectedVariant) {
-      setMainImage(productData.image?.[0] ?? null);
+      setMainImage(product.image?.[0] ?? null);
       return;
     }
 
     const index = selectedVariant.imageIndex;
-    setMainImage(productData.image[index] ?? productData.image[0]);
-  }, [selectedVariant, productData]);
+    setMainImage(product.image[index] ?? product.image[0]);
+  }, [selectedVariant, product]);
 
   /* =========================
      PRICE & STOCK
   ========================= */
 
-  if (!products || products.length === 0) return <Loading />;
-  if (!productData)
+  if (!product) return <Loading />;
+  if (!product)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
   const displayPrice = selectedVariant
-    ? productData.isOnSale
+    ? product.isOnSale
       ? selectedVariant.salePrice ?? selectedVariant.price
       : selectedVariant.price
-    : productData.isOnSale
-    ? productData.salePrice ?? productData.price
-    : productData.price;
+    : product.isOnSale
+    ? product.salePrice ?? product.price
+    : product.price;
 
   const displayStock =
-    productData.type === "VARIATION"
+    product.type === "VARIATION"
       ? selectedVariant?.stock ?? null
-      : productData.stock ?? null;
+      : product.stock ?? null;
 
   const isOutOfStock = displayStock !== null && displayStock < qty;
-  const requiresVariation = productData.type === "VARIATION";
+  const requiresVariation = product.type === "VARIATION";
   const canPurchase = !requiresVariation || selectedVariant;
 
   const maxQty =
-    productData.type === "SIMPLE"
-      ? productData.stock ?? undefined
+    product.type === "SIMPLE"
+      ? product.stock ?? undefined
       : displayStock ?? undefined;
 
   return (
@@ -204,8 +206,8 @@ const Product = () => {
           <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
             <Lens>
               <Image
-                src={mainImage ?? productData.image?.[0] ?? assets.upload_area}
-                alt={productData.name}
+                src={mainImage ?? product.image?.[0] ?? assets.upload_area}
+                alt={product.name}
                 className="object-cover"
                 width={1280}
                 height={720}
@@ -215,7 +217,7 @@ const Product = () => {
 
           {/* THUMBNAILS */}
           <div className="grid grid-cols-4 gap-4">
-            {productData.image.map((img, index) => (
+            {product.image.map((img, index) => (
               <div
                 key={index}
                 onClick={() => setMainImage(img)}
@@ -236,7 +238,7 @@ const Product = () => {
         {/* RIGHT — PRODUCT DETAILS */}
         <div className="flex flex-col">
           <h1 className="text-3xl font-medium text-foreground mb-4">
-            {productData.name}
+            {product.name}
           </h1>
 
           {/* RATING */}
@@ -265,7 +267,7 @@ const Product = () => {
 
           {/* DESCRIPTION */}
           <p className="text-foreground mt-3">
-            {productData.description ? productData.description : ""}
+            {product.description ? product.description : ""}
           </p>
 
           {/* PRICE */}
@@ -277,7 +279,7 @@ const Product = () => {
             {currency}
             {formatMoney(displayPrice)}
 
-            {productData.isOnSale && selectedVariant?.salePrice && (
+            {product.isOnSale && selectedVariant?.salePrice && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}
                 {formatMoney(selectedVariant.price)}
@@ -286,16 +288,16 @@ const Product = () => {
           </p>
 
           {/* Stock display for VARIATION PRODUCTS */}
-          {displayStock !== null && productData.type === "VARIATION" && (
+          {displayStock !== null && product.type === "VARIATION" && (
             <p className="text-sm text-foreground/60 mt-1">
               {displayStock > 0 ? `Stock: ${displayStock}` : "SOLD OUT"}
             </p>
           )}
 
           {/* Stock display for SIMPLE PRODUCTS */}
-          {productData.type === "SIMPLE" && productData.stock !== null && (
+          {product.type === "SIMPLE" && product.stock !== null && (
             <p className="text-sm text-foreground/60 mt-1">
-              Stock: {productData.stock}
+              Stock: {product.stock}
             </p>
           )}
 
@@ -305,7 +307,7 @@ const Product = () => {
               {availableVarA.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
                   <Label className="text-xs">
-                    {productData.attributes?.[0] ?? "VarA"}
+                    {product.attributes?.[0] ?? "VarA"}
                   </Label>
 
                   <VariationComboBox
@@ -323,7 +325,7 @@ const Product = () => {
               {availableVarB.length > 0 && (
                 <div className="flex flex-col gap-1 min-w-[140px]">
                   <Label className="text-xs">
-                    {productData.attributes?.[1] ?? "VarB"}
+                    {product.attributes?.[1] ?? "VarB"}
                   </Label>
 
                   <VariationComboBox
@@ -363,9 +365,9 @@ const Product = () => {
                   <td className="foreground font-medium">Category</td>
                   {/* Start with a capital letter */}
                   <td className="text-foreground">
-                    {productData.category
-                      ? productData.category.charAt(0).toUpperCase() +
-                        productData.category.slice(1)
+                    {product.category
+                      ? product.category.charAt(0).toUpperCase() +
+                        product.category.slice(1)
                       : ""}
                   </td>
                 </tr>
@@ -380,7 +382,7 @@ const Product = () => {
                 if (!canPurchase) return;
                 handleAddToCart({
                   image: mainImage ?? "placeholder.png",
-                  productId: productData.id,
+                  productId: product.id,
                   variantId: selectedVariant?.id,
                   quantity: qty,
                 });
@@ -411,7 +413,7 @@ const Product = () => {
               onClick={() => {
                 if (!canPurchase) return;
                 handleBuyNow({
-                  productId: productData.id,
+                  productId: product.id,
                   variantId: selectedVariant?.id,
                   quantity: qty,
                 });
@@ -439,24 +441,46 @@ const Product = () => {
       </div>
 
       {/* FEATURED PRODUCTS */}
-      <div className="flex flex-col items-center">
-        <div className="flex flex-col items-center mb-4 mt-16">
-          <p className="text-3xl font-medium">
-            Featured <span className="font-medium text-primary">Products</span>
-          </p>
-          <div className="w-28 h-0.5 bg-primary mt-2"></div>
-        </div>
+<div className="flex flex-col items-center">
+  <div className="flex flex-col items-center mb-4 mt-16">
+    <p className="text-3xl font-medium">
+      Featured <span className="font-medium text-primary">Products</span>
+    </p>
+    <div className="w-28 h-0.5 bg-primary mt-2"></div>
+  </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
-          {products.slice(0, 5).map((prod, index) => (
-            <ProductCard key={index} product={prod} wishlist={wishlist} />
-          ))}
+  {featuredProductsLoading ? (
+    /* ================= SKELETON STATE ================= */
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex flex-col space-y-3 w-full">
+          <Skeleton className="w-full h-40 rounded-xl" />
+          <Skeleton className="h-4 w-3/4 rounded-md" />
+          <Skeleton className="h-4 w-1/2 rounded-md" />
         </div>
+      ))}
+    </div>
+  ) : featuredProducts?.length === 0 ? (
+    /* ================= EMPTY STATE ================= */
+    <div className="py-20 text-center text-foreground/60">
+      No featured products available.
+    </div>
+  ) : (
+    /* ================= DATA STATE ================= */
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
+      {featuredProducts.slice(0, 5).map((prod, index) => (
+        <ProductCard key={index} product={prod} wishlist={wishlist} />
+      ))}
+    </div>
+  )}
 
-        <button className="cursor-pointer px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
-          See more
-        </button>
-      </div>
+  {!featuredProductsLoading && featuredProducts?.length > 0 && (
+    <button className="cursor-pointer px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
+      See more
+    </button>
+  )}
+</div>
+
     </div>
   );
 };

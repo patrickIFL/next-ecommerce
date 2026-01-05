@@ -10,9 +10,6 @@ export async function GET(request: NextRequest) {
       where: { isArchived: false },
       orderBy: { createdAt: "desc" },
       take: 10, // ✅ LIMIT TO 10
-      include: {
-        variants: true,
-      },
     });
 
     return NextResponse.json({ success: true, products });
