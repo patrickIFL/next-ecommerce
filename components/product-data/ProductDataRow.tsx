@@ -2,37 +2,14 @@
 
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import {
-  Eye,
-  EyeOff,
-  LoaderIcon,
-  SquareArrowOutUpRight,
-  SquarePen,
-  Star,
-  TicketPercent,
-  Trash2,
-} from "lucide-react";
-import Confirmation from "../common/Confirmation";
+import { Star } from "lucide-react";
 import useActionsProductHook from "@/hooks/useActionsProductHook";
+import { ProductActions } from "../seller/ProductActions";
 
 function ProductDataRow({ product }: { product: any }) {
-  const router = useRouter();
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
-  const {
-    isFeatured,
-    isArchived,
-    onSale,
-    isDeleting,
-    deleteProduct,
-    toggleFeatured,
-    isTogglingFeatured,
-    toggleArchive,
-    isTogglingArchive,
-    toggleSale,
-    isTogglingSale,
-  } = useActionsProductHook({ product });
+  const { isFeatured, isArchived, onSale } = useActionsProductHook({ product });
 
   return (
     <tr className="border-t border-gray-500/20">
@@ -41,21 +18,30 @@ function ProductDataRow({ product }: { product: any }) {
           <Image
             src={product.image?.[0] ?? "/placeholder.png"}
             alt="Product Image"
-            className="w-10 h-10 object-cover"
             width={1280}
             height={720}
+            className={`w-10 h-10 object-cover transition-all duration-200 ${
+              isArchived ? "grayscale opacity-70" : ""
+            }`}
           />
 
-          {onSale && (
+          {isArchived && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 bg-red-600/50 text-white border-red-600 rounded-xs px-1 py-0.5">
+              <p className="text-[10px] font-bold">ARCHIVED</p>
+            </div>
+          )}
+
+          {!isArchived && onSale && (
             <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
               <p className="text-[10px] text-white font-bold">SALE</p>
             </div>
           )}
-          {isFeatured && (
+
+          {!isArchived && isFeatured && (
             <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
               <Tooltip>
                 <TooltipTrigger>
-                  <Star size={17} fill="var(--foreground)" />
+                  <Star size={17} fill="#ffd230" color="#ffb900" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Featured</p>
@@ -95,174 +81,10 @@ function ProductDataRow({ product }: { product: any }) {
         )}
       </td>
 
-      <td className="py-3 px-2">
-        <div className="flex justify-center w-full mx-2 gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => {
-                  toggleFeatured(product.id);
-                }}
-                className={`flex items-center gap-1 p-1.5   text-white rounded-md bg-purple-600 `}
-                disabled={isTogglingFeatured}
-              >
-                {isTogglingFeatured ? (
-                  <LoaderIcon className="animate-spin" size={16} />
-                ) : (
-                  <Star
-                    size={16}
-                    color={isFeatured ? "none" : "white"}
-                    fill={isFeatured ? "white" : "none"}
-                  />
-                )}
-              </button>
-            </TooltipTrigger>
-            {!isTogglingFeatured && (
-              <TooltipContent>
-                {isFeatured ? <p>Un-Feature</p> : <p>Feature</p>}
-              </TooltipContent>
-            )}
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => toggleArchive(product.id)}
-                className={`flex items-center gap-1 p-1.5   text-white rounded-md ${
-                  isArchived
-                    ? isTogglingArchive
-                      ? "bg-red-900"
-                      : "bg-red-600 hover:bg-red-700"
-                    : isTogglingArchive
-                    ? "bg-green-900"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-                disabled={isTogglingArchive}
-              >
-                {isTogglingArchive ? (
-                  <LoaderIcon className="animate-spin" size={16} />
-                ) : isArchived ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
-              </button>
-            </TooltipTrigger>
-            {!isTogglingArchive && (
-              <TooltipContent>
-                {isArchived ? <p>Unarchive</p> : <p>Archive</p>}
-              </TooltipContent>
-            )}
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <Confirmation
-                  confirmMessage={onSale ? "End SALE" : "Put on SALE"}
-                  btnVariant={onSale ? "destructive" : "default"}
-                  title={
-                    onSale
-                      ? `End SALE for ${product.name}?`
-                      : `Put ${product.name} on SALE?`
-                  }
-                  message="Customers will checkout using the SALE price."
-                  onConfirm={() => toggleSale(product.id)}
-                >
-                  <button
-                    className={`flex items-end justify-center gap-1 p-1.5   text-white rounded-md 
-                      
-                      ${
-                        onSale
-                          ? isTogglingSale
-                            ? "bg-red-900"
-                            : "bg-red-600 hover:bg-red-700"
-                          : isTogglingSale
-                          ? "bg-amber-700"
-                          : "bg-amber-500 hover:bg-amber-600"
-                      }`}
-                    disabled={isTogglingSale}
-                  >
-                    {isTogglingSale ? (
-                      <LoaderIcon className="animate-spin" size={16} />
-                    ) : onSale ? (
-                      <TicketPercent size={16} />
-                    ) : (
-                      <TicketPercent size={16} />
-                    )}
-                  </button>
-                </Confirmation>
-              </div>
-            </TooltipTrigger>
-            {!isTogglingSale && (
-              <TooltipContent>
-                {onSale ? <p>End SALE</p> : <p>Put on SALE</p>}
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </div>
-      </td>
-      <td className="py-3 px-2">
-        <div className="flex w-full justify-center mx-2 gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() =>
-                  router.push(`/seller/edit-product/${product.id}`)
-                }
-                className="flex items-center gap-1 p-1.5 bg-blue-600   hover:bg-blue-700 text-white rounded-md"
-              >
-                <SquarePen size={16} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <Confirmation
-                  message="This action cannot be undone. This will permanently delete the item."
-                  onConfirm={() => deleteProduct(product.id)}
-                >
-                  <button
-                    disabled={isDeleting}
-                    className={`flex items-center gap-1 p-1.5 ${
-                      isDeleting ? "bg-red-900" : "bg-red-600 hover:bg-red-700"
-                    }   text-white rounded-md`}
-                  >
-                    {isDeleting ? (
-                      <LoaderIcon className="animate-spin" size={16} />
-                    ) : (
-                      <Trash2 size={16} />
-                    )}
-                  </button>
-                </Confirmation>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Delete</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => {
-        router.push("/product/" + product.id);
-        scrollTo(0, 0);
-      }}
-                className="flex items-center gap-1 p-1.5 bg-orange-600   hover:bg-orange-700 text-white rounded-md"
-              >
-                <SquareArrowOutUpRight size={16} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>See Product</p>
-            </TooltipContent>
-          </Tooltip>
+      {/* Test Actions */}
+      <td className="px-2 py-3">
+        <div className="flex w-full justify-center">
+          <ProductActions product={product} />
         </div>
       </td>
     </tr>

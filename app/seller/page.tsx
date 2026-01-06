@@ -464,6 +464,7 @@ const AddProduct = () => {
                       </label>
                       <Input
                         type="number"
+                        placeholder="0"
                         className="w-20 outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
                         onChange={(e) => setStock(e.target.value)}
                         value={stock}

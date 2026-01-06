@@ -2,13 +2,9 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-function useActionsProduct({ product }: { product: any }) {
-  const [isFeatured, setIsFeatured] = useState(product.isFeatured);
-  const [isArchived, setIsArchived] = useState(product.isArchived);
-  const [onSale, setOnSale] = useState(product.isOnSale);
+function useActionsProductHook({ product }: { product: any }) {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
@@ -18,118 +14,83 @@ function useActionsProduct({ product }: { product: any }) {
       const res = await fetch(`/api/product/delete/${productId}`, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed Delete product");
+      if (!res.ok) throw new Error(data.message);
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
-    onError: (error: any) =>
-      toast.error(error.message || "Failed to delete product"),
+    onError: (err: any) => toast.error(err.message),
   });
 
-  const { mutateAsync: toggleArchive, isPending: isTogglingArchive } =
-    useMutation({
-      mutationFn: async (productId: string) => {
-        const token = await getToken();
-        const res = await fetch(`/api/product/toggle-archive/${productId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        if (!res.ok)
-          throw new Error(data.message || "Failed to toggle archive product");
-        return data;
-      },
-      onSuccess: (data: any) => {
-        // Update local state immediately
-        setIsArchived(data.product.isArchived);
-
-        // Optionally, refresh the query so other components stay in sync
-        queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-      },
-      onError: (error: any) =>
-        toast.error(error.message || "Failed to toggle archive product"),
-    });
-
-  const { mutateAsync: toggleSale, isPending: isTogglingSale } = useMutation({
-    mutationFn: async (productId: string) => {
+  const toggleArchive = useMutation({
+    mutationFn: async (id: string) => {
       const token = await getToken();
-      const res = await fetch(`/api/product/toggle-sale/${productId}`, {
+      const res = await fetch(`/api/product/toggle-archive/${id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to toggle archive product");
-      return data;
+      if (!res.ok) throw new Error("Archive failed");
+      return res.json();
     },
-    onSuccess: (data: any) => {
-      // Update local state immediately
-      setOnSale(data.product.isOnSale);
-
-      // Optionally, refresh the query so other components stay in sync
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
-    onError: (error: any) =>
-      toast.error(error.message || "Failed to put on SALE"),
   });
 
-  const { mutateAsync: toggleFeatured, isPending: isTogglingFeatured } =
-    useMutation({
-      mutationFn: async (productId: string) => {
-        const token = await getToken();
-        const res = await fetch(`/api/product/toggle-featured/${productId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const toggleSale = useMutation({
+    mutationFn: async (id: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/toggle-sale/${id}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Sale failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+  });
 
-        const data = await res.json();
-        if (!res.ok)
-          throw new Error(data.message || "Failed to toggle archive product");
-        return data;
-      },
-      onSuccess: (data: any) => {
-        // Update local state immediately
-        setIsFeatured(data.product.isFeatured);
+  const toggleFeatured = useMutation({
+    mutationFn: async (id: string) => {
+      const token = await getToken();
+      const res = await fetch(`/api/product/toggle-featured/${id}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Feature failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
+    },
+  });
 
-        // Optionally, refresh the query so other components stay in sync
-        queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
-      },
-      onError: (error: any) =>
-        toast.error(error.message || "Failed to toggle featured product"),
-    });
   return {
-    isFeatured,
-    isArchived,
-    onSale,
-    isDeleting,
-    isTogglingArchive,
-    isTogglingSale,
-    isTogglingFeatured,
+    // ✅ DERIVED STATE (single source of truth)
+    isFeatured: product.isFeatured,
+    isArchived: product.isArchived,
+    onSale: product.isOnSale,
 
+    // loading states
+    isDeleting,
+    isTogglingArchive: toggleArchive.isPending,
+    isTogglingSale: toggleSale.isPending,
+    isTogglingFeatured: toggleFeatured.isPending,
+
+    // actions
     deleteProduct,
-    toggleArchive,
-    toggleSale,
-    toggleFeatured,
+    toggleArchive: toggleArchive.mutateAsync,
+    toggleSale: toggleSale.mutateAsync,
+    toggleFeatured: toggleFeatured.mutateAsync,
   };
 }
 
-export default useActionsProduct;
+export default useActionsProductHook;

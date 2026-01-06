@@ -1,47 +1,44 @@
-/* eslint-disable @typescript-eslint/no-explicit-any*/
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProductType } from "@/lib/types";
-import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 
-function useSellerProducts() {
-  const { isSeller } = useUserStore();
+type SellerProductsResponse = {
+  products: ProductType[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+};
 
-  const { data: sellerProducts, isLoading: sellerProductsIsLoading } = useQuery<
-    ProductType[]
-  >({
-    queryKey: ["sellerProducts"],
-    enabled: isSeller,
+export default function useSellerProducts(page: number) {
+  const {
+    data,
+    isLoading: sellerProductsIsLoading,
+  } = useQuery<SellerProductsResponse>({
+    queryKey: ["sellerProducts", page],
     queryFn: async () => {
-      try {
-        const res = await fetch("/api/product/seller-list", {
-          method: "GET",
-          credentials: "include", // safe to include if you use cookies elsewhere
-        });
+      const res = await fetch(`/api/product/seller-list?page=${page}`, {
+        credentials: "include",
+      });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch seller products");
-        }
-
-        const data = await res.json();
-
-        if (!data.success) {
-          toast.error(data.message);
-          return [];
-        }
-
-        return data.products as ProductType[];
-      } catch (error: any) {
-        toast.error(error.message ?? "Something went wrong");
-        return [];
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message);
       }
+
+      return data;
     },
+    staleTime: 1000 * 60 * 5,
+    keepPreviousData: true,
   });
 
   return {
-    sellerProducts,
+    sellerProducts: data?.products ?? [],
+    pagination: data?.pagination,
     sellerProductsIsLoading,
   };
 }
-
-export default useSellerProducts;
