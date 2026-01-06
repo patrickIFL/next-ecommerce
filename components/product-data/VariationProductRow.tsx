@@ -66,7 +66,7 @@ function VariationProductRow({ product }: Props) {
               <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
                 <Tooltip>
                   <TooltipTrigger>
-                    <Star size={17} fill="var(--foreground)" />
+                    <Star size={17} fill="#ffd230" color="#ffb900" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Featured</p>

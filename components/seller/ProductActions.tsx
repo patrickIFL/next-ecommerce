@@ -43,7 +43,10 @@ export function ProductActions({ product }: { product: any }) {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger asChild>
-        <button type="button">
+        <button
+          type="button"
+          className="focus:outline-none focus:ring-0 outline-none border-none"
+        >
           <Settings
             strokeWidth={1.5}
             size={20}
@@ -83,7 +86,7 @@ export function ProductActions({ product }: { product: any }) {
           }}
         >
           <DropdownMenuItem
-          className="cursor-pointer"
+            className="cursor-pointer"
             onSelect={(e) => e.preventDefault()}
             disabled={isTogglingSale}
           >
@@ -94,7 +97,7 @@ export function ProductActions({ product }: { product: any }) {
 
         {/* VIEW */}
         <DropdownMenuItem
-        className="cursor-pointer"
+          className="cursor-pointer"
           onClick={() => {
             router.push(`/product/${product.id}`);
             setOpen(false);
@@ -106,7 +109,7 @@ export function ProductActions({ product }: { product: any }) {
 
         {/* EDIT */}
         <DropdownMenuItem
-        className="cursor-pointer"
+          className="cursor-pointer"
           onClick={() => {
             router.push(`/seller/edit-product/${product.id}`);
             setOpen(false);
@@ -118,7 +121,6 @@ export function ProductActions({ product }: { product: any }) {
 
         {/* ARCHIVE */}
         <Confirmation
-        
           title={
             isArchived
               ? `Unarchive ${product.name}?`
@@ -132,11 +134,14 @@ export function ProductActions({ product }: { product: any }) {
           }}
         >
           <DropdownMenuItem
-          
             onSelect={(e) => e.preventDefault()}
             className="text-destructive focus:text-destructive cursor-pointer"
           >
-            {isArchived ? <Eye size={16} className="text-destructive"/> : <EyeOff size={16} className="text-destructive"/>}
+            {isArchived ? (
+              <Eye size={16} className="text-destructive" />
+            ) : (
+              <EyeOff size={16} className="text-destructive" />
+            )}
             <span>{isArchived ? "Unarchive" : "Archive"}</span>
           </DropdownMenuItem>
         </Confirmation>

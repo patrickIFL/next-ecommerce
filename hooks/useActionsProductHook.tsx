@@ -1,95 +1,180 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
 function useActionsProductHook({ product }: { product: any }) {
-  const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: deleteProduct, isPending: isDeleting } = useMutation({
+  /* ================== HELPERS ================== */
+
+  const updateProductInCache = (
+    productId: string,
+    updater: (p: any) => any
+  ) => {
+    queryClient.setQueryData<any[]>(["sellerProducts"], (old = []) =>
+      old.map((p) => (p.id === productId ? updater(p) : p))
+    );
+  };
+
+  /* ================== DELETE ================== */
+
+  const deleteMutation = useMutation({
     mutationFn: async (productId: string) => {
-      const token = await getToken();
       const res = await fetch(`/api/product/delete/${productId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      return data;
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to delete product");
+      }
     },
-    onSuccess: () => {
+
+    onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey: ["sellerProducts"] });
+
+      const previous = queryClient.getQueryData(["sellerProducts"]);
+
+      queryClient.setQueryData<any[]>(["sellerProducts"], (old = []) =>
+        old.filter((p) => p.id !== productId)
+      );
+
+      return { previous };
+    },
+
+    onError: (err: any, _id, ctx) => {
+      queryClient.setQueryData(["sellerProducts"], ctx?.previous);
+      toast.error(err.message || "Delete failed");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
-    onError: (err: any) => toast.error(err.message),
   });
 
-  const toggleArchive = useMutation({
-    mutationFn: async (id: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-archive/${id}`, {
+  /* ================== ARCHIVE ================== */
+
+  const archiveMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      const res = await fetch(`/api/product/toggle-archive/${productId}`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Archive failed");
-      return res.json();
     },
-    onSuccess: () => {
+
+    onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey: ["sellerProducts"] });
+
+      const previous = queryClient.getQueryData(["sellerProducts"]);
+
+      updateProductInCache(productId, (p) => ({
+        ...p,
+        isArchived: !p.isArchived,
+      }));
+
+      return { previous };
+    },
+
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(["sellerProducts"], ctx?.previous);
+      toast.error("Failed to toggle archive");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
   });
 
-  const toggleSale = useMutation({
-    mutationFn: async (id: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-sale/${id}`, {
+  /* ================== SALE ================== */
+
+  const saleMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      const res = await fetch(`/api/product/toggle-sale/${productId}`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Sale failed");
-      return res.json();
     },
-    onSuccess: () => {
+
+    onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey: ["sellerProducts"] });
+
+      const previous = queryClient.getQueryData(["sellerProducts"]);
+
+      updateProductInCache(productId, (p) => ({
+        ...p,
+        isOnSale: !p.isOnSale,
+      }));
+
+      return { previous };
+    },
+
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(["sellerProducts"], ctx?.previous);
+      toast.error("Failed to toggle sale");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
   });
 
-  const toggleFeatured = useMutation({
-    mutationFn: async (id: string) => {
-      const token = await getToken();
-      const res = await fetch(`/api/product/toggle-featured/${id}`, {
+  /* ================== FEATURE ================== */
+
+  const featureMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      const res = await fetch(`/api/product/toggle-featured/${productId}`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Feature failed");
-      return res.json();
     },
-    onSuccess: () => {
+
+    onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey: ["sellerProducts"] });
+
+      const previous = queryClient.getQueryData(["sellerProducts"]);
+
+      updateProductInCache(productId, (p) => ({
+        ...p,
+        isFeatured: !p.isFeatured,
+      }));
+
+      return { previous };
+    },
+
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(["sellerProducts"], ctx?.previous);
+      toast.error("Failed to toggle featured");
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sellerProducts"] });
     },
   });
 
+  /* ================== RETURN ================== */
+
   return {
-    // ✅ DERIVED STATE (single source of truth)
+    // derived state
     isFeatured: product.isFeatured,
     isArchived: product.isArchived,
     onSale: product.isOnSale,
 
-    // loading states
-    isDeleting,
-    isTogglingArchive: toggleArchive.isPending,
-    isTogglingSale: toggleSale.isPending,
-    isTogglingFeatured: toggleFeatured.isPending,
+    // loading flags
+    isDeleting: deleteMutation.isPending,
+    isTogglingArchive: archiveMutation.isPending,
+    isTogglingSale: saleMutation.isPending,
+    isTogglingFeatured: featureMutation.isPending,
 
     // actions
-    deleteProduct,
-    toggleArchive: toggleArchive.mutateAsync,
-    toggleSale: toggleSale.mutateAsync,
-    toggleFeatured: toggleFeatured.mutateAsync,
+    deleteProduct: deleteMutation.mutateAsync,
+    toggleArchive: archiveMutation.mutateAsync,
+    toggleSale: saleMutation.mutateAsync,
+    toggleFeatured: featureMutation.mutateAsync,
   };
 }
 
