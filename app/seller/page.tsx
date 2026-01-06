@@ -27,6 +27,7 @@ import { ProductVariation } from "@/hooks/useVariationModal";
 import { toast } from "react-hot-toast";
 import { VariationModal } from "@/components/seller/VariationModal";
 import BrandComboBox from "@/components/common/BrandComboBox";
+import SellerPageTitle from "@/components/seller/SellerPageTitle";
 
 const AddProduct = () => {
   // Value States
@@ -266,12 +267,9 @@ const AddProduct = () => {
 
   return (
     <>
-      <div className="px-6 py-6 min-h-screen w-full mt-16">
-        <form onSubmit={handleSubmit} className="p-5 sm:p-10">
-          <div className="flex flex-col mb-5">
-            <p className="text-2xl font-medium">New Product</p>
-            <div className="w-16 h-0.5 bg-primary rounded-full"></div>
-          </div>
+      <div className="px-6 py-6  min-h-screen w-full mt-16">
+          <SellerPageTitle title="New Product" />
+        <form onSubmit={handleSubmit}>
           {/* Main Wrapper */}
           <div className="flex flex-col xl:flex-row space-x-10 space-y-5  w-full mb-10">
             {/* Column 1 */}

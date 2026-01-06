@@ -1,14 +1,13 @@
-import SideBar from '@/components/seller/Sidebar'
+import SideBar from "@/components/seller/Sidebar";
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 
-
-function layout({children}:{children:any}) {
+function layout({ children }: { children: any }) {
   return (
-    <div className='flex w-full'>
+    <div className="flex w-full">
       <SideBar />
-    {children}
+      {children}
     </div>
-  )
+  );
 }
 
-export default layout
+export default layout;

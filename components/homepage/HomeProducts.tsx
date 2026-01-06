@@ -1,74 +1,40 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import ProductCard from "../common/ProductCard";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useRouter } from "next/navigation";
-import { Skeleton } from "../ui/skeleton";
-import { useEffect, useState } from "react";
-import EmptyState from "../common/EmptyState"; // <- import the empty component
 import { Archive } from "lucide-react";
-import useUserStore from "@/stores/useUserStore";
-import useWishlist from "@/hooks/useWishlist";
+import ProductGrid from "@/components/common/ProductGrid";
 import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
+import { useMemo } from "react";
 
 const HomeProducts = () => {
-  const [count, setCount] = useState(4); // skeleton count
-  const {isSeller} = useUserStore()
-  const {wishlist} = useWishlist()
-
-  const updateCount = () => {
-    const width = window.innerWidth;
-    if (width >= 1280) setCount(12); // xl
-    else if (width >= 1024) setCount(8); // lg
-    else if (width >= 640) setCount(6); // sm
-    else setCount(4); // xs
-  };
-
-  useEffect(() => {
-    updateCount();
-    window.addEventListener("resize", updateCount);
-    return () => window.removeEventListener("resize", updateCount);
-  }, []);
+  const router = useRouter();
 
   const { homeProducts, homeProductsLoading: loading } = useHomeProducts();
-  const router = useRouter();
+
+  const products = useMemo(() => {
+    return Array.isArray(homeProducts) ? homeProducts : [];
+  }, [homeProducts]);
 
   return (
     <div className="flex flex-col items-center pt-14 w-full">
-      <p className="text-2xl font-medium text-left w-full">Popular products</p>
+      <p className="text-2xl font-medium text-left w-full">Popular Products</p>
 
-      {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
-          {Array.from({ length: count }).map((_, i) => (
-            <div key={i} className="flex flex-col space-y-3 w-full">
-              <Skeleton className="w-full h-40 rounded-xl" />
-              <Skeleton className="h-4 w-3/4 rounded-md" />
-              <Skeleton className="h-4 w-1/2 rounded-md" />
-            </div>
-          ))}
-        </div>
-      ) : homeProducts?.length === 0 ? (
-        <EmptyState
-          icon={Archive}
-          title="No Products Found"
-          description="We couldn't find any products at the moment. Check back later!"
-          actionText={isSeller ? "Add Products" : null}
-          onAction={() => router.push("/seller")}
-        />
-      ) : (
-        <div className="grid grid-cols-2 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
-          {homeProducts?.map((product:any, index:number) => (
-            <ProductCard key={index} product={product} wishlist={wishlist} />
-          ))}
-        </div>
-      )}
+      <ProductGrid
+        products={products}
+        isLoading={loading}
+        emptyIcon={Archive}
+        emptyTitle="No Products Found"
+        emptyDescription="We could not find any products at the moment. Please check back later."
+      />
 
-      {homeProducts?.length > 0 && (
+      {products.length > 0 && (
         <button
           onClick={() => router.push("/all/products")}
-          className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition   mt-6"
+          className="px-12 py-2.5 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition mt-6"
         >
-          See more
+          See More
         </button>
       )}
     </div>

@@ -62,7 +62,6 @@ type JpgSlide = {
 
 type Slide = PngSlide | JpgSlide;
 
-
 const HeaderSlider = () => {
   /* ---------------------------------------------
    * Autoplay configuration
@@ -71,7 +70,7 @@ const HeaderSlider = () => {
   const plugin = useRef(
     Autoplay({
       delay: sliderInterval * 1000,
-      stopOnInteraction: true,
+      stopOnInteraction: false,
     })
   );
 
@@ -81,74 +80,81 @@ const HeaderSlider = () => {
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [slideEnabled, setSlideEnabled] = useState(true);
 
   useEffect(() => {
-  if (!api) return;
+    if (!api) return;
 
-  const onSelect = () => {
+    const onSelect = () => {
+      setSelectedIndex(api.selectedScrollSnap());
+    };
+
+    setScrollSnaps(api.scrollSnapList());
     setSelectedIndex(api.selectedScrollSnap());
-  };
 
-  setScrollSnaps(api.scrollSnapList());
-  setSelectedIndex(api.selectedScrollSnap());
+    api.on("select", onSelect);
 
-  api.on("select", onSelect);
-
-  return () => {
-    if (api) {
-      api.off("select", onSelect);
-    }
-  };
-}, [api]);
+    return () => {
+      if (api) {
+        api.off("select", onSelect);
+      }
+    };
+  }, [api]);
 
   const sliderData: Slide[] = [
-  {
-    id: 1,
-    type: "png",
-    title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
-    offer: "Limited Time Offer 30% Off",
-    buttonText1: "Buy now",
-    buttonText2: "Find more",
-    imgSrc: assets.header_headphone_image,
-  },
-  {
-    id: 2,
-    type: "png",
-    title: "Next-Level Gaming Starts Here - Discover PlayStation 5 Today!",
-    offer: "Hurry up only few lefts!",
-    buttonText1: "Buy now",
-    buttonText2: "Explore Deals",
-    imgSrc: assets.header_playstation_image,
-  },
-  {
-    id: 3,
-    type: "png",
-    title: "Power Meets Elegance - Apple MacBook Pro is Here for you!",
-    offer: "Exclusive Deal 40% Off",
-    buttonText1: "Order Now",
-    buttonText2: "Learn More",
-    imgSrc: assets.header_macbook_image,
-  },
-  {
-    id: 4,
-    type: "jpg",
-    desktopImg:
-      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067748/desktopBanner_smgktn.jpg",
-    tabletImg:
-      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067746/tabletBanner_beekpz.jpg",
-    mobileImg:
-      "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067747/mobileBanner_brwneo.jpg",
-  },
-];
+    {
+      id: 1,
+      type: "png",
+      title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
+      offer: "Limited Time Offer 30% Off",
+      buttonText1: "Buy now",
+      buttonText2: "Find more",
+      imgSrc: assets.header_headphone_image,
+    },
+    {
+      id: 2,
+      type: "png",
+      title: "Next-Level Gaming Starts Here - Discover PlayStation 5 Today!",
+      offer: "Hurry up only few lefts!",
+      buttonText1: "Buy now",
+      buttonText2: "Explore Deals",
+      imgSrc: assets.header_playstation_image,
+    },
+    {
+      id: 3,
+      type: "png",
+      title: "Power Meets Elegance - Apple MacBook Pro is Here for you!",
+      offer: "Exclusive Deal 40% Off",
+      buttonText1: "Order Now",
+      buttonText2: "Learn More",
+      imgSrc: assets.header_macbook_image,
+    },
+    {
+      id: 4,
+      type: "jpg",
+      desktopImg:
+        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067748/desktopBanner_smgktn.jpg",
+      tabletImg:
+        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067746/tabletBanner_beekpz.jpg",
+      mobileImg:
+        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067747/mobileBanner_brwneo.jpg",
+    },
+  ];
 
   return (
     <Carousel
       setApi={setApi}
       opts={{ loop: false }}
       className={`relative`}
-      plugins={[plugin.current]}
-      onMouseEnter={plugin.current.stop}
-      onMouseLeave={plugin.current.reset}
+      plugins={slideEnabled ? [plugin.current] : []}
+      onMouseEnter={() => {
+        plugin.current.stop();
+        setSlideEnabled(false);
+      }}
+      onMouseLeave={() => {
+        plugin.current.reset();
+        setSlideEnabled(true);
+      }}
     >
       <CarouselContent>
         {sliderData.map((slide, index) => {
@@ -157,15 +163,13 @@ const HeaderSlider = () => {
             return (
               <CarouselItem key={slide.id}>
                 <div
-                  className=
-                    {`flex flex-col-reverse md:flex-row
+                  className={`flex flex-col-reverse md:flex-row
                     items-center justify-between
                     bg-slider px-5 md:px-14 py-8
                     rounded-b-xl
                     min-h-[560px] 
                     md:min-h-[400px] 
                    `}
-                  
                 >
                   {/* Text */}
                   <div className="md:pl-8 mt-10 md:mt-0 max-w-xl">

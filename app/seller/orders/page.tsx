@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import SellerPageTitle from "@/components/seller/SellerPageTitle";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -51,10 +52,7 @@ const Orders: React.FC = () => {
   }
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
-      <div className="flex flex-col mb-5">
-        <p className="text-2xl font-medium">Orders</p>
-        <div className="w-16 h-0.5 bg-primary rounded-full"></div>
-      </div>
+      <SellerPageTitle title="All Orders" />
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse">

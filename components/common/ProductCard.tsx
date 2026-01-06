@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import useWishlist from "@/hooks/useWishlist";
 import { formatMoney, getMinMaxPrice } from "@/lib/utils";
-import { Heart, LoaderIcon, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -18,7 +18,6 @@ const ProductCard = ({
   const isSale = product.salePrice ? product.isOnSale : false;
 
   const { toggleWishlist, isPending } = useWishlist();
-
   const isWishlisted = wishlist?.includes(product.id);
 
   return (
@@ -46,16 +45,14 @@ const ProductCard = ({
             className="  absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
             disabled={isPending}
           >
-            {isPending ? (
-              <LoaderIcon className="h-3 w-3 animate-spin text-gray-500" />
-            ) : (
+            
               <Heart
                 className="h-3 w-3"
                 fill={isWishlisted ? "#F91880" : "none"}
                 color={isWishlisted ? "#F91880" : "#6B7280"}
                 strokeWidth={3}
               />
-            )}
+            
           </button>
         </div>
         {/* Sale flag */}
