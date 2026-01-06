@@ -31,7 +31,7 @@ function ClerkUserButton() {
         <UserButton.Action
           label="My Wishlist"
           labelIcon={<Heart size={16} />}
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/wishlist/products")}
         />
       </UserButton.MenuItems>
 

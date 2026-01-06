@@ -7,7 +7,7 @@ export default function useWishlist() {
   const queryClient = useQueryClient();
   const {getToken} = useAuth();
   
-  const {data: wishlist = []} = useQuery<string[]>({
+  const {data: wishlist = [], isLoading} = useQuery<string[]>({
     queryKey: ["wishlist"],
     queryFn: async () => {
       const token = await getToken();
@@ -61,6 +61,7 @@ export default function useWishlist() {
 
   return {  
     wishlist,
+    isLoading,
     toggleWishlist,
     isPending
   };

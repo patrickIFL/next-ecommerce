@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Auth
     const { userId } = getAuth(request);
 
     if (!userId) {
@@ -14,21 +14,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 2. Ensure user exists in Prisma
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get("page") || 1);
+    const take = 10;
+    const skip = (page - 1) * take;
 
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User does not exist in database. Create user first.",
-        },
-        { status: 404 }
-      );
-    }
+    const total = await prisma.wishlist.count({
+      where: { userId },
+    });
 
-    // 3. Fetch the CartItems User has
-    const wishlist = await prisma.wishlist.findMany({
+    const records = await prisma.wishlist.findMany({
       where: {
         userId,
         product: {
@@ -38,21 +33,30 @@ export async function GET(request: NextRequest) {
       include: {
         product: true,
       },
+      skip,
+      take,
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    // 5. Return the updated/created cart item
-    return NextResponse.json({ success: true, wishlist });
-  } catch (error) {
-    console.error("FETCH WISHLIST ERROR:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Server error",
-        error: JSON.stringify(error),
+    const products = records.map((r) => r.product);
+
+    const totalPages = Math.ceil(total / take);
+
+    return NextResponse.json({
+      success: true,
+      products,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        hasPrevPage: page > 1,
+        hasNextPage: page < totalPages,
       },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: "Server error" },
       { status: 500 }
     );
   }

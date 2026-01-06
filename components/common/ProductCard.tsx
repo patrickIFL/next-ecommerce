@@ -19,7 +19,7 @@ const ProductCard = ({
 
   const { toggleWishlist, isPending } = useWishlist();
 
-  const isWishlisted = wishlist.includes(product.id);
+  const isWishlisted = wishlist?.includes(product.id);
 
   return (
     <div
