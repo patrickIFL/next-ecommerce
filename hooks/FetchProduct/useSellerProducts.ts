@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProductType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -14,27 +13,35 @@ type SellerProductsResponse = {
   };
 };
 
-export default function useSellerProducts(page: number) {
-  const {
-    data,
-    isLoading: sellerProductsIsLoading,
-  } = useQuery<SellerProductsResponse>({
-    queryKey: ["sellerProducts", page],
-    queryFn: async () => {
-      const res = await fetch(`/api/product/seller-list?page=${page}`, {
-        credentials: "include",
-      });
+export default function useSellerProducts({
+  sellerId,
+  page,
+}: {
+  sellerId: string;
+  page: number;
+}) {
+  const { data, isLoading: sellerProductsIsLoading } =
+    useQuery<SellerProductsResponse>({
+      queryKey: ["sellerProducts", sellerId, page],
+      queryFn: async () => {
+        const res = await fetch(
+          `/api/product/seller-list/${sellerId}?page=${page}`,
+          {
+            credentials: "include",
+          }
+        );
 
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message);
-      }
+        const data = await res.json();
 
-      return data;
-    },
-    staleTime: 1000 * 60 * 5,
-    keepPreviousData: true,
-  });
+        if (!res.ok || !data.success) {
+          throw new Error(data.message);
+        }
+
+        return data;
+      },
+      staleTime: 1000 * 60 * 5,
+      placeholderData: (previousData) => previousData,
+    });
 
   return {
     sellerProducts: data?.products ?? [],

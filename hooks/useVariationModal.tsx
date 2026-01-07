@@ -12,9 +12,13 @@ imageIndex: number;
 };
 
 export function useVariationModal() {
-
-const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[]>([]);
+  const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[]>([]);
   const [open, setOpen] = useState(false);
+
+  const confirmVariations = (confirmed: any[]) => {
+    const cleaned = confirmed.map(({ isNew, ...rest }) => rest);
+    setGeneratedVariations(cleaned as ProductVariation[]);
+  };
 
   return {
     open,
@@ -22,6 +26,7 @@ const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[
     closeModal: () => setOpen(false),
     setOpen,
     generatedVariations,
-    setGeneratedVariations
+    setGeneratedVariations,
+    confirmVariations
   };
 }

@@ -26,11 +26,11 @@ import Confirmation from "../common/Confirmation";
 export function ProductActions({ product }: { product: any }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const isFeatured = product.isFeatured;
+  const isArchived = product.isArchived;
+  const onSale = product.isOnSale;
 
   const {
-    isFeatured,
-    isArchived,
-    onSale,
     isDeleting,
     deleteProduct,
     toggleFeatured,
@@ -38,7 +38,7 @@ export function ProductActions({ product }: { product: any }) {
     toggleArchive,
     toggleSale,
     isTogglingSale,
-  } = useActionsProductHook({ product });
+  } = useActionsProductHook();
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>

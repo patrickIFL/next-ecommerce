@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
-function useActionsProductHook({ product }: { product: any }) {
+function useActionsProductHook() {
   const queryClient = useQueryClient();
 
   /* ================== HELPERS ================== */
@@ -159,10 +159,6 @@ function useActionsProductHook({ product }: { product: any }) {
   /* ================== RETURN ================== */
 
   return {
-    // derived state
-    isFeatured: product.isFeatured,
-    isArchived: product.isArchived,
-    onSale: product.isOnSale,
 
     // loading flags
     isDeleting: deleteMutation.isPending,

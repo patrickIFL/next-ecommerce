@@ -6,12 +6,7 @@ import { useState } from "react";
 import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import {
-
-  Star,
-  ChevronDown,
-} from "lucide-react";
-import useActionsProductHook from "@/hooks/useActionsProductHook";
+import { Star, ChevronDown } from "lucide-react";
 import { ProductActions } from "../seller/ProductActions";
 
 type Props = {
@@ -21,59 +16,59 @@ type Props = {
 function VariationProductRow({ product }: Props) {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const [open, setOpen] = useState(false);
-
-  const {
-    isFeatured,
-    isArchived,
-    onSale,
-  } = useActionsProductHook({ product });
+  const isFeatured = product.isFeatured;
+  const isArchived = product.isArchived;
+  const onSale = product.isOnSale;
 
   return (
     <>
-      
       {/* ================= PARENT ROW ================= */}
-      <tr className={`border-t hover:bg-muted/50  ${open ? "border-t-2 border-dashed border-primary" :"border-gray-500/20"}`}>
+      <tr
+        className={`border-t hover:bg-muted/50  ${
+          open
+            ? "border-t-2 border-dashed border-primary"
+            : "border-gray-500/20"
+        }`}
+      >
         {/* IMAGE */}
         <td className="py-3">
           <div className="relative rounded w-fit mx-auto">
             <div className="flex items-center justify-center gap-2">
               <div className="relative ml-6 bg-amber-500">
+                <Image
+                  src={product.image?.[0] ?? "/placeholder.png"}
+                  alt="Product Image"
+                  width={1280}
+                  height={720}
+                  className={`w-10 h-10 object-cover transition-all duration-200 ${
+                    isArchived ? "grayscale opacity-70" : ""
+                  }`}
+                />
 
-              <Image
-                src={product.image?.[0] ?? "/placeholder.png"}
-                alt="Product Image"
-                width={1280}
-                height={720}
-                className={`w-10 h-10 object-cover transition-all duration-200 ${
-                  isArchived ? "grayscale opacity-70" : ""
-                }`}
-              />
+                {isArchived && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 bg-red-600/50 text-white border-red-600 rounded-xs px-1 py-0.5">
+                    <p className="text-[10px] font-bold">ARCHIVED</p>
+                  </div>
+                )}
 
-              
-            {isArchived && (
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 bg-red-600/50 text-white border-red-600 rounded-xs px-1 py-0.5">
-                <p className="text-[10px] font-bold">ARCHIVED</p>
-              </div>
-            )}
+                {!isArchived && onSale && (
+                  <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
+                    <p className="text-[10px] text-white font-bold">SALE</p>
+                  </div>
+                )}
 
-            {!isArchived && onSale && (
-              <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 bg-red-600 px-1 py-0.5">
-                <p className="text-[10px] text-white font-bold">SALE</p>
-              </div>
-            )}
-
-            {!isArchived && isFeatured && (
-              <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Star size={17} fill="#ffd230" color="#ffb900" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Featured</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            )}
+                {!isArchived && isFeatured && (
+                  <div className="absolute w-5 h-5 flex items-center justify-center top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Star size={17} fill="#ffd230" color="#ffb900" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Featured</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
               <button className=" ">
                 <ChevronDown
@@ -83,7 +78,6 @@ function VariationProductRow({ product }: Props) {
                 />
               </button>
             </div>
-
           </div>
         </td>
 
@@ -101,10 +95,9 @@ function VariationProductRow({ product }: Props) {
         {/* Test Actions */}
         <td className="px-2 py-3">
           <div className="flex w-full justify-center">
-            <ProductActions product={product}/>
+            <ProductActions product={product} />
           </div>
         </td>
-
       </tr>
 
       {/* ================= VARIANTS (ACCORDION CONTENT) ================= */}
@@ -162,7 +155,6 @@ function VariationProductRow({ product }: Props) {
                       </td>
 
                       <td className="px-4 py-2 text-center">{variant.stock}</td>
-
                     </tr>
                   ))}
                 </tbody>

@@ -23,6 +23,7 @@ type Variation = {
   salePrice: string;
   stock: string;
   imageIndex: number;
+  isNew?: boolean;
 };
 
 // NOTE: THIS MODAL IS ONLY UI. USED TO EDIT THE VARIATIONS ONLY,
@@ -48,19 +49,18 @@ export function VariationModal({
   const [variations, setVariations] = useState<Variation[]>([]);
 
   useEffect(() => {
-  if (generatedVariations.length > 0) {
-    setVariations(
-      generatedVariations.map((v) => ({
-        ...v,
-        sku: v.sku ?? "",
-        price: v.price ?? "",
-        salePrice: v.salePrice ?? "",
-        stock: v.stock ?? "",
-      }))
-    );
-  }
-}, [generatedVariations]);
-
+    if (generatedVariations.length > 0) {
+      setVariations(
+        generatedVariations.map((v) => ({
+          ...v,
+          sku: v.sku ?? "",
+          price: v.price ?? "",
+          salePrice: v.salePrice ?? "",
+          stock: v.stock ?? "",
+        }))
+      );
+    }
+  }, [generatedVariations]);
 
   const updateVariation = (
     index: number,
@@ -103,7 +103,17 @@ export function VariationModal({
               {variations.map((variation, i) => (
                 <div className="" key={i}>
                   {/* sku, price, salePrice, stock, image */}
-                  <div className="relative border p-4 rounded-md grid gap-2">
+                  <div
+                    className={`relative p-4 rounded-md grid gap-2 border ${
+                      variation.isNew ? "border-1.5 border-green-600" : ""
+                    }`}
+                  >
+                    {variation.isNew && (
+                      <div className="absolute top-0 left-0 bg-green-600 text-white text-[10px] px-1 rounded-tl-sm">
+                        NEW
+                      </div>
+                    )}
+
                     <Label className="font flex items-center gap-2">
                       <div className="flex gap-1 p-0 items-center">
                         {variation.name}

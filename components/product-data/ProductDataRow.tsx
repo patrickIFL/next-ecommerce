@@ -4,12 +4,13 @@ import { formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Star } from "lucide-react";
-import useActionsProductHook from "@/hooks/useActionsProductHook";
 import { ProductActions } from "../seller/ProductActions";
 
 function ProductDataRow({ product }: { product: any }) {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
-  const { isFeatured, isArchived, onSale } = useActionsProductHook({ product });
+  const isFeatured = product.isFeatured;
+  const isArchived = product.isArchived;
+  const onSale = product.isOnSale;
 
   return (
     <tr className="border-t border-gray-500/20">

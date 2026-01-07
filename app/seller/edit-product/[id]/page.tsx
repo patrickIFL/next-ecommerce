@@ -32,22 +32,22 @@ import {
 import { toast } from "react-hot-toast";
 import { useEditVariationModal } from "@/hooks/useEditVariationModal";
 import { VariationModal } from "@/components/seller/VariationModal";
-import useSellerProducts from "@/hooks/FetchProduct/useSellerProducts";
 import BrandComboBox from "@/components/common/BrandComboBox";
+import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
+import SellerPageTitle from "@/components/seller/SellerPageTitle";
 
 /* ===================================================== */
 
 const EditProduct = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const { getToken } = useAuth();
-  const { sellerProducts } = useSellerProducts();
+  const { product } = useIndividualFetch(id);
   const variationModal = useEditVariationModal();
   const [addingNewVariations, setAddingNewVariations] = useState(false);
 
   /* ===================== CORE STATE ===================== */
 
-  const [productData, setProductData] = useState<any>(null);
+  // const [product, setproduct] = useState<any>(null);
 
   const [files, setFiles] = useState<File[]>([]);
   const [name, setName] = useState("");
@@ -77,60 +77,47 @@ const EditProduct = () => {
 
   const [isModifyingA, setisModifyingA] = useState(false);
   const [isModifyingB, setisModifyingB] = useState(false);
-
-  const [isGeneratingVariations, setisGeneratingVariations] = useState(false);
-  const [generateError, setGenerateError] = useState("");
-  // const [addingError, setAddingError] = useState("");
-
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
 
   /* ===================== LOAD PRODUCT ===================== */
 
   useEffect(() => {
-    if (!sellerProducts) return;
-    const product = sellerProducts.find((p) => p.id === id);
-    if (product) setProductData(product);
-  }, [id, sellerProducts]);
+    if (!product) return;
 
-  useEffect(() => {
-    if (!productData) return;
-
-    setName(productData.name);
-    setDescription(productData.description);
-    setCategory(productData.category);
-    setBrand(productData.brand);
-    setType(productData.type);
-    setSearchKeys(productData.search_keys.join(", "));
+    setName(product.name);
+    setDescription(product.description);
+    setCategory(product.category);
+    setBrand(product.brand);
+    setType(product.type);
+    setSearchKeys(product.search_keys.join(", "));
     setFiles([]);
 
-    if (productData.type === "SIMPLE") {
-      setPrice(String(productData.price / 100));
-      setsalePrice(
-        productData.salePrice ? String(productData.salePrice / 100) : ""
-      );
-      setSku(productData.sku ?? "");
-      setStock(String(productData.stock ?? 0));
+    if (product.type === "SIMPLE") {
+      setPrice(String(product.price / 100));
+      setsalePrice(product.salePrice ? String(product.salePrice / 100) : "");
+      setSku(product.sku ?? "");
+      setStock(String(product.stock ?? 0));
     }
 
-    if (productData.type === "VARIATION") {
-      setVarAName(productData.attributes[0] || "Variation A");
-      setVarBName(productData.attributes[1] || "Variation B");
-      setAttributes(productData.attributes || []);
+    if (product.type === "VARIATION") {
+      setVarAName(product.attributes[0] || "Variation A");
+      setVarBName(product.attributes[1] || "Variation B");
+      setAttributes(product.attributes || []);
 
       setVariations(
-        productData.variants.map((v: any) => ({
+        product.variants.map((v: any) => ({
           ...v,
           price: v.price / 100,
           salePrice: v.salePrice ? v.salePrice / 100 : "",
         }))
       );
     }
-  }, [productData]);
+  }, [product]);
 
   /* ===================== IMAGE OPTIONS ===================== */
 
   const imageOptions = [
-    ...(productData?.image || []).map((url: string, index: number) => ({
+    ...(product?.image || []).map((url: string, index: number) => ({
       index,
       url,
     })),
@@ -142,7 +129,7 @@ const EditProduct = () => {
 
   /* ===================== VARIATION GENERATOR ===================== */
 
-  const handleGenerateVariations = () => {
+  const handleGenerateVariations = async () => {
     const listA = variationA
       .split(",")
       .map((v) => v.trim())
@@ -159,7 +146,7 @@ const EditProduct = () => {
       toast.error("Please enter variation values.");
       return;
     }
-    
+
     const generated: any[] = [];
 
     if (listB.length) {
@@ -172,6 +159,7 @@ const EditProduct = () => {
             salePrice: "",
             stock: "",
             imageIndex: 0,
+            isNew: true,
           });
         });
       });
@@ -184,20 +172,32 @@ const EditProduct = () => {
           salePrice: "",
           stock: "",
           imageIndex: 0,
+          isNew: true,
         });
       });
     }
 
-    // ✅ Append to existing variations (no modal)
-    setFinalVariations((prev) => {
-      const base = prev.length ? prev : variations;
-      const existingNames = new Set(base.map((v) => v.name));
+    const confirmedVariations = new Promise<any[]>((resolve) => {
+      setFinalVariations((prev) => {
+        const base = prev.length ? prev : variations;
+        const existingNames = new Set(base.map((v) => v.name));
 
-      return [...base, ...generated.filter((v) => !existingNames.has(v.name))];
+        const merged = [
+          ...generated.filter((v) => !existingNames.has(v.name)),
+          ...base,
+        ];
+
+        resolve(merged);
+        return merged;
+      });
     });
-    toast.success("Variations generated");
 
-    // ✅ Clear inputs
+    const finalList = await confirmedVariations;
+
+    toast.success("Variations generated, Now edit them");
+
+    variationModal.openEdit(finalList);
+
     setVariationA("");
     setVariationB("");
     setAddingNewVariations(false);
@@ -257,7 +257,7 @@ const EditProduct = () => {
         };
       })
     );
-  }, [varAName, varBName]);
+  }, [varAName, varBName, type, variations.length]);
 
   /* ===================== IMAGE APPEND ===================== */
 
@@ -274,7 +274,6 @@ const EditProduct = () => {
   const { mutateAsync: updateProduct, isPending: loading } = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
-      const token = await getToken();
 
       formData.append("name", name);
       formData.append("description", description);
@@ -385,19 +384,15 @@ const EditProduct = () => {
 
   /* ===================== UI ===================== */
 
-  if (!productData) {
+  if (!product) {
     return <div className="p-10 text-center text-xl">Product not found.</div>;
   }
 
   return (
     <>
-      <div className="px-6 py-6 min-h-screen w-full mt-16">
-        <form onSubmit={handleSubmit} className="p-5 sm:p-10">
-          <div className="flex flex-col mb-5">
-            <p className="text-2xl font-medium">Edit: {productData.name}</p>
-            <div className="w-16 h-0.5 bg-primary rounded-full"></div>
-          </div>
-
+      <div className="px-6 py-6  min-h-screen w-full mt-16">
+        <SellerPageTitle title="Edit Product" />
+        <form onSubmit={handleSubmit}>
           {/* Main Wrapper */}
           <div className="flex flex-col xl:flex-row space-x-10 space-y-5 w-full mb-10">
             {/* Column 1 */}
@@ -422,7 +417,7 @@ const EditProduct = () => {
                         src={
                           files[index]
                             ? URL.createObjectURL(files[index])
-                            : productData?.image?.[index] || assets.upload_area
+                            : product?.image?.[index] || assets.upload_area
                         }
                         alt=""
                         width={100}
@@ -527,8 +522,6 @@ const EditProduct = () => {
                         value={sku}
                       />
                     </div>
-
-                    
                   </>
                 </Activity>
               </div>
@@ -672,67 +665,61 @@ const EditProduct = () => {
                   </Activity>
                 </div>
 
-                  {!addingNewVariations && (
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        setAddingNewVariations(true);
-                      }}
-                      className={`max-w-[200px]   bg-gray-100 hover:bg-gray-200 transition`}
-                    >
-                      Add Variations
-                    </Button>
-                  )}
-
-                  {addingNewVariations && (
-                    <Button
-                      type="button"
-                      disabled={isGeneratingVariations}
-                      onClick={() => {
-                        handleGenerateVariations();
-                        setGenerateError("");
-                      }}
-                      className="max-w-[200px]   bg-gray-100 hover:bg-gray-200 transition"
-                    >
-                      Generate New Variations
-                    </Button>
-                  )}
-
-                  {generateError && (
-                    <span className="text-destructive">
-                      {generateError === "empty name" && "Please enter a name."}
-                      {generateError === "empty variation" &&
-                        "Please enter some variations first."}
-                    </span>
-                  )}
-              </Activity>
-
-              {/* Submit */}
-                {productData.type === "VARIATION" && (
+                {!addingNewVariations && (
                   <Button
                     type="button"
-                    variant={"secondary"}
-                    className="  max-w-[200px]"
                     onClick={() => {
-                      variationModal.openEdit(
-                        finalVariations.length ? finalVariations : variations
-                      );
+                      setAddingNewVariations(true);
                     }}
+                    className={`max-w-[200px]   bg-gray-100 hover:bg-gray-200 transition`}
                   >
-                    Modify Variations
+                    Add Variations
                   </Button>
                 )}
 
-                <Button className="  text-white max-w-[200px]" type="submit" disabled={loading}>
-                  {loading ? (
-                    <>
+                {addingNewVariations && (
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      handleGenerateVariations();
+                    }}
+                    className="max-w-[200px] bg-gray-100 hover:bg-gray-200 transition"
+                  >
+                    Generate New Variations
+                  </Button>
+                )}
+              </Activity>
+
+              {/* Submit */}
+              {product.type === "VARIATION" && (
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  className="  max-w-[200px]"
+                  onClick={() => {
+                    variationModal.openEdit(
+                      finalVariations.length ? finalVariations : variations
+                    );
+                  }}
+                >
+                  Modify Variations
+                </Button>
+              )}
+
+              <Button
+                className="  text-white max-w-[200px]"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
                     <LoaderIcon className="animate-spin" size={16} />
                     <span>Saving</span>
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </Button>
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </div>
           </div>
         </form>

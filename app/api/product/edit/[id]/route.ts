@@ -55,13 +55,16 @@ export async function PATCH(request: NextRequest) {
       (formData.get("description") as string) || oldProduct.description;
     const category =
       (formData.get("category") as string) || oldProduct.category;
-    const brand =
-      (formData.get("brand") as string) || oldProduct.brand;
+    const brand = (formData.get("brand") as string) || oldProduct.brand;
 
     const price = Number(formData.get("price") ?? oldProduct.price);
     const salePrice = Number(formData.get("salePrice") ?? oldProduct.salePrice);
 
-    const sku = formData.get("sku") as string | null;
+    const sku =
+      formData.get("sku") !== null
+        ? (formData.get("sku") as string)
+        : oldProduct.sku;
+
     const stock = formData.get("stock") as string | null;
     const searchKeysRaw = formData.get("search_keys") as string | null;
 
@@ -185,7 +188,7 @@ export async function PATCH(request: NextRequest) {
           ? {
               price: Number(price) * 100,
               salePrice: salePrice ? Number(salePrice) * 100 : null,
-              sku,
+              sku: sku?.trim() || null,
               stock: Number(stock),
             }
           : {

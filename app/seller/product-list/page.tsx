@@ -20,11 +20,15 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useSellerProducts from "@/hooks/FetchProduct/useSellerProducts";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
+import { useAuth } from "@clerk/nextjs";
+
 
 const ProductList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [filterCategory, setFilterCategory] = useState("All");
+  const { userId } = useAuth();
+
 
   const page = useMemo(() => {
     const raw = Number(searchParams.get("page"));
@@ -32,7 +36,11 @@ const ProductList = () => {
   }, [searchParams]);
 
   const { sellerProducts, pagination, sellerProductsIsLoading } =
-    useSellerProducts(page);
+  useSellerProducts({
+    sellerId: userId as string,
+    page
+  });
+
 
   const goToPage = (p: number) => {
     router.push(`?page=${p}`);

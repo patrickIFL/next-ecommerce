@@ -28,11 +28,13 @@ export type ProductType = {
   id: string;
   name: string;
   description: string;
+  sku: string;
   price: number;
   salePrice?: number | null;
   category: string;
   brand: string;
   image: string[];
+  search_keys: string[];
   isOnSale: boolean;
   variants: Variant[];
   type: "SIMPLE" | "VARIATION";
