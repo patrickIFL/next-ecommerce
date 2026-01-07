@@ -4,7 +4,7 @@ import { MoveRight } from "lucide-react";
 
 const Banner = () => {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between md:pl-20 py-14 md:py-0 bg-slider my-16 rounded-xl overflow-hidden">
+    <section className="flex flex-col md:flex-row items-center justify-between md:pl-20 py-14 md:py-0 bg-slider my-16 rounded-xl overflow-hidden">
       <Image
         className="max-w-56"
         src={assets.jbl_soundbox_image}
@@ -33,7 +33,7 @@ const Banner = () => {
         src={assets.sm_controller_image}
         alt="sm_controller_image"
       />
-    </div>
+    </section>
   );
 };
 

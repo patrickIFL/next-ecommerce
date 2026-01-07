@@ -1,44 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
+import { AddToCartPayload, AddToCartPayloadWithImage, CartItem } from "@/lib/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-
-type CartProduct = {
-  id: string;
-  name: string;
-  image: string[];
-  price: number;
-  salePrice: number | null;
-  isOnSale: boolean;
-};
-
-type CartVariant = {
-  id: string;
-  name: string;
-  price: number | null;
-  salePrice: number | null;
-  stock: number;
-};
-
-type CartItem = {
-  id: string;
-  quantity: number;
-  product: CartProduct;
-  variant?: CartVariant | null;
-};
-
-type AddToCartPayload = {
-  productId: string;
-  variantId?: string;
-  quantity: number;
-};
-
-type AddToCartPayloadWithImage = AddToCartPayload & {
-  image: string;
-};
-
 
 function useCartHook() {
   const router = useRouter();
@@ -78,7 +44,7 @@ toast(() => (
   <span>
     Added to Cart!
   </span>
-    <Button className=" " variant={"ghost"} onClick={() => router.push("/cart")}>
+    <Button className=" " variant={"ghost"} onClick={() => router.push("/checkout")}>
       View Cart
     </Button>
   </div>
@@ -105,7 +71,7 @@ toast(() => (
       if (!res.ok) throw new Error(data.message);
       return data;
     },
-    onSuccess: () => router.push("/cart"),
+    onSuccess: () => router.push("/checkout"),
     onError: (error: any) => toast.error(error.message),
   });
 

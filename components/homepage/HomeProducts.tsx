@@ -13,7 +13,7 @@ const HomeProducts = () => {
   const products = Array.isArray(homeProducts) ? homeProducts : [];
 
   return (
-    <div className="flex flex-col items-center pt-14 w-full">
+    <section className="flex flex-col items-center pt-14 w-full">
       <p className="text-2xl font-medium text-left w-full">Popular Products</p>
 
       <ProductGrid
@@ -32,7 +32,7 @@ const HomeProducts = () => {
           See More
         </button>
       )}
-    </div>
+    </section>
   );
 };
 

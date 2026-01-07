@@ -23,7 +23,7 @@ function ClerkUserButton() {
         <UserButton.Action
           label="Checkout"
           labelIcon={<Package2 size={16}/>}
-          onClick={() => router.push("/cart")}
+          onClick={() => router.push("/checkout")}
         />
       </UserButton.MenuItems>
 

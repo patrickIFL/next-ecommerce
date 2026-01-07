@@ -23,7 +23,7 @@ const FeaturedProduct = () => {
   const router = useRouter();
 
   return (
-    <div className="mt-14 flex flex-col items-center w-full">
+    <section className="mt-14 flex flex-col items-center w-full">
       {/* HEADER (always rendered for layout stability) */}
       <div className="flex flex-col items-center">
         <p className="text-3xl font-medium">Featured Products</p>
@@ -99,7 +99,7 @@ const FeaturedProduct = () => {
           <CarouselNext />
         </Carousel>
       )}
-    </div>
+    </section>
   );
 };
 

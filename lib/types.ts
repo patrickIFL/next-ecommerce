@@ -1,11 +1,55 @@
-export type Variant = {
+// ==========================
+// Core Domain Types
+// ==========================
+
+export type ImageList = string[];
+
+export interface BaseProduct {
   id: string;
   name: string;
+  image: ImageList;
   price: number;
   salePrice?: number | null;
+  isOnSale: boolean;
+}
+
+export interface BaseVariant {
+  id: string;
+  name: string;
+  price?: number | null;
+  salePrice?: number | null;
   stock: number;
+  imageIndex?: number;
+}
+
+// ==========================
+// Cart Types
+// ==========================
+
+export interface CartItem {
+  id: string;
+  quantity: number;
+  product: BaseProduct;
+  variant?: BaseVariant | null;
+}
+
+export interface AddToCartPayload {
+  productId: string;
+  quantity: number;
+  variantId?: string;
+}
+
+export interface AddToCartPayloadWithImage extends AddToCartPayload {
+  image: string;
+}
+
+// ==========================
+// Product Types
+// ==========================
+
+export interface Variant extends BaseVariant {
   imageIndex: number;
-};
+}
 
 export interface Product {
   id: string;
@@ -13,34 +57,24 @@ export interface Product {
   description: string;
   category: string;
   brand: string;
-  price: number;
-  salePrice: number;
-  image: string[];
-  variations?: string[];
-  search_keys?: string[];
   sku?: string;
-  stock?: number;
+  image: ImageList;
+  price: number;
+  salePrice?: number | null;
+  stock?: number | null;
   isOnSale: boolean;
+  search_keys?: string[];
   variants: Variant[];
 }
 
-export type ProductType = {
-  id: string;
-  name: string;
-  description: string;
-  sku: string;
-  price: number;
-  salePrice?: number | null;
-  category: string;
-  brand: string;
-  image: string[];
-  search_keys: string[];
-  isOnSale: boolean;
-  variants: Variant[];
+export interface ProductType extends Product {
   type: "SIMPLE" | "VARIATION";
-  stock?: number | null;
   attributes: string[];
-};
+}
+
+// ==========================
+// Variations
+// ==========================
 
 export type VariationsMap = {
   varA?: string[] | null;

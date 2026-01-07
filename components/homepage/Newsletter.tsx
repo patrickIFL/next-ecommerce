@@ -2,7 +2,7 @@ import React from "react";
 
 const NewsLetter = () => {
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-2 pt-8 pb-14">
+    <section className="flex flex-col items-center justify-center text-center space-y-2 pt-8 pb-14">
       <h1 className="md:text-4xl text-2xl font-medium">
         Subscribe now & get 20% off
       </h1>
@@ -20,7 +20,7 @@ const NewsLetter = () => {
           Subscribe
         </button>
       </div>
-    </div>
+    </section>
   );
 };
 
