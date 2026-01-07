@@ -1,7 +1,13 @@
 import SideBar from "@/components/seller/Sidebar";
-/* eslint-disable @typescript-eslint/no-explicit-any*/
+import { Metadata } from "next";
 
-function layout({ children }: { children: any }) {
+export const metadata: Metadata = {
+  title: "Seller Dashboard – NextCart",
+  description: "Manage products, monitor inventory, and track sales performance from your centralized seller control panel.",
+};
+
+
+function layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex w-full">
       <SideBar />
