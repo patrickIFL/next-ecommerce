@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { SearchX } from "lucide-react";
 
@@ -21,9 +21,7 @@ const DisplayProducts = () => {
 
   /* FILTERED RESULTS */
 
-  const products = useMemo(() => {
-    return Array.isArray(searchResults) ? searchResults : [];
-  }, [searchResults]);
+  const products = Array.isArray(searchResults) ? searchResults : [];
 
   return (
     <div className="mt-16 flex flex-col items-start px-6 md:px-16 lg:px-32">

@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Archive } from "lucide-react";
 
@@ -14,10 +13,8 @@ export default function AllProducts() {
   /* =========================
      PAGE FROM URL
   ========================= */
-  const page = useMemo(() => {
-    const raw = Number(searchParams.get("page"));
-    return Number.isInteger(raw) && raw > 0 ? raw : 1;
-  }, [searchParams]);
+  const raw = Number(searchParams.get("page"));
+  const page = Number.isInteger(raw) && raw > 0 ? raw : 1;
 
   const { data, isLoading } = useProductsPage(page);
 

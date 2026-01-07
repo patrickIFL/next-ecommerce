@@ -1,21 +1,16 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useRouter } from "next/navigation";
 import { Archive } from "lucide-react";
 import ProductGrid from "@/components/common/ProductGrid";
 import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
-import { useMemo } from "react";
 
 const HomeProducts = () => {
   const router = useRouter();
 
   const { homeProducts, homeProductsLoading: loading } = useHomeProducts();
 
-  const products = useMemo(() => {
-    return Array.isArray(homeProducts) ? homeProducts : [];
-  }, [homeProducts]);
+  const products = Array.isArray(homeProducts) ? homeProducts : [];
 
   return (
     <div className="flex flex-col items-center pt-14 w-full">

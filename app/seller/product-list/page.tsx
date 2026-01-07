@@ -16,12 +16,11 @@ import {
 } from "@/components/ui/pagination";
 
 import { Archive } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useSellerProducts from "@/hooks/FetchProduct/useSellerProducts";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { useAuth } from "@clerk/nextjs";
-
 
 const ProductList = () => {
   const router = useRouter();
@@ -29,18 +28,14 @@ const ProductList = () => {
   const [filterCategory, setFilterCategory] = useState("All");
   const { userId } = useAuth();
 
-
-  const page = useMemo(() => {
-    const raw = Number(searchParams.get("page"));
-    return Number.isInteger(raw) && raw > 0 ? raw : 1;
-  }, [searchParams]);
+  const raw = Number(searchParams.get("page"));
+  const page = Number.isInteger(raw) && raw > 0 ? raw : 1;
 
   const { sellerProducts, pagination, sellerProductsIsLoading } =
-  useSellerProducts({
-    sellerId: userId as string,
-    page
-  });
-
+    useSellerProducts({
+      sellerId: userId as string,
+      page,
+    });
 
   const goToPage = (p: number) => {
     router.push(`?page=${p}`);
