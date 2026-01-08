@@ -19,7 +19,7 @@ export interface BaseVariant {
   price?: number | null;
   salePrice?: number | null;
   stock: number;
-  imageIndex?: number;
+  imageIndex?: number | null;
 }
 
 // ==========================
@@ -48,23 +48,25 @@ export interface AddToCartPayloadWithImage extends AddToCartPayload {
 // ==========================
 
 export interface Variant extends BaseVariant {
-  imageIndex: number;
+  imageIndex: number | null;
 }
 
 export interface Product {
   id: string;
   name: string;
-  description: string;
+  description: string | null; // ✅ matches Prisma
   category: string;
   brand: string;
-  sku?: string;
+  sku?: string | null;
   image: ImageList;
-  price: number;
+  price: number | null;
   salePrice?: number | null;
   stock?: number | null;
-  isOnSale: boolean;
+  isOnSale: boolean | null;
   search_keys?: string[];
   variants: Variant[];
+  type: string;
+  attributes: string[];
 }
 
 export interface ProductType extends Product {
