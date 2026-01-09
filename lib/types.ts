@@ -22,6 +22,16 @@ export interface BaseVariant {
   imageIndex?: number | null;
 }
 
+export type Pagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+};
+
+
 // ==========================
 // Cart Types
 // ==========================

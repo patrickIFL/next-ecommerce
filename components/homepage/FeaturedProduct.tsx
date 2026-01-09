@@ -1,6 +1,5 @@
 "use client";
 
-import { useFeaturedProducts } from "@/hooks/FetchProduct/useFeaturedProducts";
 import {
   Carousel,
   CarouselContent,
@@ -17,22 +16,28 @@ import { useRouter } from "next/navigation";
 
 const CARD_HEIGHT = 360;
 
-const FeaturedProduct = () => {
-  const { featuredProducts, featuredProductsLoading } = useFeaturedProducts();
+type FeaturedProductProps = {
+  products: Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    image: string[];
+  }>;
+};
+
+const FeaturedProduct = ({ products }: FeaturedProductProps) => {
   const { isSeller } = useUserStore();
   const router = useRouter();
 
   return (
     <section className="mt-14 flex flex-col items-center w-full">
-      {/* HEADER (always rendered for layout stability) */}
+      {/* HEADER */}
       <div className="flex flex-col items-center">
         <p className="text-3xl font-medium">Featured Products</p>
         <div className="w-28 h-0.5 bg-primary my-5" />
       </div>
 
-      {/* LOADING → render nothing (no jump) */}
-      {featuredProductsLoading ? null : featuredProducts.length === 0 ? (
-        /* EMPTY STATE */
+      {products.length === 0 ? (
         <EmptyState
           icon={StarOff}
           title="Nothing Featured Yet"
@@ -41,13 +46,9 @@ const FeaturedProduct = () => {
           onAction={() => router.push("/seller/product-list")}
         />
       ) : (
-        /* CAROUSEL */
-        <Carousel
-          opts={{ align: "start" }}
-          className="relative w-[70vw] sm:w-[80vw]"
-        >
+        <Carousel opts={{ align: "start" }} className="relative w-[70vw] sm:w-[80vw]">
           <CarouselContent>
-            {featuredProducts.map((product) => (
+            {products.map((product) => (
               <CarouselItem
                 key={product.id}
                 className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
@@ -56,7 +57,6 @@ const FeaturedProduct = () => {
                   className="relative w-full overflow-hidden rounded-lg"
                   style={{ height: CARD_HEIGHT }}
                 >
-                  {/* IMAGE */}
                   <Image
                     src={product.image[0]}
                     alt={product.name}
@@ -65,16 +65,14 @@ const FeaturedProduct = () => {
                     className="object-cover"
                   />
 
-                  {/* OVERLAY */}
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
 
-                  {/* CONTENT */}
                   <div className="absolute bottom-6 left-6 right-6 text-white space-y-2">
-                    <p className="font-medium text-lg lg:text-xl leading-tight line-clamp-1">
+                    <p className="font-medium text-lg line-clamp-1">
                       {product.name}
                     </p>
 
-                    <p className="text-sm leading-snug line-clamp-2 max-w-[90%]">
+                    <p className="text-sm line-clamp-2 max-w-[90%]">
                       {product.description}
                     </p>
 
@@ -84,7 +82,7 @@ const FeaturedProduct = () => {
                         scrollTo(0, 0);
                       }}
                       size="sm"
-                      className="mt-2 flex items-center gap-1.5 text-white bg-primary hover:bg-primary-hover"
+                      className="mt-2 flex items-center gap-1.5 bg-primary hover:bg-primary-hover"
                     >
                       Buy now
                       <SquareArrowOutUpRight size={14} />

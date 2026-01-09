@@ -1,6 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 
-export function useProductsPage(page: number) {
+type UseProductsPageOptions = {
+  enabled?: boolean;
+};
+
+export function useProductsPage(
+  page: number,
+  options?: UseProductsPageOptions
+) {
   return useQuery({
     queryKey: ["products", page],
     queryFn: async () => {
@@ -13,6 +20,7 @@ export function useProductsPage(page: number) {
 
       return data; // { products, pagination }
     },
+    enabled: options?.enabled ?? true,   // 👈 KEY CHANGE
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });

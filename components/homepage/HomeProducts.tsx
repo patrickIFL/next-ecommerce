@@ -3,12 +3,9 @@
 import { useRouter } from "next/navigation";
 import { Archive } from "lucide-react";
 import ProductGrid from "@/components/common/ProductGrid";
-import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
 
-const HomeProducts = () => {
+const HomeProducts = ({ homeProducts }) => {
   const router = useRouter();
-
-  const { homeProducts, homeProductsLoading: loading } = useHomeProducts();
 
   const products = Array.isArray(homeProducts) ? homeProducts : [];
 
@@ -18,7 +15,7 @@ const HomeProducts = () => {
 
       <ProductGrid
         products={products}
-        isLoading={loading}
+        isLoading={false}
         emptyIcon={Archive}
         emptyTitle="No Products Found"
         emptyDescription="We could not find any products at the moment. Please check back later."
