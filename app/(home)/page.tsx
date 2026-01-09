@@ -3,7 +3,7 @@ import FeaturedProduct from "@/components/homepage/FeaturedProduct";
 import HeaderSlider from "@/components/homepage/HeaderSlider";
 import HomeProducts from "@/components/homepage/HomeProducts";
 import Newsletter from "@/components/homepage/Newsletter";
-import prisma from "./db/prisma";
+import prisma from "../db/prisma";
 import { cache } from "react";
 
 const fetchFeaturedProducts = cache(async () => {

@@ -5,25 +5,35 @@ import AllProductsClient from "./AllProductsClient";
 const PAGE_SIZE = 10;
 
 export default async function Page() {
-  const products = await prisma.product.findMany({
-    where: { isArchived: false },
-    orderBy: { createdAt: "desc" },
-    take: PAGE_SIZE,
-    include: { variants: true },
-  });
+  const page = 1;
+  const limit = PAGE_SIZE;
+  const skip = (page - 1) * limit;
 
-  const total = await prisma.product.count({
-    where: { isArchived: false },
-  });
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where: { isArchived: false },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      include: { variants: true },
+    }),
+    prisma.product.count({
+      where: { isArchived: false },
+    }),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <AllProductsClient
       initialProducts={JSON.parse(JSON.stringify(products))}
       initialPagination={{
-        page: 1,
-        limit: PAGE_SIZE,
+        page,
+        limit,
         total,
-        totalPages: Math.ceil(total / PAGE_SIZE),
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
       }}
     />
   );

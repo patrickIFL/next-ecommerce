@@ -9,6 +9,7 @@ export default function useWishlist() {
   
   const {data: wishlist = [], isLoading} = useQuery<string[]>({
     queryKey: ["wishlist"],
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const token = await getToken();
       const res = await fetch("/api/wishlist/get",{

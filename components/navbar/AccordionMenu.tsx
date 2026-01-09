@@ -13,7 +13,7 @@ import { User } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ClerkUserButton from "./ClerkUserButton";
-import { SheetDemo } from "../SheetDemo";
+import { CartSheet } from "../CartSheet";
 
 function AccordionMenu({
   isOpen,
@@ -70,7 +70,7 @@ function AccordionMenu({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="hover:bg-accent p-2 flex items-center border rounded-full cursor-pointer">
-                        <SheetDemo />
+                        <CartSheet />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>

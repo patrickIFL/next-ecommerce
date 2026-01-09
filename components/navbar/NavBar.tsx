@@ -33,7 +33,7 @@ import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
 import NextLogo from "../svgs/NextLogo";
 import AccordionMenu from "./AccordionMenu";
-import { SheetDemo } from "../SheetDemo";
+import { CartSheet } from "../CartSheet";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -206,7 +206,7 @@ function NavBar() {
               <Tooltip>
                 <TooltipTrigger>
                   <div className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full">
-                    <SheetDemo />
+                    <CartSheet />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>

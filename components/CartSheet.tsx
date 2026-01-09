@@ -12,8 +12,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export function SheetDemo() {
+export function CartSheet() {
+  const router = useRouter();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -37,7 +39,9 @@ export function SheetDemo() {
           </div>
         </div>
         <SheetFooter>
-          <Button type="submit">Save changes</Button>
+          <SheetClose asChild>
+            <Button onClick={() => {router.push('/checkout')}} type="submit">Proceed to Checkout</Button>
+          </SheetClose>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>
           </SheetClose>
