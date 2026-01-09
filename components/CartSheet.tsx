@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -13,34 +10,34 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ProductPageTitle from "@/components/common/ProductPageTitle";
+import CartContent from "@/components/cart/CartContent";
 
 export function CartSheet() {
   const router = useRouter();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-          <ShoppingCart color={"var(--color-foreground)"} size={18} />
+        <ShoppingCart color="var(--color-foreground)" size={18} />
       </SheetTrigger>
-      <SheetContent>
+
+      <SheetContent className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </SheetDescription>
+          <SheetTitle>
+            <ProductPageTitle title="Your Cart" className="pt-0" />
+          </SheetTitle>
         </SheetHeader>
-        <div className="grid flex-1 auto-rows-min gap-6 px-4">
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-name">Name</Label>
-            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-username">Username</Label>
-            <Input id="sheet-demo-username" defaultValue="@peduarte" />
-          </div>
+
+        <div className="flex-1 overflow-y-auto px-4">
+          <CartContent compact />
         </div>
+
         <SheetFooter>
           <SheetClose asChild>
-            <Button onClick={() => {router.push('/checkout')}} type="submit">Proceed to Checkout</Button>
+            <Button onClick={() => router.push("/checkout")}>
+              Proceed to Checkout
+            </Button>
           </SheetClose>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>

@@ -2,14 +2,14 @@
 
 import OrderSummary from "@/components/checkout/OrderSummary";
 import { useRouter } from "next/navigation";
-import CartCard from "@/components/common/CartCard";
+import CartCard from "@/components/cart/CartCard";
 import { useEffect } from "react";
 import useCartHook from "@/hooks/useCartHook";
 import { MoveLeft, ShoppingCart } from "lucide-react";
 import EmptyState from "@/components/common/EmptyState";
 import Loading from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
-import { CartItem } from "@/types/cart";
+import { CartItem } from "@/lib/types";
 
 const Cart = () => {
   const router = useRouter();
