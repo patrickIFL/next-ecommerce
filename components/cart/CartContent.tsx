@@ -40,7 +40,6 @@ const CartContent = ({ compact = false }: CartContentProps) => {
         <CartCardSheet
           key={item.id}
           item={item as CartItem}
-          compact={compact}
         />
       ))}
     </div>
