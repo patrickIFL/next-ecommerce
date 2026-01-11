@@ -1,4 +1,6 @@
-// app/all/products/page.tsx (Server Component)
+// app/all/products/page.tsx
+export const dynamic = "force-dynamic";
+
 import prisma from "@/app/db/prisma";
 import AllProductsClient from "./AllProductsClient";
 
