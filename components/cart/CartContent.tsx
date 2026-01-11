@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import CartCard from "@/components/cart/CartCard";
 import EmptyState from "@/components/common/EmptyState";
 import Loading from "@/components/common/Loading";
 import useCartHook from "@/hooks/useCartHook";

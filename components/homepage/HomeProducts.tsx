@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { Archive } from "lucide-react";
 import ProductGrid from "@/components/common/ProductGrid";
+import { Product } from "@/lib/types";
 
-const HomeProducts = ({ homeProducts }) => {
+const HomeProducts = ({ homeProducts }:{ homeProducts:Product[] }) => {
   const router = useRouter();
 
   const products = Array.isArray(homeProducts) ? homeProducts : [];
