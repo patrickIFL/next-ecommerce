@@ -110,3 +110,10 @@ export type VariationComboBoxProps = {
   value: string | null;
   onChange: (value: string) => void;
 };
+
+export type Supplier = {
+  id: string;
+  name: string;
+  type: string;
+  externalId?: string | null;
+};
