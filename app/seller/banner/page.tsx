@@ -4,7 +4,7 @@ import React from "react";
 function BannerCreator() {
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
-      <SellerPageTitle title="Analytics" />
+      <SellerPageTitle title="Banners" />
     </div>
   );
 }

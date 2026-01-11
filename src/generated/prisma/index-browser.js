@@ -130,6 +130,14 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  externalId: 'externalId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   sellerId: 'sellerId',
@@ -148,6 +156,13 @@ exports.Prisma.ProductScalarFieldEnum = {
   isFeatured: 'isFeatured',
   isOnSale: 'isOnSale',
   attributes: 'attributes',
+  supplierId: 'supplierId',
+  cjProductId: 'cjProductId',
+  autoDsProductId: 'autoDsProductId',
+  costPrice: 'costPrice',
+  currency: 'currency',
+  lastSyncedAt: 'lastSyncedAt',
+  supplierPayload: 'supplierPayload',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -160,7 +175,11 @@ exports.Prisma.ProductVariantScalarFieldEnum = {
   price: 'price',
   salePrice: 'salePrice',
   stock: 'stock',
-  imageIndex: 'imageIndex'
+  imageIndex: 'imageIndex',
+  cjVariantId: 'cjVariantId',
+  autoDsVariantId: 'autoDsVariantId',
+  costPrice: 'costPrice',
+  lastSyncedAt: 'lastSyncedAt'
 };
 
 exports.Prisma.WishlistScalarFieldEnum = {
@@ -272,6 +291,13 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.SupplierType = exports.$Enums.SupplierType = {
+  CJ: 'CJ',
+  AUTODS: 'AUTODS',
+  ALIEXPRESS: 'ALIEXPRESS',
+  MANUAL: 'MANUAL'
+};
+
 exports.ProductType = exports.$Enums.ProductType = {
   SIMPLE: 'SIMPLE',
   VARIATION: 'VARIATION'
@@ -279,6 +305,7 @@ exports.ProductType = exports.$Enums.ProductType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Supplier: 'Supplier',
   Product: 'Product',
   ProductVariant: 'ProductVariant',
   Wishlist: 'Wishlist',

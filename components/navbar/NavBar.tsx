@@ -6,6 +6,7 @@ import {
   LoaderIcon,
   Menu,
   SearchIcon,
+  ShoppingCart,
   User,
   X,
 } from "lucide-react";
@@ -34,6 +35,7 @@ import { useParams, usePathname } from "next/navigation";
 import NextLogo from "../svgs/NextLogo";
 import AccordionMenu from "./AccordionMenu";
 import { CartSheet } from "../CartSheet";
+import { useCartUI } from "@/stores/useCartUI";
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -204,11 +206,15 @@ function NavBar() {
 
             <NavigationMenuItem>
               <Tooltip>
-                <TooltipTrigger>
-                  <div className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full">
-                    <CartSheet />
+                <TooltipTrigger asChild>
+                  <div
+                    onClick={() => useCartUI.getState().openCart()}
+                    className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full"
+                  >
+                    <ShoppingCart size={16} />
                   </div>
                 </TooltipTrigger>
+
                 <TooltipContent>
                   <p>Cart</p>
                 </TooltipContent>

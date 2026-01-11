@@ -7,6 +7,7 @@ import Loading from "@/components/common/Loading";
 import useCartHook from "@/hooks/useCartHook";
 import { ShoppingCart } from "lucide-react";
 import { CartItem } from "@/lib/types";
+import CartCardSheet from "./CartCardSheet";
 
 type CartContentProps = {
   compact?: boolean;
@@ -36,7 +37,7 @@ const CartContent = ({ compact = false }: CartContentProps) => {
   return (
     <div className={compact ? "space-y-4" : ""}>
       {cartItems.map((item) => (
-        <CartCard
+        <CartCardSheet
           key={item.id}
           item={item as CartItem}
           compact={compact}

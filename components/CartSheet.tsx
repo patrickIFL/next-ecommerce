@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -8,19 +9,30 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProductPageTitle from "@/components/common/ProductPageTitle";
 import CartContent from "@/components/cart/CartContent";
 
-export function CartSheet() {
+interface CartSheetProps {
+  children: ReactNode;
+}
+
+interface CartSheetProps {
+  children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function CartSheet({
+  children,
+  open,
+  onOpenChange,
+}: CartSheetProps) {
   const router = useRouter();
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <ShoppingCart color="var(--color-foreground)" size={18} />
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
 
       <SheetContent className="flex flex-col">
         <SheetHeader>
@@ -33,12 +45,13 @@ export function CartSheet() {
           <CartContent compact />
         </div>
 
-        <SheetFooter>
+        <SheetFooter className="gap-2">
           <SheetClose asChild>
             <Button onClick={() => router.push("/checkout")}>
               Proceed to Checkout
             </Button>
           </SheetClose>
+
           <SheetClose asChild>
             <Button variant="outline">Close</Button>
           </SheetClose>
@@ -47,3 +60,4 @@ export function CartSheet() {
     </Sheet>
   );
 }
+

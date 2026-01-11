@@ -8,6 +8,7 @@ import { shadcn } from "@clerk/themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
+import { CartSheetProvider } from "@/providers/CartSheetProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +47,8 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ThemeProvider>
               <NavBar />
+
+              <CartSheetProvider />
 
               <Toaster
                 position="top-center"

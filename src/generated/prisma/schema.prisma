@@ -26,10 +26,27 @@ model User {
   payments  Payment[]
 }
 
-// Define product type enum
 enum ProductType {
   SIMPLE
   VARIATION
+}
+
+// variables for dropshipping
+enum SupplierType {
+  CJ
+  AUTODS
+  ALIEXPRESS
+  MANUAL
+}
+
+model Supplier {
+  id         String       @id @default(cuid())
+  name       String
+  type       SupplierType
+  externalId String?
+  createdAt  DateTime     @default(now())
+
+  products Product[]
 }
 
 model Product {
@@ -52,6 +69,20 @@ model Product {
   isOnSale    Boolean?    @default(false)
   attributes  String[]    @default(["VarA", "VarB"])
 
+  supplierId String?
+
+  // External references
+  cjProductId     String?
+  autoDsProductId String?
+
+  // Pricing control
+  costPrice Int? // what YOU pay supplier
+  currency  String @default("USD")
+
+  // Sync & automation
+  lastSyncedAt    DateTime?
+  supplierPayload Json?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -61,22 +92,35 @@ model Product {
   cartItems         CartItem[]
   stockReservations StockReservation[]
   variants          ProductVariant[]
+  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
 
   @@unique([sku])
+  @@index([supplierId])
   @@index([sellerId])
   @@index([category])
   @@index([search_keys], type: Gin)
 }
 
 model ProductVariant {
-  id                String             @id @default(cuid())
-  productId         String
-  name              String
-  sku               String?            @unique
-  price             Int?
-  salePrice         Int?
-  stock             Int
-  imageIndex        Int?
+  id         String  @id @default(cuid())
+  productId  String
+  name       String
+  sku        String? @unique
+  price      Int?
+  salePrice  Int?
+  stock      Int
+  imageIndex Int?
+
+  // External references
+  cjVariantId     String?
+  autoDsVariantId String?
+
+  // Supplier cost
+  costPrice Int?
+
+  // Sync
+  lastSyncedAt DateTime?
+
   product           Product            @relation(fields: [productId], references: [id])
   cartItems         CartItem[]
   orderItems        OrderItem[]
@@ -85,7 +129,6 @@ model ProductVariant {
   @@index([productId])
 }
 
-// WishList
 model Wishlist {
   id        String @id @default(cuid())
   userId    String
@@ -102,7 +145,6 @@ model Wishlist {
   @@index([productId])
 }
 
-// CartItem
 model CartItem {
   id        String  @id @default(cuid())
   userId    String
@@ -128,15 +170,6 @@ enum ShippingStatus {
   toRate
 }
 
-// enum ShippingStatus {
-//   PENDING,     // order placed, unpaid or processing
-//   PREPARING,   // packing / readying shipment
-//   SHIPPED,     // in transit
-//   DELIVERED,   // received by customer
-//   COMPLETED,   // rated / closed
-// }
-
-// Order
 model Order {
   id                String @id @default(cuid())
   userId            String
@@ -157,7 +190,6 @@ model Order {
   @@index([userId])
 }
 
-// Payment
 model Payment {
   id                         String   @id @default(cuid())
   userId                     String
@@ -180,7 +212,6 @@ model Payment {
   order Order @relation(fields: [orderId], references: [id])
 }
 
-// OrderItem
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
@@ -199,7 +230,6 @@ model OrderItem {
   @@index([variantId])
 }
 
-// ShippingAddress
 model ShippingAddress {
   id     String @id @default(cuid())
   userId String

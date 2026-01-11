@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
-import { AddToCartPayload, AddToCartPayloadWithImage, CartItem } from "@/lib/types";
+import {
+  AddToCartPayload,
+  AddToCartPayloadWithImage,
+  CartItem,
+} from "@/lib/types";
+import { useCartUI } from "@/stores/useCartUI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -27,30 +32,34 @@ function useCartHook() {
         if (!res.ok) throw new Error(data.message);
         return data;
       },
-     onSuccess: (data, variables) => {
-  queryClient.invalidateQueries({ queryKey: ["cartItems"] });
 
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
 
-toast(() => (
-  <div className="flex items-center gap-4">
-    <Image
-        src={variables.image}
-        alt={data.cartItem.product.name}
-        width={40}
-        height={40}
-        className="h-10 w-10 rounded-full object-cover border border-border"
-      />
+        toast((t) => (
+          <div className="flex items-center gap-4">
+            <Image
+              src={variables.image}
+              alt={data.cartItem.product.name}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover border border-border"
+            />
 
-  <span>
-    Added to Cart!
-  </span>
-    <Button className=" " variant={"ghost"} onClick={() => router.push("/checkout")}>
-      View Cart
-    </Button>
-  </div>
-));
+            <span>Added to Cart!</span>
 
-},
+            <Button
+              variant="ghost"
+              onClick={() => {
+                useCartUI.getState().openCart();
+                toast.dismiss(t.id);
+              }}
+            >
+              View Cart
+            </Button>
+          </div>
+        ));
+      },
 
       onError: (error: any) => toast.error(error.message),
     });
@@ -144,5 +153,3 @@ toast(() => (
 }
 
 export default useCartHook;
-
-
