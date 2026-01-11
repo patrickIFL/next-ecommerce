@@ -46,7 +46,7 @@ function CartCard({ item }: CartCardProps) {
 
   const totalPrice = formatMoney((unitPrice ?? 0) * quantity);
 
-  const productImageIndex = variant ? variant.imageIndex : 0;
+  const productImageIndex = variant?.imageIndex ?? 0;
 
   /* ================= ACTIONS ================= */
   const updateQuantity = useCallback(
