@@ -92,3 +92,21 @@ export type VariationsMap = {
   varA?: string[] | null;
   varB?: string[] | null;
 };
+
+export type Variation = {
+  id?: string;
+  name: string;
+  sku: string;
+  price: number | string;
+  salePrice: number | string | null;
+  stock: number | string;
+  imageIndex: number;
+  isNew?: boolean;
+};
+
+export type VariationComboBoxProps = {
+  variantName: string;
+  variants: { value: string; label: string }[];
+  value: string | null;
+  onChange: (value: string) => void;
+};

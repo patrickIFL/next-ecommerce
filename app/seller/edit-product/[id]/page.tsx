@@ -4,7 +4,6 @@
 import { Activity, useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 
 import { assets } from "@/assets/assets";
@@ -35,11 +34,14 @@ import { VariationModal } from "@/components/seller/VariationModal";
 import BrandComboBox from "@/components/common/BrandComboBox";
 import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
+import { Variation } from "@/lib/types";
 
 /* ===================================================== */
 
 const EditProduct = () => {
-  const { id } = useParams() as { id: string };
+  const params = useParams();
+  const id = typeof params?.id === "string" ? params.id : "";
+
   const router = useRouter();
   const { product } = useIndividualFetch(id);
   const variationModal = useEditVariationModal();
@@ -67,7 +69,7 @@ const EditProduct = () => {
   /* ===================== VARIATION STATE ===================== */
 
   const [attributes, setAttributes] = useState<string[]>([]);
-  const [variations, setVariations] = useState<any[]>([]);
+  const [variations, setVariations] = useState<Variation[]>([]);
 
   const [varAName, setVarAName] = useState("Variation A");
   const [varBName, setVarBName] = useState("Variation B");
@@ -77,32 +79,42 @@ const EditProduct = () => {
 
   const [isModifyingA, setisModifyingA] = useState(false);
   const [isModifyingB, setisModifyingB] = useState(false);
-  const [finalVariations, setFinalVariations] = useState<any[]>([]);
+  const [finalVariations, setFinalVariations] = useState<Variation[]>([]);
 
   /* ===================== LOAD PRODUCT ===================== */
 
   useEffect(() => {
     if (!product) return;
 
-    setName(product.name);
-    setDescription(product.description);
-    setCategory(product.category);
-    setBrand(product.brand);
+    // ---------- Core fields ----------
+    setName(product.name ?? "");
+    setDescription(product.description ?? "");
+    setCategory(product.category ?? "");
+    setBrand(product.brand ?? "");
     setType(product.type);
-    setSearchKeys(product.search_keys.join(", "));
+
+    setSearchKeys((product.search_keys ?? []).join(", "));
     setFiles([]);
 
+    // ---------- SIMPLE product ----------
     if (product.type === "SIMPLE") {
-      setPrice(String(product.price / 100));
-      setsalePrice(product.salePrice ? String(product.salePrice / 100) : "");
+      setPrice(product.price != null ? String(product.price / 100) : "");
+
+      setsalePrice(
+        product.salePrice != null ? String(product.salePrice / 100) : ""
+      );
+
       setSku(product.sku ?? "");
       setStock(String(product.stock ?? 0));
     }
 
+    // ---------- VARIATION product ----------
     if (product.type === "VARIATION") {
-      setVarAName(product.attributes[0] || "Variation A");
-      setVarBName(product.attributes[1] || "Variation B");
-      setAttributes(product.attributes || []);
+      const attributes = product.attributes ?? [];
+
+      setVarAName(attributes[0] ?? "Variation A");
+      setVarBName(attributes[1] ?? "Variation B");
+      setAttributes(attributes);
 
       setVariations(
         product.variants.map((v: any) => ({

@@ -1,12 +1,5 @@
 "use client";
 
-type VariationComboBoxProps = {
-  variantName: string;
-  variants: { value: string; label: string }[];
-  value: string | null;
-  onChange: (value: string) => void;
-};
-
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { VariationComboBoxProps } from "@/lib/types";
 
 export function VariationComboBox({
   variantName,
