@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import ProductDataRow from "@/components/product-data/ProductDataRow";
 import VariationProductRow from "@/components/product-data/VariationProductRow";

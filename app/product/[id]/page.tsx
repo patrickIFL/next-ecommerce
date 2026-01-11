@@ -48,7 +48,5 @@ export default async function Page({
     return <div>Product not found</div>;
   }
 
-  console.log("PRODUCT ID:", id);
-
   return <IndividualProduct product={product} />;
 }
