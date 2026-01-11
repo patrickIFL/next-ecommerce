@@ -34,7 +34,6 @@ import useSearchHook from "@/hooks/useSearchHook";
 import { useParams, usePathname } from "next/navigation";
 import NextLogo from "../svgs/NextLogo";
 import AccordionMenu from "./AccordionMenu";
-import { CartSheet } from "../CartSheet";
 import { useCartUI } from "@/stores/useCartUI";
 
 function NavBar() {

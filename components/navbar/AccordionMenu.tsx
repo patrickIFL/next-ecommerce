@@ -8,12 +8,12 @@ import {
 } from "../ui/accordion";
 import Link from "next/link";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
-import { User } from "lucide-react";
+import { ShoppingCart, User } from "lucide-react";
 // import { UserButton } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ClerkUserButton from "./ClerkUserButton";
-import { CartSheet } from "../CartSheet";
+import { useCartUI } from "@/stores/useCartUI";
 
 function AccordionMenu({
   isOpen,
@@ -69,8 +69,11 @@ function AccordionMenu({
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="hover:bg-accent p-2 flex items-center border rounded-full cursor-pointer">
-                        <CartSheet />
+                      <div
+                        className="hover:bg-accent p-2 flex items-center border rounded-full cursor-pointer"
+                        onClick={() => useCartUI.getState().openCart()}
+                      >
+                        <ShoppingCart size={16} />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -102,7 +105,7 @@ function AccordionMenu({
                 </div>
               </div>
             </AccordionItem>
-            
+
             {/* Dynamic Menus */}
             {menus.map((menu: any, i: number) => {
               const isDirectLink =
@@ -137,7 +140,6 @@ function AccordionMenu({
                 </AccordionItem>
               );
             })}
-            
           </Accordion>
         </motion.div>
       )}
