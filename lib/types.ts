@@ -20,6 +20,7 @@ export interface BaseVariant {
   salePrice?: number | null;
   stock: number;
   imageIndex?: number | null;
+  costPrice: number | null;
 }
 
 export type Pagination = {

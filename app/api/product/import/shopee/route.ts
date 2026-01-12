@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 import authSeller from "@/lib/authSeller";
+import { Variant } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -37,7 +38,10 @@ export async function POST(req: NextRequest) {
   if (type === "SIMPLE") {
     if (!price || costPrice == null) {
       return NextResponse.json(
-        { success: false, message: "Simple product requires price and costPrice" },
+        {
+          success: false,
+          message: "Simple product requires price and costPrice",
+        },
         { status: 400 }
       );
     }
@@ -50,8 +54,8 @@ export async function POST(req: NextRequest) {
         image: images ?? [],
         type: "SIMPLE",
         supplierId,
-        price,
-        costPrice,
+        price: Math.round(Number(price) * 100),
+        costPrice: Math.round(Number(costPrice) * 100),
         stock: stock ?? 0,
       },
     });
@@ -63,7 +67,10 @@ export async function POST(req: NextRequest) {
   if (type === "VARIATION") {
     if (!Array.isArray(variants) || variants.length === 0) {
       return NextResponse.json(
-        { success: false, message: "Variants are required for variation products" },
+        {
+          success: false,
+          message: "Variants are required for variation products",
+        },
         { status: 400 }
       );
     }
@@ -77,18 +84,21 @@ export async function POST(req: NextRequest) {
         type: "VARIATION",
         supplierId,
         costPrice: null, // IMPORTANT: variant-level cost only
-        stock: null,     // variant-level stock only
+        stock: null, // variant-level stock only
         variants: {
-          create: variants.map((v: any) => {
+          create: variants.map((v: Variant) => {
             if (v.costPrice == null || v.price == null) {
               throw new Error("Each variant must have price and costPrice");
             }
 
             return {
               name: v.name,
-              price: v.price,
-              salePrice: v.salePrice ?? null,
-              costPrice: v.costPrice,
+              price: Math.round(Number(v.price) * 100),
+              salePrice:
+                v.salePrice != null
+                  ? Math.round(Number(v.salePrice) * 100)
+                  : null,
+              costPrice: Math.round(Number(v.costPrice) * 100),
               stock: v.stock ?? 0,
             };
           }),
