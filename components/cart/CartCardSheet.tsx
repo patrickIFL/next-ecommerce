@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
-import { Button } from "../ui/button";
 import { CartItem } from "@/lib/types";
 
 interface CartCardProps {
@@ -76,7 +75,7 @@ function CartCard({ item }: CartCardProps) {
         {/* NAME + QUANTITY */}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-foreground">
+            <p className="truncate max-w-[200px] text-sm font-medium text-foreground">
               {product.name}
             </p>
 

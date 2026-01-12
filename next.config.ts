@@ -1,23 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
-  // Need for the HomeProducts to render properly.
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
-      
+      {
+        protocol: "https",
+        hostname: "down-ph.img.susercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

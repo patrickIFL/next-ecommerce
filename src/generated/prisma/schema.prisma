@@ -49,13 +49,15 @@ model Supplier {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   sellerId    String
   name        String
   description String?
-  category    String   @default("Uncategorized")
-  brand       String   @default("Generic")
-  image       String[]
+  specs       String?
+
+  category String   @default("Uncategorized")
+  brand    String   @default("Generic")
+  image    String[]
 
   price       Int?
   salePrice   Int?

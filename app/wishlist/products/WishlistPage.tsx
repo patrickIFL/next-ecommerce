@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Archive } from "lucide-react";
+import { Archive, HeartOff } from "lucide-react";
 
 import PaginatedProductGrid from "@/components/common/PaginatedProductGrid";
 
@@ -32,8 +32,8 @@ export default function WishlistPage() {
         products={products}
         isLoading={isLoading}
         pagination={pagination}
-        emptyIcon={Archive}
-        emptyTitle="No Products Found"
+        emptyIcon={HeartOff}
+        emptyTitle="No Wishlist Yet"
         emptyDescription="Your wishlist is currently empty."
       />
     </div>

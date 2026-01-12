@@ -31,7 +31,6 @@ enum ProductType {
   VARIATION
 }
 
-
 enum SupplierType {
   SHOPEE
   LAZADA
@@ -54,6 +53,8 @@ model Product {
   sellerId    String
   name        String
   description String?
+  specs       String?
+  
   category    String   @default("Uncategorized")
   brand       String   @default("Generic")
   image       String[]

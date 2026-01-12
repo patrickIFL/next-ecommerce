@@ -188,7 +188,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
     : product.price;
 
   const displayPrice = rawPrice ?? 0;
-  const originalPrice = selectedVariant && product.price;
+  const originalPrice = selectedVariant ? selectedVariant.price : product.price;
 
   const displayStock =
     product.type === "VARIATION"
@@ -289,7 +289,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
             {currency}
             {formatMoney(displayPrice)}
 
-            {product.isOnSale && product?.salePrice && originalPrice && (
+            {product.isOnSale && originalPrice && (
               <span className="text-base font-normal text-foreground/50 line-through ml-2">
                 {currency}
                 {formatMoney(originalPrice)}
