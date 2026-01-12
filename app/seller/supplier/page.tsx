@@ -100,7 +100,7 @@ function SupplierPage() {
 
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
-      <div className="flex items-center gap-3">
+      <div className="flex gap-3">
         <SellerPageTitle title="Suppliers" />
         <Button variant="outline" onClick={() => setOpen(true)}>
           <Plus className="mr-1 h-4 w-4" />
