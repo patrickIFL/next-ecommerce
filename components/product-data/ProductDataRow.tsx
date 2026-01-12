@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, isValidImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Star } from "lucide-react";
@@ -12,12 +12,16 @@ function ProductDataRow({ product }: { product: any }) {
   const isArchived = product.isArchived;
   const onSale = product.isOnSale;
 
+  const imageSrc = isValidImageUrl(product.image?.[0])
+    ? product.image[0]
+    : "/product-placeholder.jpg";
+
   return (
     <tr className="border-t border-gray-500/20">
       <td className={`py-3`}>
         <div className="relative bg-gray-500/10 rounded w-fit mx-auto">
           <Image
-            src={product.image?.[0] ?? "/placeholder.png"}
+            src={imageSrc}
             alt="Product Image"
             width={1280}
             height={720}

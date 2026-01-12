@@ -11,7 +11,6 @@ export function formatMoney(amount:number){
     const formatted = (amount/100).toLocaleString('en-PH');
     return formatted;
 }
-
 export function getMinMaxPrice(product: any) {
     // VARIATION PRODUCT
     if (Array.isArray(product.variants) && product.variants.length > 0) {
@@ -44,3 +43,15 @@ export function getMinMaxPrice(product: any) {
       max: price,
     };
   }
+
+export function isValidImageUrl(url?: string) {
+  if (!url) return false;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Next Steps: Apply this to every component and page that uses product image URL 

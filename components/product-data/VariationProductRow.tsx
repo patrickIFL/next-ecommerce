@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, isValidImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Star, ChevronDown } from "lucide-react";
@@ -19,6 +19,10 @@ function VariationProductRow({ product }: Props) {
   const isFeatured = product.isFeatured;
   const isArchived = product.isArchived;
   const onSale = product.isOnSale;
+
+  const imageSrc = isValidImageUrl(product.image?.[0])
+    ? product.image[0]
+    : "/product-placeholder.jpg";
 
   return (
     <>
@@ -36,7 +40,7 @@ function VariationProductRow({ product }: Props) {
             <div className="flex items-center justify-center gap-2">
               <div className="relative ml-6 bg-amber-500">
                 <Image
-                  src={product.image?.[0] ?? "/placeholder.png"}
+                  src={imageSrc}
                   alt="Product Image"
                   width={1280}
                   height={720}
@@ -126,7 +130,7 @@ function VariationProductRow({ product }: Props) {
                             <Image
                               src={
                                 product.image?.[variant.imageIndex] ??
-                                "/placeholder.png"
+                                "/product-placeholder.jpg"
                               }
                               alt="Product Image"
                               className="w-8"

@@ -7,7 +7,7 @@ import Image from "next/image";
 import ProductCard from "@/components/common/ProductCard";
 import Loading from "@/components/common/Loading";
 import useCartHook from "@/hooks/useCartHook";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, isValidImageUrl } from "@/lib/utils";
 import { LoaderIcon, Star } from "lucide-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Product, Variant } from "@/lib/types";
 import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
 
+const PLACEHOLDER_IMAGE = "/product-placeholder.jpg";
+
 /* =========================
    VARIANT MATRIX
 ========================= */
@@ -33,9 +35,7 @@ function buildVariantMatrix(variants: Variant[]): VariantMatrix {
   variants.forEach((variant) => {
     const clean = variant.name.split(" - ")[0];
     const parts = clean.split(",").map((p) => p.trim());
-
     const key = parts.length === 2 ? `${parts[0]}|${parts[1]}` : `${parts[0]}|`;
-
     matrix[key] = variant;
   });
 
@@ -58,7 +58,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
      CORE STATE
   ========================= */
 
-  const [mainImage, setMainImage] = useState<string | null>(null);
+  const [mainImage, setMainImage] = useState<string>(PLACEHOLDER_IMAGE);
   const [qty, setQty] = useState(1);
 
   /* =========================
@@ -69,24 +69,9 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   const [selectedVarA, setSelectedVarA] = useState<string | null>(null);
   const [selectedVarB, setSelectedVarB] = useState<string | null>(null);
 
-  /* =========================
-     LOAD PRODUCT
-  ========================= */
-
-  useEffect(() => {
-    if (!product) return;
-
-    if (product.variants?.length) {
-      setVariantMatrix(buildVariantMatrix(product.variants));
-    } else {
-      setVariantMatrix({});
-    }
-
-    setMainImage(product.image?.[0] ?? null);
-    setSelectedVarA(null);
-    setSelectedVarB(null);
-    setQty(1);
-  }, [product]);
+  const imageSrc = isValidImageUrl(product.image?.[0])
+    ? product.image[0]
+    : PLACEHOLDER_IMAGE;
 
   /* =========================
      DERIVED OPTIONS
@@ -124,19 +109,15 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   useEffect(() => {
     if (!selectedVarA) return;
 
-    // VarA has NO VarB → clear it
     if (availableVarB.length === 0) {
-      if (selectedVarB !== null) {
-        setSelectedVarB(null);
-      }
+      setSelectedVarB(null);
       return;
     }
 
-    // VarA has VarB but current selection is invalid
     if (!availableVarB.includes(selectedVarB ?? "")) {
       setSelectedVarB(availableVarB[0]);
     }
-  }, [availableVarA, availableVarB, selectedVarA, selectedVarB]);
+  }, [availableVarB, selectedVarA, selectedVarB]);
 
   /* =========================
      SELECTED VARIANT
@@ -154,26 +135,41 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   }, [variantMatrix, selectedVarA, selectedVarB]);
 
   /* =========================
-     IMAGE SYNC
+     LOAD PRODUCT
   ========================= */
 
   useEffect(() => {
     if (!product) return;
 
-    if (!selectedVariant) {
-      setMainImage(product.image?.[0] ?? null);
+    setVariantMatrix(
+      product.variants?.length ? buildVariantMatrix(product.variants) : {}
+    );
+
+    setSelectedVarA(null);
+    setSelectedVarB(null);
+    setQty(1);
+    setMainImage(imageSrc);
+  }, [product, imageSrc]);
+
+  /* =========================
+     IMAGE SYNC (VARIANT-AWARE)
+  ========================= */
+
+  useEffect(() => {
+    if (!product || !selectedVariant) {
+      setMainImage(imageSrc);
       return;
     }
 
     const index = selectedVariant.imageIndex;
 
-    if (index === null || index === undefined) {
-      setMainImage(product.image?.[0] ?? null);
+    if (index === null || index === undefined || !product.image?.[index]) {
+      setMainImage(imageSrc);
       return;
     }
 
-    setMainImage(product.image[index] ?? product.image[0]);
-  }, [selectedVariant, product]);
+    setMainImage(product.image[index]);
+  }, [selectedVariant, product, imageSrc]);
 
   /* =========================
      PRICE & STOCK
@@ -183,7 +179,6 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   if (!product)
     return <div className="p-10 text-center text-xl">Product not found.</div>;
 
-  // Normalize display price for ts
   const rawPrice = selectedVariant
     ? product.isOnSale
       ? selectedVariant.salePrice ?? selectedVariant.price
@@ -193,7 +188,6 @@ const IndividualProduct = ({ product }: { product: Product }) => {
     : product.price;
 
   const displayPrice = rawPrice ?? 0;
-  // =========
   const originalPrice = selectedVariant && product.price;
 
   const displayStock =
@@ -218,7 +212,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
           <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
             <Lens>
               <Image
-                src={mainImage ?? product.image?.[0] ?? assets.upload_area}
+                src={mainImage || PLACEHOLDER_IMAGE}
                 alt={product.name}
                 className="object-cover"
                 width={1280}
@@ -229,21 +223,25 @@ const IndividualProduct = ({ product }: { product: Product }) => {
 
           {/* THUMBNAILS */}
           <div className="grid grid-cols-4 gap-4">
-            {product.image.map((img, index) => (
-              <div
-                key={index}
-                onClick={() => setMainImage(img)}
-                className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
-              >
-                <Image
-                  src={img}
-                  alt="thumbnail"
-                  className="w-full h-full object-cover"
-                  width={1280}
-                  height={720}
-                />
-              </div>
-            ))}
+            {product.image.map((img, index) => {
+              const safeImg = isValidImageUrl(img) ? img : PLACEHOLDER_IMAGE;
+
+              return (
+                <div
+                  key={index}
+                  onClick={() => setMainImage(safeImg)}
+                  className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+                >
+                  <Image
+                    src={safeImg}
+                    alt="thumbnail"
+                    className="w-full h-full object-cover"
+                    width={1280}
+                    height={720}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
 

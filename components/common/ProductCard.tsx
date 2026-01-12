@@ -5,6 +5,7 @@ import { formatMoney, getMinMaxPrice } from "@/lib/utils";
 import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { isValidImageUrl } from "../../lib/utils";
 
 const ProductCard = ({
   product,
@@ -20,6 +21,10 @@ const ProductCard = ({
   const { toggleWishlist, isPending } = useWishlist();
   const isWishlisted = wishlist?.includes(product.id);
 
+  const imageSrc = isValidImageUrl(product.image?.[0])
+    ? product.image[0]
+    : "/product-placeholder.jpg";
+
   return (
     <div
       onClick={() => {
@@ -31,7 +36,7 @@ const ProductCard = ({
       <div className="relative w-full">
         <div className="overflow-hidden group relative bg-gray-500/10 rounded-lg rounded-b-none w-full h-52 flex items-center justify-center">
           <Image
-            src={product.image[0]}
+            src={imageSrc}
             alt={product.name}
             className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
             width={800}
@@ -45,14 +50,12 @@ const ProductCard = ({
             className="  absolute top-2 right-2 bg-white p-2 rounded-full shadow-md"
             disabled={isPending}
           >
-            
-              <Heart
-                className="h-3 w-3"
-                fill={isWishlisted ? "#F91880" : "none"}
-                color={isWishlisted ? "#F91880" : "#6B7280"}
-                strokeWidth={3}
-              />
-            
+            <Heart
+              className="h-3 w-3"
+              fill={isWishlisted ? "#F91880" : "none"}
+              color={isWishlisted ? "#F91880" : "#6B7280"}
+              strokeWidth={3}
+            />
           </button>
         </div>
         {/* Sale flag */}
