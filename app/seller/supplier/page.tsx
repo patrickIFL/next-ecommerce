@@ -30,13 +30,14 @@ import {
 } from "@/components/ui/command";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Supplier } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 function SupplierPage() {
   const supplierTypes = [
-    { label: "CJ", value: "CJ" },
-    { label: "AutoDS", value: "AUTODS" },
-    { label: "AliExpress", value: "ALIEXPRESS" },
-    { label: "Manual", value: "MANUAL" },
+    { label: "Shopee", value: "SHOPEE" },
+    { label: "Lazada", value: "LAZADA" },
+    { label: "TikTok Shop", value: "TIKTOK" },
+    { label: "Owned / Manual Inventory", value: "MANUAL" },
   ];
 
   const [open, setOpen] = useState(false);
@@ -46,6 +47,7 @@ function SupplierPage() {
   const [externalId, setExternalId] = useState("");
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutateAsync: createSupplier, isPending: isSaving } = useMutation({
     mutationFn: async () => {
@@ -141,7 +143,10 @@ function SupplierPage() {
               suppliers.map((supplier: Supplier) => (
                 <tr
                   key={supplier.id}
-                  className="border-b hover:bg-muted/50 transition"
+                  className="border-b hover:bg-muted/50 transition cursor-pointer"
+                  onClick={() => {
+                    router.push(`/seller/products/import/${supplier.type.toLowerCase()}`);
+                  }}
                 >
                   <td className="p-3">{supplier.name}</td>
                   <td className="p-3 text-center">{supplier.type}</td>

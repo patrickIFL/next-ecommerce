@@ -82,10 +82,10 @@ export type ProductType = (typeof ProductType)[keyof typeof ProductType]
 
 
 export const SupplierType: {
-  CJ: 'CJ',
-  AUTODS: 'AUTODS',
-  ALIEXPRESS: 'ALIEXPRESS',
-  MANUAL: 'MANUAL'
+  SHOPEE: 'SHOPEE',
+  LAZADA: 'LAZADA',
+  TIKTOK: 'TIKTOK',
+  OWNED: 'OWNED'
 };
 
 export type SupplierType = (typeof SupplierType)[keyof typeof SupplierType]
@@ -4435,11 +4435,7 @@ export namespace Prisma {
     isFeatured: boolean | null
     isOnSale: boolean | null
     supplierId: string | null
-    cjProductId: string | null
-    autoDsProductId: string | null
     costPrice: number | null
-    currency: string | null
-    lastSyncedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4460,11 +4456,7 @@ export namespace Prisma {
     isFeatured: boolean | null
     isOnSale: boolean | null
     supplierId: string | null
-    cjProductId: string | null
-    autoDsProductId: string | null
     costPrice: number | null
-    currency: string | null
-    lastSyncedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4488,12 +4480,7 @@ export namespace Prisma {
     isOnSale: number
     attributes: number
     supplierId: number
-    cjProductId: number
-    autoDsProductId: number
     costPrice: number
-    currency: number
-    lastSyncedAt: number
-    supplierPayload: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4530,11 +4517,7 @@ export namespace Prisma {
     isFeatured?: true
     isOnSale?: true
     supplierId?: true
-    cjProductId?: true
-    autoDsProductId?: true
     costPrice?: true
-    currency?: true
-    lastSyncedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4555,11 +4538,7 @@ export namespace Prisma {
     isFeatured?: true
     isOnSale?: true
     supplierId?: true
-    cjProductId?: true
-    autoDsProductId?: true
     costPrice?: true
-    currency?: true
-    lastSyncedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4583,12 +4562,7 @@ export namespace Prisma {
     isOnSale?: true
     attributes?: true
     supplierId?: true
-    cjProductId?: true
-    autoDsProductId?: true
     costPrice?: true
-    currency?: true
-    lastSyncedAt?: true
-    supplierPayload?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4699,12 +4673,7 @@ export namespace Prisma {
     isOnSale: boolean | null
     attributes: string[]
     supplierId: string | null
-    cjProductId: string | null
-    autoDsProductId: string | null
     costPrice: number | null
-    currency: string
-    lastSyncedAt: Date | null
-    supplierPayload: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: ProductCountAggregateOutputType | null
@@ -4747,12 +4716,7 @@ export namespace Prisma {
     isOnSale?: boolean
     attributes?: boolean
     supplierId?: boolean
-    cjProductId?: boolean
-    autoDsProductId?: boolean
     costPrice?: boolean
-    currency?: boolean
-    lastSyncedAt?: boolean
-    supplierPayload?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     orders?: boolean | Product$ordersArgs<ExtArgs>
@@ -4784,12 +4748,7 @@ export namespace Prisma {
     isOnSale?: boolean
     attributes?: boolean
     supplierId?: boolean
-    cjProductId?: boolean
-    autoDsProductId?: boolean
     costPrice?: boolean
-    currency?: boolean
-    lastSyncedAt?: boolean
-    supplierPayload?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     seller?: boolean | UserDefaultArgs<ExtArgs>
@@ -4815,12 +4774,7 @@ export namespace Prisma {
     isOnSale?: boolean
     attributes?: boolean
     supplierId?: boolean
-    cjProductId?: boolean
-    autoDsProductId?: boolean
     costPrice?: boolean
-    currency?: boolean
-    lastSyncedAt?: boolean
-    supplierPayload?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     seller?: boolean | UserDefaultArgs<ExtArgs>
@@ -4846,17 +4800,12 @@ export namespace Prisma {
     isOnSale?: boolean
     attributes?: boolean
     supplierId?: boolean
-    cjProductId?: boolean
-    autoDsProductId?: boolean
     costPrice?: boolean
-    currency?: boolean
-    lastSyncedAt?: boolean
-    supplierPayload?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "description" | "category" | "brand" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "attributes" | "supplierId" | "cjProductId" | "autoDsProductId" | "costPrice" | "currency" | "lastSyncedAt" | "supplierPayload" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "description" | "category" | "brand" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "attributes" | "supplierId" | "costPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     wishlist?: boolean | Product$wishlistArgs<ExtArgs>
@@ -4906,12 +4855,7 @@ export namespace Prisma {
       isOnSale: boolean | null
       attributes: string[]
       supplierId: string | null
-      cjProductId: string | null
-      autoDsProductId: string | null
       costPrice: number | null
-      currency: string
-      lastSyncedAt: Date | null
-      supplierPayload: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["product"]>
@@ -5362,12 +5306,7 @@ export namespace Prisma {
     readonly isOnSale: FieldRef<"Product", 'Boolean'>
     readonly attributes: FieldRef<"Product", 'String[]'>
     readonly supplierId: FieldRef<"Product", 'String'>
-    readonly cjProductId: FieldRef<"Product", 'String'>
-    readonly autoDsProductId: FieldRef<"Product", 'String'>
     readonly costPrice: FieldRef<"Product", 'Int'>
-    readonly currency: FieldRef<"Product", 'String'>
-    readonly lastSyncedAt: FieldRef<"Product", 'DateTime'>
-    readonly supplierPayload: FieldRef<"Product", 'Json'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
   }
@@ -5960,10 +5899,7 @@ export namespace Prisma {
     salePrice: number | null
     stock: number | null
     imageIndex: number | null
-    cjVariantId: string | null
-    autoDsVariantId: string | null
     costPrice: number | null
-    lastSyncedAt: Date | null
   }
 
   export type ProductVariantMaxAggregateOutputType = {
@@ -5975,10 +5911,7 @@ export namespace Prisma {
     salePrice: number | null
     stock: number | null
     imageIndex: number | null
-    cjVariantId: string | null
-    autoDsVariantId: string | null
     costPrice: number | null
-    lastSyncedAt: Date | null
   }
 
   export type ProductVariantCountAggregateOutputType = {
@@ -5990,10 +5923,7 @@ export namespace Prisma {
     salePrice: number
     stock: number
     imageIndex: number
-    cjVariantId: number
-    autoDsVariantId: number
     costPrice: number
-    lastSyncedAt: number
     _all: number
   }
 
@@ -6023,10 +5953,7 @@ export namespace Prisma {
     salePrice?: true
     stock?: true
     imageIndex?: true
-    cjVariantId?: true
-    autoDsVariantId?: true
     costPrice?: true
-    lastSyncedAt?: true
   }
 
   export type ProductVariantMaxAggregateInputType = {
@@ -6038,10 +5965,7 @@ export namespace Prisma {
     salePrice?: true
     stock?: true
     imageIndex?: true
-    cjVariantId?: true
-    autoDsVariantId?: true
     costPrice?: true
-    lastSyncedAt?: true
   }
 
   export type ProductVariantCountAggregateInputType = {
@@ -6053,10 +5977,7 @@ export namespace Prisma {
     salePrice?: true
     stock?: true
     imageIndex?: true
-    cjVariantId?: true
-    autoDsVariantId?: true
     costPrice?: true
-    lastSyncedAt?: true
     _all?: true
   }
 
@@ -6155,10 +6076,7 @@ export namespace Prisma {
     salePrice: number | null
     stock: number
     imageIndex: number | null
-    cjVariantId: string | null
-    autoDsVariantId: string | null
     costPrice: number | null
-    lastSyncedAt: Date | null
     _count: ProductVariantCountAggregateOutputType | null
     _avg: ProductVariantAvgAggregateOutputType | null
     _sum: ProductVariantSumAggregateOutputType | null
@@ -6189,10 +6107,7 @@ export namespace Prisma {
     salePrice?: boolean
     stock?: boolean
     imageIndex?: boolean
-    cjVariantId?: boolean
-    autoDsVariantId?: boolean
     costPrice?: boolean
-    lastSyncedAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     cartItems?: boolean | ProductVariant$cartItemsArgs<ExtArgs>
     orderItems?: boolean | ProductVariant$orderItemsArgs<ExtArgs>
@@ -6209,10 +6124,7 @@ export namespace Prisma {
     salePrice?: boolean
     stock?: boolean
     imageIndex?: boolean
-    cjVariantId?: boolean
-    autoDsVariantId?: boolean
     costPrice?: boolean
-    lastSyncedAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -6225,10 +6137,7 @@ export namespace Prisma {
     salePrice?: boolean
     stock?: boolean
     imageIndex?: boolean
-    cjVariantId?: boolean
-    autoDsVariantId?: boolean
     costPrice?: boolean
-    lastSyncedAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productVariant"]>
 
@@ -6241,13 +6150,10 @@ export namespace Prisma {
     salePrice?: boolean
     stock?: boolean
     imageIndex?: boolean
-    cjVariantId?: boolean
-    autoDsVariantId?: boolean
     costPrice?: boolean
-    lastSyncedAt?: boolean
   }
 
-  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "name" | "sku" | "price" | "salePrice" | "stock" | "imageIndex" | "cjVariantId" | "autoDsVariantId" | "costPrice" | "lastSyncedAt", ExtArgs["result"]["productVariant"]>
+  export type ProductVariantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "name" | "sku" | "price" | "salePrice" | "stock" | "imageIndex" | "costPrice", ExtArgs["result"]["productVariant"]>
   export type ProductVariantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     cartItems?: boolean | ProductVariant$cartItemsArgs<ExtArgs>
@@ -6279,10 +6185,7 @@ export namespace Prisma {
       salePrice: number | null
       stock: number
       imageIndex: number | null
-      cjVariantId: string | null
-      autoDsVariantId: string | null
       costPrice: number | null
-      lastSyncedAt: Date | null
     }, ExtArgs["result"]["productVariant"]>
     composites: {}
   }
@@ -6718,10 +6621,7 @@ export namespace Prisma {
     readonly salePrice: FieldRef<"ProductVariant", 'Int'>
     readonly stock: FieldRef<"ProductVariant", 'Int'>
     readonly imageIndex: FieldRef<"ProductVariant", 'Int'>
-    readonly cjVariantId: FieldRef<"ProductVariant", 'String'>
-    readonly autoDsVariantId: FieldRef<"ProductVariant", 'String'>
     readonly costPrice: FieldRef<"ProductVariant", 'Int'>
-    readonly lastSyncedAt: FieldRef<"ProductVariant", 'DateTime'>
   }
     
 
@@ -11915,6 +11815,9 @@ export namespace Prisma {
     quantity: number | null
     name: string | null
     price: number | null
+    supplierOrderId: string | null
+    trackingNumber: string | null
+    fulfillmentStatus: string | null
   }
 
   export type OrderItemMaxAggregateOutputType = {
@@ -11925,6 +11828,9 @@ export namespace Prisma {
     quantity: number | null
     name: string | null
     price: number | null
+    supplierOrderId: string | null
+    trackingNumber: string | null
+    fulfillmentStatus: string | null
   }
 
   export type OrderItemCountAggregateOutputType = {
@@ -11935,6 +11841,9 @@ export namespace Prisma {
     quantity: number
     name: number
     price: number
+    supplierOrderId: number
+    trackingNumber: number
+    fulfillmentStatus: number
     _all: number
   }
 
@@ -11957,6 +11866,9 @@ export namespace Prisma {
     quantity?: true
     name?: true
     price?: true
+    supplierOrderId?: true
+    trackingNumber?: true
+    fulfillmentStatus?: true
   }
 
   export type OrderItemMaxAggregateInputType = {
@@ -11967,6 +11879,9 @@ export namespace Prisma {
     quantity?: true
     name?: true
     price?: true
+    supplierOrderId?: true
+    trackingNumber?: true
+    fulfillmentStatus?: true
   }
 
   export type OrderItemCountAggregateInputType = {
@@ -11977,6 +11892,9 @@ export namespace Prisma {
     quantity?: true
     name?: true
     price?: true
+    supplierOrderId?: true
+    trackingNumber?: true
+    fulfillmentStatus?: true
     _all?: true
   }
 
@@ -12074,6 +11992,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId: string | null
+    trackingNumber: string | null
+    fulfillmentStatus: string | null
     _count: OrderItemCountAggregateOutputType | null
     _avg: OrderItemAvgAggregateOutputType | null
     _sum: OrderItemSumAggregateOutputType | null
@@ -12103,6 +12024,9 @@ export namespace Prisma {
     quantity?: boolean
     name?: boolean
     price?: boolean
+    supplierOrderId?: boolean
+    trackingNumber?: boolean
+    fulfillmentStatus?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     variant?: boolean | OrderItem$variantArgs<ExtArgs>
@@ -12116,6 +12040,9 @@ export namespace Prisma {
     quantity?: boolean
     name?: boolean
     price?: boolean
+    supplierOrderId?: boolean
+    trackingNumber?: boolean
+    fulfillmentStatus?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     variant?: boolean | OrderItem$variantArgs<ExtArgs>
@@ -12129,6 +12056,9 @@ export namespace Prisma {
     quantity?: boolean
     name?: boolean
     price?: boolean
+    supplierOrderId?: boolean
+    trackingNumber?: boolean
+    fulfillmentStatus?: boolean
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
     variant?: boolean | OrderItem$variantArgs<ExtArgs>
@@ -12142,9 +12072,12 @@ export namespace Prisma {
     quantity?: boolean
     name?: boolean
     price?: boolean
+    supplierOrderId?: boolean
+    trackingNumber?: boolean
+    fulfillmentStatus?: boolean
   }
 
-  export type OrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "productId" | "variantId" | "quantity" | "name" | "price", ExtArgs["result"]["orderItem"]>
+  export type OrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "productId" | "variantId" | "quantity" | "name" | "price" | "supplierOrderId" | "trackingNumber" | "fulfillmentStatus", ExtArgs["result"]["orderItem"]>
   export type OrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
@@ -12176,6 +12109,9 @@ export namespace Prisma {
       quantity: number
       name: string
       price: number
+      supplierOrderId: string | null
+      trackingNumber: string | null
+      fulfillmentStatus: string | null
     }, ExtArgs["result"]["orderItem"]>
     composites: {}
   }
@@ -12609,6 +12545,9 @@ export namespace Prisma {
     readonly quantity: FieldRef<"OrderItem", 'Int'>
     readonly name: FieldRef<"OrderItem", 'String'>
     readonly price: FieldRef<"OrderItem", 'Int'>
+    readonly supplierOrderId: FieldRef<"OrderItem", 'String'>
+    readonly trackingNumber: FieldRef<"OrderItem", 'String'>
+    readonly fulfillmentStatus: FieldRef<"OrderItem", 'String'>
   }
     
 
@@ -15431,12 +15370,7 @@ export namespace Prisma {
     isOnSale: 'isOnSale',
     attributes: 'attributes',
     supplierId: 'supplierId',
-    cjProductId: 'cjProductId',
-    autoDsProductId: 'autoDsProductId',
     costPrice: 'costPrice',
-    currency: 'currency',
-    lastSyncedAt: 'lastSyncedAt',
-    supplierPayload: 'supplierPayload',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -15453,10 +15387,7 @@ export namespace Prisma {
     salePrice: 'salePrice',
     stock: 'stock',
     imageIndex: 'imageIndex',
-    cjVariantId: 'cjVariantId',
-    autoDsVariantId: 'autoDsVariantId',
-    costPrice: 'costPrice',
-    lastSyncedAt: 'lastSyncedAt'
+    costPrice: 'costPrice'
   };
 
   export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
@@ -15529,7 +15460,10 @@ export namespace Prisma {
     variantId: 'variantId',
     quantity: 'quantity',
     name: 'name',
-    price: 'price'
+    price: 'price',
+    supplierOrderId: 'supplierOrderId',
+    trackingNumber: 'trackingNumber',
+    fulfillmentStatus: 'fulfillmentStatus'
   };
 
   export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
@@ -15691,6 +15625,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json[]'
+   */
+  export type ListJsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -15701,13 +15642,6 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json[]'
-   */
-  export type ListJsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json[]'>
     
 
 
@@ -15880,12 +15814,7 @@ export namespace Prisma {
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     attributes?: StringNullableListFilter<"Product">
     supplierId?: StringNullableFilter<"Product"> | string | null
-    cjProductId?: StringNullableFilter<"Product"> | string | null
-    autoDsProductId?: StringNullableFilter<"Product"> | string | null
     costPrice?: IntNullableFilter<"Product"> | number | null
-    currency?: StringFilter<"Product"> | string
-    lastSyncedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
-    supplierPayload?: JsonNullableFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -15916,12 +15845,7 @@ export namespace Prisma {
     isOnSale?: SortOrderInput | SortOrder
     attributes?: SortOrder
     supplierId?: SortOrderInput | SortOrder
-    cjProductId?: SortOrderInput | SortOrder
-    autoDsProductId?: SortOrderInput | SortOrder
     costPrice?: SortOrderInput | SortOrder
-    currency?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
-    supplierPayload?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orders?: OrderItemOrderByRelationAggregateInput
@@ -15955,12 +15879,7 @@ export namespace Prisma {
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     attributes?: StringNullableListFilter<"Product">
     supplierId?: StringNullableFilter<"Product"> | string | null
-    cjProductId?: StringNullableFilter<"Product"> | string | null
-    autoDsProductId?: StringNullableFilter<"Product"> | string | null
     costPrice?: IntNullableFilter<"Product"> | number | null
-    currency?: StringFilter<"Product"> | string
-    lastSyncedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
-    supplierPayload?: JsonNullableFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     orders?: OrderItemListRelationFilter
@@ -15991,12 +15910,7 @@ export namespace Prisma {
     isOnSale?: SortOrderInput | SortOrder
     attributes?: SortOrder
     supplierId?: SortOrderInput | SortOrder
-    cjProductId?: SortOrderInput | SortOrder
-    autoDsProductId?: SortOrderInput | SortOrder
     costPrice?: SortOrderInput | SortOrder
-    currency?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
-    supplierPayload?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -16028,12 +15942,7 @@ export namespace Prisma {
     isOnSale?: BoolNullableWithAggregatesFilter<"Product"> | boolean | null
     attributes?: StringNullableListFilter<"Product">
     supplierId?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    cjProductId?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    autoDsProductId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     costPrice?: IntNullableWithAggregatesFilter<"Product"> | number | null
-    currency?: StringWithAggregatesFilter<"Product"> | string
-    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
-    supplierPayload?: JsonNullableWithAggregatesFilter<"Product">
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
   }
@@ -16050,10 +15959,7 @@ export namespace Prisma {
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
-    cjVariantId?: StringNullableFilter<"ProductVariant"> | string | null
-    autoDsVariantId?: StringNullableFilter<"ProductVariant"> | string | null
     costPrice?: IntNullableFilter<"ProductVariant"> | number | null
-    lastSyncedAt?: DateTimeNullableFilter<"ProductVariant"> | Date | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     cartItems?: CartItemListRelationFilter
     orderItems?: OrderItemListRelationFilter
@@ -16069,10 +15975,7 @@ export namespace Prisma {
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
     imageIndex?: SortOrderInput | SortOrder
-    cjVariantId?: SortOrderInput | SortOrder
-    autoDsVariantId?: SortOrderInput | SortOrder
     costPrice?: SortOrderInput | SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
     cartItems?: CartItemOrderByRelationAggregateInput
     orderItems?: OrderItemOrderByRelationAggregateInput
@@ -16091,10 +15994,7 @@ export namespace Prisma {
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
-    cjVariantId?: StringNullableFilter<"ProductVariant"> | string | null
-    autoDsVariantId?: StringNullableFilter<"ProductVariant"> | string | null
     costPrice?: IntNullableFilter<"ProductVariant"> | number | null
-    lastSyncedAt?: DateTimeNullableFilter<"ProductVariant"> | Date | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     cartItems?: CartItemListRelationFilter
     orderItems?: OrderItemListRelationFilter
@@ -16110,10 +16010,7 @@ export namespace Prisma {
     salePrice?: SortOrderInput | SortOrder
     stock?: SortOrder
     imageIndex?: SortOrderInput | SortOrder
-    cjVariantId?: SortOrderInput | SortOrder
-    autoDsVariantId?: SortOrderInput | SortOrder
     costPrice?: SortOrderInput | SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
     _count?: ProductVariantCountOrderByAggregateInput
     _avg?: ProductVariantAvgOrderByAggregateInput
     _max?: ProductVariantMaxOrderByAggregateInput
@@ -16133,10 +16030,7 @@ export namespace Prisma {
     salePrice?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
     stock?: IntWithAggregatesFilter<"ProductVariant"> | number
     imageIndex?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
-    cjVariantId?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
-    autoDsVariantId?: StringNullableWithAggregatesFilter<"ProductVariant"> | string | null
     costPrice?: IntNullableWithAggregatesFilter<"ProductVariant"> | number | null
-    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"ProductVariant"> | Date | string | null
   }
 
   export type WishlistWhereInput = {
@@ -16479,6 +16373,9 @@ export namespace Prisma {
     quantity?: IntFilter<"OrderItem"> | number
     name?: StringFilter<"OrderItem"> | string
     price?: IntFilter<"OrderItem"> | number
+    supplierOrderId?: StringNullableFilter<"OrderItem"> | string | null
+    trackingNumber?: StringNullableFilter<"OrderItem"> | string | null
+    fulfillmentStatus?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     variant?: XOR<ProductVariantNullableScalarRelationFilter, ProductVariantWhereInput> | null
@@ -16492,6 +16389,9 @@ export namespace Prisma {
     quantity?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    supplierOrderId?: SortOrderInput | SortOrder
+    trackingNumber?: SortOrderInput | SortOrder
+    fulfillmentStatus?: SortOrderInput | SortOrder
     order?: OrderOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
     variant?: ProductVariantOrderByWithRelationInput
@@ -16508,6 +16408,9 @@ export namespace Prisma {
     quantity?: IntFilter<"OrderItem"> | number
     name?: StringFilter<"OrderItem"> | string
     price?: IntFilter<"OrderItem"> | number
+    supplierOrderId?: StringNullableFilter<"OrderItem"> | string | null
+    trackingNumber?: StringNullableFilter<"OrderItem"> | string | null
+    fulfillmentStatus?: StringNullableFilter<"OrderItem"> | string | null
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     variant?: XOR<ProductVariantNullableScalarRelationFilter, ProductVariantWhereInput> | null
@@ -16521,6 +16424,9 @@ export namespace Prisma {
     quantity?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    supplierOrderId?: SortOrderInput | SortOrder
+    trackingNumber?: SortOrderInput | SortOrder
+    fulfillmentStatus?: SortOrderInput | SortOrder
     _count?: OrderItemCountOrderByAggregateInput
     _avg?: OrderItemAvgOrderByAggregateInput
     _max?: OrderItemMaxOrderByAggregateInput
@@ -16539,6 +16445,9 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"OrderItem"> | number
     name?: StringWithAggregatesFilter<"OrderItem"> | string
     price?: IntWithAggregatesFilter<"OrderItem"> | number
+    supplierOrderId?: StringNullableWithAggregatesFilter<"OrderItem"> | string | null
+    trackingNumber?: StringNullableWithAggregatesFilter<"OrderItem"> | string | null
+    fulfillmentStatus?: StringNullableWithAggregatesFilter<"OrderItem"> | string | null
   }
 
   export type ShippingAddressWhereInput = {
@@ -16873,12 +16782,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -16909,12 +16813,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -16941,12 +16840,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -16977,12 +16871,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -17011,12 +16900,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17038,12 +16922,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17067,12 +16946,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17085,10 +16959,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     product: ProductCreateNestedOneWithoutVariantsInput
     cartItems?: CartItemCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemCreateNestedManyWithoutVariantInput
@@ -17104,10 +16975,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     cartItems?: CartItemUncheckedCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationUncheckedCreateNestedManyWithoutVariantInput
@@ -17121,10 +16989,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
     cartItems?: CartItemUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUpdateManyWithoutVariantNestedInput
@@ -17140,10 +17005,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cartItems?: CartItemUncheckedUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUncheckedUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUncheckedUpdateManyWithoutVariantNestedInput
@@ -17158,10 +17020,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
   }
 
   export type ProductVariantUpdateManyMutationInput = {
@@ -17172,10 +17031,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProductVariantUncheckedUpdateManyInput = {
@@ -17187,10 +17043,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type WishlistCreateInput = {
@@ -17533,6 +17386,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
     product: ProductCreateNestedOneWithoutOrdersInput
     variant?: ProductVariantCreateNestedOneWithoutOrderItemsInput
@@ -17546,6 +17402,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemUpdateInput = {
@@ -17553,6 +17412,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
     product?: ProductUpdateOneRequiredWithoutOrdersNestedInput
     variant?: ProductVariantUpdateOneWithoutOrderItemsNestedInput
@@ -17566,6 +17428,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemCreateManyInput = {
@@ -17576,6 +17441,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemUpdateManyMutationInput = {
@@ -17583,6 +17451,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemUncheckedUpdateManyInput = {
@@ -17593,6 +17464,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ShippingAddressCreateInput = {
@@ -18038,40 +17912,6 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
   export type OrderItemListRelationFilter = {
     every?: OrderItemWhereInput
     some?: OrderItemWhereInput
@@ -18131,12 +17971,7 @@ export namespace Prisma {
     isOnSale?: SortOrder
     attributes?: SortOrder
     supplierId?: SortOrder
-    cjProductId?: SortOrder
-    autoDsProductId?: SortOrder
     costPrice?: SortOrder
-    currency?: SortOrder
-    lastSyncedAt?: SortOrder
-    supplierPayload?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18164,11 +17999,7 @@ export namespace Prisma {
     isFeatured?: SortOrder
     isOnSale?: SortOrder
     supplierId?: SortOrder
-    cjProductId?: SortOrder
-    autoDsProductId?: SortOrder
     costPrice?: SortOrder
-    currency?: SortOrder
-    lastSyncedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18189,11 +18020,7 @@ export namespace Prisma {
     isFeatured?: SortOrder
     isOnSale?: SortOrder
     supplierId?: SortOrder
-    cjProductId?: SortOrder
-    autoDsProductId?: SortOrder
     costPrice?: SortOrder
-    currency?: SortOrder
-    lastSyncedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18247,46 +18074,6 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -18312,10 +18099,7 @@ export namespace Prisma {
     salePrice?: SortOrder
     stock?: SortOrder
     imageIndex?: SortOrder
-    cjVariantId?: SortOrder
-    autoDsVariantId?: SortOrder
     costPrice?: SortOrder
-    lastSyncedAt?: SortOrder
   }
 
   export type ProductVariantAvgOrderByAggregateInput = {
@@ -18335,10 +18119,7 @@ export namespace Prisma {
     salePrice?: SortOrder
     stock?: SortOrder
     imageIndex?: SortOrder
-    cjVariantId?: SortOrder
-    autoDsVariantId?: SortOrder
     costPrice?: SortOrder
-    lastSyncedAt?: SortOrder
   }
 
   export type ProductVariantMinOrderByAggregateInput = {
@@ -18350,10 +18131,7 @@ export namespace Prisma {
     salePrice?: SortOrder
     stock?: SortOrder
     imageIndex?: SortOrder
-    cjVariantId?: SortOrder
-    autoDsVariantId?: SortOrder
     costPrice?: SortOrder
-    lastSyncedAt?: SortOrder
   }
 
   export type ProductVariantSumOrderByAggregateInput = {
@@ -18603,6 +18381,9 @@ export namespace Prisma {
     quantity?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    supplierOrderId?: SortOrder
+    trackingNumber?: SortOrder
+    fulfillmentStatus?: SortOrder
   }
 
   export type OrderItemAvgOrderByAggregateInput = {
@@ -18618,6 +18399,9 @@ export namespace Prisma {
     quantity?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    supplierOrderId?: SortOrder
+    trackingNumber?: SortOrder
+    fulfillmentStatus?: SortOrder
   }
 
   export type OrderItemMinOrderByAggregateInput = {
@@ -18628,6 +18412,9 @@ export namespace Prisma {
     quantity?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    supplierOrderId?: SortOrder
+    trackingNumber?: SortOrder
+    fulfillmentStatus?: SortOrder
   }
 
   export type OrderItemSumOrderByAggregateInput = {
@@ -18673,6 +18460,29 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type StockReservationCountOrderByAggregateInput = {
     id?: SortOrder
@@ -18717,6 +18527,32 @@ export namespace Prisma {
 
   export type StockReservationSumOrderByAggregateInput = {
     quantity?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type ProductCreateNestedManyWithoutSellerInput = {
@@ -19156,10 +18992,6 @@ export namespace Prisma {
   export type ProductUpdateattributesInput = {
     set?: string[]
     push?: string | string[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type OrderItemUpdateManyWithoutProductNestedInput = {
@@ -19954,17 +19786,6 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -20018,43 +19839,6 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -20081,6 +19865,29 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type ProductCreateWithoutSellerInput = {
     id?: string
@@ -20099,12 +19906,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -20133,12 +19935,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -20364,12 +20161,7 @@ export namespace Prisma {
     isOnSale?: BoolNullableFilter<"Product"> | boolean | null
     attributes?: StringNullableListFilter<"Product">
     supplierId?: StringNullableFilter<"Product"> | string | null
-    cjProductId?: StringNullableFilter<"Product"> | string | null
-    autoDsProductId?: StringNullableFilter<"Product"> | string | null
     costPrice?: IntNullableFilter<"Product"> | number | null
-    currency?: StringFilter<"Product"> | string
-    lastSyncedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
-    supplierPayload?: JsonNullableFilter<"Product">
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
@@ -20547,12 +20339,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -20581,12 +20368,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -20627,6 +20409,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
     variant?: ProductVariantCreateNestedOneWithoutOrderItemsInput
   }
@@ -20638,6 +20423,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemCreateOrConnectWithoutProductInput = {
@@ -20777,10 +20565,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     cartItems?: CartItemCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationCreateNestedManyWithoutVariantInput
@@ -20794,10 +20579,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     cartItems?: CartItemUncheckedCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationUncheckedCreateNestedManyWithoutVariantInput
@@ -20861,6 +20643,9 @@ export namespace Prisma {
     quantity?: IntFilter<"OrderItem"> | number
     name?: StringFilter<"OrderItem"> | string
     price?: IntFilter<"OrderItem"> | number
+    supplierOrderId?: StringNullableFilter<"OrderItem"> | string | null
+    trackingNumber?: StringNullableFilter<"OrderItem"> | string | null
+    fulfillmentStatus?: StringNullableFilter<"OrderItem"> | string | null
   }
 
   export type WishlistUpsertWithWhereUniqueWithoutProductInput = {
@@ -20994,10 +20779,7 @@ export namespace Prisma {
     salePrice?: IntNullableFilter<"ProductVariant"> | number | null
     stock?: IntFilter<"ProductVariant"> | number
     imageIndex?: IntNullableFilter<"ProductVariant"> | number | null
-    cjVariantId?: StringNullableFilter<"ProductVariant"> | string | null
-    autoDsVariantId?: StringNullableFilter<"ProductVariant"> | string | null
     costPrice?: IntNullableFilter<"ProductVariant"> | number | null
-    lastSyncedAt?: DateTimeNullableFilter<"ProductVariant"> | Date | string | null
   }
 
   export type SupplierUpsertWithoutProductsInput = {
@@ -21044,12 +20826,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -21079,12 +20856,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -21131,6 +20903,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
     order: OrderCreateNestedOneWithoutItemsInput
     product: ProductCreateNestedOneWithoutOrdersInput
   }
@@ -21142,6 +20917,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemCreateOrConnectWithoutVariantInput = {
@@ -21216,12 +20994,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -21251,12 +21024,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -21363,12 +21131,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -21398,12 +21161,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -21484,12 +21242,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -21519,12 +21272,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -21583,12 +21331,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -21618,12 +21361,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -21645,10 +21383,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     product: ProductCreateNestedOneWithoutVariantsInput
     orderItems?: OrderItemCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationCreateNestedManyWithoutVariantInput
@@ -21663,10 +21398,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationUncheckedCreateNestedManyWithoutVariantInput
   }
@@ -21743,12 +21475,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -21778,12 +21505,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -21811,10 +21533,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
     orderItems?: OrderItemUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUpdateManyWithoutVariantNestedInput
@@ -21829,10 +21548,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orderItems?: OrderItemUncheckedUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUncheckedUpdateManyWithoutVariantNestedInput
   }
@@ -21906,6 +21622,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
     product: ProductCreateNestedOneWithoutOrdersInput
     variant?: ProductVariantCreateNestedOneWithoutOrderItemsInput
   }
@@ -21917,6 +21636,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemCreateOrConnectWithoutOrderInput = {
@@ -22291,12 +22013,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistCreateNestedManyWithoutProductInput
@@ -22326,12 +22043,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     wishlist?: WishlistUncheckedCreateNestedManyWithoutProductInput
@@ -22353,10 +22065,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     product: ProductCreateNestedOneWithoutVariantsInput
     cartItems?: CartItemCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationCreateNestedManyWithoutVariantInput
@@ -22371,10 +22080,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     cartItems?: CartItemUncheckedCreateNestedManyWithoutVariantInput
     stockReservations?: StockReservationUncheckedCreateNestedManyWithoutVariantInput
   }
@@ -22447,12 +22153,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUpdateManyWithoutProductNestedInput
@@ -22482,12 +22183,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wishlist?: WishlistUncheckedUpdateManyWithoutProductNestedInput
@@ -22515,10 +22211,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
     cartItems?: CartItemUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUpdateManyWithoutVariantNestedInput
@@ -22533,10 +22226,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cartItems?: CartItemUncheckedUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUncheckedUpdateManyWithoutVariantNestedInput
   }
@@ -22680,12 +22370,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemCreateNestedManyWithoutProductInput
@@ -22715,12 +22400,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderItemUncheckedCreateNestedManyWithoutProductInput
@@ -22742,10 +22422,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     product: ProductCreateNestedOneWithoutVariantsInput
     cartItems?: CartItemCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemCreateNestedManyWithoutVariantInput
@@ -22760,10 +22437,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
     cartItems?: CartItemUncheckedCreateNestedManyWithoutVariantInput
     orderItems?: OrderItemUncheckedCreateNestedManyWithoutVariantInput
   }
@@ -22801,12 +22475,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -22836,12 +22505,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -22869,10 +22533,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutVariantsNestedInput
     cartItems?: CartItemUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUpdateManyWithoutVariantNestedInput
@@ -22887,10 +22548,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cartItems?: CartItemUncheckedUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUncheckedUpdateManyWithoutVariantNestedInput
   }
@@ -22913,12 +22571,7 @@ export namespace Prisma {
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
     supplierId?: string | null
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22996,12 +22649,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -23030,12 +22678,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -23063,12 +22706,7 @@ export namespace Prisma {
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
     supplierId?: NullableStringFieldUpdateOperationsInput | string | null
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23265,12 +22903,7 @@ export namespace Prisma {
     isFeatured?: boolean
     isOnSale?: boolean | null
     attributes?: ProductCreateattributesInput | string[]
-    cjProductId?: string | null
-    autoDsProductId?: string | null
     costPrice?: number | null
-    currency?: string
-    lastSyncedAt?: Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23292,12 +22925,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUpdateManyWithoutProductNestedInput
@@ -23326,12 +22954,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
@@ -23359,12 +22982,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     isOnSale?: NullableBoolFieldUpdateOperationsInput | boolean | null
     attributes?: ProductUpdateattributesInput | string[]
-    cjProductId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsProductId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    currency?: StringFieldUpdateOperationsInput | string
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    supplierPayload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23376,6 +22994,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type WishlistCreateManyProductInput = {
@@ -23414,10 +23035,7 @@ export namespace Prisma {
     salePrice?: number | null
     stock: number
     imageIndex?: number | null
-    cjVariantId?: string | null
-    autoDsVariantId?: string | null
     costPrice?: number | null
-    lastSyncedAt?: Date | string | null
   }
 
   export type OrderItemUpdateWithoutProductInput = {
@@ -23425,6 +23043,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
     variant?: ProductVariantUpdateOneWithoutOrderItemsNestedInput
   }
@@ -23436,6 +23057,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemUncheckedUpdateManyWithoutProductInput = {
@@ -23445,6 +23069,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WishlistUpdateWithoutProductInput = {
@@ -23539,10 +23166,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cartItems?: CartItemUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUpdateManyWithoutVariantNestedInput
@@ -23556,10 +23180,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cartItems?: CartItemUncheckedUpdateManyWithoutVariantNestedInput
     orderItems?: OrderItemUncheckedUpdateManyWithoutVariantNestedInput
     stockReservations?: StockReservationUncheckedUpdateManyWithoutVariantNestedInput
@@ -23573,10 +23194,7 @@ export namespace Prisma {
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     imageIndex?: NullableIntFieldUpdateOperationsInput | number | null
-    cjVariantId?: NullableStringFieldUpdateOperationsInput | string | null
-    autoDsVariantId?: NullableStringFieldUpdateOperationsInput | string | null
     costPrice?: NullableIntFieldUpdateOperationsInput | number | null
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CartItemCreateManyVariantInput = {
@@ -23595,6 +23213,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type StockReservationCreateManyVariantInput = {
@@ -23641,6 +23262,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutItemsNestedInput
     product?: ProductUpdateOneRequiredWithoutOrdersNestedInput
   }
@@ -23652,6 +23276,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemUncheckedUpdateManyWithoutVariantInput = {
@@ -23661,6 +23288,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StockReservationUpdateWithoutVariantInput = {
@@ -23706,6 +23336,9 @@ export namespace Prisma {
     quantity: number
     name: string
     price: number
+    supplierOrderId?: string | null
+    trackingNumber?: string | null
+    fulfillmentStatus?: string | null
   }
 
   export type OrderItemUpdateWithoutOrderInput = {
@@ -23713,6 +23346,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
     product?: ProductUpdateOneRequiredWithoutOrdersNestedInput
     variant?: ProductVariantUpdateOneWithoutOrderItemsNestedInput
   }
@@ -23724,6 +23360,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
@@ -23733,6 +23372,9 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+    supplierOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fulfillmentStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderCreateManyShippingAddressInput = {

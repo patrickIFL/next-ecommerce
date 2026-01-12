@@ -31,12 +31,11 @@ enum ProductType {
   VARIATION
 }
 
-// variables for dropshipping
 enum SupplierType {
-  CJ
-  AUTODS
-  ALIEXPRESS
-  MANUAL
+  SHOPEE
+  LAZADA
+  TIKTOK
+  OWNED
 }
 
 model Supplier {
@@ -71,17 +70,8 @@ model Product {
 
   supplierId String?
 
-  // External references
-  cjProductId     String?
-  autoDsProductId String?
-
   // Pricing control
   costPrice Int? // what YOU pay supplier
-  currency  String @default("USD")
-
-  // Sync & automation
-  lastSyncedAt    DateTime?
-  supplierPayload Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -111,15 +101,8 @@ model ProductVariant {
   stock      Int
   imageIndex Int?
 
-  // External references
-  cjVariantId     String?
-  autoDsVariantId String?
-
   // Supplier cost
   costPrice Int?
-
-  // Sync
-  lastSyncedAt DateTime?
 
   product           Product            @relation(fields: [productId], references: [id])
   cartItems         CartItem[]
@@ -216,10 +199,14 @@ model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
   productId String
-  variantId String? // 👈 KEY ADDITION
+  variantId String?
   quantity  Int
   name      String
   price     Int
+
+  supplierOrderId   String?
+  trackingNumber    String?
+  fulfillmentStatus String?
 
   order   Order           @relation(fields: [orderId], references: [id])
   product Product         @relation(fields: [productId], references: [id])

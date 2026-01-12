@@ -33,10 +33,10 @@ enum ProductType {
 
 
 enum SupplierType {
-  CJ
-  AUTODS
-  ALIEXPRESS
-  MANUAL
+  SHOPEE
+  LAZADA
+  TIKTOK
+  OWNED
 }
 
 model Supplier {
@@ -71,17 +71,8 @@ model Product {
 
   supplierId String?
 
-  // External references
-  cjProductId     String?
-  autoDsProductId String?
-
   // Pricing control
   costPrice Int? // what YOU pay supplier
-  currency  String @default("USD")
-
-  // Sync & automation
-  lastSyncedAt    DateTime?
-  supplierPayload Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -99,8 +90,6 @@ model Product {
   @@index([sellerId])
   @@index([category])
   @@index([search_keys], type: Gin)
-  @@index([cjProductId])
-  @@index([autoDsProductId])
 }
 
 model ProductVariant {
@@ -113,18 +102,8 @@ model ProductVariant {
   stock      Int
   imageIndex Int?
 
-  // External references
-  cjVariantId     String?
-  autoDsVariantId String?
-
-  currency String @default("USD")
-
-
   // Supplier cost
   costPrice Int?
-
-  // Sync
-  lastSyncedAt DateTime?
 
   product           Product            @relation(fields: [productId], references: [id])
   cartItems         CartItem[]
@@ -132,8 +111,6 @@ model ProductVariant {
   stockReservations StockReservation[]
 
   @@index([productId])
-  @@index([cjVariantId])
-  @@index([autoDsVariantId])
 }
 
 model Wishlist {
