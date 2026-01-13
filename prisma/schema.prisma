@@ -54,6 +54,7 @@ model Product {
   name        String
   description String?
   specs       String?
+  desc_img    String[] @default([])
   
   category    String   @default("Uncategorized")
   brand       String   @default("Generic")
@@ -154,7 +155,6 @@ enum ShippingStatus {
   toReceive
   toRate
 }
-
 model Order {
   id                String @id @default(cuid())
   userId            String
@@ -174,7 +174,6 @@ model Order {
 
   @@index([userId])
 }
-
 model Payment {
   id                         String   @id @default(cuid())
   userId                     String

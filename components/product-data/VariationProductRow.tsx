@@ -38,7 +38,7 @@ function VariationProductRow({ product }: Props) {
         <td className="py-3">
           <div className="relative rounded w-fit mx-auto">
             <div className="flex items-center justify-center gap-2">
-              <div className="relative ml-6 bg-amber-500">
+              <div className="relative ml-6">
                 <Image
                   src={imageSrc}
                   alt="Product Image"
