@@ -23,12 +23,12 @@ import { useMutation } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useVariationModal } from "@/hooks/useVariationModal";
-import { ProductVariation } from "@/hooks/useVariationModal";
 import { toast } from "react-hot-toast";
 import { VariationModal } from "@/components/seller/VariationModal";
 import BrandComboBox from "@/components/common/BrandComboBox";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { useProductVariations } from "@/hooks/useProductVariations";
+import { Variation } from "@/lib/types";
 
 const AddProduct = () => {
   // Value States
@@ -69,7 +69,7 @@ const AddProduct = () => {
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
 
-  const { generate } = useProductVariations<ProductVariation>();
+  const { generate } = useProductVariations<Variation>();
 
 const handleGenerateVariations = async () => {
   setisGeneratingVariations(true);
