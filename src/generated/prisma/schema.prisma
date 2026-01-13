@@ -253,3 +253,44 @@ model StockReservation {
 
   @@index([variantId])
 }
+
+enum BannerType {
+  CONTENT
+  RESPONSIVE_IMAGE
+}
+
+enum ImageFormat {
+  PNG
+  JPG
+  WEBP
+}
+
+model Banner {
+  id Int @id @default(autoincrement())
+
+  /// Basic metadata
+  type        BannerType
+  imageFormat ImageFormat
+
+  /// Content banner fields
+  title       String? @db.VarChar(255)
+  offer       String? @db.VarChar(255)
+  buttonText1 String? @db.VarChar(100)
+  buttonText2 String? @db.VarChar(100)
+  imgSrc      String? @db.Text
+
+  /// Responsive image banner fields
+  desktopImg String? @db.Text
+  tabletImg  String? @db.Text
+  mobileImg  String? @db.Text
+
+  /// Control fields
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  /// Auditing
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}

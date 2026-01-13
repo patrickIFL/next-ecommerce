@@ -262,6 +262,24 @@ exports.Prisma.StockReservationScalarFieldEnum = {
   meta: 'meta'
 };
 
+exports.Prisma.BannerScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  imageFormat: 'imageFormat',
+  title: 'title',
+  offer: 'offer',
+  buttonText1: 'buttonText1',
+  buttonText2: 'buttonText2',
+  imgSrc: 'imgSrc',
+  desktopImg: 'desktopImg',
+  tabletImg: 'tabletImg',
+  mobileImg: 'mobileImg',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -299,6 +317,17 @@ exports.ProductType = exports.$Enums.ProductType = {
   VARIATION: 'VARIATION'
 };
 
+exports.BannerType = exports.$Enums.BannerType = {
+  CONTENT: 'CONTENT',
+  RESPONSIVE_IMAGE: 'RESPONSIVE_IMAGE'
+};
+
+exports.ImageFormat = exports.$Enums.ImageFormat = {
+  PNG: 'PNG',
+  JPG: 'JPG',
+  WEBP: 'WEBP'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Supplier: 'Supplier',
@@ -310,7 +339,8 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   OrderItem: 'OrderItem',
   ShippingAddress: 'ShippingAddress',
-  StockReservation: 'StockReservation'
+  StockReservation: 'StockReservation',
+  Banner: 'Banner'
 };
 
 /**
