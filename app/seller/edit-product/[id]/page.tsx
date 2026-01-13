@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Activity, useEffect, useState } from "react";
 import Image from "next/image";
@@ -36,7 +37,6 @@ import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { Variation } from "@/lib/types";
 import { useProductVariations } from "@/hooks/useProductVariations";
-import { Variation } from "@/lib/types";
 /* ===================================================== */
 
 const EditProduct = () => {
