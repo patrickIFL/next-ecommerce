@@ -1,25 +1,17 @@
 "use client";
+import { Variation } from "@/lib/types";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { useState } from "react";
 
-export type ProductVariation = {
-name: string;
-sku: string;
-price: string;
-salePrice: string;
-stock: string;
-imageIndex: number;
-};
-
 export function useVariationModal() {
-  const [generatedVariations, setGeneratedVariations] = useState<ProductVariation[]>([]);
+  const [generatedVariations, setGeneratedVariations] = useState<Variation[]>([]);
   const [open, setOpen] = useState(false);
 
   const confirmVariations = (confirmed: any[]) => {
     const cleaned = confirmed.map(({ isNew, ...rest }) => rest);
-    setGeneratedVariations(cleaned as ProductVariation[]);
+    setGeneratedVariations(cleaned as Variation[]);
   };
 
   return {

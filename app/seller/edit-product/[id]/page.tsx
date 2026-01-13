@@ -36,8 +36,7 @@ import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { Variation } from "@/lib/types";
 import { useProductVariations } from "@/hooks/useProductVariations";
-import { ProductVariation } from "@/hooks/useVariationModal";
-
+import { Variation } from "@/lib/types";
 /* ===================================================== */
 
 const EditProduct = () => {
@@ -121,8 +120,9 @@ const EditProduct = () => {
       setVariations(
         product.variants.map((v: any) => ({
           ...v,
-          price: v.price / 100,
-          salePrice: v.salePrice ? v.salePrice / 100 : "",
+          price: String(v.price / 100),
+          salePrice: v.salePrice ? String(v.salePrice / 100) : null,
+          stock: String(v.stock),
         }))
       );
     }
@@ -143,26 +143,25 @@ const EditProduct = () => {
 
   /* ===================== VARIATION GENERATOR ===================== */
 
-  const { generate } = useProductVariations<ProductVariation>();
+  const { generate } = useProductVariations<Variation>(); 
 
-const handleGenerateVariations = async () => {
-  await generate({
-    variationA,
-    variationB,
-    productName: name,
-    existing: finalVariations.length ? finalVariations : variations,
-    markAsNew: true,
-    onGenerated: (merged) => {
-      variationModal.openEdit(merged);
-      setFinalVariations(merged);
-    },
-  });
+  const handleGenerateVariations = async () => {
+    await generate({
+      variationA,
+      variationB,
+      productName: name,
+      existing: finalVariations.length ? finalVariations : variations,
+      markAsNew: true,
+      onGenerated: (merged) => {
+        variationModal.openEdit(merged);
+        setFinalVariations(merged);
+      },
+    });
 
-  setVariationA("");
-  setVariationB("");
-  setAddingNewVariations(false);
-};
-
+    setVariationA("");
+    setVariationB("");
+    setAddingNewVariations(false);
+  };
 
   /* ===================== VALIDATION ===================== */
 

@@ -5,9 +5,10 @@ export interface BaseVariation {
   name: string;
   sku: string;
   price: string;
-  salePrice: string;
+  salePrice?: string | null;
   stock: string;
   imageIndex: number;
+  isNew?: boolean;
 }
 
 interface GenerateOptions<T extends BaseVariation> {

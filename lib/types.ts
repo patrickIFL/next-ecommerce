@@ -13,15 +13,16 @@ export interface BaseProduct {
   isOnSale: boolean;
 }
 
-export interface BaseVariant {
+export interface PersistedVariant {
   id: string;
   name: string;
-  price?: number | null;
-  salePrice?: number | null;
+  price: number | null;
+  salePrice: number | null;
   stock: number;
   imageIndex?: number | null;
   costPrice: number | null;
 }
+
 
 export type Pagination = {
   page: number;
@@ -41,7 +42,7 @@ export interface CartItem {
   id: string;
   quantity: number;
   product: BaseProduct;
-  variant?: BaseVariant | null;
+  variant?: PersistedVariant | null;
 }
 
 export interface AddToCartPayload {
@@ -58,9 +59,10 @@ export interface AddToCartPayloadWithImage extends AddToCartPayload {
 // Product Types
 // ==========================
 
-export interface Variant extends BaseVariant {
+export interface Variant extends PersistedVariant {
   imageIndex: number | null;
 }
+
 
 export interface Product {
   id: string;
@@ -98,12 +100,16 @@ export type Variation = {
   id?: string;
   name: string;
   sku: string;
-  price: number | string;
-  salePrice: number | string | null;
-  stock: number | string;
+
+  // MUST be string-only
+  price: string;
+  salePrice?: string | null;
+  stock: string;
+
   imageIndex: number;
   isNew?: boolean;
 };
+
 
 export type VariationComboBoxProps = {
   variantName: string;
