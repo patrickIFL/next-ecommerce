@@ -1,8 +1,8 @@
 "use client";
-import NavLinks from "./NavLinks";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "../theme-provider";
 import {
+  ChevronDown,
   LoaderIcon,
   Menu,
   SearchIcon,
@@ -10,6 +10,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import { Search, Loader2, ChevronsUpDown, Check } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -35,6 +36,15 @@ import { useParams, usePathname } from "next/navigation";
 import NextLogo from "../svgs/NextLogo";
 import AccordionMenu from "./AccordionMenu";
 import { useCartUI } from "@/stores/useCartUI";
+
+const CATEGORY_PRESETS = [
+  { label: "All", value: "" },
+  { label: "Electronics", value: "electronics" },
+  { label: "Fashion", value: "fashion" },
+  { label: "Home", value: "home" },
+  { label: "Beauty", value: "beauty" },
+  { label: "Sports", value: "sports" },
+];
 
 function NavBar() {
   const { isDark } = useTheme();
@@ -88,7 +98,7 @@ function NavBar() {
   // For the Nav links
   const menus = [
     {
-      mainTitle: "Shop",
+      mainTitle: "Products",
       mainLink: "#",
       menuLinks: [
         {
@@ -110,173 +120,185 @@ function NavBar() {
       ],
     },
     {
-      mainTitle: "About",
+      mainTitle: "Services",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Our Story",
+          linkName: "Video Editting",
           linkRef: "#",
         },
         {
-          linkName: "What we do",
+          linkName: "Graphic Design",
           linkRef: "#",
         },
         {
-          linkName: "Why choose us",
+          linkName: "Logo Design",
           linkRef: "#",
         },
         {
-          linkName: "Our Team",
+          linkName: "Publication Design",
+          linkRef: "#",
+        },
+        {
+          linkName: "Website Development",
           linkRef: "#",
         },
       ],
     },
     {
-      mainTitle: "Support",
+      mainTitle: "Food Delivery",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Contact Us",
+          linkName: "Jollibee",
           linkRef: "#",
         },
         {
-          linkName: "FAQs",
+          linkName: "Mcdonalds",
+          linkRef: "#",
+        },
+        {
+          linkName: "Mang Inasal",
           linkRef: "#",
         },
       ],
     },
     {
-      mainTitle: "Guides",
+      mainTitle: "Groceries",
       mainLink: "",
       menuLinks: [
         {
-          linkName: "Buying Guides",
+          linkName: "Puregold",
           linkRef: "#",
         },
         {
-          linkName: "Product Tips",
+          linkName: "Royal",
           linkRef: "#",
         },
         {
-          linkName: "Articles",
+          linkName: "YBC",
           linkRef: "#",
         },
       ],
     },
+    
   ];
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full h-16 flex items-center justify-between 
-  px-6 xl:px-16 border-b z-50 bg-background
+        className={`fixed top-0 left-0 w-full h-16 flex border-b z-50 bg-background
   ${isDark ? "border-gray-700" : "border-gray-300"}`}
       >
-        {/* Logo will Change Depending on Theme. */}
-        <Link href={"/"}>
-          {isDark ? <NextLogo size={150} /> : <NextLogo size={150} />}
-        </Link>
-        <div className="relative hidden lg:block">
-          <NavLinks menus={menus} />
-        </div>
-
-        <NavigationMenu
-          viewport={false}
-          className="text-foreground items-center h-full"
+        <div
+          className="flex items-center justify-between gap-2 sm:gap-4 md:gap-10 
+  px-6 xl:px-16 w-full max-w-7xl mx-auto"
         >
-          <NavigationMenuList>
-            <NavigationMenuItem asChild>
-              {/* Modify at the Bottom */}
-              <SearchBar />
-            </NavigationMenuItem>
+          {/* Logo will Change Depending on Theme. */}
+          <Link href={"/"}>
+            {isDark ? <NextLogo size={150} /> : <NextLogo size={150} />}
+          </Link>
 
-            <NavigationMenuItem className="hidden lg:flex hover:bg-accent cursor-pointer items-center rounded-full">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
-                    <AnimatedThemeToggler className="cursor-pointer" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Toggle Theme</p>
-                </TooltipContent>
-              </Tooltip>
-            </NavigationMenuItem>
+          <div className="relative hidden lg:block">
+            <NavLinks menus={menus} />
+          </div>
 
-            <NavigationMenuItem>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div
-                    onClick={() => useCartUI.getState().openCart()}
-                    className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full"
-                  >
-                    <ShoppingCart size={16} />
-                  </div>
-                </TooltipTrigger>
-
-                <TooltipContent>
-                  <p>Cart</p>
-                </TooltipContent>
-              </Tooltip>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem className="hidden lg:flex items-center p-2 rounded-full">
-              {user ? (
+          <div className="flex-1">
+            <SearchBar />
+          </div>
+          <NavigationMenu
+            viewport={false}
+            className="text-foreground items-center h-full"
+          >
+            <NavigationMenuList>
+              <NavigationMenuItem className="hidden lg:flex hover:bg-accent cursor-pointer items-center rounded-full">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div>
-                      <ClerkUserButton />
+                    <div className="hover:bg-accent cursor-pointer flex items-center p-2 rounded-full">
+                      <AnimatedThemeToggler className="cursor-pointer" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>My Account</p>
+                    <p>Toggle Theme</p>
                   </TooltipContent>
                 </Tooltip>
-              ) : (
-                <button
-                  onClick={() => openSignIn()}
-                  className="  hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
-                >
-                  <User color={"var(--color-foreground)"} size={18} />
-                  <span>Account</span>
-                </button>
-              )}
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+              </NavigationMenuItem>
 
-        {/* Mobile Hamburger/Accordion Trigger */}
-        <button
-          id="hamburger-btn"
-          className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center  "
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <AnimatePresence>
-            {isOpen ? (
-              <motion.span
-                key="close"
-                initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="absolute"
-              >
-                <X size={28} />
-              </motion.span>
-            ) : (
-              <motion.span
-                key="menu"
-                initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="absolute"
-              >
-                <Menu size={28} />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
+              <NavigationMenuItem>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      onClick={() => useCartUI.getState().openCart()}
+                      className="hidden lg:flex hover:bg-accent cursor-pointer items-center p-2 rounded-full"
+                    >
+                      <ShoppingCart size={16} />
+                    </div>
+                  </TooltipTrigger>
+
+                  <TooltipContent>
+                    <p>Cart</p>
+                  </TooltipContent>
+                </Tooltip>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem className="hidden lg:flex items-center p-2 rounded-full">
+                {user ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <ClerkUserButton />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>My Account</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <button
+                    onClick={() => openSignIn()}
+                    className="  hover:bg-accent py-1 px-3 rounded-full flex items-center gap-2 transition"
+                  >
+                    <User color={"var(--color-foreground)"} size={18} />
+                    <span>Account</span>
+                  </button>
+                )}
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Mobile Hamburger/Accordion Trigger */}
+          <button
+            id="hamburger-btn"
+            className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <AnimatePresence>
+              {isOpen ? (
+                <motion.span
+                  key="close"
+                  initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="absolute"
+                >
+                  <X size={28} />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="menu"
+                  initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="absolute"
+                >
+                  <Menu size={28} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu Overlay + Sliding Menu */}
@@ -314,17 +336,34 @@ function NavBar() {
 
 export default NavBar;
 
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
+import NavLinks from "./NavLinks";
+
 const SearchBar = () => {
   const { searchQuery, setSearchQuery } = useSearchStore();
   const { handleSearch, searchLoading } = useSearchHook();
   const params = useParams();
-  // const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     if (params.cat) {
-      setSearchQuery(params.cat);
+      setCategory(params.cat as string);
     }
-  }, [params.cat, setSearchQuery]);
+  }, [params.cat]);
 
   return (
     <form
@@ -332,28 +371,79 @@ const SearchBar = () => {
         e.preventDefault();
         handleSearch();
       }}
+      className="mx-5 sm:mx-0"
     >
-      <div className="flex h-9 items-center mx-5 sm:mx-0 gap-2 sm:min-w-sm md:min-w-md lg:min-w-full border px-3 rounded-sm">
-        <button type="submit">
-          {searchLoading ? (
-            <LoaderIcon className="animate-spin size-4 shrink-0 opacity-50 text-foreground" />
-          ) : (
-            <SearchIcon className="size-4 shrink-0 opacity-50 text-foreground" />
-          )}
-        </button>
-        <input
-          type="text"
+      <div className="flex h-10 items-center rounded-md border bg-background px-2">
+        {/* Search Button */}
+        <Button
+          type="submit"
+          size="icon"
+          variant="ghost"
           disabled={searchLoading}
-          name="search"
-          autoComplete="off"
+        >
+          {searchLoading ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Search className="size-4" />
+          )}
+        </Button>
+
+        {/* Search Input */}
+        <input
+          disabled={searchLoading}
           value={searchQuery}
           placeholder="Search a product"
-          className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden 
-          disabled:cursor-not-allowed disabled:opacity-50"
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-          }}
+          className="border-0 w-full text-sm px-2 outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
+
+        <div className="hidden sm:flex items-center">
+          {/* Divider */}
+          <div className="mx-1 h-5 w-px bg-border" />
+
+          {/* Category Combobox */}
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                role="combobox"
+                disabled={searchLoading}
+                className="h-8 px-2 text-xs gap-1"
+              >
+                {CATEGORY_PRESETS.find((c) => c.value === category)?.label ??
+                  "Category"}
+                <ChevronsUpDown className="size-3 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="w-48 p-0" align="end">
+              <Command>
+                <CommandEmpty>No category found.</CommandEmpty>
+                <CommandGroup>
+                  {CATEGORY_PRESETS.map((cat) => (
+                    <CommandItem
+                      key={cat.value}
+                      value={cat.value}
+                      onSelect={() => {
+                        setCategory(cat.value);
+                        setOpen(false);
+                        handleSearch(cat.value);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 size-4",
+                          category === cat.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {cat.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </form>
   );
