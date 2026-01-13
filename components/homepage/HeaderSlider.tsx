@@ -109,18 +109,22 @@ const HeaderSlider = () => {
    * Carousel listeners
    * ------------------------------------------- */
   useEffect(() => {
-    if (!api) return;
+  if (!api) return () => {};
 
-    const onSelect = () => {
-      setSelectedIndex(api.selectedScrollSnap());
-    };
-
-    setScrollSnaps(api.scrollSnapList());
+  const onSelect = () => {
     setSelectedIndex(api.selectedScrollSnap());
+  };
 
-    api.on("select", onSelect);
-    return () => api.off("select", onSelect);
-  }, [api]);
+  setScrollSnaps(api.scrollSnapList());
+  setSelectedIndex(api.selectedScrollSnap());
+
+  api.on("select", onSelect);
+
+  return () => {
+    api.off("select", onSelect);
+  };
+}, [api]);
+
 
   if (isLoading) {
     return <HeaderSliderSkeleton />;
