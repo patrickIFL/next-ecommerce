@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import { v2 as cloudinary } from "cloudinary";
+import { BannerType, ImageFormat } from "@/src/generated/prisma";
+
 
 /**
  * Expected FormData:
@@ -25,8 +27,29 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
-    const type = formData.get("type") as string;
-    const imageFormat = formData.get("imageFormat") as string;
+    const typeRaw = formData.get("type");
+const imageFormatRaw = formData.get("imageFormat");
+
+if (!typeRaw || !imageFormatRaw) {
+  return NextResponse.json(
+    { error: "Missing required fields" },
+    { status: 400 }
+  );
+}
+
+if (
+  !Object.values(BannerType).includes(typeRaw as BannerType) ||
+  !Object.values(ImageFormat).includes(imageFormatRaw as ImageFormat)
+) {
+  return NextResponse.json(
+    { error: "Invalid enum value" },
+    { status: 400 }
+  );
+}
+
+const type = typeRaw as BannerType;
+const imageFormat = imageFormatRaw as ImageFormat;
+
 
     if (!type || !imageFormat) {
       return NextResponse.json(
