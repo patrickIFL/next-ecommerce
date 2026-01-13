@@ -28,6 +28,7 @@ import { toast } from "react-hot-toast";
 import { VariationModal } from "@/components/seller/VariationModal";
 import BrandComboBox from "@/components/common/BrandComboBox";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
+import { useProductVariations } from "@/hooks/useProductVariations";
 
 const AddProduct = () => {
   // Value States
@@ -68,56 +69,23 @@ const AddProduct = () => {
   // Pushed up state of Variations from modal
   const [finalVariations, setFinalVariations] = useState<any[]>([]);
 
-  const handleGenerateVariations = async () => {
-    setisGeneratingVariations(true);
+  const { generate } = useProductVariations<ProductVariation>();
 
-    const listA = variationA
-      .split(",")
-      .map((v) => v.trim())
-      .filter(Boolean);
+const handleGenerateVariations = async () => {
+  setisGeneratingVariations(true);
 
-    const listB = variationB
-      ? variationB
-          .split(",")
-          .map((v) => v.trim())
-          .filter(Boolean)
-      : [];
+  await generate({
+    variationA,
+    variationB,
+    productName: name,
+    onGenerated: (results) => {
+      variationModal.setGeneratedVariations(results);
+    },
+  });
 
-    const results: ProductVariation[] = [];
-    // console.log(listA);
-    // console.log(listB);
+  setisGeneratingVariations(false);
+};
 
-    if (listB.length) {
-      // console.log("both have values");
-      listA.forEach((a) => {
-        listB.forEach((b) => {
-          results.push({
-            name: `${a}, ${b} - ${name}`,
-            sku: "",
-            price: "",
-            salePrice: "",
-            stock: "",
-            imageIndex: 0,
-          });
-        });
-      });
-    } else {
-      // console.log("only a has values");
-      listA.forEach((a) => {
-        results.push({
-          name: `${a} - ${name}`,
-          sku: "",
-          price: "",
-          salePrice: "",
-          stock: "",
-          imageIndex: 0,
-        });
-      });
-    }
-
-    variationModal.setGeneratedVariations(results);
-    setisGeneratingVariations(false);
-  };
 
   const { mutateAsync: addProduct, isPending: loading } = useMutation({
     mutationFn: async () => {

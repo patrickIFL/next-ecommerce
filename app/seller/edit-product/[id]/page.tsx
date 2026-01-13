@@ -35,6 +35,8 @@ import BrandComboBox from "@/components/common/BrandComboBox";
 import { useIndividualFetch } from "@/hooks/FetchProduct/useIndividualFetch";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { Variation } from "@/lib/types";
+import { useProductVariations } from "@/hooks/useProductVariations";
+import { ProductVariation } from "@/hooks/useVariationModal";
 
 /* ===================================================== */
 
@@ -141,79 +143,26 @@ const EditProduct = () => {
 
   /* ===================== VARIATION GENERATOR ===================== */
 
-  const handleGenerateVariations = async () => {
-    const listA = variationA
-      .split(",")
-      .map((v) => v.trim())
-      .filter(Boolean);
+  const { generate } = useProductVariations<ProductVariation>();
 
-    const listB = variationB
-      ? variationB
-          .split(",")
-          .map((v) => v.trim())
-          .filter(Boolean)
-      : [];
+const handleGenerateVariations = async () => {
+  await generate({
+    variationA,
+    variationB,
+    productName: name,
+    existing: finalVariations.length ? finalVariations : variations,
+    markAsNew: true,
+    onGenerated: (merged) => {
+      variationModal.openEdit(merged);
+      setFinalVariations(merged);
+    },
+  });
 
-    if (!listA.length) {
-      toast.error("Please enter variation values.");
-      return;
-    }
+  setVariationA("");
+  setVariationB("");
+  setAddingNewVariations(false);
+};
 
-    const generated: any[] = [];
-
-    if (listB.length) {
-      listA.forEach((a) => {
-        listB.forEach((b) => {
-          generated.push({
-            name: `${a}, ${b} - ${name}`,
-            sku: "",
-            price: "",
-            salePrice: "",
-            stock: "",
-            imageIndex: 0,
-            isNew: true,
-          });
-        });
-      });
-    } else {
-      listA.forEach((a) => {
-        generated.push({
-          name: `${a} - ${name}`,
-          sku: "",
-          price: "",
-          salePrice: "",
-          stock: "",
-          imageIndex: 0,
-          isNew: true,
-        });
-      });
-    }
-
-    const confirmedVariations = new Promise<any[]>((resolve) => {
-      setFinalVariations((prev) => {
-        const base = prev.length ? prev : variations;
-        const existingNames = new Set(base.map((v) => v.name));
-
-        const merged = [
-          ...generated.filter((v) => !existingNames.has(v.name)),
-          ...base,
-        ];
-
-        resolve(merged);
-        return merged;
-      });
-    });
-
-    const finalList = await confirmedVariations;
-
-    toast.success("Variations generated, Now edit them");
-
-    variationModal.openEdit(finalList);
-
-    setVariationA("");
-    setVariationB("");
-    setAddingNewVariations(false);
-  };
 
   /* ===================== VALIDATION ===================== */
 

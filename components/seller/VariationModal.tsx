@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -8,59 +9,85 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { PhilippinePeso, Trash2 } from "lucide-react";
 import { ImagePicker } from "./ImagePicker";
-import { useEffect, useState } from "react";
-import { ScrollArea } from "../ui/scroll-area";
 
-type Variation = {
+/* ============================== */
+/* Types                          */
+/* ============================== */
+
+export type Variation = {
   name: string;
   sku: string;
   price: string;
   salePrice: string;
   stock: string;
+  costPrice?: string; // optional (import)
   imageIndex: number;
   isNew?: boolean;
 };
 
-// NOTE: THIS MODAL IS ONLY UI. USED TO EDIT THE VARIATIONS ONLY,
-// THE FINALIZED VARIATIONS ARE IN GENERATED VARIATIONS
-
 type VariationModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  parentProductName: string;
   imageOptions: any[];
   generatedVariations: any[];
-  parentProductName: string;
   onConfirm: (variations: Variation[]) => void;
+
+  /** Enable cost price editing (supplier imports) */
+  enableCostPrice?: boolean;
 };
+
+/* ============================== */
+/* Component                      */
+/* ============================== */
 
 export function VariationModal({
   open,
   onOpenChange,
+  parentProductName,
   imageOptions,
   generatedVariations,
-  parentProductName,
   onConfirm,
+  enableCostPrice = false,
 }: VariationModalProps) {
   const [variations, setVariations] = useState<Variation[]>([]);
 
+  /* ------------------------------ */
+  /* Init from generated variations */
+  /* ------------------------------ */
   useEffect(() => {
-    if (generatedVariations.length > 0) {
-      setVariations(
-        generatedVariations.map((v) => ({
-          ...v,
-          sku: v.sku ?? "",
-          price: v.price ?? "",
-          salePrice: v.salePrice ?? "",
-          stock: v.stock ?? "",
-        }))
-      );
-    }
+    if (!generatedVariations?.length) return;
+
+    setVariations(
+      generatedVariations.map((v: any) => ({
+        ...v,
+        sku: v.sku ?? "",
+        price: v.price ?? "",
+        salePrice: v.salePrice ?? "",
+        stock: v.stock ?? "",
+        costPrice: v.costPrice ?? "",
+        imageIndex: v.imageIndex ?? 0,
+      }))
+    );
   }, [generatedVariations]);
+
+  /* ------------------------------ */
+  /* Helpers                        */
+  /* ------------------------------ */
+  const normalizePositiveNumber = (val: string) => {
+    if (val === "") return "";
+    if (Number(val) < 0) return null;
+    if (val.length > 1 && val.startsWith("0")) {
+      return val.replace(/^0+/, "");
+    }
+    return val;
+  };
 
   const updateVariation = (
     index: number,
@@ -76,175 +103,172 @@ export function VariationModal({
     setVariations((prev) => prev.filter((_, i) => i !== index));
   };
 
-  function normalizePositiveNumber(val: string) {
-    if (val === "") return "";
-    if (Number(val) < 0) return null;
-
-    if (val.length > 1 && val.startsWith("0")) {
-      return val.replace(/^0+/, "");
-    }
-
-    return val;
-  }
+  /* ============================== */
+  /* Render                         */
+  /* ============================== */
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <form>
-        <DialogContent className="min-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Variations for {parentProductName}</DialogTitle>
-            <DialogDescription>
-              Make changes to variation. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
+      <DialogContent className="min-w-[80vw] lg:min-w-[50vw]">
+        <DialogHeader>
+          <DialogTitle>Variations for {parentProductName}</DialogTitle>
+          <DialogDescription>
+            Edit variation details. Click Done when finished.
+          </DialogDescription>
+        </DialogHeader>
 
-          <ScrollArea className="h-72 rounded-md border">
-            <div className="grid gap-2 p-1">
-              {variations.map((variation, i) => (
-                <div className="" key={i}>
-                  {/* sku, price, salePrice, stock, image */}
-                  <div
-                    className={`relative p-4 rounded-md grid gap-2 border ${
-                      variation.isNew ? "border-1.5 border-green-600" : ""
-                    }`}
-                  >
-                    {variation.isNew && (
-                      <div className="absolute top-0 left-0 bg-green-600 text-white text-[10px] px-1 rounded-tl-sm">
-                        NEW
-                      </div>
-                    )}
+        <ScrollArea className="h-72 rounded-md border">
+          <div className="grid gap-2 p-1">
+            {variations.map((variation, i) => (
+              <div
+                key={i}
+                className={`relative p-2 lg:p-4 rounded-md border grid gap-3 ${
+                  variation.isNew ? "border-green-600" : ""
+                }`}
+              >
+                {variation.isNew && (
+                  <span className="absolute top-0 left-0 bg-green-600 text-white text-[10px] px-1 rounded-tl-sm">
+                    NEW
+                  </span>
+                )}
 
-                    <Label className="font flex items-center gap-2">
-                      <div className="flex gap-1 p-0 items-center">
-                        {variation.name}
-                      </div>
-                    </Label>
+                <Label className="font-medium">{variation.name}</Label>
+                <div className="h-px w-full bg-foreground" />
 
-                    {/* divider */}
-                    <div className="w-full h-px bg-foreground"></div>
+                {/* ================= GRID LAYOUT ================= */}
+                <div
+                  className="
+    
+    sm:grid gap-2
+    grid-cols-3
+    xl:flex
+  "
+                >
+                  {/* Row 1 — Image */}
+                  <div className="flex flex-col gap-1 md:row-start-1">
+                    <Label className="text-xs font-normal">Image</Label>
+                    <ImagePicker
+                      images={imageOptions}
+                      value={variation.imageIndex}
+                      onChange={(idx) => updateVariation(i, "imageIndex", idx)}
+                    />
+                  </div>
 
-                    {/* main content */}
-                    <div className="flex gap-2">
-                      <div className="flex flex-col gap-1">
-                        <Label className="font-normal text-xs">Image</Label>
-                        <ImagePicker
-                          images={imageOptions}
-                          value={variation.imageIndex}
-                          onChange={(index) =>
-                            updateVariation(i, "imageIndex", index)
-                          }
-                        />
-                      </div>
+                  {/* Row 1 — SKU */}
+                  <div className="flex flex-col gap-1 md:row-start-1">
+                    <Label className="text-xs font-normal">SKU</Label>
+                    <Input
+                      value={variation.sku}
+                      placeholder="Optional"
+                      onChange={(e) =>
+                        updateVariation(i, "sku", e.target.value)
+                      }
+                    />
+                  </div>
 
-                      <div className="flex flex-col gap-1">
-                        <Label className="font-normal text-xs">SKU</Label>
-                        <Input
-                          value={variation.sku}
-                          placeholder="Optional"
-                          onChange={(e) => {
-                            updateVariation(i, "sku", e.target.value);
-                          }}
-                          className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                        />
-                      </div>
+                  {/* Row 1 — Stock */}
+                  <div className="flex flex-col gap-1 md:row-start-1">
+                    <Label className="text-xs font-normal">Stock</Label>
+                    <Input
+                      type="number"
+                      value={variation.stock}
+                      placeholder="0"
+                      min={0}
+                      onChange={(e) => {
+                        const val = normalizePositiveNumber(e.target.value);
+                        if (val !== null) updateVariation(i, "stock", val);
+                      }}
+                    />
+                  </div>
 
-                      <div className="flex flex-col gap-1">
-                        <Label className="font-normal text-xs">Stock</Label>
+                  {/* Row 2 — Price */}
+                  <div className="flex flex-col gap-1 md:row-start-2">
+                    <Label className="text-xs font-normal">Price</Label>
+                    <div className="flex items-center gap-1">
+                      <PhilippinePeso size={16} />
+                      <Input
+                        type="number"
+                        value={variation.price}
+                        placeholder="0"
+                        min={0}
+                        onChange={(e) => {
+                          const val = normalizePositiveNumber(e.target.value);
+                          if (val !== null) updateVariation(i, "price", val);
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2 — Cost Price (optional) */}
+                  {enableCostPrice && (
+                    <div className="flex flex-col gap-1 md:row-start-2">
+                      <Label className="text-xs font-normal">Cost Price</Label>
+                      <div className="flex items-center gap-1">
+                        <PhilippinePeso size={16} />
                         <Input
                           type="number"
-                          inputMode="numeric"
-                          min={0}
+                          value={variation.costPrice}
                           placeholder="0"
-                          value={variation.stock}
+                          min={0}
                           onChange={(e) => {
-                            const normalized = normalizePositiveNumber(
-                              e.target.value
-                            );
-                            if (normalized === null) return;
-                            updateVariation(i, "stock", normalized);
+                            const val = normalizePositiveNumber(e.target.value);
+                            if (val !== null)
+                              updateVariation(i, "costPrice", val);
                           }}
                         />
                       </div>
-
-                      <div className="flex flex-col gap-1">
-                        <Label className="font-normal text-xs">Price</Label>
-                        <div className="flex items-center">
-                          <PhilippinePeso size={17} />
-                          <Input
-                            type="number"
-                            inputMode="decimal"
-                            min={0}
-                            value={variation.price}
-                            placeholder="0"
-                            onChange={(e) => {
-                              const normalized = normalizePositiveNumber(
-                                e.target.value
-                              );
-                              if (normalized === null) return;
-                              updateVariation(i, "price", normalized);
-                            }}
-                            className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-1">
-                        <Label className="font-normal text-xs">
-                          Sale Price
-                        </Label>
-                        <div className="flex items-center">
-                          <PhilippinePeso size={17} />
-                          <Input
-                            type="number"
-                            inputMode="decimal"
-                            min={0}
-                            value={variation.salePrice}
-                            placeholder="Optional"
-                            onChange={(e) => {
-                              const normalized = normalizePositiveNumber(
-                                e.target.value
-                              );
-                              if (normalized === null) return;
-                              updateVariation(i, "salePrice", normalized);
-                            }}
-                            className="focus-visible:ring-0 transition selection:bg-foreground/50"
-                          />
-                        </div>
-                      </div>
                     </div>
+                  )}
 
-                    {/* delete button */}
-                    <div>
-                      <Button
-                        type="button"
-                        onClick={() => deleteVariation(i)}
-                        className="h-7 w-7 absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white  "
-                      >
-                        <Trash2 />
-                      </Button>
+                  {/* Row 2 — Sale Price */}
+                  <div className="flex flex-col gap-1 md:row-start-2">
+                    <Label className="text-xs font-normal">Sale Price</Label>
+                    <div className="flex items-center gap-1">
+                      <PhilippinePeso size={16} />
+                      <Input
+                        type="number"
+                        value={variation.salePrice}
+                        placeholder="Optional"
+                        min={0}
+                        onChange={(e) => {
+                          const val = normalizePositiveNumber(e.target.value);
+                          if (val !== null)
+                            updateVariation(i, "salePrice", val);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  onConfirm(variations); // ✅ push edited data up
-                  onOpenChange(false);
-                }}
-              >
-                Done
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+                {/* Delete */}
+                <Button
+                  type="button"
+                  size="icon"
+                  className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => deleteVariation(i)}
+                >
+                  <Trash2 size={14} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                onConfirm(variations);
+                onOpenChange(false);
+              }}
+            >
+              Done
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

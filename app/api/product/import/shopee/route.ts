@@ -21,11 +21,27 @@ export async function POST(req: NextRequest) {
     description,
     images,
     type, // "SIMPLE" | "VARIATION"
+    attributes,
     price,
     costPrice,
     stock,
     variants,
+    search_keys,
+    category,
+    brand,
   } = body;
+
+  const normalizedSearchKeys = Array.isArray(search_keys)
+    ? search_keys.filter((k) => typeof k === "string")
+    : [];
+
+  const normalizedCategory =
+    typeof category === "string" && category.trim()
+      ? category
+      : "Uncategorized";
+
+  const normalizedBrand =
+    typeof brand === "string" && brand.trim() ? brand : "Generic";
 
   if (!name || !type) {
     return NextResponse.json(
@@ -54,6 +70,11 @@ export async function POST(req: NextRequest) {
         image: images ?? [],
         type: "SIMPLE",
         supplierId,
+
+        category: normalizedCategory,
+        brand: normalizedBrand,
+        search_keys: normalizedSearchKeys,
+
         price: Math.round(Number(price) * 100),
         costPrice: Math.round(Number(costPrice) * 100),
         stock: stock ?? 0,
@@ -80,11 +101,18 @@ export async function POST(req: NextRequest) {
         sellerId: userId,
         name,
         description,
+        attributes,
         image: images ?? [],
         type: "VARIATION",
         supplierId,
-        costPrice: null, // IMPORTANT: variant-level cost only
-        stock: null, // variant-level stock only
+
+        category: normalizedCategory,
+        brand: normalizedBrand,
+        search_keys: normalizedSearchKeys,
+
+        costPrice: null,
+        stock: null,
+
         variants: {
           create: variants.map((v: Variant) => {
             if (v.costPrice == null || v.price == null) {

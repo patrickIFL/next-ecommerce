@@ -133,11 +133,11 @@ const HeaderSlider = () => {
       id: 4,
       type: "jpg",
       desktopImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067748/desktopBanner_smgktn.jpg",
+        "https://down-ph.img.susercontent.com/file/ph-11134208-7ra0m-mbrkbx4deqg1da@resize_w875_nl.webp",
       tabletImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067746/tabletBanner_beekpz.jpg",
+        "https://down-ph.img.susercontent.com/file/ph-11134208-7ra0m-mbrkbx4deqg1da@resize_w875_nl.webp",
       mobileImg:
-        "https://res.cloudinary.com/dlgc8nx7r/image/upload/v1767067747/mobileBanner_brwneo.jpg",
+        "https://down-ph.img.susercontent.com/file/ph-11134208-7ra0m-mbrkbx4deqg1da@resize_w875_nl.webp",
     },
   ];
 
