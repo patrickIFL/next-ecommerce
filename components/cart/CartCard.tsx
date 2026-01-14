@@ -64,52 +64,95 @@ function CartCard({ item }: CartCardProps) {
   const remove = () => updateQuantity(0);
 
   return (
-    <tr>
+    <tr className="bg-accent">
       {/* PRODUCT */}
       <td className="flex items-center gap-4 py-4 md:px-4 px-1">
-        <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
+        <div className="max-w-20 rounded-lg overflow-hidden bg-gray-500/10 p-2">
           <Image
             src={product.image?.[productImageIndex] ?? "/placeholder.png"}
             alt={product.name}
-            className="w-16 h-16 object-cover"
+            className="min-w-16 h-16 object-cover"
             width={720}
             height={720}
           />
         </div>
 
-        <div className="text-sm flex flex-col">
-          <p className="text-foreground max-w-[200px] truncate">{product.name}</p>
-
-          {variant && (
-            <p className="text-xs text-foreground/50">
-              {variant.name.split(" - ")[0].trim()}
+        <div className="text-sm flex flex-col justify-between h-16">
+          <div>
+            <p className="text-foreground max-w-[200px] lg:max-w-[300px] truncate">
+              {product.name}
             </p>
-          )}
+
+            {variant && (
+              <p className="text-xs text-foreground/50">
+                {variant.name.split(" - ")[0].trim()}
+              </p>
+            )}
+          </div>
+          <p>
+            {currency}
+            {formatMoney(unitPrice)} / pc
+          </p>
         </div>
       </td>
 
-      {/* UNIT PRICE */}
-      <td className="py-4 md:px-4 px-1 text-foreground/80">
-        {currency}
-        {formatMoney(unitPrice)} / pc
-      </td>
-
       {/* QUANTITY */}
-      <td className="py-4 md:px-4 px-1">
-        <div className="flex items-center justify-center gap-2">
-          {isEditing && (
-            <button onClick={decrement}>
-              <ChevronLeft size={20} />
-            </button>
-          )}
+      <td className="w-35 h-20">
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
+            {isEditing && (
+              <button onClick={decrement}>
+                <ChevronLeft size={20} />
+              </button>
+            )}
 
-          <p className="text-foreground">{quantity}</p>
+            <p className="text-foreground">
+              {!isEditing && "× " }
+              {quantity}</p>
 
-          {isEditing && (
-            <button onClick={increment}>
-              <ChevronRight size={20} />
-            </button>
-          )}
+            {isEditing && (
+              <button onClick={increment}>
+                <ChevronRight size={20} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex gap-4">
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="   flex gap-1 items-center"
+              >
+                <SquarePen size={12} />
+                Edit
+              </button>
+            )}
+
+            {isEditing && (
+              <>
+                <button
+                  onClick={remove}
+                  className="  flex gap-0.5 items-center text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 size={16} />
+                  Delete
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (quantity !== item.quantity) {
+                      updateQuantity(quantity);
+                    }
+                    setIsEditing(false);
+                  }}
+                  className="  flex gap-1 items-center text-success hover:text-success/80"
+                >
+                  <SquareCheckBig size={12} />
+                  Done
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </td>
 
@@ -117,49 +160,6 @@ function CartCard({ item }: CartCardProps) {
       <td className="py-4 md:px-4 px-1 text-foreground text-center">
         {currency}
         {totalPrice}
-      </td>
-
-      {/* ACTIONS */}
-      <td className="py-4 md:px-4 px-1 text-foreground">
-        <div className="flex flex-col">
-          {!isEditing && (
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="  h-7 flex gap-2 justify-start"
-              variant="ghost"
-            >
-              <SquarePen size={12} />
-              Edit
-            </Button>
-          )}
-
-          {isEditing && (
-            <>
-              <Button
-                onClick={() => {
-                  if (quantity !== item.quantity) {
-                    updateQuantity(quantity);
-                  }
-                  setIsEditing(false);
-                }}
-                className="  h-7 flex gap-2 justify-start text-success hover:text-success/80"
-                variant="ghost"
-              >
-                <SquareCheckBig size={12} />
-                Done
-              </Button>
-
-              <Button
-                onClick={remove}
-                className="  h-7 flex gap-2 justify-start text-destructive hover:text-destructive/80"
-                variant="ghost"
-              >
-                <Trash2 size={12} />
-                Delete
-              </Button>
-            </>
-          )}
-        </div>
       </td>
     </tr>
   );

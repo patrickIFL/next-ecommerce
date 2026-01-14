@@ -53,7 +53,7 @@ export function CartSheet({
           </SheetClose>
 
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">Continue Shopping</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

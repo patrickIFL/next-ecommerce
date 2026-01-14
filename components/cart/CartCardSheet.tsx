@@ -73,9 +73,9 @@ function CartCard({ item }: CartCardProps) {
       {/* DETAILS */}
       <div className="flex flex-1 flex-col justify-between">
         {/* NAME + QUANTITY */}
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between sm:gap-2">
           <div className="min-w-0">
-            <p className="truncate max-w-[200px] text-sm font-medium text-foreground">
+            <p className={`truncate ${isEditing ? "max-w-[90px] sm:max-w-[110px] md:max-w-40" : "max-w-[110px] sm:max-w-[150px] md:max-w-[200px]"} text-sm font-medium text-foreground`}>
               {product.name}
             </p>
 
@@ -87,7 +87,7 @@ function CartCard({ item }: CartCardProps) {
           </div>
 
           {/* QUANTITY */}
-          <div className="flex items-center gap-2 text-sm shrink-0">
+          <div className="flex items-center sm:gap-2 text-sm shrink-0">
             {isEditing && (
               <button onClick={decrement}>
                 <ChevronLeft size={18} />
@@ -123,7 +123,7 @@ function CartCard({ item }: CartCardProps) {
             )}
 
             {isEditing && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row item sm:gap-2">
                 <button
                   onClick={remove}
                   className="text-destructive text-xs flex gap-1 items-center p-1 hover:bg-accent rounded-md"

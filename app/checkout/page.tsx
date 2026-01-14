@@ -64,18 +64,18 @@ const Cart = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
+          <table className="min-w-full table-auto border-separate border-spacing-y-2">
+
             <thead className="text-left">
               <tr>
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium">
                   Product Details
                 </th>
-                <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
-                  Price
-                </th>
+
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
                   Quantity
                 </th>
+
                 <th className="pb-6 md:px-4 px-1 text-foreground font-medium text-center">
                   Item Total
                 </th>
