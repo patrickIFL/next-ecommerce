@@ -69,7 +69,7 @@ const menus = [
     menuLinks: [
       {
         linkName: "Video Editting",
-        linkRef: "#",
+        linkRef: "/video editting/products",
       },
       {
         linkName: "Graphic Design",

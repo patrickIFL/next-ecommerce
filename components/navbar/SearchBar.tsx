@@ -58,20 +58,14 @@ export default function SearchBar({ autoFocus = false }: SearchBarProps) {
   }, [params]);
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSearch(category);
-      }}
-      className="w-full"
-    >
+    <div className="w-full">
       <div className="flex h-10 items-center rounded-md border bg-background px-2">
         {/* Submit Button */}
         <Button
-          type="submit"
           size="icon"
           variant="ghost"
           disabled={searchLoading}
+          // onClick={() => {handleSearch(category)}}
         >
           {searchLoading ? (
             <Loader2 className="size-4 animate-spin" />
@@ -86,6 +80,12 @@ export default function SearchBar({ autoFocus = false }: SearchBarProps) {
           disabled={searchLoading}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSearch(searchQuery);
+            }
+          }}
           placeholder="Search products"
           className="w-full px-2 text-sm bg-transparent border-0 outline-none
             focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -138,6 +138,6 @@ export default function SearchBar({ autoFocus = false }: SearchBarProps) {
           </Popover>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
