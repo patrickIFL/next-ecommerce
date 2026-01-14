@@ -126,9 +126,7 @@ export default function SearchBar({ autoFocus = false }: SearchBarProps) {
                       <Check
                         className={cn(
                           "mr-2 size-4",
-                          category === cat.value
-                            ? "opacity-100"
-                            : "opacity-0"
+                          category === cat.value ? "opacity-100" : "opacity-0"
                         )}
                       />
                       {cat.label}
