@@ -166,30 +166,50 @@ const Orders: React.FC = () => {
 
                       {/* INFO */}
                       <td className="p-3">
-                        <table className="text-sm">
-                          <tbody>
+                        <table className="table-auto w-[170px] max-w-72 border-separate border-spacing-x-2">
+                          <tbody className="text-sm">
                             <tr>
-                              <td className="font-medium">Method:</td>
-                              <td>{order.payment?.method?.toUpperCase()}</td>
-                            </tr>
-                            <tr>
-                              <td className="font-medium">Date:</td>
-                              <td>
-                                {new Date(order.orderDate).toLocaleDateString()}
+                              <td className="text-foreground font-medium">
+                                Method:
+                              </td>
+                              <td className="text-foreground">
+                                {String(order.payment?.method).toUpperCase()}
                               </td>
                             </tr>
                             <tr>
-                              <td className="font-medium">Time:</td>
-                              <td>
-                                {new Date(order.orderDate).toLocaleTimeString(
+                              <td className="text-foreground font-medium">
+                                Date:
+                              </td>
+                              <td className="text-foreground">
+                                {new Date(order.orderDate).toLocaleString(
                                   undefined,
-                                  { hour: "2-digit", minute: "2-digit" }
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "2-digit",
+                                  }
                                 )}
                               </td>
                             </tr>
                             <tr>
-                              <td className="font-medium">Payment:</td>
-                              <td>{order.payment ? "PAID" : "UNPAID"}</td>
+                              <td className="foreground font-medium">Time:</td>
+                              <td className="text-foreground">
+                                {new Date(order.orderDate).toLocaleString(
+                                  undefined,
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="foreground font-medium">
+                                Payment:
+                              </td>
+                              <td className="text-foreground">
+                                {order.payment ? "PAID" : "UNPAID"}
+                              </td>
                             </tr>
                           </tbody>
                         </table>

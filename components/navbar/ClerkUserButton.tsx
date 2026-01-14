@@ -1,6 +1,6 @@
 import useUserHook from '@/hooks/useUserHook';
 import { UserButton } from '@clerk/nextjs';
-import { Heart, LayoutDashboard, ShoppingBag, } from 'lucide-react';
+import { Heart, LayoutDashboard, Package2, ShoppingBag, } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 function ClerkUserButton() {
@@ -19,13 +19,13 @@ function ClerkUserButton() {
         </UserButton.MenuItems>
       )}
 
-      {/* <UserButton.MenuItems>
+      <UserButton.MenuItems>
         <UserButton.Action
           label="Checkout"
           labelIcon={<Package2 size={16}/>}
           onClick={() => router.push("/checkout")}
         />
-      </UserButton.MenuItems> */}
+      </UserButton.MenuItems>
 
       <UserButton.MenuItems>
         <UserButton.Action
