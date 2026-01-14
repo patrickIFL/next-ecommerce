@@ -1,102 +1,37 @@
 "use client";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, ShoppingCart, User, X } from "lucide-react";
+
 import { useTheme } from "../theme-provider";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import {
-  ChevronDown,
-  LoaderIcon,
-  Menu,
-  SearchIcon,
-  ShoppingCart,
-  User,
-  X,
-} from "lucide-react";
-import { Search, Loader2, ChevronsUpDown, Check } from "lucide-react";
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import {
-  NavigationMenu,
-  // NavigationMenuContent,
-  NavigationMenuItem,
-  // NavigationMenuLink,
-  NavigationMenuList,
-  // NavigationMenuTrigger,
-} from "../ui/navigation-menu";
+
 import { useClerk, useUser } from "@clerk/nextjs";
 import ClerkUserButton from "./ClerkUserButton";
-import useSearchStore from "@/stores/useSearchStore";
-// import { useRouter } from "next/navigation";
-import useSearchHook from "@/hooks/useSearchHook";
-import { useParams, usePathname } from "next/navigation";
-import NextLogo from "../svgs/NextLogo";
-import AccordionMenu from "./AccordionMenu";
 import { useCartUI } from "@/stores/useCartUI";
 
-const CATEGORY_PRESETS = [
-  { label: "All", value: "" },
-  { label: "Electronics", value: "electronics" },
-  { label: "Fashion", value: "fashion" },
-  { label: "Home", value: "home" },
-  { label: "Beauty", value: "beauty" },
-  { label: "Sports", value: "sports" },
-];
+import NavLinks from "./NavLinks";
+import AccordionMenu from "./AccordionMenu";
+import SearchAccordion from "./SearchAccordion";
+import NextLogo from "../svgs/NextLogo";
+import SearchBar from "./SearchBar";
 
-function NavBar() {
-  const { isDark } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
-  const { user } = useUser();
-  const { openSignIn } = useClerk();
+type MobileDrawer = "menu" | "search" | null;
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  // Close the Hamburger Menu When Resizing to Large
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsOpen(false); // lg breakpoint and above
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    // Run once on mount
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Detect click outside of the mobile menu
-  const handleOutsideClick = (e: MouseEvent) => {
-    const menu = document.getElementById("mobile-menu");
-    const hamburger = document.getElementById("hamburger-btn");
-
-    // ⭐ NEW: allow clicks inside Clerk portal menu
-    const clerkMenu = document.querySelector(".cl-userButton-popover");
-
-    if (
-      isOpen &&
-      menu &&
-      !menu.contains(e.target as Node) &&
-      hamburger &&
-      !hamburger.contains(e.target as Node) &&
-      (!clerkMenu || !clerkMenu.contains(e.target as Node)) // <-- ignore Clerk popup clicks
-    ) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  });
-
-  // For the Nav links
-  const menus = [
+ const menus = [
     {
       mainTitle: "Products",
       mainLink: "#",
@@ -184,32 +119,58 @@ function NavBar() {
     
   ];
 
+export default function NavBar() {
+  const { isDark } = useTheme();
+  const pathname = usePathname();
+  const { user } = useUser();
+  const { openSignIn } = useClerk();
+
+  const [drawer, setDrawer] = useState<MobileDrawer>(null);
+
+  /* Close drawer on route change */
+  useEffect(() => {
+    setDrawer(null);
+  }, [pathname]);
+
+  /* Close drawer when resizing to desktop */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setDrawer(null);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
+      {/* ===================== NAVBAR ===================== */}
       <nav
-        className={`fixed top-0 left-0 w-full h-16 flex border-b z-50 bg-background
-  ${isDark ? "border-gray-700" : "border-gray-300"}`}
+        className={`fixed top-0 left-0 z-50 w-full h-16 border-b bg-background
+        ${isDark ? "border-gray-700" : "border-gray-300"}`}
       >
-        <div
-          className="flex items-center justify-between gap-2 sm:gap-4 md:gap-10 
-  px-6 xl:px-16 w-full max-w-7xl mx-auto"
-        >
-          {/* Logo will Change Depending on Theme. */}
-          <Link href={"/"}>
-            {isDark ? <NextLogo size={150} /> : <NextLogo size={150} />}
+        <div className="max-w-7xl mx-auto h-full flex justify-between items-center gap-4 px-6 xl:px-16">
+          {/* Logo */}
+          <Link href="/" className="shrink-0">
+            <NextLogo size={150} />
           </Link>
 
-          <div className="relative hidden lg:block">
+          {/* Desktop Nav */}
+          <div className="hidden lg:block">
             <NavLinks menus={menus} />
           </div>
 
-          <div className="flex-1">
+          {/* Search */}
+          <div className="flex-1 hidden lg:block">
             <SearchBar />
           </div>
-          <NavigationMenu
-            viewport={false}
-            className="text-foreground items-center h-full"
-          >
+
+          {/* Desktop Actions */}
+          <NavigationMenu viewport={false} className="hidden lg:flex">
             <NavigationMenuList>
               <NavigationMenuItem className="hidden lg:flex hover:bg-accent cursor-pointer items-center rounded-full">
                 <Tooltip>
@@ -266,14 +227,14 @@ function NavBar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Hamburger/Accordion Trigger */}
-          <button
-            id="hamburger-btn"
-            className="flex lg:hidden text-foreground relative w-8 h-8 items-center justify-center"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <AnimatePresence>
-              {isOpen ? (
+          {/* Mobile Triggers */}
+          <div className="flex lg:hidden gap-2">
+            <button
+              onClick={() => setDrawer(drawer ? null : "menu")}
+              className="w-8 h-8 flex items-center justify-center"
+            >
+              <AnimatePresence>
+              {drawer ? (
                 <motion.span
                   key="close"
                   initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
@@ -297,154 +258,55 @@ function NavBar() {
                 </motion.span>
               )}
             </AnimatePresence>
-          </button>
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay + Sliding Menu */}
-
+      {/* ===================== OVERLAY ===================== */}
       <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              key="overlay"
-              onClick={() => setIsOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black lg:hidden z-49"
-            />
-          </>
+        {drawer && (
+          <motion.div
+            key="overlay"
+            onClick={() => setDrawer(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black z-40 lg:hidden"
+          />
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu */}
-      <div id="mobile-menu">
-        <AccordionMenu
-          isDark={isDark}
-          isOpen={isOpen}
-          menus={menus}
-          openSignIn={openSignIn}
-          // accountMenu={accountMenu}
-        />
-      </div>
+      {/* ===================== MOBILE DRAWER ===================== */}
+      <AnimatePresence>
+        {drawer && (
+          <motion.div
+            key="drawer"
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className={`fixed top-13 right-0 
+  ${drawer === "search" ? "w-full" : "w-64"}
+  transition-[width] duration-300 ease-in-out
+  lg:hidden px-6 py-6 text-foreground
+  font-medium text-center rounded-bl-md z-49 bg-background
+  flex flex-col items-center justify-start
+  ${isDark ? "border border-gray-700" : "border border-gray-300"}`}
+            style={{ backdropFilter: "blur(8px)" }}
+          >
+            {drawer === "menu" && (
+              <AccordionMenu
+              setDrawer={setDrawer}
+                menus={menus}
+                openSignIn={openSignIn}
+              />
+            )}
+
+            {drawer === "search" && <SearchAccordion setDrawer={setDrawer}/>}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
-
-export default NavBar;
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import NavLinks from "./NavLinks";
-
-const SearchBar = () => {
-  const { searchQuery, setSearchQuery } = useSearchStore();
-  const { handleSearch, searchLoading } = useSearchHook();
-  const params = useParams();
-
-  const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState("");
-
-  useEffect(() => {
-    if (params.cat) {
-      setCategory(params.cat as string);
-    }
-  }, [params.cat]);
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSearch();
-      }}
-      className="mx-5 sm:mx-0"
-    >
-      <div className="flex h-10 items-center rounded-md border bg-background px-2">
-        {/* Search Button */}
-        <Button
-          type="submit"
-          size="icon"
-          variant="ghost"
-          disabled={searchLoading}
-        >
-          {searchLoading ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            <Search className="size-4" />
-          )}
-        </Button>
-
-        {/* Search Input */}
-        <input
-          disabled={searchLoading}
-          value={searchQuery}
-          placeholder="Search a product"
-          className="border-0 w-full text-sm px-2 outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-
-        <div className="hidden sm:flex items-center">
-          {/* Divider */}
-          <div className="mx-1 h-5 w-px bg-border" />
-
-          {/* Category Combobox */}
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                role="combobox"
-                disabled={searchLoading}
-                className="h-8 px-2 text-xs gap-1"
-              >
-                {CATEGORY_PRESETS.find((c) => c.value === category)?.label ??
-                  "Category"}
-                <ChevronsUpDown className="size-3 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-
-            <PopoverContent className="w-48 p-0" align="end">
-              <Command>
-                <CommandEmpty>No category found.</CommandEmpty>
-                <CommandGroup>
-                  {CATEGORY_PRESETS.map((cat) => (
-                    <CommandItem
-                      key={cat.value}
-                      value={cat.value}
-                      onSelect={() => {
-                        setCategory(cat.value);
-                        setOpen(false);
-                        handleSearch(cat.value);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 size-4",
-                          category === cat.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {cat.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
-    </form>
-  );
-};
