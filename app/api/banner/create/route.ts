@@ -1,21 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
+import redis from "@/lib/redis";
 import { v2 as cloudinary } from "cloudinary";
 import { BannerType, ImageFormat } from "@/src/generated/prisma";
-
-
-/**
- * Expected FormData:
- *
- * type: CONTENT | RESPONSIVE_IMAGE
- * imageFormat: PNG | JPG | WEBP
- * title?
- * offer?
- * buttonText1?
- * buttonText2?
- * sortOrder?
- * images[]  (1 for CONTENT, 3 for RESPONSIVE_IMAGE)
- */
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
@@ -23,40 +10,34 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
+const BANNER_LIST_CACHE_KEY = "banner:list:active";
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
     const typeRaw = formData.get("type");
-const imageFormatRaw = formData.get("imageFormat");
+    const imageFormatRaw = formData.get("imageFormat");
 
-if (!typeRaw || !imageFormatRaw) {
-  return NextResponse.json(
-    { error: "Missing required fields" },
-    { status: 400 }
-  );
-}
-
-if (
-  !Object.values(BannerType).includes(typeRaw as BannerType) ||
-  !Object.values(ImageFormat).includes(imageFormatRaw as ImageFormat)
-) {
-  return NextResponse.json(
-    { error: "Invalid enum value" },
-    { status: 400 }
-  );
-}
-
-const type = typeRaw as BannerType;
-const imageFormat = imageFormatRaw as ImageFormat;
-
-
-    if (!type || !imageFormat) {
+    if (!typeRaw || !imageFormatRaw) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
+
+    if (
+      !Object.values(BannerType).includes(typeRaw as BannerType) ||
+      !Object.values(ImageFormat).includes(imageFormatRaw as ImageFormat)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid enum value" },
+        { status: 400 }
+      );
+    }
+
+    const type = typeRaw as BannerType;
+    const imageFormat = imageFormatRaw as ImageFormat;
 
     const title = formData.get("title") as string | null;
     const offer = formData.get("offer") as string | null;
@@ -86,16 +67,18 @@ const imageFormat = imageFormatRaw as ImageFormat;
       const buffer = Buffer.from(await file.arrayBuffer());
 
       return new Promise<string>((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          {
-            folder: "banners",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error || !result) return reject(error);
-            resolve(result.secure_url);
-          }
-        ).end(buffer);
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "banners",
+              resource_type: "image",
+            },
+            (error, result) => {
+              if (error || !result) return reject(error);
+              resolve(result.secure_url);
+            }
+          )
+          .end(buffer);
       });
     };
 
@@ -114,7 +97,7 @@ const imageFormat = imageFormatRaw as ImageFormat;
       if (images[2]) mobileImg = await uploadToCloudinary(images[2]);
     }
 
-    // ---- OPTIONAL: AUTO-SHIFT SORT ORDER ----
+    // ---- AUTO-SHIFT SORT ORDER ----
     await prisma.banner.updateMany({
       where: { sortOrder: { gte: sortOrder } },
       data: { sortOrder: { increment: 1 } },
@@ -136,6 +119,9 @@ const imageFormat = imageFormatRaw as ImageFormat;
         sortOrder,
       },
     });
+
+    // ---- REDIS CACHE INVALIDATION ----
+    await redis.del(BANNER_LIST_CACHE_KEY);
 
     return NextResponse.json({
       message: "Banner created successfully",

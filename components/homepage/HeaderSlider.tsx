@@ -72,10 +72,12 @@ type JpgSlide = {
 type Slide = PngSlide | JpgSlide;
 
 const fetchBanners = async (): Promise<Slide[]> => {
-  const res = await fetch("/api/banner/list", { cache: "no-store" });
+  const res = await fetch("/api/banner/list");
   if (!res.ok) throw new Error("Failed to fetch banners");
   return res.json();
 };
+
+
 
 const HeaderSlider = () => {
   /* ---------------------------------------------
