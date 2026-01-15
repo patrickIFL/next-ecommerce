@@ -196,7 +196,7 @@ const MyOrders: React.FC = () => {
 
                       {/* INFO */}
                       <td className="p-3">
-                        <table className="table-auto border-collapse w-full max-w-72">
+                        <table className="table-auto w-[170px] max-w-72 border-separate border-spacing-x-2">
                           <tbody className="text-sm">
                             <tr>
                               <td className="text-foreground font-medium">

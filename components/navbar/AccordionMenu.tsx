@@ -20,15 +20,13 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import ClerkUserButton from "./ClerkUserButton";
 import { useCartUI } from "@/stores/useCartUI";
 
-interface AccordionMenuProps {
+import { Dispatch, SetStateAction } from "react";
+import { MenuType, MobileDrawer } from "./NavBar";
 
-  menus: {
-    mainTitle: string;
-    mainLink: string;
-    menuLinks: { linkName: string; linkRef: string }[];
-  }[];
+interface AccordionMenuProps {
+  setDrawer: Dispatch<SetStateAction<MobileDrawer>>;
+  menus: MenuType[];
   openSignIn: () => void;
-  setDrawer: (arg: string) => void;
 }
 
 export default function AccordionMenu({

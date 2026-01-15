@@ -11,6 +11,7 @@ import Link from "next/link";
 
 function NavLinks({ menus }: { menus: any }) {
   const navItemClass = "text-md font-normal";
+  
   return (
     <div className="relative grow-0">
       <NavigationMenu viewport={false} className="text-foreground">
@@ -40,7 +41,7 @@ function NavLinks({ menus }: { menus: any }) {
                     {menu.menuLinks.map((link: any, j: number) => (
                       <li key={j}>
                         <NavigationMenuLink asChild>
-                          <Link href={link.linkRef || "#"}>
+                          <Link href={link.linkRef || `#`}>
                             {link.linkName}
                           </Link>
                         </NavigationMenuLink>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Archive, HeartOff } from "lucide-react";
+import { HeartOff } from "lucide-react";
 
 import PaginatedProductGrid from "@/components/common/PaginatedProductGrid";
 

@@ -29,95 +29,103 @@ import SearchAccordion from "./SearchAccordion";
 import NextLogo from "../svgs/NextLogo";
 import SearchBar from "./SearchBar";
 
-type MobileDrawer = "menu" | "search" | null;
+export type MobileDrawer = "menu" | "search" | null;
 
- const menus = [
-    {
-      mainTitle: "Products",
-      mainLink: "#",
-      menuLinks: [
-        {
-          linkName: "All Products",
-          linkRef: "/all/products",
-        },
-        {
-          linkName: "Categories",
-          linkRef: "#",
-        },
-        {
-          linkName: "Best Sellers",
-          linkRef: "#",
-        },
-        {
-          linkName: "Sale",
-          linkRef: "#",
-        },
-      ],
-    },
-    {
-      mainTitle: "Services",
-      mainLink: "",
-      menuLinks: [
-        {
-          linkName: "Video Editting",
-          linkRef: "#",
-        },
-        {
-          linkName: "Graphic Design",
-          linkRef: "#",
-        },
-        {
-          linkName: "Logo Design",
-          linkRef: "#",
-        },
-        {
-          linkName: "Publication Design",
-          linkRef: "#",
-        },
-        {
-          linkName: "Website Development",
-          linkRef: "#",
-        },
-      ],
-    },
-    {
-      mainTitle: "Food Delivery",
-      mainLink: "",
-      menuLinks: [
-        {
-          linkName: "Jollibee",
-          linkRef: "#",
-        },
-        {
-          linkName: "Mcdonalds",
-          linkRef: "#",
-        },
-        {
-          linkName: "Mang Inasal",
-          linkRef: "#",
-        },
-      ],
-    },
-    {
-      mainTitle: "Groceries",
-      mainLink: "",
-      menuLinks: [
-        {
-          linkName: "Puregold",
-          linkRef: "#",
-        },
-        {
-          linkName: "Royal",
-          linkRef: "#",
-        },
-        {
-          linkName: "YBC",
-          linkRef: "#",
-        },
-      ],
-    },
-    
-  ];
+export interface MenuType {
+  mainTitle: string;
+  mainLink: string;
+  menuLinks: {
+    linkName: string;
+    linkRef: string;
+  }[];
+}
+
+const menus = [
+  {
+    mainTitle: "Products",
+    mainLink: "#",
+    menuLinks: [
+      {
+        linkName: "All Products",
+        linkRef: "/all/products",
+      },
+      {
+        linkName: "Categories",
+        linkRef: "#",
+      },
+      {
+        linkName: "Best Sellers",
+        linkRef: "#",
+      },
+      {
+        linkName: "Sale",
+        linkRef: "#",
+      },
+    ],
+  },
+  {
+    mainTitle: "Services",
+    mainLink: "",
+    menuLinks: [
+      {
+        linkName: "Video Editting",
+        linkRef: "/video editting/products",
+      },
+      {
+        linkName: "Graphic Design",
+        linkRef: "#",
+      },
+      {
+        linkName: "Logo Design",
+        linkRef: "#",
+      },
+      {
+        linkName: "Publication Design",
+        linkRef: "#",
+      },
+      {
+        linkName: "Website Development",
+        linkRef: "#",
+      },
+    ],
+  },
+  {
+    mainTitle: "Food Delivery",
+    mainLink: "",
+    menuLinks: [
+      {
+        linkName: "Jollibee",
+        linkRef: "#",
+      },
+      {
+        linkName: "Mcdonalds",
+        linkRef: "#",
+      },
+      {
+        linkName: "Mang Inasal",
+        linkRef: "#",
+      },
+    ],
+  },
+  {
+    mainTitle: "Groceries",
+    mainLink: "",
+    menuLinks: [
+      {
+        linkName: "Puregold",
+        linkRef: "#",
+      },
+      {
+        linkName: "Royal",
+        linkRef: "#",
+      },
+      {
+        linkName: "YBC",
+        linkRef: "#",
+      },
+    ],
+  },
+];
 
 export default function NavBar() {
   const { isDark } = useTheme();
@@ -234,30 +242,30 @@ export default function NavBar() {
               className="w-8 h-8 flex items-center justify-center"
             >
               <AnimatePresence>
-              {drawer ? (
-                <motion.span
-                  key="close"
-                  initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
-                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                  exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="absolute"
-                >
-                  <X size={28} />
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="menu"
-                  initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
-                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                  exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="absolute"
-                >
-                  <Menu size={28} />
-                </motion.span>
-              )}
-            </AnimatePresence>
+                {drawer ? (
+                  <motion.span
+                    key="close"
+                    initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                    className="absolute"
+                  >
+                    <X size={28} />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="menu"
+                    initial={{ rotate: 180, opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: -180, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                    className="absolute"
+                  >
+                    <Menu size={28} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
@@ -297,13 +305,13 @@ export default function NavBar() {
           >
             {drawer === "menu" && (
               <AccordionMenu
-              setDrawer={setDrawer}
+                setDrawer={setDrawer}
                 menus={menus}
                 openSignIn={openSignIn}
               />
             )}
 
-            {drawer === "search" && <SearchAccordion setDrawer={setDrawer}/>}
+            {drawer === "search" && <SearchAccordion setDrawer={setDrawer} />}
           </motion.div>
         )}
       </AnimatePresence>

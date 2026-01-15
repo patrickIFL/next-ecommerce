@@ -26,7 +26,7 @@ const DisplayProducts = () => {
   return (
     <div className="mt-16 flex flex-col items-start px-6 md:px-16 lg:px-32">
       {/* HEADER */}
-      <ProductPageTitle title={`Search results for "${params.cat}"`} />
+      <ProductPageTitle title={`Search results for "${decodeURIComponent(params.cat)}"`} />
 
       {/* PRODUCT GRID */}
       <ProductGrid
@@ -34,7 +34,7 @@ const DisplayProducts = () => {
         isLoading={searchLoading}
         emptyIcon={SearchX}
         emptyTitle="No Products Found"
-        emptyDescription={`We could not find any product that matches "${params.cat}".`}
+        emptyDescription={`We could not find any product that matches "${decodeURIComponent(params.cat)}".`}
       />
     </div>
   );

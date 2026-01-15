@@ -1,6 +1,5 @@
 "use client";
 // ** This is the client page. Moved to a component since page.tsx also needed the product value for title rendering
-import { assets } from "@/assets/assets";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 // import { useParams } from "next/navigation";
