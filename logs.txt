@@ -602,3 +602,98 @@ x session.attributes.metadata
         { status: 400 }
       );
     }
+
+=================================
+
+NEXTCART SERVICE INTEGRATION:
+
+Your role in NextCart:
+Web developer, Web designer, System Architech, Front-end Design
+
+-- wrapped the navbar in a div that has 
+max-w-7xl for proper zoom out response
+-- Optimized the search bar responsize,
+Placed it in an accordion on smaller screens
+-- Created different services, 
+Products || Services || Food || Groceries
+NOTE: Services opened up a new product type: External
+
+Like woo-commerce, this type will direct you to a link,
+most likely a quote form that customer can send message
+to the freelancer.
+
+upgrade ProductType to
+enum ProductType {
+  SIMPLE
+  VARIATION
+  EXTERNAL
+}
+
+BETTER APPROACH:
+Instead of creating a new type:
+you can just approach the service in a different way
+
+Create a new Model: Service, Freelancer,
+Service
+
+Service Schema:
+
+model Service {
+  id          	  String   @id @default(cuid()) // Just an ID for the service
+  freelancerId    String			// ID of the service author
+  name        	  String			// Name of the service
+  short_desc 	  String?			// short description for the CARD
+  long_desc       String?			// long description for PAGE 
+  desc_img        String[] @default([])		// descriptive images
+  
+  category    String   @default("Uncategorized") // type of service (eg: webdev, vid-ed, wood-work)
+  image       String[]				 // basic product gallery
+
+  price       Int?				// will be removed: prospect: contract
+  salePrice   Int?				// will be removed: prospect: contract
+
+  search_keys String[]    @default([])
+  sku         String?
+
+  stock       Int?				// no more stock
+
+  type        ProductType @default(SIMPLE)	// remove
+
+  isArchived  Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
+  isOnSale    Boolean?    @default(false)
+  
+/*
+
+NOTE:
+
+We will now remove variations in services since this will be
+Specific: 
+eg. [cat] = Web Development, [service] = Landing Page
+
+*/
+
+  supplierId String? 			// this will not come from an import you will be a third party
+
+  // Pricing control
+  costPrice Int? 			// this will become your base price before markup
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders            OrderItem[]
+  wishlist          Wishlist[]
+  seller            User               @relation(fields: [sellerId], references: [id])
+  cartItems         CartItem[]
+  stockReservations StockReservation[]
+  variants          ProductVariant[]
+  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
+
+  @@unique([sku])
+  @@index([supplierId])
+  @@index([sellerId])
+  @@index([category])
+  @@index([search_keys], type: Gin)
+}
+
+// Instead of Order, It will now become a Contract
