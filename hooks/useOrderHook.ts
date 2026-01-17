@@ -5,52 +5,6 @@ import { useRouter } from "next/navigation";
 import useAddressStore from "@/stores/useAddressStore";
 import { toast } from "react-hot-toast";
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  salePrice: number;
-  image: string[];
-}
-
-export interface OrderItem {
-  id: string;
-  orderId: string;
-  productId: string;
-  quantity: number;
-  product: Product;
-}
-
-interface Address {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  addressLine1: string;
-  addressLine2?: string;
-  region: string;
-  province: string;
-  city: string;
-  area: string;
-  zipcode: string;
-}
-
-export interface Order {
-  id: string;
-  userId: string;
-  shippingAddressId: string | null;
-
-  amount: number;
-  isPaid: boolean;
-  shippingMethod: string;
-  orderDate: string; // ISO date string returned by Prisma
-
-  // user: UserData;
-  shippingAddress: Address | null;
-  items: OrderItem[];
-}
-
 function useOrderHook() {
   const router = useRouter();
   const { cartItems } = useCartHook();

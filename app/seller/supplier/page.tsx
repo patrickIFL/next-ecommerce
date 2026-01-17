@@ -145,7 +145,7 @@ function SupplierPage() {
                   key={supplier.id}
                   className="border-b hover:bg-muted/50 transition cursor-pointer"
                   onClick={() => {
-                    router.push(`/seller/products/import/${supplier.type.toLowerCase()}`);
+                    router.push(`/seller/products/import/`);
                   }}
                 >
                   <td className="p-3">{supplier.name}</td>

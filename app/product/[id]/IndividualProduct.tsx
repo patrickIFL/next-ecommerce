@@ -274,9 +274,9 @@ const IndividualProduct = ({ product }: { product: Product }) => {
             </span>
           </div>
 
-          {/* DESCRIPTION */}
-          <p className="text-foreground mt-3">
-            {product.description ? product.description : ""}
+          {/* DESCRIPTION whitespace class respects newlines */}
+          <p className="text-foreground mt-3 whitespace-pre-line">
+            {product.description || ""}
           </p>
 
           {/* PRICE */}
@@ -453,6 +453,19 @@ const IndividualProduct = ({ product }: { product: Product }) => {
           </div>
         </div>
       </div>
+
+      <hr className="bg-gray-600 my-6" />
+
+      <h3 className="text-2xl font-medium mb-4 underline underline-offset-4">
+        Product Description
+      </h3>
+      <p className="whitespace-pre-line">
+        {product.specs || ""}
+      </p>
+
+      <h3 className="text-2xl font-medium mb-4 underline underline-offset-4">
+        Product Gallery
+      </h3>
 
       {/* FEATURED PRODUCTS */}
       <div className="flex flex-col items-center">

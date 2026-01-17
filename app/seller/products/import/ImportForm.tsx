@@ -31,7 +31,7 @@ type ImportVariant = {
   imageIndex?: number;
 };
 
-export default function ShopeeImportForm({
+export default function ImportForm({
   supplierId,
 }: {
   supplierId: string;
@@ -46,6 +46,7 @@ export default function ShopeeImportForm({
 
   // Simple
   const [price, setPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [stock, setStock] = useState("");
 
@@ -152,6 +153,7 @@ export default function ShopeeImportForm({
 
       if (type === "SIMPLE") {
         payload.price = Number(price);
+        payload.salePrice = Number(salePrice);
         payload.costPrice = Number(costPrice);
         payload.stock = Number(stock);
       }
@@ -169,7 +171,7 @@ export default function ShopeeImportForm({
         }));
       }
 
-      const res = await fetch("/api/product/import/shopee", {
+      const res = await fetch("/api/product/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -186,6 +188,7 @@ export default function ShopeeImportForm({
       setDescription("");
       setImages("");
       setPrice("");
+      setSalePrice("");
       setCostPrice("");
       setStock("");
       setVariationA("");
@@ -280,7 +283,7 @@ export default function ShopeeImportForm({
 
             {/* SIMPLE */}
             {type === "SIMPLE" && (
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <Label>Price</Label>
                   <Input
@@ -289,6 +292,16 @@ export default function ShopeeImportForm({
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
+
+                <div>
+                  <Label>Sale Price</Label>
+                  <Input
+                    type="number"
+                    value={salePrice}
+                    onChange={(e) => setSalePrice(e.target.value)}
+                  />
+                </div>
+
                 <div>
                   <Label>Cost Price</Label>
                   <Input

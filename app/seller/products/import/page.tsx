@@ -1,7 +1,6 @@
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
-import React from "react";
-import ShopeeImportForm from "./ShopeeImportForm";
 import prisma from "@/app/db/prisma";
+import ImportForm from "./ImportForm";
 
 export default async function ShopeeImportPage() {
   const shopeeSupplier = await prisma.supplier.findFirst({
@@ -24,7 +23,7 @@ export default async function ShopeeImportPage() {
       <SellerPageTitle title="Import Shopee Product" />
 
       <div className="max-w-3xl mt-6">
-        <ShopeeImportForm supplierId={shopeeSupplier.id} />
+        <ImportForm supplierId={shopeeSupplier.id} />
       </div>
     </div>
   );

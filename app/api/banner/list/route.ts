@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import redis from "@/lib/redis";
-
-const CACHE_KEY = "banner:list:active";
-const CACHE_TTL = 60 * 5; // 5 minutes
+import { HEADER_SLIDER_CACHE_KEY } from "@/lib/cacheKeys";
+import { CACHE_TTL } from "@/lib/cacheTTL";
 
 export async function GET() {
   try {
     // 1. Try Redis
-    const cached = await redis.get(CACHE_KEY);
+    const cached = await redis.get(HEADER_SLIDER_CACHE_KEY);
 
     if (cached) {
       return NextResponse.json(JSON.parse(cached));
@@ -38,10 +37,10 @@ export async function GET() {
 
     // 3. Save to Redis
     await redis.set(
-      CACHE_KEY,
+      HEADER_SLIDER_CACHE_KEY,
       JSON.stringify(response),
       "EX",
-      CACHE_TTL
+      CACHE_TTL.BANNERS
     );
 
     return NextResponse.json(response);

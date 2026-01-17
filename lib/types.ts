@@ -23,7 +23,6 @@ export interface PersistedVariant {
   costPrice: number | null;
 }
 
-
 export type Pagination = {
   page: number;
   limit: number;
@@ -32,7 +31,6 @@ export type Pagination = {
   hasPrevPage: boolean;
   hasNextPage: boolean;
 };
-
 
 // ==========================
 // Cart Types
@@ -63,11 +61,11 @@ export interface Variant extends PersistedVariant {
   imageIndex: number | null;
 }
 
-
 export interface Product {
   id: string;
   name: string;
-  description: string | null; // ✅ matches Prisma
+  description: string | null;
+  specs: string | null;
   category: string;
   brand: string;
   sku?: string | null;
@@ -80,6 +78,42 @@ export interface Product {
   variants: Variant[];
   type: string;
   attributes: string[];
+}
+
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  product: Product;
+}
+
+interface Address {
+  id: string;
+  fullName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2?: string;
+  region: string;
+  province: string;
+  city: string;
+  area: string;
+  zipcode: string;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  shippingAddressId: string | null;
+
+  amount: number;
+  isPaid: boolean;
+  shippingMethod: string;
+  orderDate: string; // ISO date string returned by Prisma
+
+  // user: UserData;
+  shippingAddress: Address | null;
+  items: OrderItem[];
 }
 
 export interface ProductType extends Product {
@@ -124,3 +158,27 @@ export type Supplier = {
   type: string;
   externalId?: string | null;
 };
+
+// ==========================
+// Header Slider types
+// ==========================
+
+type PngSlide = {
+  id: number;
+  type: "png";
+  title: string;
+  offer: string;
+  buttonText1: string;
+  buttonText2: string;
+  imgSrc: string;
+};
+
+type JpgSlide = {
+  id: number;
+  type: "jpg";
+  desktopImg: string;
+  tabletImg: string;
+  mobileImg: string;
+};
+
+export type Slide = PngSlide | JpgSlide;

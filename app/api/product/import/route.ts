@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     type, // "SIMPLE" | "VARIATION"
     attributes,
     price,
+    salePrice,
     costPrice,
     stock,
     variants,
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
         search_keys: normalizedSearchKeys,
 
         price: Math.round(Number(price) * 100),
+        salePrice: Math.round(Number(salePrice) * 100),
         costPrice: Math.round(Number(costPrice) * 100),
         stock: stock ?? 0,
       },

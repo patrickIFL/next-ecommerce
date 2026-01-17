@@ -5,9 +5,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { PhilippinePeso } from "lucide-react";
+const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
 function AnalyticsPage() {
-  const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
@@ -141,7 +141,7 @@ const BestSellers = () => {
             </div>
 
             <div className="ml-auto text-xs font-medium">
-              ${(item.revenue / 100).toFixed(2)}
+              {currency}{(item.revenue / 100).toFixed(2)}
             </div>
           </div>
         ))}
@@ -194,13 +194,13 @@ const UnfulfilledOrders = () => {
                 {order.itemsCount} items • {order.shippingMethod}
               </p>
               <p className="text-xs text-muted-foreground">
-                {order.orderDate.toLocaleDateString()}
+                {/* {order.orderDate.toLocaleDateString()} */}
               </p>
             </div>
 
             <div className="ml-auto text-right">
               <p className="text-xs font-medium">
-                ${(order.amount / 100).toFixed(2)}
+                {currency}{(order.amount / 100).toFixed(2)}
               </p>
               <p className="text-[10px] text-orange-500">
                 Pending fulfillment

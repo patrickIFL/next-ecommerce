@@ -50,34 +50,13 @@ import {
 } from "../ui/carousel";
 import ImageBanner from "./ImageBanner";
 import { Skeleton } from "../ui/skeleton";
-
-type PngSlide = {
-  id: number;
-  type: "png";
-  title: string;
-  offer: string;
-  buttonText1: string;
-  buttonText2: string;
-  imgSrc: string;
-};
-
-type JpgSlide = {
-  id: number;
-  type: "jpg";
-  desktopImg: string;
-  tabletImg: string;
-  mobileImg: string;
-};
-
-type Slide = PngSlide | JpgSlide;
+import { Slide } from "@/lib/types";
 
 const fetchBanners = async (): Promise<Slide[]> => {
   const res = await fetch("/api/banner/list");
   if (!res.ok) throw new Error("Failed to fetch banners");
   return res.json();
 };
-
-
 
 const HeaderSlider = () => {
   /* ---------------------------------------------
