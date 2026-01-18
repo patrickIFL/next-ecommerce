@@ -454,22 +454,124 @@ const IndividualProduct = ({ product }: { product: Product }) => {
         </div>
       </div>
 
+      {(product.specs || product.desc_img.length > 0) && (
+        <hr className="bg-gray-600 my-6" />
+      )}
+
+      <div className="flex flex-col gap-10">
+        <div className="flex md:flex-row flex-col">
+          <div className="flex-1 px-5">
+            {product.specs && (
+              <div className="bg-accent p-6 rounded-lg shadow-lg">
+                <h3 className="text-2xl text-foreground font-medium mb-4 underline underline-offset-4">
+                  Product Specifications
+                </h3>
+                <p className="whitespace-pre-line text-foreground">
+                  {product.specs || ""}
+                </p>
+              </div>
+            )}
+
+            {product.specs && product.desc_img.length > 0 && (
+              <hr className="bg-gray-600 my-6" />
+            )}
+
+            {product.desc_img.length > 0 && (
+              <div className="bg-accent p-6 rounded-lg shadow-lg">
+                <h3 className="text-2xl text-foreground font-medium mb-4 underline underline-offset-4">
+                  Product Gallery
+                </h3>
+                {/* Product Gallery */}
+                <div className="flex flex-col gap-10">
+                  {product.desc_img.map((img, index) => {
+                    const safeImg = isValidImageUrl(img)
+                      ? img
+                      : PLACEHOLDER_IMAGE;
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => setMainImage(safeImg)}
+                        className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+                      >
+                        <Image
+                          src={safeImg}
+                          alt="thumbnail"
+                          className="w-full h-full object-cover"
+                          width={1280}
+                          height={720}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* SUGGESTED PRODUCTS */}
+          <div className="flex flex-col">
+            {/* Header */}
+            <div className="flex flex-col mb-4">
+              <p className="text-3xl font-medium items-center">
+                Suggested{" "}
+                <span className="font-medium text-primary">Products</span>
+              </p>
+              <div className="w-28 h-0.5 bg-primary mt-2" />
+            </div>
+
+            {/* SUGGESTED PRODUCTS GRID */}
+            {(() => {
+              const isSingleColumn =
+                !!product.specs || product.desc_img.length > 0;
+
+              const gridClass = isSingleColumn
+                ? "grid-cols-1"
+                : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
+
+              if (homeProductsLoading) {
+                return (
+                  <div className={`grid ${gridClass} gap-6 mt-6 pb-14 w-full`}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div key={i} className="flex flex-col space-y-3 w-full">
+                        <Skeleton className="w-full h-40 rounded-xl" />
+                        <Skeleton className="h-4 w-3/4 rounded-md" />
+                        <Skeleton className="h-4 w-1/2 rounded-md" />
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+
+              if (!homeProducts || homeProducts.length === 0) {
+                return (
+                  <div className="py-20 text-center text-foreground/60">
+                    No featured products available.
+                  </div>
+                );
+              }
+
+              return (
+                <div className={`grid ${gridClass} gap-6 mt-6 pb-14 w-full`}>
+                  {homeProducts.slice(0, 6).map((prod: Product) => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      wishlist={wishlist}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+
       <hr className="bg-gray-600 my-6" />
 
-      <h3 className="text-2xl font-medium mb-4 underline underline-offset-4">
-        Product Description
-      </h3>
-      <p className="whitespace-pre-line">
-        {product.specs || ""}
-      </p>
-
-      <h3 className="text-2xl font-medium mb-4 underline underline-offset-4">
-        Product Gallery
-      </h3>
-
-      {/* FEATURED PRODUCTS */}
-      <div className="flex flex-col items-center">
-        <div className="flex flex-col items-center mb-4 mt-16">
+      {/* SIMILAR PRODUCTS */}
+      <div className="flex flex-col">
+        <div className="flex flex-col mb-4 mt-16">
           <p className="text-3xl font-medium">
             Similar <span className="font-medium text-primary">Products</span>
           </p>
@@ -502,9 +604,11 @@ const IndividualProduct = ({ product }: { product: Product }) => {
         )}
 
         {!homeProductsLoading && homeProducts?.length > 0 && (
-          <button className="  px-8 py-2 mb-16 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
-            See more
-          </button>
+          <div className="w-full flex justify-center mb-16">
+            <button className="px-8 py-2 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
+              See more
+            </button>
+          </div>
         )}
       </div>
     </div>

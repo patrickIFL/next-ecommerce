@@ -70,6 +70,7 @@ export interface Product {
   brand: string;
   sku?: string | null;
   image: ImageList;
+  desc_img: ImageList;
   price: number | null;
   salePrice?: number | null;
   stock?: number | null;
