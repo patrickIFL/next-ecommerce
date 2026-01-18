@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronDown, PackageOpen } from "lucide-react";
+import { ChevronDown, PackageOpen, Truck } from "lucide-react";
 
 import Loading from "@/components/common/Loading";
 import EmptyState from "@/components/common/EmptyState";
@@ -97,71 +97,82 @@ const MyOrders: React.FC = () => {
                 return (
                   <React.Fragment key={order.id}>
                     {isOpen && (
-                      
-                    <tr>
-                      <td colSpan={6} className="py-4">
-                        <div className="w-full border-t-2 border-dashed border-primary" />
-                      </td>
-                    </tr>
+                      <tr>
+                        <td colSpan={6} className="py-4">
+                          <div className="w-full border-t-2 border-dashed border-primary" />
+                        </td>
+                      </tr>
                     )}
 
                     {/* ================= PARENT ROW ================= */}
                     <tr className="border-b border-accent align-top">
                       {/* ORDER */}
                       <td className="p-3">
-                        <div className="flex gap-3">
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Box_icon isOpen={isOpen} />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>View Order Details</p>
-                            </TooltipContent>
-                          </Tooltip>
+                        <div className="flex flex-col">
+                          <div className="flex gap-3">
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Box_icon isOpen={isOpen} />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View Order Details</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <div className="flex flex-col gap-1">
+                              <div className="text-sm flex flex-col">
+                                <div className="min-w-[250px] flex justify-between">
+                                  {isOpen ? (
+                                    <>
+                                      <span className="text-foreground">
+                                        Order Reference ID
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="text-foreground max-w-[200px] truncate">
+                                        {firstProduct?.name}
+                                      </span>
 
-                          <div className="flex flex-col gap-1">
-                            <div className="text-sm flex flex-col">
-                              <div className="min-w-[250px] flex justify-between">
-                                {isOpen ? (
-                                  <>
-                                    <span className="text-foreground">
-                                      Order Reference ID
-                                    </span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <span className="text-foreground max-w-[200px] truncate">
-                                      {firstProduct?.name}
-                                    </span>
+                                      <span className="text-foreground/50">
+                                        × {firstItem.quantity}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
 
-                                    <span className="text-foreground/50">
-                                      × {firstItem.quantity}
-                                    </span>
-                                  </>
+                                {isOpen && (
+                                  <span className="text-xs text-foreground/50">
+                                    #{order.id}
+                                  </span>
+                                )}
+
+                                {firstVariant && !isOpen && (
+                                  <p className="text-xs text-foreground/50">
+                                    {firstVariant.name.split(" - ")[0].trim()}{" "}
+                                  </p>
                                 )}
                               </div>
-
-                              {isOpen && (
-                                <span className="text-xs text-foreground/50">
-                                  #{order.id}
-                                </span>
-                              )}
-
-                              {firstVariant && !isOpen && (
-                                <p className="text-xs text-foreground/50">
-                                  {firstVariant.name.split(" - ")[0].trim()}{" "}
-                                </p>
-                              )}
+                              {/* MAX CIRCLES = 5, to change, numProducts, map slice */}
+                              <ProductCircles
+                                numProducts={Math.max(
+                                  order.items.length - 5,
+                                  0
+                                )}
+                                className="scale-75 origin-left"
+                                productUrls={productUrls}
+                                toggleList={() =>
+                                  setOpenOrder(isOpen ? null : order.id)
+                                }
+                              />
                             </div>
-                            {/* MAX CIRCLES = 5, to change, numProducts, map slice */}
-                            <ProductCircles
-                              numProducts={Math.max(order.items.length - 5, 0)}
-                              className="scale-75 origin-left"
-                              productUrls={productUrls}
-                              toggleList={() =>
-                                setOpenOrder(isOpen ? null : order.id)
+                          </div>
+                          <div className="flex items-center gap-3 text-teal-500">
+                            <Truck strokeWidth={1}/>
+                            <span>
+                              {
+                                "Your parcel has arrived at the delivery hub : Zambales Hub"
                               }
-                            />
+                            </span>
                           </div>
                         </div>
                       </td>
@@ -169,7 +180,7 @@ const MyOrders: React.FC = () => {
                       {/* SHIPPING STATUS */}
                       <td className="p-3">
                         <div className="px-0.5 py-0.5 border-amber-300 text-amber-500 border text-center rounded-md bg-amber-300/20">
-                          PREPARING
+                          TO RECEIVE
                         </div>
                       </td>
                       {/* SHIPPING */}
