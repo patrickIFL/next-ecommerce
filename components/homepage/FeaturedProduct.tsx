@@ -14,8 +14,11 @@ import EmptyState from "../common/EmptyState";
 import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
 import SectionTitle from "../common/SectionTitle";
+import { isValidImageUrl } from "@/lib/utils";
 
 const CARD_HEIGHT = 360;
+
+const PLACEHOLDER_IMAGE = "/product-placeholder.jpg";
 
 type FeaturedProductProps = {
   products: Array<{
@@ -34,7 +37,7 @@ const FeaturedProduct = ({ products }: FeaturedProductProps) => {
     <section className="mt-14 flex flex-col items-center w-full">
       {/* HEADER */}
       <SectionTitle title="Featured Products" />
-      
+
       {products.length === 0 ? (
         <EmptyState
           icon={StarOff}
@@ -44,7 +47,10 @@ const FeaturedProduct = ({ products }: FeaturedProductProps) => {
           onAction={() => router.push("/seller/product-list")}
         />
       ) : (
-        <Carousel opts={{ align: "start" }} className="relative w-[70vw] sm:w-[80vw]">
+        <Carousel
+          opts={{ align: "start" }}
+          className="relative w-[70vw] sm:w-[80vw]"
+        >
           <CarouselContent>
             {products.map((product) => (
               <CarouselItem
@@ -56,7 +62,11 @@ const FeaturedProduct = ({ products }: FeaturedProductProps) => {
                   style={{ height: CARD_HEIGHT }}
                 >
                   <Image
-                    src={product.image[0]}
+                    src={
+                      isValidImageUrl(product.image?.[0])
+                        ? product.image[0]
+                        : PLACEHOLDER_IMAGE
+                    }
                     alt={product.name}
                     fill
                     sizes="(max-width: 1024px) 100vw, 25vw"

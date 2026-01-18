@@ -5,11 +5,10 @@ import HomeProducts from "@/components/homepage/HomeProducts";
 import Newsletter from "@/components/homepage/Newsletter";
 import prisma from "../db/prisma";
 import redis from "@/lib/redis";
-import { cache } from "react";
 import { FEATURED_PRODUCTS_CACHE_KEY, HOME_PRODUCTS_CACHE_KEY } from "@/lib/cacheKeys";
 import { CACHE_TTL } from "@/lib/cacheTTL";
 
-const fetchHomeProducts = cache(async () => {
+const fetchHomeProducts = async () => {
   const cached = await redis.get(HOME_PRODUCTS_CACHE_KEY);
 
   if (cached) {
@@ -31,9 +30,9 @@ const fetchHomeProducts = cache(async () => {
   );
 
   return products;
-});
+};
 
-const fetchFeaturedProducts = cache(async () => {
+const fetchFeaturedProducts = async () => {
   const cached = await redis.get(FEATURED_PRODUCTS_CACHE_KEY);
 
   if (cached) {
@@ -63,7 +62,7 @@ const fetchFeaturedProducts = cache(async () => {
   );
 
   return products;
-});
+};
 
 export default async function Home() {
   const [homeProducts, featuredProducts] = await Promise.all([
