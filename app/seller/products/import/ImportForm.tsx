@@ -22,27 +22,25 @@ import { VariationModal } from "@/components/seller/VariationModal";
 import { SquareCheckBig, SquarePen } from "lucide-react";
 import CategoryComboBox from "@/components/common/CategoryComboBox";
 import BrandComboBox from "@/components/common/BrandComboBox";
+import { ImportVariant } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
-type ImportVariant = {
-  name: string;
-  price: number;
-  costPrice: number;
-  stock: number;
-  imageIndex?: number;
-};
-
-export default function ImportForm({
-  supplierId,
-}: {
-  supplierId: string;
-}) {
+export default function ImportForm({ supplierId }: { supplierId: string }) {
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState<"SIMPLE" | "VARIATION">("SIMPLE");
 
   // Product
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [specs, setSpecs] = useState("");
   const [images, setImages] = useState("");
+  const [descImages, setDescImages] = useState("");
+
+
+  // Booleans
+  const [isArchived, setIsArchived] = useState(false);
+  const [isOnSale, setIsOnSale] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(false);
 
   // Simple
   const [price, setPrice] = useState("");
@@ -90,7 +88,7 @@ export default function ImportForm({
           sku: "",
           price: String(v.price), // ✅ string
           costPrice: String(v.costPrice),
-          salePrice: "",
+          salePrice: String(v.costPrice),
           stock: String(v.stock), // ✅ string
           imageIndex: v.imageIndex ?? 0,
         }))
@@ -138,7 +136,15 @@ export default function ImportForm({
         category,
         brand,
         description,
+        specs,
+        isArchived,
+        isOnSale,
+        isFeatured,
         images: images
+          .split("\n")
+          .map((i) => i.trim())
+          .filter(Boolean),
+        descImages: descImages
           .split("\n")
           .map((i) => i.trim())
           .filter(Boolean),
@@ -166,6 +172,7 @@ export default function ImportForm({
         payload.variants = finalVariants.map((v) => ({
           name: v.name,
           price: Number(v.price),
+          salePrice: Number(v.salePrice),
           costPrice: Number(v.costPrice),
           stock: Number(v.stock),
         }));
@@ -186,13 +193,18 @@ export default function ImportForm({
       // Reset
       setName("");
       setDescription("");
+      setSpecs("");
       setImages("");
+      setDescImages("");
       setPrice("");
       setSalePrice("");
       setCostPrice("");
       setStock("");
       setVariationA("");
       setVariationB("");
+      setIsArchived(false);
+      setIsFeatured(false);
+      setIsOnSale(false);
       setFinalVariants([]);
       setType("SIMPLE");
     } catch (err: any) {
@@ -259,6 +271,16 @@ export default function ImportForm({
               />
             </div>
 
+            {/* Specs */}
+            <div className="space-y-2">
+              <Label>Product Specifications</Label>
+              <Textarea
+                value={specs}
+                onChange={(e) => setSpecs(e.target.value)}
+                rows={4}
+              />
+            </div>
+
             {/* Search keys */}
             <div className="space-y-2">
               <Label>Search Keys</Label>
@@ -276,6 +298,17 @@ export default function ImportForm({
               <Textarea
                 value={images}
                 onChange={(e) => setImages(e.target.value)}
+                placeholder="One image URL per line"
+                rows={4}
+              />
+            </div>
+
+            {/* Descriptive Images */}
+            <div className="space-y-2">
+              <Label>Descriptive Images</Label>
+              <Textarea
+                value={descImages}
+                onChange={(e) => setDescImages(e.target.value)}
                 placeholder="One image URL per line"
                 rows={4}
               />
@@ -441,6 +474,35 @@ export default function ImportForm({
               </div>
             </Activity>
 
+            <div className="flex w-full justify-between">
+              <div className="flex flex-1 items-center gap-3">
+                <Checkbox
+                  id="isArchived"
+                  checked={isArchived}
+                  onCheckedChange={(v) => setIsArchived(Boolean(v))}
+                />
+                <Label htmlFor="isArchived">Archived</Label>
+              </div>
+
+              <div className="flex flex-1 items-center gap-3">
+                <Checkbox
+                  id="isOnSale"
+                  checked={isOnSale}
+                  onCheckedChange={(v) => setIsOnSale(Boolean(v))}
+                />
+                <Label htmlFor="isOnSale">On Sale</Label>
+              </div>
+
+              <div className="flex flex-1 items-center gap-3">
+                <Checkbox
+                  id="isFeatured"
+                  checked={isFeatured}
+                  onCheckedChange={(v) => setIsFeatured(Boolean(v))}
+                />
+                <Label htmlFor="isFeatured">Featured</Label>
+              </div>
+            </div>
+
             <Button type="submit" disabled={loading}>
               {loading ? "Importing..." : "Import Product"}
             </Button>
@@ -461,6 +523,7 @@ export default function ImportForm({
             confirmed.map((v) => ({
               name: v.name,
               price: Number(v.price),
+              salePrice: Number(v.price),
               costPrice: Number(v.costPrice),
               stock: Number(v.stock),
             }))

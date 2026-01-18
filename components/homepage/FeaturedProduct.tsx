@@ -13,6 +13,7 @@ import { SquareArrowOutUpRight, StarOff } from "lucide-react";
 import EmptyState from "../common/EmptyState";
 import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/navigation";
+import SectionTitle from "../common/SectionTitle";
 
 const CARD_HEIGHT = 360;
 
@@ -32,11 +33,8 @@ const FeaturedProduct = ({ products }: FeaturedProductProps) => {
   return (
     <section className="mt-14 flex flex-col items-center w-full">
       {/* HEADER */}
-      <div className="flex flex-col items-center">
-        <p className="text-3xl font-medium">Featured Products</p>
-        <div className="w-28 h-0.5 bg-primary my-5" />
-      </div>
-
+      <SectionTitle title="Featured Products" />
+      
       {products.length === 0 ? (
         <EmptyState
           icon={StarOff}

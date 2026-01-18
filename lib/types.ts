@@ -160,6 +160,15 @@ export type Supplier = {
   externalId?: string | null;
 };
 
+export type ImportVariant = {
+  name: string;
+  price: number;
+  salePrice: number;
+  costPrice: number;
+  stock: number;
+  imageIndex?: number;
+};
+
 // ==========================
 // Header Slider types
 // ==========================

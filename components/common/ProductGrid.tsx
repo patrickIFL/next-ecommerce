@@ -23,7 +23,7 @@ const ProductGrid = ({
   emptyIcon,
   emptyTitle = "No Products Found",
   emptyDescription = "There are no products to display at the moment.",
-  gridClassName = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full",
+  gridClassName = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full",
 }: Props) => {
   const [count, setCount] = useState(4);
   const { wishlist } = useWishlist();

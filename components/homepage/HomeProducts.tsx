@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Archive } from "lucide-react";
 import ProductGrid from "@/components/common/ProductGrid";
 import { Product } from "@/lib/types";
+import SectionTitle from "../common/SectionTitle";
 
 const HomeProducts = ({ homeProducts }:{ homeProducts:Product[] }) => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const HomeProducts = ({ homeProducts }:{ homeProducts:Product[] }) => {
 
   return (
     <section className="flex flex-col items-center pt-14 w-full">
-      <p className="text-2xl font-medium text-left w-full">Popular Products</p>
+      <SectionTitle title="Popular Products" />
 
       <ProductGrid
         products={products}

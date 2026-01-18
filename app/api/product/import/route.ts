@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
     supplierId,
     name,
     description,
+    specs,
     images,
+    descImages,
     type, // "SIMPLE" | "VARIATION"
     attributes,
     price,
@@ -30,6 +32,9 @@ export async function POST(req: NextRequest) {
     search_keys,
     category,
     brand,
+    isArchived,
+    isOnSale,
+    isFeatured,
   } = body;
 
   const normalizedSearchKeys = Array.isArray(search_keys)
@@ -68,7 +73,9 @@ export async function POST(req: NextRequest) {
         sellerId: userId,
         name,
         description,
+        specs,
         image: images ?? [],
+        desc_img: descImages ?? [],
         type: "SIMPLE",
         supplierId,
 
@@ -80,6 +87,10 @@ export async function POST(req: NextRequest) {
         salePrice: Math.round(Number(salePrice) * 100),
         costPrice: Math.round(Number(costPrice) * 100),
         stock: stock ?? 0,
+
+        isArchived: Boolean(isArchived),
+        isOnSale: Boolean(isOnSale),
+        isFeatured: Boolean(isFeatured),
       },
     });
 
@@ -103,8 +114,10 @@ export async function POST(req: NextRequest) {
         sellerId: userId,
         name,
         description,
+        specs,
         attributes,
         image: images ?? [],
+        desc_img: descImages ?? [],
         type: "VARIATION",
         supplierId,
 
@@ -114,6 +127,9 @@ export async function POST(req: NextRequest) {
 
         costPrice: null,
         stock: null,
+        isArchived: Boolean(isArchived),
+        isOnSale: Boolean(isOnSale),
+        isFeatured: Boolean(isFeatured),
 
         variants: {
           create: variants.map((v: Variant) => {

@@ -47,7 +47,6 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   // const { featuredProducts, featuredProductsLoading } = useFeaturedProducts();
   const { homeProducts, homeProductsLoading } = useHomeProducts();
   const { wishlist } = useWishlist();
-
   const { handleAddToCart, addToCartLoading, handleBuyNow, buyNowLoading } =
     useCartHook();
 
@@ -491,8 +490,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
                     return (
                       <div
                         key={index}
-                        onClick={() => setMainImage(safeImg)}
-                        className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+                        className="rounded-lg overflow-hidden bg-gray-500/10"
                       >
                         <Image
                           src={safeImg}
@@ -527,7 +525,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
 
               const gridClass = isSingleColumn
                 ? "grid-cols-1"
-                : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
+                : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
 
               if (homeProductsLoading) {
                 return (
@@ -596,7 +594,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
           </div>
         ) : (
           /* ================= DATA STATE ================= */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6 pb-14 w-full">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
             {homeProducts.slice(0, 6).map((prod: Product, index: number) => (
               <ProductCard key={index} product={prod} wishlist={wishlist} />
             ))}
@@ -605,7 +603,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
 
         {!homeProductsLoading && homeProducts?.length > 0 && (
           <div className="w-full flex justify-center mb-16">
-            <button className="px-8 py-2 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
+            <button onClick={() => {router.push('/all/products')}} className="px-8 py-2 border border-foreground rounded text-foreground hover:bg-foreground hover:text-background transition">
               See more
             </button>
           </div>
