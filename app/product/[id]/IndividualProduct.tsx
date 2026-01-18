@@ -19,6 +19,7 @@ import { VariationComboBox } from "@/components/product-page/VariationComboBox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Product, Variant } from "@/lib/types";
 import { useHomeProducts } from "@/hooks/FetchProduct/useHomeProducts";
+import { useRouter } from "next/navigation";
 
 const PLACEHOLDER_IMAGE = "/product-placeholder.jpg";
 
@@ -51,6 +52,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
     useCartHook();
 
   const currency = process.env.NEXT_PUBLIC_CURRENCY ?? "";
+  const router = useRouter();
 
   /* =========================
      CORE STATE
