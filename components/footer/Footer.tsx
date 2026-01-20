@@ -1,10 +1,13 @@
 "use client";
 
+import Facebook from "../svgs/facebook_logo";
 import NextLogo from "../svgs/NextLogo";
+import X from "../svgs/x_logo";
 import { useTheme } from "../theme-provider";
 
 const Footer = () => {
   const { isDark } = useTheme();
+  const facebook_page = process.env.NEXT_PUBLIC_FACEBOOK_PAGE;
 
   const menus = [
     {
@@ -33,20 +36,15 @@ const Footer = () => {
   return (
     <footer>
       <div className="flex flex-col md:flex-row items-start justify-center px-6 md:px-16 lg:px-32 gap-10 py-14 border-y border-gray-500/30 text-gray-500">
-
         {/* Logo + Description */}
         <div className="w-2/6">
-           {isDark ? (
-            <NextLogo size={130} />
-          ) : (
-            <NextLogo size={130}/>
-          )}
+          {isDark ? <NextLogo size={130} /> : <NextLogo size={130} />}
 
           <p className="mt-6 text-sm text-foreground">
             Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the {"industry's"} standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
+            industry. Lorem Ipsum has been the {"industry's"} standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of
+            type and scrambled it to make a type specimen book.
           </p>
         </div>
 
@@ -54,11 +52,12 @@ const Footer = () => {
         <div className="w-3/6 text-foreground flex items-center justify-center md:justify-center">
           <div className="flex w-full">
             {menus.map((menu, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center justify-start">
+              <div
+                key={index}
+                className="flex-1 flex flex-col items-center justify-start"
+              >
                 <div>
-                  <h2 className="font-medium mb-5">
-                    {menu.title}
-                  </h2>
+                  <h2 className="font-medium mb-5">{menu.title}</h2>
                   <ul className="text-sm space-y-2">
                     {menu.list.map((item, idx) => (
                       <li key={idx}>
@@ -84,13 +83,31 @@ const Footer = () => {
             <div className="text-sm space-y-2 text-foreground">
               <p>{contactNumber}</p>
               <p>{contactEmail}</p>
+              <div className="flex gap-2">
+                <a href={facebook_page} target="_blank">
+                  <Facebook className="h-5 w-5" />
+                </a>
+
+                <a href={facebook_page} target="_blank">
+                  <X className="h-5 w-5" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <p className="py-4 text-center text-xs md:text-sm">
-        Copyright 2025 © <a href="https://patrickperez.onrender.com/" target="_blank" className="hover:underline">Xepheree</a> All Rights Reserved.
+        © {new Date().getFullYear()}{" "}
+        <a
+          href="https://patrickperez.onrender.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          Xepheree
+        </a>{" "}
+        All Rights Reserved.
       </p>
     </footer>
   );

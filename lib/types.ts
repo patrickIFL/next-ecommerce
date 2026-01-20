@@ -87,6 +87,7 @@ export interface OrderItem {
   productId: string;
   quantity: number;
   product: Product;
+  variant?: Variant | null;
 }
 
 interface Address {
