@@ -1,10 +1,15 @@
 import { Package, PackageOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const primary = "var(--primary)";
 
-function Box_icon({ isOpen }: { isOpen: boolean }) {
+function Box_icon({ isOpen, orderId }: { isOpen: boolean, orderId: string }) {
+  const router = useRouter();
   return (
     <div
+    onClick={() => {
+      router.push(`/order/${orderId}`)
+    }}
       className={`${
         isOpen ? "bg-primary/20" : "bg-primary/10"
       } transition cursor-pointer group min-w-[73px] min-h-[73px] max-h-[73px] border border-primary/90 rounded-md flex items-center justify-center`}

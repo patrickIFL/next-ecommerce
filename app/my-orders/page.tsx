@@ -112,7 +112,7 @@ const MyOrders: React.FC = () => {
                           <div className="flex gap-3">
                             <Tooltip>
                               <TooltipTrigger>
-                                <Box_icon isOpen={isOpen} />
+                                <Box_icon orderId={order.id} isOpen={isOpen} />
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>View Order Details</p>
