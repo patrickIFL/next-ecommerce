@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
+import { useRouter } from "next/navigation";
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const [openOrder, setOpenOrder] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     data: allOrders = [],
@@ -100,8 +102,16 @@ const Orders: React.FC = () => {
                       <td className="p-3">
                         <div className="flex gap-3">
                           <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger asChild>
+                              <button 
+                              type="button"
+                              onClick={() => {
+                                router.push(`orders/${order.id}`)
+                              }}
+                              >
+
                               <Box_icon isOpen={isOpen} />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>View Order</p>

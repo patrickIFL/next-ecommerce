@@ -111,8 +111,15 @@ const MyOrders: React.FC = () => {
                         <div className="flex flex-col">
                           <div className="flex gap-3">
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Box_icon orderId={order.id} isOpen={isOpen} />
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    router.push(`order/${order.id}`);
+                                  }}
+                                >
+                                  <Box_icon isOpen={isOpen} />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>View Order Details</p>
@@ -148,7 +155,9 @@ const MyOrders: React.FC = () => {
 
                                 {firstVariant && !isOpen && (
                                   <p className="text-xs text-foreground/50">
-                                    {firstVariant.name.split(" - ")[0].trim()}{" "}
+                                    {firstVariant.name
+                                      .split(" - ")[0]
+                                      .trim()}{" "}
                                   </p>
                                 )}
                               </div>
@@ -156,7 +165,7 @@ const MyOrders: React.FC = () => {
                               <ProductCircles
                                 numProducts={Math.max(
                                   order.items.length - 5,
-                                  0
+                                  0,
                                 )}
                                 className="scale-75 origin-left"
                                 productUrls={productUrls}
@@ -167,7 +176,7 @@ const MyOrders: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-3 text-teal-500">
-                            <Truck strokeWidth={1}/>
+                            <Truck strokeWidth={1} />
                             <span>
                               {
                                 "Your parcel has arrived at the delivery hub : Zambales Hub"
@@ -228,7 +237,7 @@ const MyOrders: React.FC = () => {
                                     year: "numeric",
                                     month: "short",
                                     day: "2-digit",
-                                  }
+                                  },
                                 )}
                               </td>
                             </tr>
@@ -240,7 +249,7 @@ const MyOrders: React.FC = () => {
                                   {
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                  }
+                                  },
                                 )}
                               </td>
                             </tr>
@@ -330,15 +339,17 @@ const MyOrders: React.FC = () => {
                                   const unitPrice: number = (() => {
                                     if (variant) {
                                       return product.isOnSale
-                                        ? variant.salePrice ??
+                                        ? (variant.salePrice ??
                                             variant.price ??
-                                            0
-                                        : variant.price ?? 0;
+                                            0)
+                                        : (variant.price ?? 0);
                                     }
 
                                     return product.isOnSale
-                                      ? product.salePrice ?? product.price ?? 0
-                                      : product.price ?? 0;
+                                      ? (product.salePrice ??
+                                          product.price ??
+                                          0)
+                                      : (product.price ?? 0);
                                   })();
 
                                   const imageIndex = variant?.imageIndex ?? 0;
