@@ -644,7 +644,7 @@ model Service {
   name        	  String			// Name of the service
   short_desc 	  String?			// short description for the CARD
   long_desc       String?			// long description for PAGE 
-  desc_img        String[] @default([])		// descriptive images
+  descImg        String[] @default([])		// descriptive images
   
   category    String   @default("Uncategorized") // type of service (eg: webdev, vid-ed, wood-work)
   image       String[]				 // basic product gallery
@@ -652,7 +652,7 @@ model Service {
   price       Int?				// will be removed: prospect: contract
   salePrice   Int?				// will be removed: prospect: contract
 
-  search_keys String[]    @default([])
+  searchKeys String[]    @default([])
   sku         String?
 
   stock       Int?				// no more stock
@@ -693,7 +693,7 @@ eg. [cat] = Web Development, [service] = Landing Page
   @@index([supplierId])
   @@index([sellerId])
   @@index([category])
-  @@index([search_keys], type: Gin)
+  @@index([searchKeys], type: Gin)
 }
 
 // Instead of Order, It will now become a Contract

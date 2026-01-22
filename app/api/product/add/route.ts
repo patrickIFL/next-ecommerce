@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const rawSku = formData.get("sku") as string | null;
     const sku = rawSku && rawSku.trim() !== "" ? rawSku.trim() : null;
 
-    const searchKeysRaw = formData.get("search_keys") as string | null;
+    const searchKeysRaw = formData.get("searchKeys") as string | null;
     const variationsRaw = formData.get("variations");
 
     if (!name || !category || !brand) {
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
 
     /* ================= SEARCH KEYS ================= */
-    const search_keys = searchKeysRaw ? JSON.parse(searchKeysRaw) : [];
+    const searchKeys = searchKeysRaw ? JSON.parse(searchKeysRaw) : [];
 
     /* ================= ATTRIBUTES ================= */
     const attributes = attributesRaw ? JSON.parse(attributesRaw) : [];
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
           category,
           type,
           image: imageUrls,
-          search_keys,
+          searchKeys,
           attributes,
           sku,
           price: type === "SIMPLE" ? Math.round(Number(price) * 100) : null,

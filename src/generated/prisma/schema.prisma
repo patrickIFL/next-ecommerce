@@ -9,7 +9,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User
+////////////////////
+/// ENUMS
+////////////////////
+
+enum ProductType {
+  SIMPLE
+  VARIATION
+}
+
+enum SupplierType {
+  SHOPEE
+  LAZADA
+  TIKTOK
+  OWNED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  AWAITING_SELLER_CONFIRMATION
+  CONFIRMED
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum FulfillmentStatus {
+  AWAITING_CONFIRMATION
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum BannerType {
+  CONTENT
+  RESPONSIVE_IMAGE
+}
+
+enum ImageFormat {
+  PNG
+  JPG
+  WEBP
+}
+
+////////////////////
+/// USER & AUTH
+////////////////////
+
 model User {
   id        String   @id @default(cuid())
   name      String
@@ -26,17 +82,9 @@ model User {
   payments  Payment[]
 }
 
-enum ProductType {
-  SIMPLE
-  VARIATION
-}
-
-enum SupplierType {
-  SHOPEE
-  LAZADA
-  TIKTOK
-  OWNED
-}
+////////////////////
+/// SUPPLIERS
+////////////////////
 
 model Supplier {
   id         String       @id @default(cuid())
@@ -48,66 +96,67 @@ model Supplier {
   products Product[]
 }
 
+////////////////////
+/// PRODUCTS
+////////////////////
+
 model Product {
-  id          String   @id @default(cuid())
-  sellerId    String
+  id         String  @id @default(cuid())
+  sellerId   String
+  supplierId String?
+
   name        String
   description String?
   specs       String?
-  desc_img    String[] @default([])
+  descImg     String[] @default([])
+  image       String[]
 
-  category String   @default("Uncategorized")
-  brand    String   @default("Generic")
-  image    String[]
+  category  String      @default("Uncategorized")
+  brand     String      @default("Generic")
+  sku       String?     @unique
+  price     Int?
+  salePrice Int?
+  costPrice Int?
+  stock     Int?
+  type      ProductType @default(SIMPLE)
 
-  price       Int?
-  salePrice   Int?
-  search_keys String[]    @default([])
-  sku         String?
-  stock       Int?
-  type        ProductType @default(SIMPLE)
-  isArchived  Boolean     @default(false)
-  isFeatured  Boolean     @default(false)
-  isOnSale    Boolean?    @default(false)
-  attributes  String[]    @default(["VarA", "VarB"])
+  searchKeys String[] @default([])
+  attributes String[] @default([])
 
-  supplierId String?
-
-  // Pricing control
-  costPrice Int? // what YOU pay supplier
+  isArchived Boolean @default(false)
+  isFeatured Boolean @default(false)
+  isOnSale   Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders            OrderItem[]
-  wishlist          Wishlist[]
-  seller            User               @relation(fields: [sellerId], references: [id])
-  cartItems         CartItem[]
-  stockReservations StockReservation[]
-  variants          ProductVariant[]
-  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
+  seller   User      @relation(fields: [sellerId], references: [id], map: "fk_product_seller")
+  supplier Supplier? @relation(fields: [supplierId], references: [id], map: "fk_product_supplier")
 
-  @@unique([sku])
-  @@index([supplierId])
+  variants          ProductVariant[]
+  cartItems         CartItem[]
+  wishlist          Wishlist[]
+  orderItems        OrderItem[]
+  stockReservations StockReservation[]
+
   @@index([sellerId])
+  @@index([supplierId])
   @@index([category])
-  @@index([search_keys], type: Gin)
 }
 
 model ProductVariant {
-  id         String  @id @default(cuid())
-  productId  String
+  id        String @id @default(cuid())
+  productId String
+
   name       String
   sku        String? @unique
   price      Int?
   salePrice  Int?
+  costPrice  Int?
   stock      Int
   imageIndex Int?
 
-  // Supplier cost
-  costPrice Int?
-
-  product           Product            @relation(fields: [productId], references: [id])
+  product           Product            @relation(fields: [productId], references: [id], map: "fk_variant_product")
   cartItems         CartItem[]
   orderItems        OrderItem[]
   stockReservations StockReservation[]
@@ -115,21 +164,9 @@ model ProductVariant {
   @@index([productId])
 }
 
-model Wishlist {
-  id        String @id @default(cuid())
-  userId    String
-  productId String
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, productId])
-  @@index([userId])
-  @@index([productId])
-}
+////////////////////
+/// CART & WISHLIST
+////////////////////
 
 model CartItem {
   id        String  @id @default(cuid())
@@ -139,9 +176,9 @@ model CartItem {
 
   quantity Int @default(1)
 
-  user    User            @relation(fields: [userId], references: [id])
-  product Product         @relation(fields: [productId], references: [id])
-  variant ProductVariant? @relation(fields: [variantId], references: [id])
+  user    User            @relation(fields: [userId], references: [id], map: "fk_cart_user")
+  product Product         @relation(fields: [productId], references: [id], map: "fk_cart_product")
+  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_cart_variant")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -149,53 +186,41 @@ model CartItem {
   @@unique([userId, productId, variantId])
 }
 
-enum ShippingStatus {
-  pending
-  toShip
-  toReceive
-  toRate
+model Wishlist {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+
+  user    User    @relation(fields: [userId], references: [id], map: "fk_wishlist_user")
+  product Product @relation(fields: [productId], references: [id], map: "fk_wishlist_product")
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
 }
+
+////////////////////
+/// ORDERS & FSM
+////////////////////
 
 model Order {
   id                String @id @default(cuid())
   userId            String
   shippingAddressId String
 
-  amount         Int
-  isPaid         Boolean  @default(false)
-  shippingMethod String
-  shippingStatus String?  @default("pending")
-  orderDate      DateTime @default(now())
+  amount    Int
+  isPaid    Boolean     @default(false)
+  status    OrderStatus @default(PENDING_PAYMENT)
+  orderDate DateTime    @default(now())
 
-  user            User             @relation(fields: [userId], references: [id])
-  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
-  items           OrderItem[]
+  user            User            @relation(fields: [userId], references: [id], map: "fk_order_user")
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id], map: "fk_order_address")
 
-  payment Payment? // back-relation only
+  items   OrderItem[]
+  payment Payment?
 
   @@index([userId])
-}
-
-model Payment {
-  id                         String   @id @default(cuid())
-  userId                     String
-  orderId                    String   @unique // 1-to-1 with Order
-  paymongo_payment_id        String
-  paymongo_checkout_id       String
-  paymongo_payment_intent_id String
-  amount                     Int
-  tax                        Int
-  shipping                   Int
-  payer_name                 String
-  payer_email                String
-  payer_phone                String
-  date                       DateTime @default(now())
-  method                     String
-  currency                   String
-  line_items                 Json[]
-
-  user  User  @relation(fields: [userId], references: [id])
-  order Order @relation(fields: [orderId], references: [id])
+  @@index([status])
 }
 
 model OrderItem {
@@ -203,22 +228,74 @@ model OrderItem {
   orderId   String
   productId String
   variantId String?
-  quantity  Int
-  name      String
-  price     Int
+
+  quantity Int
+  name     String
+  price    Int
 
   supplierOrderId   String?
+  courier           String?
   trackingNumber    String?
-  fulfillmentStatus String?
+  fulfillmentStatus FulfillmentStatus @default(AWAITING_CONFIRMATION)
 
-  order   Order           @relation(fields: [orderId], references: [id])
-  product Product         @relation(fields: [productId], references: [id])
-  variant ProductVariant? @relation(fields: [variantId], references: [id])
+  order   Order           @relation(fields: [orderId], references: [id], map: "fk_order_item_order")
+  product Product         @relation(fields: [productId], references: [id], map: "fk_order_item_product")
+  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_order_item_variant")
+
+  statusHistory OrderItemStatusHistory[]
 
   @@index([orderId])
   @@index([productId])
-  @@index([variantId])
 }
+
+model OrderItemStatusHistory {
+  id          String @id @default(cuid())
+  orderItemId String
+
+  fromStatus FulfillmentStatus
+  toStatus   FulfillmentStatus
+  actor      String
+  note       String?
+  createdAt  DateTime          @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], map: "fk_order_item_history")
+
+  @@index([orderItemId])
+}
+
+////////////////////
+/// PAYMENTS
+////////////////////
+
+model Payment {
+  id      String @id @default(cuid())
+  userId  String
+  orderId String @unique
+
+  paymongoPaymentId       String
+  paymongoCheckoutId      String
+  paymongoPaymentIntentId String
+
+  amount   Int
+  tax      Int
+  shipping Int
+  method   String
+  currency String
+
+  payerName  String
+  payerEmail String
+  payerPhone String
+
+  lineItems Json[]
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], map: "fk_payment_user")
+  order Order @relation(fields: [orderId], references: [id], map: "fk_payment_order")
+}
+
+////////////////////
+/// SHIPPING
+////////////////////
 
 model ShippingAddress {
   id     String @id @default(cuid())
@@ -230,66 +307,62 @@ model ShippingAddress {
   area        String
   city        String
   province    String
-  orders      Order[]
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  @@index([userId])
+  user   User    @relation(fields: [userId], references: [id], map: "fk_address_user")
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+////////////////////
+/// STOCK
+////////////////////
+
 model StockReservation {
-  id        String          @id @default(cuid())
+  id        String  @id @default(cuid())
+  userId    String
   productId String
   variantId String?
-  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
-  variant   ProductVariant? @relation(fields: [variantId], references: [id])
-  userId    String
+
   quantity  Int
-  createdAt DateTime        @default(now())
   expiresAt DateTime
-  fulfilled Boolean         @default(false)
-  restored  Boolean         @default(false)
+
+  fulfilled Boolean @default(false)
+  restored  Boolean @default(false)
   meta      Json?
+
+  product Product         @relation(fields: [productId], references: [id], map: "fk_stock_product")
+  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_stock_variant")
+
+  createdAt DateTime @default(now())
 
   @@index([variantId])
 }
 
-enum BannerType {
-  CONTENT
-  RESPONSIVE_IMAGE
-}
-
-enum ImageFormat {
-  PNG
-  JPG
-  WEBP
-}
+////////////////////
+/// BANNERS
+////////////////////
 
 model Banner {
   id Int @id @default(autoincrement())
 
-  /// Basic metadata
   type        BannerType
   imageFormat ImageFormat
 
-  /// Content banner fields
-  title       String? @db.VarChar(255)
-  offer       String? @db.VarChar(255)
-  buttonText1 String? @db.VarChar(100)
-  buttonText2 String? @db.VarChar(100)
-  imgSrc      String? @db.Text
+  title       String?
+  offer       String?
+  buttonText1 String?
+  buttonText2 String?
 
-  /// Responsive image banner fields
-  desktopImg String? @db.Text
-  tabletImg  String? @db.Text
-  mobileImg  String? @db.Text
+  imgSrc     String?
+  desktopImg String?
+  tabletImg  String?
+  mobileImg  String?
 
-  /// Control fields
   isActive  Boolean @default(true)
   sortOrder Int     @default(0)
 
-  /// Auditing
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest) {
         : oldProduct.sku;
 
     const stock = formData.get("stock") as string | null;
-    const searchKeysRaw = formData.get("search_keys") as string | null;
+    const searchKeysRaw = formData.get("searchKeys") as string | null;
 
     // ===================== ADDED (VARIATION INPUTS) =====================
     const attributesRaw = formData.get("attributes") as string | null;
@@ -119,9 +119,9 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    const search_keys: string[] = searchKeysRaw
+    const searchKeys: string[] = searchKeysRaw
       ? JSON.parse(searchKeysRaw)
-      : oldProduct.search_keys;
+      : oldProduct.searchKeys;
 
     // ---- Image Handling ----
     const newFiles: (File | null)[] = [];
@@ -164,7 +164,7 @@ export async function PATCH(request: NextRequest) {
       oldProduct.salePrice !== salePrice ||
       oldProduct.sku !== sku ||
       oldProduct.stock !== Number(stock) ||
-      JSON.stringify(oldProduct.search_keys) !== JSON.stringify(search_keys) ||
+      JSON.stringify(oldProduct.searchKeys) !== JSON.stringify(searchKeys) ||
       imagesChanged;
 
     if (!changesMade && oldProduct.type === "SIMPLE") {
@@ -208,7 +208,7 @@ export async function PATCH(request: NextRequest) {
               },
             }),
 
-        search_keys,
+        searchKeys,
         image: finalImages,
       },
     });

@@ -4,6 +4,8 @@ import useCartHook from "./useCartHook";
 import { useRouter } from "next/navigation";
 import useAddressStore from "@/stores/useAddressStore";
 import { toast } from "react-hot-toast";
+// import { OrderItem } from "@/src/generated/prisma";
+import { OrderItem } from "@/lib/types";
 
 function useOrderHook() {
   const router = useRouter();
@@ -79,13 +81,53 @@ function useOrderHook() {
       return data.orders;
     }
   })
+
+  const { mutate: readyForPickup } = useMutation({
+  mutationFn: async (orderItemId: string) => {
+    const res = await fetch("/api/order-item/ready-for-pickup", {
+      method: "POST",
+      body: JSON.stringify({ orderItemId }),
+    })
+
+    if (!res.ok) throw new Error("Failed")
+  },
+})
+
+
+  type OrderCategory = "PENDING" | "TO_SHIP" | "TO_RECEIVE" | "TO_RATE"
+
+function deriveCategory(items: OrderItem[]): OrderCategory {
+  if (items.some(i => i.fulfillmentStatus === "AWAITING_CONFIRMATION")) {
+    return "PENDING"
+  }
+
+  if (items.some(i =>
+    ["PREPARING", "READY_FOR_PICKUP"].includes(i.fulfillmentStatus)
+  )) {
+    return "TO_SHIP"
+  }
+
+  if (items.some(i =>
+    ["PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY"].includes(i.fulfillmentStatus)
+  )) {
+    return "TO_RECEIVE"
+  }
+
+  return "TO_RATE"
+}
+
+// src/services/orderItem.service.ts
+
   return {
     placeOrder,
     isPlacingOrder,
     myOrders,
     myOrdersLoading,
     refetchMyOrders,
-    isRefetchingMyOrders
+    isRefetchingMyOrders,
+
+    readyForPickup,
+    deriveCategory
   }
 }
 

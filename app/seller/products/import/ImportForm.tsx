@@ -155,7 +155,7 @@ export default function ImportForm({ supplierId }: { supplierId: string }) {
         .map((k) => k.trim())
         .filter(Boolean);
 
-      payload.search_keys = searchKeysArray;
+      payload.searchKeys = searchKeysArray;
 
       if (type === "SIMPLE") {
         payload.price = Number(price);
@@ -523,7 +523,7 @@ export default function ImportForm({ supplierId }: { supplierId: string }) {
             confirmed.map((v) => ({
               name: v.name,
               price: Number(v.price),
-              salePrice: Number(v.price),
+              salePrice: Number(v.salePrice),
               costPrice: Number(v.costPrice),
               stock: Number(v.stock),
             }))

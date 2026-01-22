@@ -61,6 +61,10 @@ const IndividualProduct = ({ product }: { product: Product }) => {
   const [mainImage, setMainImage] = useState<string>(PLACEHOLDER_IMAGE);
   const [qty, setQty] = useState(1);
 
+  const specs = product.specs ?? "";
+  const descImages = Array.isArray(product.descImg) ? product.descImg : [];
+
+
   /* =========================
      VARIANT MATRIX STATE
   ========================= */
@@ -455,36 +459,36 @@ const IndividualProduct = ({ product }: { product: Product }) => {
         </div>
       </div>
 
-      {(product.specs || product.desc_img.length > 0) && (
+      {(specs || descImages.length > 0) && (
         <hr className="bg-gray-600 my-6" />
       )}
 
       <div className="flex flex-col gap-10">
         <div className="flex md:flex-row flex-col">
           <div className="flex-1 px-5">
-            {product.specs && (
+            {specs && (
               <div className="bg-accent p-6 rounded-lg shadow-lg">
                 <h3 className="text-2xl text-foreground font-medium mb-4 underline underline-offset-4">
                   Product Specifications
                 </h3>
                 <p className="whitespace-pre-line text-foreground">
-                  {product.specs || ""}
+                  {specs || ""}
                 </p>
               </div>
             )}
 
-            {product.specs && product.desc_img.length > 0 && (
+            {specs && descImages.length > 0 && (
               <hr className="bg-gray-600 my-6" />
             )}
 
-            {product.desc_img.length > 0 && (
+            {descImages.length > 0 && (
               <div className="bg-accent p-6 rounded-lg shadow-lg">
                 <h3 className="text-2xl text-foreground font-medium mb-4 underline underline-offset-4">
                   Product Gallery
                 </h3>
                 {/* Product Gallery */}
                 <div className="flex flex-col gap-10">
-                  {product.desc_img.map((img, index) => {
+                  {descImages.map((img, index) => {
                     const safeImg = isValidImageUrl(img)
                       ? img
                       : PLACEHOLDER_IMAGE;
@@ -523,7 +527,7 @@ const IndividualProduct = ({ product }: { product: Product }) => {
             {/* SUGGESTED PRODUCTS GRID */}
             {(() => {
               const isSingleColumn =
-                !!product.specs || product.desc_img.length > 0;
+                !!specs || descImages.length > 0;
 
               const gridClass = isSingleColumn
                 ? "grid-cols-1"

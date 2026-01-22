@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     costPrice,
     stock,
     variants,
-    search_keys,
+    searchKeys,
     category,
     brand,
     isArchived,
@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
     isFeatured,
   } = body;
 
-  const normalizedSearchKeys = Array.isArray(search_keys)
-    ? search_keys.filter((k) => typeof k === "string")
+  const normalizedSearchKeys = Array.isArray(searchKeys)
+    ? searchKeys.filter((k) => typeof k === "string")
     : [];
 
   const normalizedCategory =
@@ -75,13 +75,13 @@ export async function POST(req: NextRequest) {
         description,
         specs,
         image: images ?? [],
-        desc_img: descImages ?? [],
+        descImg: descImages ?? [],
         type: "SIMPLE",
         supplierId,
 
         category: normalizedCategory,
         brand: normalizedBrand,
-        search_keys: normalizedSearchKeys,
+        searchKeys: normalizedSearchKeys,
 
         price: Math.round(Number(price) * 100),
         salePrice: Math.round(Number(salePrice) * 100),
@@ -117,13 +117,13 @@ export async function POST(req: NextRequest) {
         specs,
         attributes,
         image: images ?? [],
-        desc_img: descImages ?? [],
+        descImg: descImages ?? [],
         type: "VARIATION",
         supplierId,
 
         category: normalizedCategory,
         brand: normalizedBrand,
-        search_keys: normalizedSearchKeys,
+        searchKeys: normalizedSearchKeys,
 
         costPrice: null,
         stock: null,

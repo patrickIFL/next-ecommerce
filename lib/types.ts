@@ -70,12 +70,12 @@ export interface Product {
   brand: string;
   sku?: string | null;
   image: ImageList;
-  desc_img: ImageList;
+  descImg: ImageList;
   price: number | null;
   salePrice?: number | null;
   stock?: number | null;
   isOnSale: boolean | null;
-  search_keys?: string[];
+  searchKeys?: string[];
   variants: Variant[];
   type: string;
   attributes: string[];

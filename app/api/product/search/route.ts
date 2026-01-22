@@ -17,7 +17,7 @@ export async function GET(req: Request) {
 
   //       // 🔍 Match array items
   //       {
-  //         search_keys: {
+  //         searchKeys: {
   //           hasSome: [q.toLowerCase()], // <-- match ANY key
   //         },
   //       },
@@ -35,7 +35,7 @@ export async function GET(req: Request) {
     OR "sku" ILIKE ${`%${q}%`}
     OR EXISTS (
       SELECT 1
-      FROM unnest("search_keys") AS sk
+      FROM unnest("searchKeys") AS sk
       WHERE sk ILIKE ${`%${q}%`}
     );
 `;

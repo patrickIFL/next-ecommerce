@@ -94,7 +94,7 @@ const EditProduct = () => {
     setBrand(product.brand ?? "");
     setType(product.type);
 
-    setSearchKeys((product.search_keys ?? []).join(", "));
+    setSearchKeys((product.searchKeys ?? []).join(", "));
     setFiles([]);
 
     // ---------- SIMPLE product ----------
@@ -241,7 +241,7 @@ const EditProduct = () => {
       formData.append("brand", brand);
 
       formData.append(
-        "search_keys",
+        "searchKeys",
         JSON.stringify(
           searchKeys
             .split(",")

@@ -139,7 +139,7 @@ const handleGenerateVariations = async () => {
 
       formData.append("variations", JSON.stringify(safeVariations));
 
-      formData.append("search_keys", JSON.stringify(searchKeysArray));
+      formData.append("searchKeys", JSON.stringify(searchKeysArray));
 
       // ✅ simple-only fields
       if (type === "SIMPLE") {
