@@ -4739,7 +4739,7 @@ export namespace Prisma {
     image: number
     price: number
     salePrice: number
-    search_keys: number
+    searchKeys: number
     sku: number
     stock: number
     type: number
@@ -4825,7 +4825,7 @@ export namespace Prisma {
     image?: true
     price?: true
     salePrice?: true
-    search_keys?: true
+    searchKeys?: true
     sku?: true
     stock?: true
     type?: true
@@ -4938,7 +4938,7 @@ export namespace Prisma {
     image: string[]
     price: number | null
     salePrice: number | null
-    search_keys: string[]
+    searchKeys: string[]
     sku: string | null
     stock: number | null
     type: $Enums.ProductType
@@ -4983,7 +4983,7 @@ export namespace Prisma {
     image?: boolean
     price?: boolean
     salePrice?: boolean
-    search_keys?: boolean
+    searchKeys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
@@ -5017,7 +5017,7 @@ export namespace Prisma {
     image?: boolean
     price?: boolean
     salePrice?: boolean
-    search_keys?: boolean
+    searchKeys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
@@ -5045,7 +5045,7 @@ export namespace Prisma {
     image?: boolean
     price?: boolean
     salePrice?: boolean
-    search_keys?: boolean
+    searchKeys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
@@ -5073,7 +5073,7 @@ export namespace Prisma {
     image?: boolean
     price?: boolean
     salePrice?: boolean
-    search_keys?: boolean
+    searchKeys?: boolean
     sku?: boolean
     stock?: boolean
     type?: boolean
@@ -5087,7 +5087,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "description" | "specs" | "desc_img" | "category" | "brand" | "image" | "price" | "salePrice" | "search_keys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "attributes" | "supplierId" | "costPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "description" | "specs" | "desc_img" | "category" | "brand" | "image" | "price" | "salePrice" | "searchKeys" | "sku" | "stock" | "type" | "isArchived" | "isFeatured" | "isOnSale" | "attributes" | "supplierId" | "costPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Product$ordersArgs<ExtArgs>
     wishlist?: boolean | Product$wishlistArgs<ExtArgs>
@@ -5130,7 +5130,7 @@ export namespace Prisma {
       image: string[]
       price: number | null
       salePrice: number | null
-      search_keys: string[]
+      searchKeys: string[]
       sku: string | null
       stock: number | null
       type: $Enums.ProductType
@@ -5583,7 +5583,7 @@ export namespace Prisma {
     readonly image: FieldRef<"Product", 'String[]'>
     readonly price: FieldRef<"Product", 'Int'>
     readonly salePrice: FieldRef<"Product", 'Int'>
-    readonly search_keys: FieldRef<"Product", 'String[]'>
+    readonly searchKeys: FieldRef<"Product", 'String[]'>
     readonly sku: FieldRef<"Product", 'String'>
     readonly stock: FieldRef<"Product", 'Int'>
     readonly type: FieldRef<"Product", 'ProductType'>
@@ -17939,7 +17939,7 @@ export namespace Prisma {
     image: 'image',
     price: 'price',
     salePrice: 'salePrice',
-    search_keys: 'search_keys',
+    searchKeys: 'searchKeys',
     sku: 'sku',
     stock: 'stock',
     type: 'type',
@@ -18476,7 +18476,7 @@ export namespace Prisma {
     image?: StringNullableListFilter<"Product">
     price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
-    search_keys?: StringNullableListFilter<"Product">
+    searchKeys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
@@ -18509,7 +18509,7 @@ export namespace Prisma {
     image?: SortOrder
     price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
-    search_keys?: SortOrder
+    searchKeys?: SortOrder
     sku?: SortOrderInput | SortOrder
     stock?: SortOrderInput | SortOrder
     type?: SortOrder
@@ -18546,7 +18546,7 @@ export namespace Prisma {
     image?: StringNullableListFilter<"Product">
     price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
-    search_keys?: StringNullableListFilter<"Product">
+    searchKeys?: StringNullableListFilter<"Product">
     stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
     isArchived?: BoolFilter<"Product"> | boolean
@@ -18578,7 +18578,7 @@ export namespace Prisma {
     image?: SortOrder
     price?: SortOrderInput | SortOrder
     salePrice?: SortOrderInput | SortOrder
-    search_keys?: SortOrder
+    searchKeys?: SortOrder
     sku?: SortOrderInput | SortOrder
     stock?: SortOrderInput | SortOrder
     type?: SortOrder
@@ -18612,7 +18612,7 @@ export namespace Prisma {
     image?: StringNullableListFilter<"Product">
     price?: IntNullableWithAggregatesFilter<"Product"> | number | null
     salePrice?: IntNullableWithAggregatesFilter<"Product"> | number | null
-    search_keys?: StringNullableListFilter<"Product">
+    searchKeys?: StringNullableListFilter<"Product">
     sku?: StringNullableWithAggregatesFilter<"Product"> | string | null
     stock?: IntNullableWithAggregatesFilter<"Product"> | number | null
     type?: EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
@@ -19632,7 +19632,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -19664,7 +19664,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -19694,7 +19694,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -19726,7 +19726,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -19757,7 +19757,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -19782,7 +19782,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -19807,7 +19807,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -21037,7 +21037,7 @@ export namespace Prisma {
     image?: SortOrder
     price?: SortOrder
     salePrice?: SortOrder
-    search_keys?: SortOrder
+    searchKeys?: SortOrder
     sku?: SortOrder
     stock?: SortOrder
     type?: SortOrder
@@ -22130,7 +22130,7 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type ProductCreatesearch_keysInput = {
+  export type ProductCreatesearchKeysInput = {
     set: string[]
   }
 
@@ -22238,7 +22238,7 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type ProductUpdatesearch_keysInput = {
+  export type ProductUpdatesearchKeysInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -23306,7 +23306,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -23336,7 +23336,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -23564,7 +23564,7 @@ export namespace Prisma {
     image?: StringNullableListFilter<"Product">
     price?: IntNullableFilter<"Product"> | number | null
     salePrice?: IntNullableFilter<"Product"> | number | null
-    search_keys?: StringNullableListFilter<"Product">
+    searchKeys?: StringNullableListFilter<"Product">
     sku?: StringNullableFilter<"Product"> | string | null
     stock?: IntNullableFilter<"Product"> | number | null
     type?: EnumProductTypeFilter<"Product"> | $Enums.ProductType
@@ -23745,7 +23745,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -23776,7 +23776,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24241,7 +24241,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24272,7 +24272,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24417,7 +24417,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -24448,7 +24448,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -24558,7 +24558,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24589,7 +24589,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24706,7 +24706,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -24737,7 +24737,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -24838,7 +24838,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24869,7 +24869,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -24953,7 +24953,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -24984,7 +24984,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -25324,7 +25324,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -25355,7 +25355,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -25496,7 +25496,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -25527,7 +25527,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -25954,7 +25954,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -25985,7 +25985,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -26063,7 +26063,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26094,7 +26094,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26162,7 +26162,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -26243,7 +26243,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26273,7 +26273,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26303,7 +26303,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26503,7 +26503,7 @@ export namespace Prisma {
     image?: ProductCreateimageInput | string[]
     price?: number | null
     salePrice?: number | null
-    search_keys?: ProductCreatesearch_keysInput | string[]
+    searchKeys?: ProductCreatesearchKeysInput | string[]
     sku?: string | null
     stock?: number | null
     type?: $Enums.ProductType
@@ -26527,7 +26527,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26558,7 +26558,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
@@ -26588,7 +26588,7 @@ export namespace Prisma {
     image?: ProductUpdateimageInput | string[]
     price?: NullableIntFieldUpdateOperationsInput | number | null
     salePrice?: NullableIntFieldUpdateOperationsInput | number | null
-    search_keys?: ProductUpdatesearch_keysInput | string[]
+    searchKeys?: ProductUpdatesearchKeysInput | string[]
     sku?: NullableStringFieldUpdateOperationsInput | string | null
     stock?: NullableIntFieldUpdateOperationsInput | number | null
     type?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType

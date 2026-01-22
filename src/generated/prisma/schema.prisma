@@ -112,16 +112,16 @@ model Product {
   brand    String   @default("Generic")
   image    String[]
 
-  price       Int?
-  salePrice   Int?
-  search_keys String[]    @default([])
-  sku         String?
-  stock       Int?
-  type        ProductType @default(SIMPLE)
-  isArchived  Boolean     @default(false)
-  isFeatured  Boolean     @default(false)
-  isOnSale    Boolean?    @default(false)
-  attributes  String[]    @default(["VarA", "VarB"])
+  price      Int?
+  salePrice  Int?
+  searchKeys String[]    @default([])
+  sku        String?
+  stock      Int?
+  type       ProductType @default(SIMPLE)
+  isArchived Boolean     @default(false)
+  isFeatured Boolean     @default(false)
+  isOnSale   Boolean?    @default(false)
+  attributes String[]    @default(["VarA", "VarB"])
 
   supplierId String?
 
@@ -143,7 +143,7 @@ model Product {
   @@index([supplierId])
   @@index([sellerId])
   @@index([category])
-  @@index([search_keys], type: Gin)
+  @@index([searchKeys], type: Gin)
 }
 
 model ProductVariant {
