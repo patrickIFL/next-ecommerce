@@ -211,22 +211,22 @@ export const createUserOrder = inngest.createFunction(
           userId: data.userId,
           orderId: order.id,
 
-          paymongo_payment_id: data.paymongoPaymentId,
-          paymongo_checkout_id: data.paymongoCheckoutId,
-          paymongo_payment_intent_id: data.paymongoIntentId,
+          paymongoPaymentId: data.paymongoPaymentId,
+          paymongoCheckoutId: data.paymongoCheckoutId,
+          paymongoPaymentIntentId: data.paymongoIntentId,
 
           amount: Math.floor(data.amount),
           tax: Math.floor(data.tax ?? 0),
           shipping: Math.floor(data.shipping ?? 0),
 
-          payer_name: data.payerName ?? "",
-          payer_email: data.payerEmail ?? "",
-          payer_phone: data.payerPhone ?? "",
+          payerName: data.payerName ?? "",
+          payerEmail: data.payerEmail ?? "",
+          payerPhone: data.payerPhone ?? "",
 
           method: data.method,
           currency: data.currency,
 
-          line_items:
+          lineItems:
             typeof data.line_items === "string"
               ? JSON.parse(data.line_items)
               : Array.isArray(data.line_items)
