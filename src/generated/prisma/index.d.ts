@@ -13141,7 +13141,7 @@ export namespace Prisma {
     payerName: string | null
     payerEmail: string | null
     payerPhone: string | null
-    createdAt: Date | null
+    date: Date | null
   }
 
   export type PaymentMaxAggregateOutputType = {
@@ -13159,7 +13159,7 @@ export namespace Prisma {
     payerName: string | null
     payerEmail: string | null
     payerPhone: string | null
-    createdAt: Date | null
+    date: Date | null
   }
 
   export type PaymentCountAggregateOutputType = {
@@ -13178,7 +13178,7 @@ export namespace Prisma {
     payerEmail: number
     payerPhone: number
     lineItems: number
-    createdAt: number
+    date: number
     _all: number
   }
 
@@ -13210,7 +13210,7 @@ export namespace Prisma {
     payerName?: true
     payerEmail?: true
     payerPhone?: true
-    createdAt?: true
+    date?: true
   }
 
   export type PaymentMaxAggregateInputType = {
@@ -13228,7 +13228,7 @@ export namespace Prisma {
     payerName?: true
     payerEmail?: true
     payerPhone?: true
-    createdAt?: true
+    date?: true
   }
 
   export type PaymentCountAggregateInputType = {
@@ -13247,7 +13247,7 @@ export namespace Prisma {
     payerEmail?: true
     payerPhone?: true
     lineItems?: true
-    createdAt?: true
+    date?: true
     _all?: true
   }
 
@@ -13353,7 +13353,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems: JsonValue[]
-    createdAt: Date
+    date: Date
     _count: PaymentCountAggregateOutputType | null
     _avg: PaymentAvgAggregateOutputType | null
     _sum: PaymentSumAggregateOutputType | null
@@ -13391,7 +13391,7 @@ export namespace Prisma {
     payerEmail?: boolean
     payerPhone?: boolean
     lineItems?: boolean
-    createdAt?: boolean
+    date?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -13412,7 +13412,7 @@ export namespace Prisma {
     payerEmail?: boolean
     payerPhone?: boolean
     lineItems?: boolean
-    createdAt?: boolean
+    date?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -13433,7 +13433,7 @@ export namespace Prisma {
     payerEmail?: boolean
     payerPhone?: boolean
     lineItems?: boolean
-    createdAt?: boolean
+    date?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -13454,10 +13454,10 @@ export namespace Prisma {
     payerEmail?: boolean
     payerPhone?: boolean
     lineItems?: boolean
-    createdAt?: boolean
+    date?: boolean
   }
 
-  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "orderId" | "paymongoPaymentId" | "paymongoCheckoutId" | "paymongoPaymentIntentId" | "amount" | "tax" | "shipping" | "method" | "currency" | "payerName" | "payerEmail" | "payerPhone" | "lineItems" | "createdAt", ExtArgs["result"]["payment"]>
+  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "orderId" | "paymongoPaymentId" | "paymongoCheckoutId" | "paymongoPaymentIntentId" | "amount" | "tax" | "shipping" | "method" | "currency" | "payerName" | "payerEmail" | "payerPhone" | "lineItems" | "date", ExtArgs["result"]["payment"]>
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     order?: boolean | OrderDefaultArgs<ExtArgs>
@@ -13493,7 +13493,7 @@ export namespace Prisma {
       payerEmail: string
       payerPhone: string
       lineItems: Prisma.JsonValue[]
-      createdAt: Date
+      date: Date
     }, ExtArgs["result"]["payment"]>
     composites: {}
   }
@@ -13934,7 +13934,7 @@ export namespace Prisma {
     readonly payerEmail: FieldRef<"Payment", 'String'>
     readonly payerPhone: FieldRef<"Payment", 'String'>
     readonly lineItems: FieldRef<"Payment", 'Json[]'>
-    readonly createdAt: FieldRef<"Payment", 'DateTime'>
+    readonly date: FieldRef<"Payment", 'DateTime'>
   }
     
 
@@ -18008,7 +18008,7 @@ export namespace Prisma {
     payerEmail: 'payerEmail',
     payerPhone: 'payerPhone',
     lineItems: 'lineItems',
-    createdAt: 'createdAt'
+    date: 'date'
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
@@ -19049,7 +19049,7 @@ export namespace Prisma {
     payerEmail?: StringFilter<"Payment"> | string
     payerPhone?: StringFilter<"Payment"> | string
     lineItems?: JsonNullableListFilter<"Payment">
-    createdAt?: DateTimeFilter<"Payment"> | Date | string
+    date?: DateTimeFilter<"Payment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }
@@ -19070,7 +19070,7 @@ export namespace Prisma {
     payerEmail?: SortOrder
     payerPhone?: SortOrder
     lineItems?: SortOrder
-    createdAt?: SortOrder
+    date?: SortOrder
     user?: UserOrderByWithRelationInput
     order?: OrderOrderByWithRelationInput
   }
@@ -19094,7 +19094,7 @@ export namespace Prisma {
     payerEmail?: StringFilter<"Payment"> | string
     payerPhone?: StringFilter<"Payment"> | string
     lineItems?: JsonNullableListFilter<"Payment">
-    createdAt?: DateTimeFilter<"Payment"> | Date | string
+    date?: DateTimeFilter<"Payment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }, "id" | "orderId">
@@ -19115,7 +19115,7 @@ export namespace Prisma {
     payerEmail?: SortOrder
     payerPhone?: SortOrder
     lineItems?: SortOrder
-    createdAt?: SortOrder
+    date?: SortOrder
     _count?: PaymentCountOrderByAggregateInput
     _avg?: PaymentAvgOrderByAggregateInput
     _max?: PaymentMaxOrderByAggregateInput
@@ -19142,7 +19142,7 @@ export namespace Prisma {
     payerEmail?: StringWithAggregatesFilter<"Payment"> | string
     payerPhone?: StringWithAggregatesFilter<"Payment"> | string
     lineItems?: JsonNullableListFilter<"Payment">
-    createdAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
+    date?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
   }
 
   export type ShippingAddressWhereInput = {
@@ -20231,7 +20231,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
     user: UserCreateNestedOneWithoutPaymentsInput
     order: OrderCreateNestedOneWithoutPaymentInput
   }
@@ -20252,7 +20252,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
   }
 
   export type PaymentUpdateInput = {
@@ -20269,7 +20269,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
     order?: OrderUpdateOneRequiredWithoutPaymentNestedInput
   }
@@ -20290,7 +20290,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentCreateManyInput = {
@@ -20309,7 +20309,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
   }
 
   export type PaymentUpdateManyMutationInput = {
@@ -20326,7 +20326,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentUncheckedUpdateManyInput = {
@@ -20345,7 +20345,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ShippingAddressCreateInput = {
@@ -21440,7 +21440,7 @@ export namespace Prisma {
     payerEmail?: SortOrder
     payerPhone?: SortOrder
     lineItems?: SortOrder
-    createdAt?: SortOrder
+    date?: SortOrder
   }
 
   export type PaymentAvgOrderByAggregateInput = {
@@ -21464,7 +21464,7 @@ export namespace Prisma {
     payerName?: SortOrder
     payerEmail?: SortOrder
     payerPhone?: SortOrder
-    createdAt?: SortOrder
+    date?: SortOrder
   }
 
   export type PaymentMinOrderByAggregateInput = {
@@ -21482,7 +21482,7 @@ export namespace Prisma {
     payerName?: SortOrder
     payerEmail?: SortOrder
     payerPhone?: SortOrder
-    createdAt?: SortOrder
+    date?: SortOrder
   }
 
   export type PaymentSumOrderByAggregateInput = {
@@ -23388,7 +23388,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
     order: OrderCreateNestedOneWithoutPaymentInput
   }
 
@@ -23407,7 +23407,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
   }
 
   export type PaymentCreateOrConnectWithoutUserInput = {
@@ -23616,7 +23616,7 @@ export namespace Prisma {
     payerEmail?: StringFilter<"Payment"> | string
     payerPhone?: StringFilter<"Payment"> | string
     lineItems?: JsonNullableListFilter<"Payment">
-    createdAt?: DateTimeFilter<"Payment"> | Date | string
+    date?: DateTimeFilter<"Payment"> | Date | string
   }
 
   export type ProductCreateWithoutSupplierInput = {
@@ -25001,7 +25001,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
     user: UserCreateNestedOneWithoutPaymentsInput
   }
 
@@ -25020,7 +25020,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
   }
 
   export type PaymentCreateOrConnectWithoutOrderInput = {
@@ -25145,7 +25145,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -25164,7 +25164,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrderCreateWithoutItemsInput = {
@@ -26100,7 +26100,7 @@ export namespace Prisma {
     payerEmail: string
     payerPhone: string
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
-    createdAt?: Date | string
+    date?: Date | string
   }
 
   export type ProductUpdateWithoutSellerInput = {
@@ -26316,7 +26316,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateOneRequiredWithoutPaymentNestedInput
   }
 
@@ -26335,7 +26335,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentUncheckedUpdateManyWithoutUserInput = {
@@ -26353,7 +26353,7 @@ export namespace Prisma {
     payerEmail?: StringFieldUpdateOperationsInput | string
     payerPhone?: StringFieldUpdateOperationsInput | string
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductCreateManySupplierInput = {

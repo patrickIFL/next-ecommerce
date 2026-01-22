@@ -91,7 +91,7 @@ model Supplier {
   name       String
   type       SupplierType
   externalId String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime     @default(now())
 
   products Product[]
 }
@@ -101,9 +101,9 @@ model Supplier {
 ////////////////////
 
 model Product {
-  id          String   @id @default(cuid())
-  sellerId    String
-  supplierId  String?
+  id         String  @id @default(cuid())
+  sellerId   String
+  supplierId String?
 
   name        String
   description String?
@@ -111,26 +111,26 @@ model Product {
   descImg     String[] @default([])
   image       String[]
 
-  category    String   @default("Uncategorized")
-  brand       String   @default("Generic")
-  sku         String?  @unique
-  price       Int?
-  salePrice   Int?
-  costPrice   Int?
-  stock       Int?
-  type        ProductType @default(SIMPLE)
+  category  String      @default("Uncategorized")
+  brand     String      @default("Generic")
+  sku       String?     @unique
+  price     Int?
+  salePrice Int?
+  costPrice Int?
+  stock     Int?
+  type      ProductType @default(SIMPLE)
 
-  searchKeys  String[] @default([])
-  attributes  String[] @default([])
+  searchKeys String[] @default([])
+  attributes String[] @default([])
 
-  isArchived  Boolean @default(false)
-  isFeatured  Boolean @default(false)
-  isOnSale    Boolean @default(false)
+  isArchived Boolean @default(false)
+  isFeatured Boolean @default(false)
+  isOnSale   Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  seller   User     @relation(fields: [sellerId], references: [id], map: "fk_product_seller")
+  seller   User      @relation(fields: [sellerId], references: [id], map: "fk_product_seller")
   supplier Supplier? @relation(fields: [supplierId], references: [id], map: "fk_product_supplier")
 
   variants          ProductVariant[]
@@ -145,8 +145,8 @@ model Product {
 }
 
 model ProductVariant {
-  id         String @id @default(cuid())
-  productId  String
+  id        String @id @default(cuid())
+  productId String
 
   name       String
   sku        String? @unique
@@ -156,7 +156,7 @@ model ProductVariant {
   stock      Int
   imageIndex Int?
 
-  product           Product @relation(fields: [productId], references: [id], map: "fk_variant_product")
+  product           Product            @relation(fields: [productId], references: [id], map: "fk_variant_product")
   cartItems         CartItem[]
   orderItems        OrderItem[]
   stockReservations StockReservation[]
@@ -169,7 +169,7 @@ model ProductVariant {
 ////////////////////
 
 model CartItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    String
   productId String
   variantId String?
@@ -209,11 +209,11 @@ model Order {
   shippingAddressId String
 
   amount    Int
-  isPaid    Boolean @default(false)
+  isPaid    Boolean     @default(false)
   status    OrderStatus @default(PENDING_PAYMENT)
-  orderDate DateTime @default(now())
+  orderDate DateTime    @default(now())
 
-  user User @relation(fields: [userId], references: [id], map: "fk_order_user")
+  user            User            @relation(fields: [userId], references: [id], map: "fk_order_user")
   shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id], map: "fk_order_address")
 
   items   OrderItem[]
@@ -224,7 +224,7 @@ model Order {
 }
 
 model OrderItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   orderId   String
   productId String
   variantId String?
@@ -233,13 +233,13 @@ model OrderItem {
   name     String
   price    Int
 
-  supplierOrderId  String?
+  supplierOrderId   String?
   courier           String?
   trackingNumber    String?
   fulfillmentStatus FulfillmentStatus @default(AWAITING_CONFIRMATION)
 
-  order   Order          @relation(fields: [orderId], references: [id], map: "fk_order_item_order")
-  product Product       @relation(fields: [productId], references: [id], map: "fk_order_item_product")
+  order   Order           @relation(fields: [orderId], references: [id], map: "fk_order_item_order")
+  product Product         @relation(fields: [productId], references: [id], map: "fk_order_item_product")
   variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_order_item_variant")
 
   statusHistory OrderItemStatusHistory[]
@@ -256,7 +256,7 @@ model OrderItemStatusHistory {
   toStatus   FulfillmentStatus
   actor      String
   note       String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime          @default(now())
 
   orderItem OrderItem @relation(fields: [orderItemId], references: [id], map: "fk_order_item_history")
 
@@ -272,9 +272,9 @@ model Payment {
   userId  String
   orderId String @unique
 
-  paymongoPaymentId        String
-  paymongoCheckoutId       String
-  paymongoPaymentIntentId  String
+  paymongoPaymentId       String
+  paymongoCheckoutId      String
+  paymongoPaymentIntentId String
 
   amount   Int
   tax      Int
@@ -287,7 +287,7 @@ model Payment {
   payerPhone String
 
   lineItems Json[]
-  createdAt DateTime @default(now())
+  date      DateTime @default(now())
 
   user  User  @relation(fields: [userId], references: [id], map: "fk_payment_user")
   order Order @relation(fields: [orderId], references: [id], map: "fk_payment_order")
@@ -308,7 +308,7 @@ model ShippingAddress {
   city        String
   province    String
 
-  user   User   @relation(fields: [userId], references: [id], map: "fk_address_user")
+  user   User    @relation(fields: [userId], references: [id], map: "fk_address_user")
   orders Order[]
 
   createdAt DateTime @default(now())
@@ -320,7 +320,7 @@ model ShippingAddress {
 ////////////////////
 
 model StockReservation {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    String
   productId String
   variantId String?

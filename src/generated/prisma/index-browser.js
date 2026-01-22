@@ -243,7 +243,7 @@ exports.Prisma.PaymentScalarFieldEnum = {
   payerEmail: 'payerEmail',
   payerPhone: 'payerPhone',
   lineItems: 'lineItems',
-  createdAt: 'createdAt'
+  date: 'date'
 };
 
 exports.Prisma.ShippingAddressScalarFieldEnum = {
