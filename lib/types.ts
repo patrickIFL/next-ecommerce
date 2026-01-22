@@ -87,6 +87,7 @@ export interface OrderItem {
   productId: string;
   quantity: number;
   product: Product;
+  fulfillmentStatus: string;
   variant?: Variant | null;
 }
 
