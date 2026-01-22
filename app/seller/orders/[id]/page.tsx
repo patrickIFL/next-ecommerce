@@ -27,8 +27,6 @@ const getOrderById = cache(async (id: string) => {
       id: true,
       orderDate: true,
       shippingMethod: true,
-      shippingStatus: true,
-
       user: {
         select: {
           name: true,

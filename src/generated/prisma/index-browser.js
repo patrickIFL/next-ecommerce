@@ -141,25 +141,25 @@ exports.Prisma.SupplierScalarFieldEnum = {
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   sellerId: 'sellerId',
-  supplierId: 'supplierId',
   name: 'name',
   description: 'description',
   specs: 'specs',
-  descImg: 'descImg',
-  image: 'image',
+  desc_img: 'desc_img',
   category: 'category',
   brand: 'brand',
-  sku: 'sku',
+  image: 'image',
   price: 'price',
   salePrice: 'salePrice',
-  costPrice: 'costPrice',
+  search_keys: 'search_keys',
+  sku: 'sku',
   stock: 'stock',
   type: 'type',
-  searchKeys: 'searchKeys',
-  attributes: 'attributes',
   isArchived: 'isArchived',
   isFeatured: 'isFeatured',
   isOnSale: 'isOnSale',
+  attributes: 'attributes',
+  supplierId: 'supplierId',
+  costPrice: 'costPrice',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -171,9 +171,9 @@ exports.Prisma.ProductVariantScalarFieldEnum = {
   sku: 'sku',
   price: 'price',
   salePrice: 'salePrice',
-  costPrice: 'costPrice',
   stock: 'stock',
-  imageIndex: 'imageIndex'
+  imageIndex: 'imageIndex',
+  costPrice: 'costPrice'
 };
 
 exports.Prisma.CartItemScalarFieldEnum = {
@@ -190,13 +190,15 @@ exports.Prisma.WishlistScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   productId: 'productId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   shippingAddressId: 'shippingAddressId',
+  shippingMethod: 'shippingMethod',
   amount: 'amount',
   isPaid: 'isPaid',
   status: 'status',
@@ -261,15 +263,15 @@ exports.Prisma.ShippingAddressScalarFieldEnum = {
 
 exports.Prisma.StockReservationScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   productId: 'productId',
   variantId: 'variantId',
+  userId: 'userId',
   quantity: 'quantity',
+  createdAt: 'createdAt',
   expiresAt: 'expiresAt',
   fulfilled: 'fulfilled',
   restored: 'restored',
-  meta: 'meta',
-  createdAt: 'createdAt'
+  meta: 'meta'
 };
 
 exports.Prisma.BannerScalarFieldEnum = {

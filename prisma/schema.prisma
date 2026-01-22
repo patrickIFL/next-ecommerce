@@ -101,69 +101,71 @@ model Supplier {
 ////////////////////
 
 model Product {
-  id         String  @id @default(cuid())
-  sellerId   String
-  supplierId String?
-
+  id          String   @id @default(cuid())
+  sellerId    String
   name        String
   description String?
   specs       String?
-  descImg     String[] @default([])
+  desc_img    String[] @default([])
+  
+  category    String   @default("Uncategorized")
+  brand       String   @default("Generic")
   image       String[]
 
-  category  String      @default("Uncategorized")
-  brand     String      @default("Generic")
-  sku       String?     @unique
-  price     Int?
-  salePrice Int?
-  costPrice Int?
-  stock     Int?
-  type      ProductType @default(SIMPLE)
+  price       Int?
+  salePrice   Int?
+  search_keys String[]    @default([])
+  sku         String?
+  stock       Int?
+  type        ProductType @default(SIMPLE)
+  isArchived  Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
+  isOnSale    Boolean?    @default(false)
+  attributes  String[]    @default(["VarA", "VarB"])
 
-  searchKeys String[] @default([])
-  attributes String[] @default([])
+  supplierId String?
 
-  isArchived Boolean @default(false)
-  isFeatured Boolean @default(false)
-  isOnSale   Boolean @default(false)
+  // Pricing control
+  costPrice Int? // what YOU pay supplier
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  seller   User      @relation(fields: [sellerId], references: [id], map: "fk_product_seller")
-  supplier Supplier? @relation(fields: [supplierId], references: [id], map: "fk_product_supplier")
-
-  variants          ProductVariant[]
-  cartItems         CartItem[]
+  orders            OrderItem[]
   wishlist          Wishlist[]
-  orderItems        OrderItem[]
+  seller            User               @relation(fields: [sellerId], references: [id])
+  cartItems         CartItem[]
   stockReservations StockReservation[]
+  variants          ProductVariant[]
+  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
 
-  @@index([sellerId])
+  @@unique([sku])
   @@index([supplierId])
+  @@index([sellerId])
   @@index([category])
+  @@index([search_keys], type: Gin)
 }
 
 model ProductVariant {
-  id        String @id @default(cuid())
-  productId String
-
+  id         String  @id @default(cuid())
+  productId  String
   name       String
   sku        String? @unique
   price      Int?
   salePrice  Int?
-  costPrice  Int?
   stock      Int
   imageIndex Int?
 
-  product           Product            @relation(fields: [productId], references: [id], map: "fk_variant_product")
+  // Supplier cost
+  costPrice Int?
+
+  product           Product            @relation(fields: [productId], references: [id])
   cartItems         CartItem[]
   orderItems        OrderItem[]
   stockReservations StockReservation[]
 
   @@index([productId])
 }
-
 ////////////////////
 /// CART & WISHLIST
 ////////////////////
@@ -176,9 +178,9 @@ model CartItem {
 
   quantity Int @default(1)
 
-  user    User            @relation(fields: [userId], references: [id], map: "fk_cart_user")
-  product Product         @relation(fields: [productId], references: [id], map: "fk_cart_product")
-  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_cart_variant")
+  user    User            @relation(fields: [userId], references: [id])
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -191,12 +193,15 @@ model Wishlist {
   userId    String
   productId String
 
-  user    User    @relation(fields: [userId], references: [id], map: "fk_wishlist_user")
-  product Product @relation(fields: [productId], references: [id], map: "fk_wishlist_product")
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }
 
 ////////////////////
@@ -208,13 +213,14 @@ model Order {
   userId            String
   shippingAddressId String
 
-  amount    Int
-  isPaid    Boolean     @default(false)
-  status    OrderStatus @default(PENDING_PAYMENT)
-  orderDate DateTime    @default(now())
+  shippingMethod String
+  amount         Int
+  isPaid         Boolean     @default(false)
+  status         OrderStatus @default(PENDING_PAYMENT)
+  orderDate      DateTime    @default(now())
 
-  user            User            @relation(fields: [userId], references: [id], map: "fk_order_user")
-  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id], map: "fk_order_address")
+  user            User             @relation(fields: [userId], references: [id])
+  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
 
   items   OrderItem[]
   payment Payment?
@@ -238,9 +244,9 @@ model OrderItem {
   trackingNumber    String?
   fulfillmentStatus FulfillmentStatus @default(AWAITING_CONFIRMATION)
 
-  order   Order           @relation(fields: [orderId], references: [id], map: "fk_order_item_order")
-  product Product         @relation(fields: [productId], references: [id], map: "fk_order_item_product")
-  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_order_item_variant")
+  order   Order           @relation(fields: [orderId], references: [id])
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
 
   statusHistory OrderItemStatusHistory[]
 
@@ -258,7 +264,7 @@ model OrderItemStatusHistory {
   note       String?
   createdAt  DateTime          @default(now())
 
-  orderItem OrderItem @relation(fields: [orderItemId], references: [id], map: "fk_order_item_history")
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
 
   @@index([orderItemId])
 }
@@ -289,8 +295,8 @@ model Payment {
   lineItems Json[]
   date      DateTime @default(now())
 
-  user  User  @relation(fields: [userId], references: [id], map: "fk_payment_user")
-  order Order @relation(fields: [orderId], references: [id], map: "fk_payment_order")
+  user  User  @relation(fields: [userId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 }
 
 ////////////////////
@@ -307,35 +313,30 @@ model ShippingAddress {
   area        String
   city        String
   province    String
+  orders      Order[]
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id], map: "fk_address_user")
-  orders Order[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId])
 }
-
 ////////////////////
 /// STOCK
 ////////////////////
 
 model StockReservation {
-  id        String  @id @default(cuid())
-  userId    String
+  id        String          @id @default(cuid())
   productId String
   variantId String?
-
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+  userId    String
   quantity  Int
+  createdAt DateTime        @default(now())
   expiresAt DateTime
-
-  fulfilled Boolean @default(false)
-  restored  Boolean @default(false)
+  fulfilled Boolean         @default(false)
+  restored  Boolean         @default(false)
   meta      Json?
-
-  product Product         @relation(fields: [productId], references: [id], map: "fk_stock_product")
-  variant ProductVariant? @relation(fields: [variantId], references: [id], map: "fk_stock_variant")
-
-  createdAt DateTime @default(now())
 
   @@index([variantId])
 }
