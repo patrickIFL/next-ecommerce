@@ -149,32 +149,38 @@ model CartItem {
   @@unique([userId, productId, variantId])
 }
 
-enum ShippingStatus {
-  pending
-  toShip
-  toReceive
-  toRate
+enum OrderStatus {
+  PENDING_PAYMENT
+  AWAITING_SELLER_CONFIRMATION
+  CONFIRMED
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
 }
-
 model Order {
   id                String @id @default(cuid())
   userId            String
   shippingAddressId String
 
-  amount         Int
-  isPaid         Boolean  @default(false)
-  shippingMethod String
-  shippingStatus String?  @default("pending")
-  orderDate      DateTime @default(now())
+  amount     Int
+  isPaid     Boolean  @default(false)
+  status     OrderStatus @default(PENDING_PAYMENT)
+  orderDate  DateTime @default(now())
 
-  user            User             @relation(fields: [userId], references: [id])
-  shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  user            User
+  shippingAddress ShippingAddress?
   items           OrderItem[]
-
-  payment Payment? // back-relation only
+  payment         Payment?
 
   @@index([userId])
+  @@index([status])
 }
+
 
 model Payment {
   id                         String   @id @default(cuid())
@@ -198,6 +204,18 @@ model Payment {
   order Order @relation(fields: [orderId], references: [id])
 }
 
+enum FulfillmentStatus {
+  AWAITING_CONFIRMATION
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
@@ -207,18 +225,18 @@ model OrderItem {
   name      String
   price     Int
 
-  supplierOrderId   String?
-  trackingNumber    String?
-  fulfillmentStatus String?
+  supplierOrderId String?
+  courier          String?
+  trackingNumber   String?
+  fulfillmentStatus FulfillmentStatus @default(AWAITING_CONFIRMATION)
 
-  order   Order           @relation(fields: [orderId], references: [id])
-  product Product         @relation(fields: [productId], references: [id])
-  variant ProductVariant? @relation(fields: [variantId], references: [id])
+  order   Order
+  product Product
+  variant ProductVariant?
 
   @@index([orderId])
-  @@index([productId])
-  @@index([variantId])
 }
+
 
 model ShippingAddress {
   id     String @id @default(cuid())

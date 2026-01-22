@@ -1,36 +1,36 @@
 "use client";
 
-/**
- * =========================================================
- * HEADER SLIDER – BANNER IMAGE SPECIFICATIONS
- * =========================================================
- *
- * JPG / WebP Banner Design Sizes:
- *
- * Desktop: 1920 × 400 px
- * Tablet:  1024 × 400 px
- * Mobile:   768 × 540 px
- *
- *
- * Rendering Rules:
- * - JPG banners are rendered as background images
- * - background-size: cover
- * - Fixed container height to avoid layout shift
- * - Same height across all JPG banners
- *
- * PNG slides remain content-driven (image + text layout)
- * =========================================================
- Template 
-{
-      id: 1,
-      type: "png",
-      title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
-      offer: "Limited Time Offer 30% Off",
-      buttonText1: "Buy now",
-      buttonText2: "Find more",
-      imgSrc: assets.header_headphone_image,
-    },
-*/
+// /**
+//  * =========================================================
+//  * HEADER SLIDER – BANNER IMAGE SPECIFICATIONS
+//  * =========================================================
+//  *
+//  * JPG / WebP Banner Design Sizes:
+//  *
+//  * Desktop: 1920 × 400 px
+//  * Tablet:  1024 × 400 px
+//  * Mobile:   768 × 540 px
+//  *
+//  *
+//  * Rendering Rules:
+//  * - JPG banners are rendered as background images
+//  * - background-size: cover
+//  * - Fixed container height to avoid layout shift
+//  * - Same height across all JPG banners
+//  *
+//  * PNG slides remain content-driven (image + text layout)
+//  * =========================================================
+//  Template
+// {
+//       id: 1,
+//       type: "png",
+//       title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
+//       offer: "Limited Time Offer 30% Off",
+//       buttonText1: "Buy now",
+//       buttonText2: "Find more",
+//       imgSrc: assets.header_headphone_image,
+//     },
+// */
 
 import Image from "next/image";
 import { MoveRight } from "lucide-react";
@@ -62,11 +62,13 @@ const HeaderSlider = () => {
   /* ---------------------------------------------
    * Autoplay configuration
    * ------------------------------------------- */
+  const isScrollingRef = useRef(false);
+
   const plugin = useRef(
     Autoplay({
       delay: 5000,
       stopOnInteraction: false,
-    })
+    }),
   );
 
   /* ---------------------------------------------
@@ -90,22 +92,41 @@ const HeaderSlider = () => {
    * Carousel listeners
    * ------------------------------------------- */
   useEffect(() => {
-  if (!api) return () => {};
+    if (!api) return () => {};
 
-  const onSelect = () => {
+    const onSelect = () => {
+      setSelectedIndex(api.selectedScrollSnap());
+    };
+
+    setScrollSnaps(api.scrollSnapList());
     setSelectedIndex(api.selectedScrollSnap());
-  };
 
-  setScrollSnaps(api.scrollSnapList());
-  setSelectedIndex(api.selectedScrollSnap());
+    api.on("select", onSelect);
 
-  api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api]);
 
-  return () => {
-    api.off("select", onSelect);
-  };
-}, [api]);
+  useEffect(() => {
+    if (!api) return;
 
+    const onScroll = () => {
+      isScrollingRef.current = true;
+    };
+
+    const onSettle = () => {
+      isScrollingRef.current = false;
+    };
+
+    api.on("scroll", onScroll);
+    api.on("settle", onSettle);
+
+    return () => {
+      api.off("scroll", onScroll);
+      api.off("settle", onSettle);
+    };
+  }, [api]);
 
   if (isLoading) {
     return <HeaderSliderSkeleton />;
@@ -122,8 +143,20 @@ const HeaderSlider = () => {
         opts={{ loop: false }}
         plugins={slideEnabled ? [plugin.current] : []}
         onMouseEnter={() => {
-          plugin.current.stop();
-          setSlideEnabled(false);
+          if (!api) return;
+
+          if (isScrollingRef.current) {
+            const handleSettle = () => {
+              plugin.current.stop();
+              setSlideEnabled(false);
+              api.off("settle", handleSettle);
+            };
+
+            api.on("settle", handleSettle);
+          } else {
+            plugin.current.stop();
+            setSlideEnabled(false);
+          }
         }}
         onMouseLeave={() => {
           plugin.current.reset();

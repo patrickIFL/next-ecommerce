@@ -51,14 +51,14 @@ const ProductCard = ({
       key: Date.now(),
     });
 
-    setTimeout(() => setRipple(null), 600);
+    setTimeout(() => setRipple(null), 1000);
   }
 
   // ⬇️ allow ripple to render before navigation
   setTimeout(() => {
     router.push("/product/" + product.id);
     // window.scrollTo({ top: 0, behavior: "instant" });
-  }, 600);
+  }, 500);
 };
 
 
