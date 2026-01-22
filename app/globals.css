@@ -267,3 +267,21 @@
     cursor: pointer;
   }
 }
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 9999px;
+  transform: scale(0);
+  animation: ripple 1s ease-out;
+  background-color: rgba(255, 255, 255, 0.35); /* ✅ white ripple */
+  pointer-events: none;
+  z-index: 20;
+}
+
