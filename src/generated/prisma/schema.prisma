@@ -106,7 +106,7 @@ model Product {
   name        String
   description String?
   specs       String?
-  desc_img    String[] @default([])
+  descImg     String[] @default([])
 
   category String   @default("Uncategorized")
   brand    String   @default("Generic")
