@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BackButton from "@/components/common/BackButton";
 import {
-  Hourglass,
   MapPin,
   NotepadText,
   Package2,
@@ -17,6 +16,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { formatMoney } from "@/lib/utils";
+import OrderStatusActions from "@/components/common/OrderStatusActions";
+import { OrderStatus } from "@/src/generated/prisma";
 // import { OrderItem } from "@/lib/types";
 const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
@@ -27,6 +28,7 @@ const getOrderById = cache(async (id: string) => {
       id: true,
       orderDate: true,
       shippingMethod: true,
+      status: true, 
       user: {
         select: {
           name: true,
@@ -103,6 +105,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const STATUS: Record<OrderStatus, string | null> = {
+  AWAITING_CONFIRMATION: "Awaiting For your Confirmation",
+  CONFIRMED: "Order is Confirmed",
+  SOURCING: "Prepare or Source the Order",
+  IN_PROGRESS: "Items are in progress",
+  COMPLETED: "All the items are delivered",
+  CANCELLED: "Order is cancelled",
+  REFUNDED: "Order is cancelled",
+};
+
 export default async function IndividualOrderPage({
   params,
 }: {
@@ -110,10 +122,12 @@ export default async function IndividualOrderPage({
 }) {
   const { id } = await params;
   const order = await getOrderById(id);
-
+  
   if (!order) {
     return <div>Order not found</div>;
   }
+
+  const statusLabel = STATUS[order.status];
 
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
@@ -134,11 +148,19 @@ export default async function IndividualOrderPage({
               <CardTitle className="flex flex-col font-medium">
                 <span className="text-lg font-semibold">Status</span>
                 <span className="text-xs text-foreground/80 font-normal">
-                  Current Order Status
+                  {statusLabel}
                 </span>
               </CardTitle>
               <div></div>
-              <Hourglass className="h-4 w-4 text-muted-foreground" />
+
+            
+
+  <OrderStatusActions
+    orderId={order.id}
+    status={order.status}
+  />
+
+
             </CardHeader>
             <CardContent>
               {/* Status Contents Start */}
