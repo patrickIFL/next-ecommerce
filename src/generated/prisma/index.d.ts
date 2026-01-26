@@ -101,16 +101,29 @@ export const SupplierType: {
 export type SupplierType = (typeof SupplierType)[keyof typeof SupplierType]
 
 
+export const BannerType: {
+  CONTENT: 'CONTENT',
+  RESPONSIVE_IMAGE: 'RESPONSIVE_IMAGE'
+};
+
+export type BannerType = (typeof BannerType)[keyof typeof BannerType]
+
+
+export const ImageFormat: {
+  PNG: 'PNG',
+  JPG: 'JPG',
+  WEBP: 'WEBP'
+};
+
+export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
+
+
 export const OrderStatus: {
-  PENDING_PAYMENT: 'PENDING_PAYMENT',
-  AWAITING_SELLER_CONFIRMATION: 'AWAITING_SELLER_CONFIRMATION',
+  AWAITING_CONFIRMATION: 'AWAITING_CONFIRMATION',
   CONFIRMED: 'CONFIRMED',
-  PREPARING: 'PREPARING',
-  READY_FOR_PICKUP: 'READY_FOR_PICKUP',
-  PICKED_UP: 'PICKED_UP',
-  IN_TRANSIT: 'IN_TRANSIT',
-  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
-  DELIVERED: 'DELIVERED',
+  SOURCING: 'SOURCING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
   REFUNDED: 'REFUNDED'
 };
@@ -132,23 +145,6 @@ export const FulfillmentStatus: {
 
 export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof FulfillmentStatus]
 
-
-export const BannerType: {
-  CONTENT: 'CONTENT',
-  RESPONSIVE_IMAGE: 'RESPONSIVE_IMAGE'
-};
-
-export type BannerType = (typeof BannerType)[keyof typeof BannerType]
-
-
-export const ImageFormat: {
-  PNG: 'PNG',
-  JPG: 'JPG',
-  WEBP: 'WEBP'
-};
-
-export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
-
 }
 
 export type ProductType = $Enums.ProductType
@@ -159,14 +155,6 @@ export type SupplierType = $Enums.SupplierType
 
 export const SupplierType: typeof $Enums.SupplierType
 
-export type OrderStatus = $Enums.OrderStatus
-
-export const OrderStatus: typeof $Enums.OrderStatus
-
-export type FulfillmentStatus = $Enums.FulfillmentStatus
-
-export const FulfillmentStatus: typeof $Enums.FulfillmentStatus
-
 export type BannerType = $Enums.BannerType
 
 export const BannerType: typeof $Enums.BannerType
@@ -174,6 +162,14 @@ export const BannerType: typeof $Enums.BannerType
 export type ImageFormat = $Enums.ImageFormat
 
 export const ImageFormat: typeof $Enums.ImageFormat
+
+export type OrderStatus = $Enums.OrderStatus
+
+export const OrderStatus: typeof $Enums.OrderStatus
+
+export type FulfillmentStatus = $Enums.FulfillmentStatus
+
+export const FulfillmentStatus: typeof $Enums.FulfillmentStatus
 
 /**
  * ##  Prisma Client ʲˢ

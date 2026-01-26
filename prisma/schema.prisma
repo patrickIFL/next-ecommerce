@@ -25,32 +25,6 @@ enum SupplierType {
   OWNED
 }
 
-enum OrderStatus {
-  PENDING_PAYMENT
-  AWAITING_SELLER_CONFIRMATION
-  CONFIRMED
-  PREPARING
-  READY_FOR_PICKUP
-  PICKED_UP
-  IN_TRANSIT
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-  REFUNDED
-}
-
-enum FulfillmentStatus {
-  AWAITING_CONFIRMATION
-  PREPARING
-  READY_FOR_PICKUP
-  PICKED_UP
-  IN_TRANSIT
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-  RETURNED
-}
-
 enum BannerType {
   CONTENT
   RESPONSIVE_IMAGE
@@ -208,6 +182,28 @@ model Wishlist {
 /// ORDERS & FSM
 ////////////////////
 
+enum OrderStatus {
+  AWAITING_CONFIRMATION   // Seller has not yet reviewed the paid order // CONFIRMATION
+  CONFIRMED               // Seller confirmed the order // CONFIRMATION
+  SOURCING                // Seller is ordering items from 3rd-party sources // PREPARING
+  IN_PROGRESS             // Items are being shipped / received / fulfilled // IN-PROGRESS
+  COMPLETED               // All items delivered to the customer // ALL ORDERS FULFILLED
+  CANCELLED
+  REFUNDED
+}
+
+enum FulfillmentStatus {
+  AWAITING_CONFIRMATION
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
 model Order {
   id                String @id @default(cuid())
   userId            String
@@ -216,7 +212,7 @@ model Order {
   shippingMethod String
   amount         Int
   isPaid         Boolean     @default(false)
-  status         OrderStatus @default(PENDING_PAYMENT)
+  status         OrderStatus @default(AWAITING_CONFIRMATION)
   orderDate      DateTime    @default(now())
 
   user            User             @relation(fields: [userId], references: [id])
