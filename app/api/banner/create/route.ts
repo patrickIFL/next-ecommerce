@@ -1,8 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/db/prisma";
 import redis from "@/lib/redis";
 import { v2 as cloudinary } from "cloudinary";
 import { BannerType, ImageFormat } from "@/src/generated/prisma";
+import { getAuth } from "@clerk/nextjs/server";
+import authSeller from "@/lib/authSeller";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
@@ -12,7 +14,17 @@ cloudinary.config({
 
 const BANNER_LIST_CACHE_KEY = "banner:list:active";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const { userId } = getAuth(req);
+   const isSeller = await authSeller(userId);
+
+   if (!userId || !isSeller) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
   try {
     const formData = await req.formData();
 
