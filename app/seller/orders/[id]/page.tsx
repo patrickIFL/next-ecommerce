@@ -64,6 +64,7 @@ const getOrderById = cache(async (id: string) => {
         select: {
           id: true,
           quantity: true,
+           fulfillmentStatus: true, // ✅ REQUIRED
           product: {
             select: {
               name: true,
@@ -320,10 +321,9 @@ export default async function IndividualOrderPage({
                           {/* STATUS */}
                           <td className="p-3 text-center">
                             <OrderItemStatusActions
-  orderItemId={item.id}
-  status={item.fulfillmentStatus}
-/>
-
+                              orderItemId={item.id}
+                              status={item.fulfillmentStatus}
+                            />
                           </td>
 
                           {/* QUANTITY */}

@@ -53,7 +53,7 @@ export default function OrderItemStatusActions({
                      bg-green-500/10 text-green-600
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? "Updating…" : status}
+          {isPending ? "Updating…" : label}
         </button>
       </TooltipTrigger>
       <TooltipContent side="top">
