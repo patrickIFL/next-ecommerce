@@ -82,9 +82,9 @@ function useOrderHook() {
     }
   })
 
-  const { mutate: readyForPickup } = useMutation({
+  const { mutate: orderItemAdvance } = useMutation({
   mutationFn: async (orderItemId: string) => {
-    const res = await fetch("/api/order-item/ready-for-pickup", {
+    const res = await fetch("/api/order-item/advance", {
       method: "POST",
       body: JSON.stringify({ orderItemId }),
     })
@@ -126,7 +126,7 @@ function deriveCategory(items: OrderItem[]): OrderCategory {
     refetchMyOrders,
     isRefetchingMyOrders,
 
-    readyForPickup,
+    orderItemAdvance,
     deriveCategory
   }
 }

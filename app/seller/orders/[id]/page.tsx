@@ -18,6 +18,9 @@ import Image from "next/image";
 import { formatMoney } from "@/lib/utils";
 import OrderStatusActions from "@/components/common/OrderStatusActions";
 import { OrderStatus } from "@/src/generated/prisma";
+import { cn } from "@/lib/utils";
+import OrderItemStatusActions from "@/components/common/OrderItemStatusActions";
+
 // import { OrderItem } from "@/lib/types";
 const currency = process.env.NEXT_PUBLIC_CURRENCY;
 
@@ -28,7 +31,7 @@ const getOrderById = cache(async (id: string) => {
       id: true,
       orderDate: true,
       shippingMethod: true,
-      status: true, 
+      status: true,
       user: {
         select: {
           name: true,
@@ -115,6 +118,44 @@ const STATUS: Record<OrderStatus, string | null> = {
   REFUNDED: "Order is cancelled",
 };
 
+const ORDER_STEPS = [
+  {
+    key: "CONFIRMED",
+    label: "Order Confirmed",
+    Icon: NotepadText,
+  },
+  {
+    key: "SOURCING",
+    label: "Preparing",
+    Icon: PackageOpen,
+  },
+  {
+    key: "IN_PROGRESS",
+    label: "In Progress",
+    Icon: Truck,
+  },
+  {
+    key: "COMPLETED",
+    label: "Received",
+    Icon: PackageCheck,
+  },
+] as const;
+
+function getOrderUIState(status: OrderStatus) {
+  if (status === "CANCELLED" || status === "REFUNDED") {
+    return { activeIndex: -1, isFailed: true };
+  }
+
+  if (status === "AWAITING_CONFIRMATION") {
+    return { activeIndex: -1, isFailed: false };
+  }
+
+  return {
+    activeIndex: ORDER_STEPS.findIndex((s) => s.key === status),
+    isFailed: false,
+  };
+}
+
 export default async function IndividualOrderPage({
   params,
 }: {
@@ -122,12 +163,13 @@ export default async function IndividualOrderPage({
 }) {
   const { id } = await params;
   const order = await getOrderById(id);
-  
+
   if (!order) {
     return <div>Order not found</div>;
   }
 
   const statusLabel = STATUS[order.status];
+  // const { progress, activeStepIndex, isFailed } = getOrderProgress(order.status);
 
   return (
     <div className="px-6 py-6 min-h-screen w-full mt-16">
@@ -151,62 +193,56 @@ export default async function IndividualOrderPage({
                   {statusLabel}
                 </span>
               </CardTitle>
-              <div></div>
-
-            
-
-  <OrderStatusActions
-    orderId={order.id}
-    status={order.status}
-  />
-
-
+              <OrderStatusActions orderId={order.id} status={order.status} />
             </CardHeader>
+
             <CardContent>
-              {/* Status Contents Start */}
               <div className="flex gap-2 bg-accent/30 border p-2 rounded-lg">
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <NotepadText className="h-4 w-4 text-muted-foreground" />
-                  </div>
+                {(() => {
+                  const { activeIndex, isFailed } = getOrderUIState(
+                    order.status,
+                  );
 
-                  <span className="font-semibold">Order Confirmed</span>
+                  return ORDER_STEPS.map((step, index) => {
+                    const Icon = step.Icon;
+                    const isActive = index === activeIndex;
+                    const isCompleted = index < activeIndex;
 
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <PackageOpen className="h-4 w-4 text-muted-foreground" />
-                  </div>
+                    return (
+                      <div
+                        key={step.key}
+                        className={cn(
+                          "flex flex-1 flex-col gap-1 p-3 rounded-lg border transition",
+                          isFailed && "border-destructive bg-destructive/10",
+                          !isFailed &&
+                            (isActive || isCompleted) &&
+                            "border-primary bg-primary/10",
+                          !isFailed &&
+                            !isActive &&
+                            !isCompleted &&
+                            "opacity-50",
+                        )}
+                      >
+                        <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center">
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                        </div>
 
-                  <span className="font-semibold">Preparing</span>
+                        <span className="font-semibold">{step.label}</span>
 
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <Truck className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Shipped</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <PackageCheck className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Received</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-
-                {/* Status Contents End */}
+                        <div
+                          className={cn(
+                            "h-1.5 rounded-full transition",
+                            isFailed
+                              ? "bg-destructive"
+                              : isActive || isCompleted
+                                ? "bg-primary"
+                                : "bg-muted",
+                          )}
+                        />
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </CardContent>
           </Card>
@@ -283,9 +319,11 @@ export default async function IndividualOrderPage({
 
                           {/* STATUS */}
                           <td className="p-3 text-center">
-                            <span className="text-xs px-2 py-1 rounded bg-green-500/10 text-green-500">
-                              Ready
-                            </span>
+                            <OrderItemStatusActions
+  orderItemId={item.id}
+  status={item.fulfillmentStatus}
+/>
+
                           </td>
 
                           {/* QUANTITY */}
