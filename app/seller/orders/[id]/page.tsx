@@ -64,7 +64,7 @@ const getOrderById = cache(async (id: string) => {
         select: {
           id: true,
           quantity: true,
-           fulfillmentStatus: true, // ✅ REQUIRED
+          fulfillmentStatus: true,
           product: {
             select: {
               name: true,
@@ -224,8 +224,28 @@ export default async function IndividualOrderPage({
                             "opacity-50",
                         )}
                       >
-                        <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center">
-                          <Icon className="h-4 w-4 text-muted-foreground" />
+                        <div
+                          className={cn(
+                            "rounded-full w-8 h-8 flex items-center justify-center border transition",
+                            isFailed && "border-destructive bg-destructive/10",
+                            !isFailed &&
+                              (isActive || isCompleted) &&
+                              "border-primary bg-primary/10",
+                            !isFailed &&
+                              !isActive &&
+                              !isCompleted &&
+                              "bg-accent opacity-50",
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              "h-4 w-4 transition-colors",
+                              isFailed && "text-destructive",
+                              !isFailed && (isActive || isCompleted)
+                                ? "text-primary"
+                                : "text-muted-foreground",
+                            )}
+                          />
                         </div>
 
                         <span className="font-semibold">{step.label}</span>
@@ -323,6 +343,10 @@ export default async function IndividualOrderPage({
                             <OrderItemStatusActions
                               orderItemId={item.id}
                               status={item.fulfillmentStatus}
+                              disabled={
+                                item.fulfillmentStatus === "DELIVERED" ||
+                                order.status === "AWAITING_CONFIRMATION"
+                              }
                             />
                           </td>
 
