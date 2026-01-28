@@ -20,6 +20,17 @@ import useOrderHook from "@/hooks/useOrderHook";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import useCartHook from "@/hooks/useCartHook";
+import { OrderStatus } from "@/src/generated/prisma";
+
+export const STATUS: Record<OrderStatus, string | null> = {
+  AWAITING_CONFIRMATION: "FOR CONFIRMATION",
+  CONFIRMED: "ORDER CONFIRMED",
+  SOURCING: "PREPARING",
+  IN_PROGRESS: "IN PROGRESS",
+  COMPLETED: "DELIVERED",
+  CANCELLED: "CANCELLED",
+  REFUNDED: "REFUNDED",
+};
 
 const MyOrders: React.FC = () => {
   const router = useRouter();
@@ -76,6 +87,7 @@ const MyOrders: React.FC = () => {
             ) : (
               orders.map((order: any) => {
                 const isOpen = openOrder === order.id;
+                const statusLabel = STATUS[order.status as OrderStatus];
 
                 /* ================= PRODUCT CIRCLES ================= */
                 const productUrls = order.items.slice(0, 5).map((item: any) => {
@@ -187,10 +199,19 @@ const MyOrders: React.FC = () => {
                       </td>
 
                       {/* SHIPPING STATUS */}
-                      <td className="p-3">
-                        <div className="px-0.5 py-0.5 border-amber-300 text-amber-500 border text-center rounded-md bg-amber-300/20">
-                          TO RECEIVE
-                        </div>
+                      {/* STATUS */}
+                      <td className="p-3 text-center">
+                        {statusLabel && (
+                          <span
+                            className={`px-2 py-1 text-xs border rounded ${
+                              order.status === "COMPLETED"
+                                ? "border-green-600 text-green-600 bg-green-600/10"
+                                : "border-amber-300 text-amber-500 bg-amber-300/20"
+                            }`}
+                          >
+                            {statusLabel}
+                          </span>
+                        )}
                       </td>
                       {/* SHIPPING */}
                       <td className="p-3">

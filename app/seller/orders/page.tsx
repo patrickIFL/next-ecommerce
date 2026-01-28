@@ -18,6 +18,17 @@ import {
 import { Button } from "@/components/ui/button";
 import SellerPageTitle from "@/components/seller/SellerPageTitle";
 import { useRouter } from "next/navigation";
+import { OrderStatus } from "@/src/generated/prisma";
+
+export const STATUS: Record<OrderStatus, string | null> = {
+  AWAITING_CONFIRMATION: "FOR CONFIRMATION",
+  CONFIRMED: "ORDER CONFIRMED",
+  SOURCING: "PREPARING",
+  IN_PROGRESS: "IN PROGRESS",
+  COMPLETED: "DELIVERED",
+  CANCELLED: "CANCELLED",
+  REFUNDED: "REFUNDED",
+};
 
 const Orders: React.FC = () => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
@@ -84,6 +95,7 @@ const Orders: React.FC = () => {
               allOrders.map((order: any) => {
                 const isOpen = openOrder === order.id;
                 const firstItem = order.items?.[0];
+                const statusLabel = STATUS[order.status as OrderStatus];
 
                 const productUrls = order.items.map((item: any) => {
                   const imageIndex = item.variant?.imageIndex ?? 0;
@@ -103,14 +115,13 @@ const Orders: React.FC = () => {
                         <div className="flex gap-3">
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <button 
-                              type="button"
-                              onClick={() => {
-                                router.push(`orders/${order.id}`)
-                              }}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  router.push(`orders/${order.id}`);
+                                }}
                               >
-
-                              <Box_icon isOpen={isOpen} />
+                                <Box_icon isOpen={isOpen} />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -149,9 +160,17 @@ const Orders: React.FC = () => {
 
                       {/* STATUS */}
                       <td className="p-3 text-center">
-                        <span className="px-2 py-1 text-xs border border-amber-300 text-amber-500 rounded bg-amber-300/20">
-                          PREPARING
-                        </span>
+                        {statusLabel && (
+                          <span
+                            className={`px-2 py-1 text-xs border rounded ${
+                              order.status === "COMPLETED"
+                                ? "border-green-600 text-green-600 bg-green-600/10"
+                                : "border-amber-300 text-amber-500 bg-amber-300/20"
+                            }`}
+                          >
+                            {statusLabel}
+                          </span>
+                        )}
                       </td>
 
                       {/* SHIPPING */}
@@ -197,7 +216,7 @@ const Orders: React.FC = () => {
                                     year: "numeric",
                                     month: "short",
                                     day: "2-digit",
-                                  }
+                                  },
                                 )}
                               </td>
                             </tr>
@@ -209,7 +228,7 @@ const Orders: React.FC = () => {
                                   {
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                  }
+                                  },
                                 )}
                               </td>
                             </tr>
