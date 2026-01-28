@@ -1,5 +1,10 @@
 "use client";
 
+// BEYOND CONFIRMATION, DISABLE THE CONTROLS
+// ON ORDER CONFIRM, ENABLE THE BUTTONS, MOVE TO PRAPARING DIRECTLY
+// WHEN EVERY ITEM IS READY MOVE TO IN PROGRESS IMMEDIATELY
+// [DONE] WHEN ALL PRODUCTS ARE DELIVERED, COMPLETE THE ORDER.
+
 import { Hourglass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Confirmation from "@/components/common/Confirmation";
