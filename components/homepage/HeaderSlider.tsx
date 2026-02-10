@@ -65,6 +65,7 @@ const HeaderSlider = () => {
    * ------------------------------------------- */
   const isScrollingRef = useRef(false);
   const router = useRouter();
+  const base_url = process.env.NEXT_PUBLIC_SITE_URL;
 
   const plugin = useRef(
     Autoplay({
@@ -189,7 +190,7 @@ const HeaderSlider = () => {
                       </h1>
 
                       <div className="flex gap-4 items-center mt-6">
-                        <InteractiveHoverButton buttonLink={slide.buttonLink1}>
+                        <InteractiveHoverButton buttonLink={`${base_url}/product/${slide.buttonLink1}`}>
                           <span>{slide.buttonText1}</span>
                         </InteractiveHoverButton>
 
