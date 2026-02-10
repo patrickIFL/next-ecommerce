@@ -28,6 +28,10 @@ const BannerCreator = () => {
     offer: "",
     buttonText1: "",
     buttonText2: "",
+
+    buttonLink1: "",
+    buttonLink2: "",
+
     sortOrder: 0,
   });
 
@@ -49,6 +53,10 @@ const BannerCreator = () => {
       formData.append("offer", form.offer);
       formData.append("buttonText1", form.buttonText1);
       formData.append("buttonText2", form.buttonText2);
+
+      formData.append("buttonLink1", form.buttonLink1);
+      formData.append("buttonLink2", form.buttonLink2);
+      
       formData.append("sortOrder", String(form.sortOrder));
 
       // append images ONLY ON SUBMIT
@@ -71,6 +79,10 @@ const BannerCreator = () => {
         offer: "",
         buttonText1: "",
         buttonText2: "",
+
+        buttonLink1: "",
+        buttonLink2: "",
+
         sortOrder: 0,
       });
     } catch (err: any) {
@@ -91,32 +103,34 @@ const BannerCreator = () => {
             <div>
               <p className="text-base font-medium">Banner Images</p>
               <div className="flex flex-wrap gap-3 mt-2">
-                {[...Array(bannerType === "CONTENT" ? 1 : 3)].map((_, index) => (
-                  <label key={index} htmlFor={`banner-image-${index}`}>
-                    <input
-                      type="file"
-                      hidden
-                      id={`banner-image-${index}`}
-                      accept="image/*"
-                      onChange={(e: any) => {
-                        const updated = [...files];
-                        updated[index] = e.target.files[0];
-                        setFiles(updated);
-                      }}
-                    />
-                    <Image
-                      src={
-                        files[index]
-                          ? URL.createObjectURL(files[index]!)
-                          : assets.upload_area
-                      }
-                      alt=""
-                      width={100}
-                      height={100}
-                      className="max-w-24 h-24 object-cover rounded cursor-pointer"
-                    />
-                  </label>
-                ))}
+                {[...Array(bannerType === "CONTENT" ? 1 : 3)].map(
+                  (_, index) => (
+                    <label key={index} htmlFor={`banner-image-${index}`}>
+                      <input
+                        type="file"
+                        hidden
+                        id={`banner-image-${index}`}
+                        accept="image/*"
+                        onChange={(e: any) => {
+                          const updated = [...files];
+                          updated[index] = e.target.files[0];
+                          setFiles(updated);
+                        }}
+                      />
+                      <Image
+                        src={
+                          files[index]
+                            ? URL.createObjectURL(files[index]!)
+                            : assets.upload_area
+                        }
+                        alt=""
+                        width={100}
+                        height={100}
+                        className="max-w-24 h-24 object-cover rounded cursor-pointer"
+                      />
+                    </label>
+                  ),
+                )}
               </div>
 
               {bannerType === "RESPONSIVE_IMAGE" && (
@@ -128,8 +142,18 @@ const BannerCreator = () => {
 
             {bannerType === "CONTENT" && (
               <>
-                <Field label="Title" name="title" value={form.title} onChange={handleChange} />
-                <Field label="Offer" name="offer" value={form.offer} onChange={handleChange} />
+                <Field
+                  label="Title"
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                />
+                <Field
+                  label="Offer"
+                  name="offer"
+                  value={form.offer}
+                  onChange={handleChange}
+                />
                 <Field
                   label="Button Text 1"
                   name="buttonText1"
@@ -165,6 +189,20 @@ const BannerCreator = () => {
                 </div>
               </RadioGroup>
             </div>
+
+            <Field
+              label="Button Link 1"
+              name="buttonLink1"
+              value={form.buttonLink1}
+              onChange={handleChange}
+            />
+
+            <Field
+              label="Button Link 2"
+              name="buttonLink2"
+              value={form.buttonLink2}
+              onChange={handleChange}
+            />
 
             <div>
               <Label className="text-base font-medium">Image Format</Label>

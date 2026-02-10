@@ -189,11 +189,7 @@ const MyOrders: React.FC = () => {
                           </div>
                           <div className="flex items-center gap-3 text-teal-500">
                             <Truck strokeWidth={1} />
-                            <span>
-                              {
-                                "Your parcel has arrived at the delivery hub : Zambales Hub"
-                              }
-                            </span>
+                            <span>{order.remarks ?? ""}</span>
                           </div>
                         </div>
                       </td>

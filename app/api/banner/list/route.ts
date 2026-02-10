@@ -29,6 +29,10 @@ export async function GET() {
       offer: b.offer,
       buttonText1: b.buttonText1,
       buttonText2: b.buttonText2,
+
+      buttonLink1: b.buttonLink1,
+      buttonLink2: b.buttonLink2,
+
       imgSrc: b.imgSrc,
       desktopImg: b.desktopImg,
       tabletImg: b.tabletImg,

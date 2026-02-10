@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NextCart - Shopping Made Simple",
-  description: "Shopping Made Simple",
+  title: "NextCart - 3D Printing Hub",
+  description: "3D Printing Hub",
 };
 
 export default function RootLayout({

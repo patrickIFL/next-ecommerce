@@ -202,7 +202,8 @@ exports.Prisma.OrderScalarFieldEnum = {
   amount: 'amount',
   isPaid: 'isPaid',
   status: 'status',
-  orderDate: 'orderDate'
+  orderDate: 'orderDate',
+  remarks: 'remarks'
 };
 
 exports.Prisma.OrderItemScalarFieldEnum = {
@@ -282,6 +283,8 @@ exports.Prisma.BannerScalarFieldEnum = {
   offer: 'offer',
   buttonText1: 'buttonText1',
   buttonText2: 'buttonText2',
+  buttonLink1: 'buttonLink1',
+  buttonLink2: 'buttonLink2',
   imgSrc: 'imgSrc',
   desktopImg: 'desktopImg',
   tabletImg: 'tabletImg',

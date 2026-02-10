@@ -215,6 +215,9 @@ model Order {
   status         OrderStatus @default(AWAITING_CONFIRMATION)
   orderDate      DateTime    @default(now())
 
+  remarks String?
+
+
   user            User             @relation(fields: [userId], references: [id])
   shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
 
@@ -351,6 +354,9 @@ model Banner {
   offer       String?
   buttonText1 String?
   buttonText2 String?
+
+  buttonLink1 String?
+  buttonLink2 String?
 
   imgSrc     String?
   desktopImg String?
