@@ -182,6 +182,9 @@ type PngSlide = {
   offer: string;
   buttonText1: string;
   buttonText2: string;
+
+  buttonLink1: string;
+  buttonLink2: string;
   imgSrc: string;
 };
 

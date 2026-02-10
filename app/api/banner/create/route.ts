@@ -55,6 +55,10 @@ export async function POST(req: NextRequest) {
     const offer = formData.get("offer") as string | null;
     const buttonText1 = formData.get("buttonText1") as string | null;
     const buttonText2 = formData.get("buttonText2") as string | null;
+
+    const buttonLink1 = formData.get("buttonLink1") as string | null;
+    const buttonLink2 = formData.get("buttonLink2") as string | null;
+
     const sortOrder = Number(formData.get("sortOrder") ?? 0);
 
     const images = formData.getAll("images") as File[];
@@ -124,6 +128,8 @@ export async function POST(req: NextRequest) {
         offer,
         buttonText1,
         buttonText2,
+        buttonLink1,
+        buttonLink2,
         imgSrc,
         desktopImg,
         tabletImg,

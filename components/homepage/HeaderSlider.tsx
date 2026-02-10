@@ -51,6 +51,7 @@ import {
 import ImageBanner from "./ImageBanner";
 import { Skeleton } from "../ui/skeleton";
 import { Slide } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 const fetchBanners = async (): Promise<Slide[]> => {
   const res = await fetch("/api/banner/list");
@@ -63,6 +64,7 @@ const HeaderSlider = () => {
    * Autoplay configuration
    * ------------------------------------------- */
   const isScrollingRef = useRef(false);
+  const router = useRouter();
 
   const plugin = useRef(
     Autoplay({
@@ -187,11 +189,11 @@ const HeaderSlider = () => {
                       </h1>
 
                       <div className="flex gap-4 items-center mt-6">
-                        <InteractiveHoverButton>
+                        <InteractiveHoverButton buttonLink={slide.buttonLink1}>
                           <span>{slide.buttonText1}</span>
                         </InteractiveHoverButton>
 
-                        <Button variant="ghost" className="group flex gap-2">
+                        <Button variant="ghost" className="group flex gap-2" onClick={() => {router.push(`${slide.buttonLink2}`)}}>
                           {slide.buttonText2}
                           <MoveRight className="group-hover:translate-x-1 transition" />
                         </Button>

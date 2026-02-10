@@ -354,6 +354,9 @@ model Banner {
   buttonText1 String?
   buttonText2 String?
 
+  buttonLink1 String?
+  buttonLink2 String?
+
   imgSrc     String?
   desktopImg String?
   tabletImg  String?

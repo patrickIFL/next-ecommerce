@@ -16753,6 +16753,8 @@ export namespace Prisma {
     offer: string | null
     buttonText1: string | null
     buttonText2: string | null
+    buttonLink1: string | null
+    buttonLink2: string | null
     imgSrc: string | null
     desktopImg: string | null
     tabletImg: string | null
@@ -16771,6 +16773,8 @@ export namespace Prisma {
     offer: string | null
     buttonText1: string | null
     buttonText2: string | null
+    buttonLink1: string | null
+    buttonLink2: string | null
     imgSrc: string | null
     desktopImg: string | null
     tabletImg: string | null
@@ -16789,6 +16793,8 @@ export namespace Prisma {
     offer: number
     buttonText1: number
     buttonText2: number
+    buttonLink1: number
+    buttonLink2: number
     imgSrc: number
     desktopImg: number
     tabletImg: number
@@ -16819,6 +16825,8 @@ export namespace Prisma {
     offer?: true
     buttonText1?: true
     buttonText2?: true
+    buttonLink1?: true
+    buttonLink2?: true
     imgSrc?: true
     desktopImg?: true
     tabletImg?: true
@@ -16837,6 +16845,8 @@ export namespace Prisma {
     offer?: true
     buttonText1?: true
     buttonText2?: true
+    buttonLink1?: true
+    buttonLink2?: true
     imgSrc?: true
     desktopImg?: true
     tabletImg?: true
@@ -16855,6 +16865,8 @@ export namespace Prisma {
     offer?: true
     buttonText1?: true
     buttonText2?: true
+    buttonLink1?: true
+    buttonLink2?: true
     imgSrc?: true
     desktopImg?: true
     tabletImg?: true
@@ -16960,6 +16972,8 @@ export namespace Prisma {
     offer: string | null
     buttonText1: string | null
     buttonText2: string | null
+    buttonLink1: string | null
+    buttonLink2: string | null
     imgSrc: string | null
     desktopImg: string | null
     tabletImg: string | null
@@ -16997,6 +17011,8 @@ export namespace Prisma {
     offer?: boolean
     buttonText1?: boolean
     buttonText2?: boolean
+    buttonLink1?: boolean
+    buttonLink2?: boolean
     imgSrc?: boolean
     desktopImg?: boolean
     tabletImg?: boolean
@@ -17015,6 +17031,8 @@ export namespace Prisma {
     offer?: boolean
     buttonText1?: boolean
     buttonText2?: boolean
+    buttonLink1?: boolean
+    buttonLink2?: boolean
     imgSrc?: boolean
     desktopImg?: boolean
     tabletImg?: boolean
@@ -17033,6 +17051,8 @@ export namespace Prisma {
     offer?: boolean
     buttonText1?: boolean
     buttonText2?: boolean
+    buttonLink1?: boolean
+    buttonLink2?: boolean
     imgSrc?: boolean
     desktopImg?: boolean
     tabletImg?: boolean
@@ -17051,6 +17071,8 @@ export namespace Prisma {
     offer?: boolean
     buttonText1?: boolean
     buttonText2?: boolean
+    buttonLink1?: boolean
+    buttonLink2?: boolean
     imgSrc?: boolean
     desktopImg?: boolean
     tabletImg?: boolean
@@ -17061,7 +17083,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "imageFormat" | "title" | "offer" | "buttonText1" | "buttonText2" | "imgSrc" | "desktopImg" | "tabletImg" | "mobileImg" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
+  export type BannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "imageFormat" | "title" | "offer" | "buttonText1" | "buttonText2" | "buttonLink1" | "buttonLink2" | "imgSrc" | "desktopImg" | "tabletImg" | "mobileImg" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
 
   export type $BannerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Banner"
@@ -17074,6 +17096,8 @@ export namespace Prisma {
       offer: string | null
       buttonText1: string | null
       buttonText2: string | null
+      buttonLink1: string | null
+      buttonLink2: string | null
       imgSrc: string | null
       desktopImg: string | null
       tabletImg: string | null
@@ -17512,6 +17536,8 @@ export namespace Prisma {
     readonly offer: FieldRef<"Banner", 'String'>
     readonly buttonText1: FieldRef<"Banner", 'String'>
     readonly buttonText2: FieldRef<"Banner", 'String'>
+    readonly buttonLink1: FieldRef<"Banner", 'String'>
+    readonly buttonLink2: FieldRef<"Banner", 'String'>
     readonly imgSrc: FieldRef<"Banner", 'String'>
     readonly desktopImg: FieldRef<"Banner", 'String'>
     readonly tabletImg: FieldRef<"Banner", 'String'>
@@ -18097,6 +18123,8 @@ export namespace Prisma {
     offer: 'offer',
     buttonText1: 'buttonText1',
     buttonText2: 'buttonText2',
+    buttonLink1: 'buttonLink1',
+    buttonLink2: 'buttonLink2',
     imgSrc: 'imgSrc',
     desktopImg: 'desktopImg',
     tabletImg: 'tabletImg',
@@ -19377,6 +19405,8 @@ export namespace Prisma {
     offer?: StringNullableFilter<"Banner"> | string | null
     buttonText1?: StringNullableFilter<"Banner"> | string | null
     buttonText2?: StringNullableFilter<"Banner"> | string | null
+    buttonLink1?: StringNullableFilter<"Banner"> | string | null
+    buttonLink2?: StringNullableFilter<"Banner"> | string | null
     imgSrc?: StringNullableFilter<"Banner"> | string | null
     desktopImg?: StringNullableFilter<"Banner"> | string | null
     tabletImg?: StringNullableFilter<"Banner"> | string | null
@@ -19395,6 +19425,8 @@ export namespace Prisma {
     offer?: SortOrderInput | SortOrder
     buttonText1?: SortOrderInput | SortOrder
     buttonText2?: SortOrderInput | SortOrder
+    buttonLink1?: SortOrderInput | SortOrder
+    buttonLink2?: SortOrderInput | SortOrder
     imgSrc?: SortOrderInput | SortOrder
     desktopImg?: SortOrderInput | SortOrder
     tabletImg?: SortOrderInput | SortOrder
@@ -19416,6 +19448,8 @@ export namespace Prisma {
     offer?: StringNullableFilter<"Banner"> | string | null
     buttonText1?: StringNullableFilter<"Banner"> | string | null
     buttonText2?: StringNullableFilter<"Banner"> | string | null
+    buttonLink1?: StringNullableFilter<"Banner"> | string | null
+    buttonLink2?: StringNullableFilter<"Banner"> | string | null
     imgSrc?: StringNullableFilter<"Banner"> | string | null
     desktopImg?: StringNullableFilter<"Banner"> | string | null
     tabletImg?: StringNullableFilter<"Banner"> | string | null
@@ -19434,6 +19468,8 @@ export namespace Prisma {
     offer?: SortOrderInput | SortOrder
     buttonText1?: SortOrderInput | SortOrder
     buttonText2?: SortOrderInput | SortOrder
+    buttonLink1?: SortOrderInput | SortOrder
+    buttonLink2?: SortOrderInput | SortOrder
     imgSrc?: SortOrderInput | SortOrder
     desktopImg?: SortOrderInput | SortOrder
     tabletImg?: SortOrderInput | SortOrder
@@ -19460,6 +19496,8 @@ export namespace Prisma {
     offer?: StringNullableWithAggregatesFilter<"Banner"> | string | null
     buttonText1?: StringNullableWithAggregatesFilter<"Banner"> | string | null
     buttonText2?: StringNullableWithAggregatesFilter<"Banner"> | string | null
+    buttonLink1?: StringNullableWithAggregatesFilter<"Banner"> | string | null
+    buttonLink2?: StringNullableWithAggregatesFilter<"Banner"> | string | null
     imgSrc?: StringNullableWithAggregatesFilter<"Banner"> | string | null
     desktopImg?: StringNullableWithAggregatesFilter<"Banner"> | string | null
     tabletImg?: StringNullableWithAggregatesFilter<"Banner"> | string | null
@@ -20605,6 +20643,8 @@ export namespace Prisma {
     offer?: string | null
     buttonText1?: string | null
     buttonText2?: string | null
+    buttonLink1?: string | null
+    buttonLink2?: string | null
     imgSrc?: string | null
     desktopImg?: string | null
     tabletImg?: string | null
@@ -20623,6 +20663,8 @@ export namespace Prisma {
     offer?: string | null
     buttonText1?: string | null
     buttonText2?: string | null
+    buttonLink1?: string | null
+    buttonLink2?: string | null
     imgSrc?: string | null
     desktopImg?: string | null
     tabletImg?: string | null
@@ -20640,6 +20682,8 @@ export namespace Prisma {
     offer?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText1?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText2?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink1?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink2?: NullableStringFieldUpdateOperationsInput | string | null
     imgSrc?: NullableStringFieldUpdateOperationsInput | string | null
     desktopImg?: NullableStringFieldUpdateOperationsInput | string | null
     tabletImg?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20658,6 +20702,8 @@ export namespace Prisma {
     offer?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText1?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText2?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink1?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink2?: NullableStringFieldUpdateOperationsInput | string | null
     imgSrc?: NullableStringFieldUpdateOperationsInput | string | null
     desktopImg?: NullableStringFieldUpdateOperationsInput | string | null
     tabletImg?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20676,6 +20722,8 @@ export namespace Prisma {
     offer?: string | null
     buttonText1?: string | null
     buttonText2?: string | null
+    buttonLink1?: string | null
+    buttonLink2?: string | null
     imgSrc?: string | null
     desktopImg?: string | null
     tabletImg?: string | null
@@ -20693,6 +20741,8 @@ export namespace Prisma {
     offer?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText1?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText2?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink1?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink2?: NullableStringFieldUpdateOperationsInput | string | null
     imgSrc?: NullableStringFieldUpdateOperationsInput | string | null
     desktopImg?: NullableStringFieldUpdateOperationsInput | string | null
     tabletImg?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20711,6 +20761,8 @@ export namespace Prisma {
     offer?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText1?: NullableStringFieldUpdateOperationsInput | string | null
     buttonText2?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink1?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLink2?: NullableStringFieldUpdateOperationsInput | string | null
     imgSrc?: NullableStringFieldUpdateOperationsInput | string | null
     desktopImg?: NullableStringFieldUpdateOperationsInput | string | null
     tabletImg?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21732,6 +21784,8 @@ export namespace Prisma {
     offer?: SortOrder
     buttonText1?: SortOrder
     buttonText2?: SortOrder
+    buttonLink1?: SortOrder
+    buttonLink2?: SortOrder
     imgSrc?: SortOrder
     desktopImg?: SortOrder
     tabletImg?: SortOrder
@@ -21755,6 +21809,8 @@ export namespace Prisma {
     offer?: SortOrder
     buttonText1?: SortOrder
     buttonText2?: SortOrder
+    buttonLink1?: SortOrder
+    buttonLink2?: SortOrder
     imgSrc?: SortOrder
     desktopImg?: SortOrder
     tabletImg?: SortOrder
@@ -21773,6 +21829,8 @@ export namespace Prisma {
     offer?: SortOrder
     buttonText1?: SortOrder
     buttonText2?: SortOrder
+    buttonLink1?: SortOrder
+    buttonLink2?: SortOrder
     imgSrc?: SortOrder
     desktopImg?: SortOrder
     tabletImg?: SortOrder
