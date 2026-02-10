@@ -23,6 +23,11 @@ export async function POST(req: NextRequest) {
       const payer = payment.attributes.billing;
 
       /* ================= METADATA ================= */
+
+      if (!metadata) {
+        throw new Error("Webhook metadata missing");
+      }
+
       const userId = metadata.userId;
       const shippingAddressId = metadata.selectedAddressId;
 
@@ -46,8 +51,8 @@ export async function POST(req: NextRequest) {
           prisma.stockReservation.update({
             where: { id },
             data: { fulfilled: true },
-          })
-        )
+          }),
+        ),
       );
 
       /* ================= ORDER ITEMS ================= */
@@ -106,7 +111,7 @@ export async function POST(req: NextRequest) {
     if (eventType === "payment.failed") {
       const session = body.data.attributes.data;
       const reservations = JSON.parse(
-        session.attributes.metadata.reservations
+        session.attributes.metadata.reservations,
       ).list;
 
       await prisma.$transaction(
@@ -114,8 +119,8 @@ export async function POST(req: NextRequest) {
           prisma.stockReservation.update({
             where: { id },
             data: { restored: true },
-          })
-        )
+          }),
+        ),
       );
 
       return NextResponse.json({ success: true });
