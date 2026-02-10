@@ -11,14 +11,14 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
   if (!selectedAddressId) {
     return NextResponse.json(
       { success: false, message: "No address selected" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     if (!cartItems.length) {
       return NextResponse.json(
         { success: false, message: "Cart is empty" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
 
         if (available < item.quantity) {
           throw new Error(
-            `Insufficient stock for ${stockSource.name}. Available: ${available}`
+            `Insufficient stock for ${stockSource.name}. Available: ${available}`,
           );
         }
 
@@ -138,11 +138,7 @@ export async function POST(req: NextRequest) {
       ...cartItems.map((item) => ({
         name: item.variant?.name ?? item.product.name,
         quantity: item.quantity,
-        amount:
-          item.variant?.salePrice ??
-          item.variant?.price ??
-          item.product.salePrice ??
-          item.product.price,
+        amount: getEffectivePrice(item),
         currency: "PHP",
       })),
       {
@@ -166,13 +162,14 @@ export async function POST(req: NextRequest) {
         data: {
           attributes: {
             line_items: lineItems,
-            payment_method_types: [
-              "gcash",
-              "card",
-              "paymaya",
-              "grab_pay",
-              "billease",
-            ],
+            // payment_method_types: [
+            //   "gcash",
+            //   "card",
+            //   "paymaya",
+            //   "grab_pay",
+            //   "billease",
+            // ],
+            payment_method_types: ["qrph"],
             description: "Next-Ecommerce",
             success_url:
               platform === "mobile"
@@ -181,7 +178,7 @@ export async function POST(req: NextRequest) {
             cancel_url:
               platform === "mobile"
                 ? process.env.NEXT_PUBLIC_SITE_URL
-                : `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
+                : `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
             metadata: {
               userId,
               selectedAddressId,
@@ -197,7 +194,7 @@ export async function POST(req: NextRequest) {
                     item.variant?.price ??
                     item.product.salePrice ??
                     item.product.price,
-                }))
+                })),
               ),
             },
           },
@@ -214,7 +211,24 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { success: false, message: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
+}
+
+function getEffectivePrice(item: any) {
+  // Variant price logic (if variant exists)
+  if (item.variant) {
+    if (item.variant.isOnSale && item.variant.salePrice != null) {
+      return item.variant.salePrice;
+    }
+    return item.variant.price;
+  }
+
+  // Product price logic
+  if (item.product.isOnSale && item.product.salePrice != null) {
+    return item.product.salePrice;
+  }
+
+  return item.product.price;
 }
