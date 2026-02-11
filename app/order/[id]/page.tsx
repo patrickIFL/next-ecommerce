@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BackButton from "@/components/common/BackButton";
 import {
-  Hourglass,
   MapPin,
   NotepadText,
   Package2,
@@ -16,9 +15,50 @@ import {
   User,
 } from "lucide-react";
 import Image from "next/image";
-import { formatMoney } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
+import { OrderStatus } from "@/src/generated/prisma";
+import OrderStatusActions from "@/components/common/OrderStatusActions";
 // import { OrderItem } from "@/lib/types";
 const currency = process.env.NEXT_PUBLIC_CURRENCY;
+
+const ORDER_STEPS = [
+  {
+    key: "CONFIRMED",
+    label: "Order Confirmed",
+    Icon: NotepadText,
+  },
+  {
+    key: "SOURCING",
+    label: "Preparing",
+    Icon: PackageOpen,
+  },
+  {
+    key: "IN_PROGRESS",
+    label: "In Progress",
+    Icon: Truck,
+  },
+  {
+    key: "COMPLETED",
+    label: "Received",
+    Icon: PackageCheck,
+  },
+] as const;
+
+function getOrderUIState(status: OrderStatus) {
+  if (status === "CANCELLED" || status === "REFUNDED") {
+    return { activeIndex: -1, isFailed: true };
+  }
+
+  if (status === "AWAITING_CONFIRMATION") {
+    return { activeIndex: -1, isFailed: false };
+  }
+
+  return {
+    activeIndex: ORDER_STEPS.findIndex((s) => s.key === status),
+    isFailed: false,
+  };
+}
+
 
 const getOrderById = cache(async (id: string) => {
   return prisma.order.findUnique({
@@ -27,6 +67,7 @@ const getOrderById = cache(async (id: string) => {
       id: true,
       orderDate: true,
       shippingMethod: true,
+      status:true,
       user: {
         select: {
           name: true,
@@ -85,6 +126,16 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+const STATUS: Record<OrderStatus, string | null> = {
+  AWAITING_CONFIRMATION: "Awaiting For your Confirmation",
+  CONFIRMED: "Order is Confirmed",
+  SOURCING: "Prepare or Source the Order",
+  IN_PROGRESS: "Items are in progress",
+  COMPLETED: "All the items are delivered",
+  CANCELLED: "Order is cancelled",
+  REFUNDED: "Order is cancelled",
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
@@ -115,6 +166,8 @@ export default async function IndividualOrderPage({
     return <div>Order not found</div>;
   }
 
+  const statusLabel = STATUS[order.status];
+
   return (
     <div className="px-6 py-6 min-h-screen w-full max-w-7xl mx-auto mt-16">
       {/* ==================== HEADER START ==================== */}
@@ -129,66 +182,88 @@ export default async function IndividualOrderPage({
       <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-col flex-2 gap-3">
           {/* ==================== ORDER STATUS START ==================== */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="flex flex-col font-medium">
-                <span className="text-lg font-semibold">Status</span>
-                <span className="text-xs text-foreground/80 font-normal">
-                  Current Order Status
-                </span>
-              </CardTitle>
-              <div></div>
-              <Hourglass className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {/* Status Contents Start */}
-              <div className="flex gap-2 bg-accent/30 border p-2 rounded-lg">
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <NotepadText className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Order Confirmed</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <PackageOpen className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Preparing</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <Truck className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Shipped</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-                {/* status card */}
-                <div className="flex flex-1 flex-col gap-1 font-medium bg-card p-3 rounded-lg border">
-                  <div className="bg-accent rounded-full w-8 h-8 flex items-center justify-center  ">
-                    <PackageCheck className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <span className="font-semibold">Received</span>
-
-                  <div className="h-1.5 bg-primary rounded-full" />
-                </div>
-
-                {/* Status Contents End */}
-              </div>
-            </CardContent>
-          </Card>
-          {/* ==================== ORDER STATUS END ==================== */}
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                        <CardTitle className="flex flex-col font-medium">
+                          <span className="text-lg font-semibold">Status</span>
+                          <span className="text-xs text-foreground/80 font-normal">
+                            {statusLabel}
+                          </span>
+                        </CardTitle>
+                        <OrderStatusActions orderId={order.id} status={order.status} />
+                      </CardHeader>
+          
+                      <CardContent>
+                        <div className="flex gap-2 bg-accent/30 border p-2 rounded-lg">
+                          {(() => {
+                            const { activeIndex, isFailed } = getOrderUIState(
+                              order.status,
+                            );
+          
+                            return ORDER_STEPS.map((step, index) => {
+                              const Icon = step.Icon;
+                              const isActive = index === activeIndex;
+                              const isCompleted = index < activeIndex;
+          
+                              return (
+                                <div
+                                  key={step.key}
+                                  className={cn(
+                                    "flex flex-1 flex-col gap-1 p-3 rounded-lg border transition",
+                                    isFailed && "border-destructive bg-destructive/10",
+                                    !isFailed &&
+                                      (isActive || isCompleted) &&
+                                      "border-primary bg-primary/10",
+                                    !isFailed &&
+                                      !isActive &&
+                                      !isCompleted &&
+                                      "opacity-50",
+                                  )}
+                                >
+                                  <div
+                                    className={cn(
+                                      "rounded-full w-8 h-8 flex items-center justify-center border transition",
+                                      isFailed && "border-destructive bg-destructive/10",
+                                      !isFailed &&
+                                        (isActive || isCompleted) &&
+                                        "border-primary bg-primary/10",
+                                      !isFailed &&
+                                        !isActive &&
+                                        !isCompleted &&
+                                        "bg-accent opacity-50",
+                                    )}
+                                  >
+                                    <Icon
+                                      className={cn(
+                                        "h-4 w-4 transition-colors",
+                                        isFailed && "text-destructive",
+                                        !isFailed && (isActive || isCompleted)
+                                          ? "text-primary"
+                                          : "text-muted-foreground",
+                                      )}
+                                    />
+                                  </div>
+          
+                                  <span className="font-semibold">{step.label}</span>
+          
+                                  <div
+                                    className={cn(
+                                      "h-1.5 rounded-full transition",
+                                      isFailed
+                                        ? "bg-destructive"
+                                        : isActive || isCompleted
+                                          ? "bg-primary"
+                                          : "bg-muted",
+                                    )}
+                                  />
+                                </div>
+                              );
+                            });
+                          })()}
+                        </div>
+                      </CardContent>
+                    </Card>
+                    {/* ==================== ORDER STATUS END ==================== */}
 
           {/* ==================== PRODUCTS START ==================== */}
           <Card>
