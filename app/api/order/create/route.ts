@@ -140,6 +140,8 @@ export async function POST(req: NextRequest) {
         quantity: item.quantity,
         amount: getEffectivePrice(item),
         currency: "PHP",
+        images: item.product.image?.[0] ? [item.product.image[0]] : [],
+
       })),
       {
         name: "Tax",
@@ -162,14 +164,14 @@ export async function POST(req: NextRequest) {
         data: {
           attributes: {
             line_items: lineItems,
-            // payment_method_types: [
-            //   "gcash",
-            //   "card",
-            //   "paymaya",
-            //   "grab_pay",
-            //   "billease",
-            // ],
-            payment_method_types: ["qrph"],
+            payment_method_types: [
+              "gcash",
+              "card",
+              "paymaya",
+              "grab_pay",
+              "billease",
+              "qrph"
+            ],
             description: "Next-Ecommerce",
             success_url:
               platform === "mobile"

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     console.log("🔔 PayMongo Event:", eventType);
 
-    if (eventType === "checkout_session.payment.paid") {
+    if (eventType === "checkout_session.payment.paid" || eventType === "payment.paid") {
       const session = body.data.attributes.data;
       const payment = session.attributes.payments[0];
       const metadata = session.attributes.metadata;
