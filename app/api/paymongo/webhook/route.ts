@@ -10,20 +10,9 @@ export async function POST(req: NextRequest) {
 
     console.log("🔔 PayMongo Event:", eventType);
 
-    if (eventType === "checkout_session.payment.paid" || eventType === "payment.paid") {
-      console.log(JSON.stringify(body, null, 2));
-      const session = body.data.attributes.data;
-      const payment = session.attributes.payments[0];
-      const metadata = session.attributes.metadata;
-
-      /* ================= PAYMENT INFO ================= */
-      const checkoutId = session.id;
-      const paymentId = payment.id;
-      const paymentIntentId = session.attributes.payment_intent.id;
-
-      const payer = payment.attributes.billing;
-
-      /* ================= METADATA ================= */
+    if (eventType === "payment.paid") {
+      const payment = body.data.attributes.data; // <-- this is the payment resource
+      const metadata = payment.attributes.metadata;
 
       if (!metadata) {
         throw new Error("Webhook metadata missing");
@@ -32,7 +21,6 @@ export async function POST(req: NextRequest) {
       const userId = metadata.userId;
       const shippingAddressId = metadata.selectedAddressId;
 
-      // const cartItems = JSON.parse(metadata.cartItems);
       const reservations = JSON.parse(metadata.reservations).list;
 
       const reservedItems = await prisma.stockReservation.findMany({
@@ -46,7 +34,7 @@ export async function POST(req: NextRequest) {
       const amount = payment.attributes.amount;
       const currency = payment.attributes.currency;
 
-      /* ================= RESERVATIONS ================= */
+      // reservation fulfillment
       await prisma.$transaction(
         reservations.map((id: string) =>
           prisma.stockReservation.update({
@@ -56,14 +44,11 @@ export async function POST(req: NextRequest) {
         ),
       );
 
-      /* ================= ORDER ITEMS ================= */
       const items = reservedItems.map((r) => ({
         productId: r.productId,
         variantId: r.variantId,
         quantity: r.quantity,
-
         name: r.variant?.name ?? r.product.name,
-
         price:
           r.variant?.salePrice ??
           r.variant?.price ??
@@ -71,7 +56,8 @@ export async function POST(req: NextRequest) {
           r.product.price,
       }));
 
-      /* ================= EMIT ORDER EVENT ================= */
+      const payer = payment.attributes.billing;
+
       await inngest.send({
         name: "order/created",
         data: {
@@ -83,9 +69,8 @@ export async function POST(req: NextRequest) {
           items,
 
           // payment metadata
-          paymongoPaymentId: paymentId,
-          paymongoCheckoutId: checkoutId,
-          paymongoIntentId: paymentIntentId,
+          paymongoPaymentId: payment.id,
+          paymongoIntentId: payment.attributes.payment_intent_id,
           payerName: payer.name,
           payerEmail: payer.email,
           payerPhone: payer.phone,
@@ -93,14 +78,12 @@ export async function POST(req: NextRequest) {
           payment_date: payment.attributes.paid_at,
           currency,
 
-          // optional accounting
           tax: 0,
           shipping: 0,
-          line_items: metadata.lineItems ? JSON.parse(metadata.lineItems) : [],
+          line_items: metadata.cartItems ? JSON.parse(metadata.cartItems) : [],
         },
       });
 
-      /* ================= CLEAR CART ================= */
       await prisma.cartItem.deleteMany({
         where: { userId },
       });
