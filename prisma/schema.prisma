@@ -277,9 +277,9 @@ model Payment {
   userId  String
   orderId String @unique
 
-  paymongoPaymentId       String
-  paymongoCheckoutId      String
-  paymongoPaymentIntentId String
+  paymongoPaymentId       String?
+  paymongoCheckoutId      String?
+  paymongoPaymentIntentId String?
 
   amount   Int
   tax      Int
@@ -287,9 +287,9 @@ model Payment {
   method   String
   currency String
 
-  payerName  String
-  payerEmail String
-  payerPhone String
+  payerName  String?
+  payerEmail String?
+  payerPhone String?
 
   lineItems Json[]
   date      DateTime @default(now())

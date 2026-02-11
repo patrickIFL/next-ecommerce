@@ -13395,17 +13395,17 @@ export namespace Prisma {
     id: string
     userId: string
     orderId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId: string | null
+    paymongoCheckoutId: string | null
+    paymongoPaymentIntentId: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName: string | null
+    payerEmail: string | null
+    payerPhone: string | null
     lineItems: JsonValue[]
     date: Date
     _count: PaymentCountAggregateOutputType | null
@@ -13535,17 +13535,17 @@ export namespace Prisma {
       id: string
       userId: string
       orderId: string
-      paymongoPaymentId: string
-      paymongoCheckoutId: string
-      paymongoPaymentIntentId: string
+      paymongoPaymentId: string | null
+      paymongoCheckoutId: string | null
+      paymongoPaymentIntentId: string | null
       amount: number
       tax: number
       shipping: number
       method: string
       currency: string
-      payerName: string
-      payerEmail: string
-      payerPhone: string
+      payerName: string | null
+      payerEmail: string | null
+      payerPhone: string | null
       lineItems: Prisma.JsonValue[]
       date: Date
     }, ExtArgs["result"]["payment"]>
@@ -19137,17 +19137,17 @@ export namespace Prisma {
     id?: StringFilter<"Payment"> | string
     userId?: StringFilter<"Payment"> | string
     orderId?: StringFilter<"Payment"> | string
-    paymongoPaymentId?: StringFilter<"Payment"> | string
-    paymongoCheckoutId?: StringFilter<"Payment"> | string
-    paymongoPaymentIntentId?: StringFilter<"Payment"> | string
+    paymongoPaymentId?: StringNullableFilter<"Payment"> | string | null
+    paymongoCheckoutId?: StringNullableFilter<"Payment"> | string | null
+    paymongoPaymentIntentId?: StringNullableFilter<"Payment"> | string | null
     amount?: IntFilter<"Payment"> | number
     tax?: IntFilter<"Payment"> | number
     shipping?: IntFilter<"Payment"> | number
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    payerName?: StringFilter<"Payment"> | string
-    payerEmail?: StringFilter<"Payment"> | string
-    payerPhone?: StringFilter<"Payment"> | string
+    payerName?: StringNullableFilter<"Payment"> | string | null
+    payerEmail?: StringNullableFilter<"Payment"> | string | null
+    payerPhone?: StringNullableFilter<"Payment"> | string | null
     lineItems?: JsonNullableListFilter<"Payment">
     date?: DateTimeFilter<"Payment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19158,17 +19158,17 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     orderId?: SortOrder
-    paymongoPaymentId?: SortOrder
-    paymongoCheckoutId?: SortOrder
-    paymongoPaymentIntentId?: SortOrder
+    paymongoPaymentId?: SortOrderInput | SortOrder
+    paymongoCheckoutId?: SortOrderInput | SortOrder
+    paymongoPaymentIntentId?: SortOrderInput | SortOrder
     amount?: SortOrder
     tax?: SortOrder
     shipping?: SortOrder
     method?: SortOrder
     currency?: SortOrder
-    payerName?: SortOrder
-    payerEmail?: SortOrder
-    payerPhone?: SortOrder
+    payerName?: SortOrderInput | SortOrder
+    payerEmail?: SortOrderInput | SortOrder
+    payerPhone?: SortOrderInput | SortOrder
     lineItems?: SortOrder
     date?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -19182,17 +19182,17 @@ export namespace Prisma {
     OR?: PaymentWhereInput[]
     NOT?: PaymentWhereInput | PaymentWhereInput[]
     userId?: StringFilter<"Payment"> | string
-    paymongoPaymentId?: StringFilter<"Payment"> | string
-    paymongoCheckoutId?: StringFilter<"Payment"> | string
-    paymongoPaymentIntentId?: StringFilter<"Payment"> | string
+    paymongoPaymentId?: StringNullableFilter<"Payment"> | string | null
+    paymongoCheckoutId?: StringNullableFilter<"Payment"> | string | null
+    paymongoPaymentIntentId?: StringNullableFilter<"Payment"> | string | null
     amount?: IntFilter<"Payment"> | number
     tax?: IntFilter<"Payment"> | number
     shipping?: IntFilter<"Payment"> | number
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    payerName?: StringFilter<"Payment"> | string
-    payerEmail?: StringFilter<"Payment"> | string
-    payerPhone?: StringFilter<"Payment"> | string
+    payerName?: StringNullableFilter<"Payment"> | string | null
+    payerEmail?: StringNullableFilter<"Payment"> | string | null
+    payerPhone?: StringNullableFilter<"Payment"> | string | null
     lineItems?: JsonNullableListFilter<"Payment">
     date?: DateTimeFilter<"Payment"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -19203,17 +19203,17 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     orderId?: SortOrder
-    paymongoPaymentId?: SortOrder
-    paymongoCheckoutId?: SortOrder
-    paymongoPaymentIntentId?: SortOrder
+    paymongoPaymentId?: SortOrderInput | SortOrder
+    paymongoCheckoutId?: SortOrderInput | SortOrder
+    paymongoPaymentIntentId?: SortOrderInput | SortOrder
     amount?: SortOrder
     tax?: SortOrder
     shipping?: SortOrder
     method?: SortOrder
     currency?: SortOrder
-    payerName?: SortOrder
-    payerEmail?: SortOrder
-    payerPhone?: SortOrder
+    payerName?: SortOrderInput | SortOrder
+    payerEmail?: SortOrderInput | SortOrder
+    payerPhone?: SortOrderInput | SortOrder
     lineItems?: SortOrder
     date?: SortOrder
     _count?: PaymentCountOrderByAggregateInput
@@ -19230,17 +19230,17 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Payment"> | string
     userId?: StringWithAggregatesFilter<"Payment"> | string
     orderId?: StringWithAggregatesFilter<"Payment"> | string
-    paymongoPaymentId?: StringWithAggregatesFilter<"Payment"> | string
-    paymongoCheckoutId?: StringWithAggregatesFilter<"Payment"> | string
-    paymongoPaymentIntentId?: StringWithAggregatesFilter<"Payment"> | string
+    paymongoPaymentId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    paymongoCheckoutId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    paymongoPaymentIntentId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     amount?: IntWithAggregatesFilter<"Payment"> | number
     tax?: IntWithAggregatesFilter<"Payment"> | number
     shipping?: IntWithAggregatesFilter<"Payment"> | number
     method?: StringWithAggregatesFilter<"Payment"> | string
     currency?: StringWithAggregatesFilter<"Payment"> | string
-    payerName?: StringWithAggregatesFilter<"Payment"> | string
-    payerEmail?: StringWithAggregatesFilter<"Payment"> | string
-    payerPhone?: StringWithAggregatesFilter<"Payment"> | string
+    payerName?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    payerEmail?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    payerPhone?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     lineItems?: JsonNullableListFilter<"Payment">
     date?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
   }
@@ -20350,17 +20350,17 @@ export namespace Prisma {
 
   export type PaymentCreateInput = {
     id?: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
     user: UserCreateNestedOneWithoutPaymentsInput
@@ -20371,34 +20371,34 @@ export namespace Prisma {
     id?: string
     userId: string
     orderId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
   }
 
   export type PaymentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
@@ -20409,17 +20409,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20428,34 +20428,34 @@ export namespace Prisma {
     id?: string
     userId: string
     orderId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
   }
 
   export type PaymentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20464,17 +20464,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23574,17 +23574,17 @@ export namespace Prisma {
 
   export type PaymentCreateWithoutUserInput = {
     id?: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
     order: OrderCreateNestedOneWithoutPaymentInput
@@ -23593,17 +23593,17 @@ export namespace Prisma {
   export type PaymentUncheckedCreateWithoutUserInput = {
     id?: string
     orderId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
   }
@@ -23805,17 +23805,17 @@ export namespace Prisma {
     id?: StringFilter<"Payment"> | string
     userId?: StringFilter<"Payment"> | string
     orderId?: StringFilter<"Payment"> | string
-    paymongoPaymentId?: StringFilter<"Payment"> | string
-    paymongoCheckoutId?: StringFilter<"Payment"> | string
-    paymongoPaymentIntentId?: StringFilter<"Payment"> | string
+    paymongoPaymentId?: StringNullableFilter<"Payment"> | string | null
+    paymongoCheckoutId?: StringNullableFilter<"Payment"> | string | null
+    paymongoPaymentIntentId?: StringNullableFilter<"Payment"> | string | null
     amount?: IntFilter<"Payment"> | number
     tax?: IntFilter<"Payment"> | number
     shipping?: IntFilter<"Payment"> | number
     method?: StringFilter<"Payment"> | string
     currency?: StringFilter<"Payment"> | string
-    payerName?: StringFilter<"Payment"> | string
-    payerEmail?: StringFilter<"Payment"> | string
-    payerPhone?: StringFilter<"Payment"> | string
+    payerName?: StringNullableFilter<"Payment"> | string | null
+    payerEmail?: StringNullableFilter<"Payment"> | string | null
+    payerPhone?: StringNullableFilter<"Payment"> | string | null
     lineItems?: JsonNullableListFilter<"Payment">
     date?: DateTimeFilter<"Payment"> | Date | string
   }
@@ -25192,17 +25192,17 @@ export namespace Prisma {
 
   export type PaymentCreateWithoutOrderInput = {
     id?: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
     user: UserCreateNestedOneWithoutPaymentsInput
@@ -25211,17 +25211,17 @@ export namespace Prisma {
   export type PaymentUncheckedCreateWithoutOrderInput = {
     id?: string
     userId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
   }
@@ -25336,17 +25336,17 @@ export namespace Prisma {
 
   export type PaymentUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
@@ -25355,17 +25355,17 @@ export namespace Prisma {
   export type PaymentUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26314,17 +26314,17 @@ export namespace Prisma {
   export type PaymentCreateManyUserInput = {
     id?: string
     orderId: string
-    paymongoPaymentId: string
-    paymongoCheckoutId: string
-    paymongoPaymentIntentId: string
+    paymongoPaymentId?: string | null
+    paymongoCheckoutId?: string | null
+    paymongoPaymentIntentId?: string | null
     amount: number
     tax: number
     shipping: number
     method: string
     currency: string
-    payerName: string
-    payerEmail: string
-    payerPhone: string
+    payerName?: string | null
+    payerEmail?: string | null
+    payerPhone?: string | null
     lineItems?: PaymentCreatelineItemsInput | InputJsonValue[]
     date?: Date | string
   }
@@ -26539,17 +26539,17 @@ export namespace Prisma {
 
   export type PaymentUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateOneRequiredWithoutPaymentNestedInput
@@ -26558,17 +26558,17 @@ export namespace Prisma {
   export type PaymentUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26576,17 +26576,17 @@ export namespace Prisma {
   export type PaymentUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     orderId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentId?: StringFieldUpdateOperationsInput | string
-    paymongoCheckoutId?: StringFieldUpdateOperationsInput | string
-    paymongoPaymentIntentId?: StringFieldUpdateOperationsInput | string
+    paymongoPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoCheckoutId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymongoPaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     tax?: IntFieldUpdateOperationsInput | number
     shipping?: IntFieldUpdateOperationsInput | number
     method?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
-    payerName?: StringFieldUpdateOperationsInput | string
-    payerEmail?: StringFieldUpdateOperationsInput | string
-    payerPhone?: StringFieldUpdateOperationsInput | string
+    payerName?: NullableStringFieldUpdateOperationsInput | string | null
+    payerEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    payerPhone?: NullableStringFieldUpdateOperationsInput | string | null
     lineItems?: PaymentUpdatelineItemsInput | InputJsonValue[]
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
