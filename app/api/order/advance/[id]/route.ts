@@ -1,6 +1,8 @@
 import prisma from "@/app/db/prisma";
+import authSeller from "@/lib/authSeller";
 import { OrderStatus } from "@/src/generated/prisma";
-import { NextResponse } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const NEXT_STATUS: Record<OrderStatus, OrderStatus | null> = {
   AWAITING_CONFIRMATION: OrderStatus.CONFIRMED,
@@ -13,10 +15,28 @@ const NEXT_STATUS: Record<OrderStatus, OrderStatus | null> = {
 };
 
 export async function POST(
-  _request: Request,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params; // ✅ REQUIRED
+  const { userId } = getAuth(request);
+
+  if (!userId) {
+    return NextResponse.json(
+      { success: false, message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
+  const isSeller = await authSeller(userId);
+
+  if (!isSeller) {
+    return NextResponse.json(
+      { success: false, message: "Forbidden" },
+      { status: 403 }
+    );
+  }
+
+  const { id } = await context.params;
 
   const order = await prisma.order.findUnique({
     where: { id },

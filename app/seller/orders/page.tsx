@@ -21,8 +21,8 @@ import { useRouter } from "next/navigation";
 import { OrderStatus } from "@/src/generated/prisma";
 
 export const STATUS: Record<OrderStatus, string | null> = {
-  AWAITING_CONFIRMATION: "FOR CONFIRMATION",
-  CONFIRMED: "ORDER CONFIRMED",
+  AWAITING_CONFIRMATION: "CONFIRMATION",
+  CONFIRMED: "CONFIRMED",
   SOURCING: "PREPARING",
   IN_PROGRESS: "IN PROGRESS",
   COMPLETED: "DELIVERED",
