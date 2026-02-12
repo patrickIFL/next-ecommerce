@@ -1,13 +1,73 @@
 // /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import crypto from "crypto";
 import prisma from "@/app/db/prisma";
 import { inngest } from "@/src/config/inngest";
 import { NextRequest, NextResponse } from "next/server";
 
+function verifyPayMongoSignature(
+  rawBody: string,
+  signatureHeader: string,
+  secret: string,
+) {
+  const parts = signatureHeader.split(",");
+  const timestampPart = parts.find((p) => p.startsWith("t="));
+  const signaturePart = parts.find((p) => p.startsWith("v1="));
+
+  if (!timestampPart || !signaturePart) return false;
+
+  const timestamp = timestampPart.split("=")[1];
+  const signature = signaturePart.split("=")[1];
+
+  if (!timestamp || !signature) return false;
+
+  // replay protection (5 minutes)
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - Number(timestamp)) > 300) return false;
+
+  const signedPayload = `${timestamp}.${rawBody}`;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(signedPayload, "utf8")
+    .digest("hex");
+
+  const sigBuf = Buffer.from(signature);
+  const expBuf = Buffer.from(expectedSignature);
+
+  if (sigBuf.length !== expBuf.length) return false;
+
+  return crypto.timingSafeEqual(sigBuf, expBuf);
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const eventType = body.data?.attributes?.type;
+    const rawBody = await req.text(); // IMPORTANT: must be raw text
+    const signatureHeader = req.headers.get("paymongo-signature");
 
+    if (!signatureHeader) {
+      return new NextResponse("Missing signature header", { status: 400 });
+    }
+
+    const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET!;
+    if (!webhookSecret) {
+      throw new Error("Missing PAYMONGO_WEBHOOK_SECRET env var");
+    }
+
+    const isValid = verifyPayMongoSignature(
+      rawBody,
+      signatureHeader,
+      webhookSecret,
+    );
+
+    if (!isValid) {
+      return new NextResponse("Invalid signature", { status: 401 });
+    }
+
+    // If signature is valid, now parse JSON
+    const body = JSON.parse(rawBody);
+
+    const eventType = body.data?.attributes?.type;
     console.log("🔔 PayMongo Event:", eventType);
 
     if (eventType === "payment.paid") {
