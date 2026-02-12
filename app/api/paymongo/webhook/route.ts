@@ -57,7 +57,9 @@ export async function POST(req: NextRequest) {
     }
 
     const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET!;
-    console.log("❌❌ Test Print of webhook secret", webhookSecret);
+    console.log("❌❌ Webhook secret", webhookSecret);
+    console.log("❌❌ Raw body", webhookSecret);
+    console.log("❌❌ Signature header", webhookSecret);
     if (!webhookSecret) {
       throw new Error("Missing PAYMONGO_WEBHOOK_SECRET env var");
     }
