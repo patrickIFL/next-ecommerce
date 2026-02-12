@@ -21,16 +21,19 @@ function verifyPayMongoSignature(
 
   if (!timestamp || !signature) return false;
 
-  // replay protection (5 minutes)
-  const now = Math.floor(Date.now() / 1000);
-  if (Math.abs(now - Number(timestamp)) > 300) return false;
-
   const signedPayload = `${timestamp}.${rawBody}`;
 
   const expectedSignature = crypto
     .createHmac("sha256", secret)
     .update(signedPayload, "utf8")
     .digest("hex");
+
+  // ✅ DEBUG LOGS HERE
+  console.log("signatureHeader:", signatureHeader);
+  console.log("rawBody:", rawBody);
+  console.log("signedPayload:", signedPayload);
+  console.log("expectedSignature:", expectedSignature);
+  console.log("receivedSignature:", signature);
 
   const sigBuf = Buffer.from(signature);
   const expBuf = Buffer.from(expectedSignature);
