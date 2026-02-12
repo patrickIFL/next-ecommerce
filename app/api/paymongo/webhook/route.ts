@@ -21,6 +21,10 @@ function verifyPayMongoSignature(
 
   if (!timestamp || !signature) return false;
 
+  // replay protection (5 minutes)
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - Number(timestamp)) > 300) return false;
+
   const signedPayload = `${timestamp}.${rawBody}`;
 
   const expectedSignature = crypto
@@ -28,7 +32,7 @@ function verifyPayMongoSignature(
     .update(signedPayload, "utf8")
     .digest("hex");
 
-  // ✅ DEBUG LOGS HERE
+    // ✅ DEBUG LOGS HERE
   console.log("signatureHeader:", signatureHeader);
   console.log("rawBody:", rawBody);
   console.log("signedPayload:", signedPayload);
@@ -53,6 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET!;
+    console.log("❌❌ Test Print of webhook secret", webhookSecret);
     if (!webhookSecret) {
       throw new Error("Missing PAYMONGO_WEBHOOK_SECRET env var");
     }
