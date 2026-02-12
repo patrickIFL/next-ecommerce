@@ -12,7 +12,7 @@ function verifyPayMongoSignature(
 ) {
   const parts = signatureHeader.split(",");
   const timestampPart = parts.find((p) => p.startsWith("t="));
-  const signaturePart = parts.find((p) => p.startsWith("v1="));
+  const signaturePart = parts.find((p) => p.startsWith("li=")); // ✅ FIX
 
   if (!timestampPart || !signaturePart) return false;
 
@@ -21,7 +21,6 @@ function verifyPayMongoSignature(
 
   if (!timestamp || !signature) return false;
 
-  // replay protection (5 minutes)
   const now = Math.floor(Date.now() / 1000);
   if (Math.abs(now - Number(timestamp)) > 300) return false;
 
@@ -32,15 +31,8 @@ function verifyPayMongoSignature(
     .update(signedPayload, "utf8")
     .digest("hex");
 
-    // ✅ DEBUG LOGS HERE
-  console.log("signatureHeader:", signatureHeader);
-  console.log("rawBody:", rawBody);
-  console.log("signedPayload:", signedPayload);
-  console.log("expectedSignature:", expectedSignature);
-  console.log("receivedSignature:", signature);
-
-  const sigBuf = Buffer.from(signature);
-  const expBuf = Buffer.from(expectedSignature);
+  const sigBuf = Buffer.from(signature, "hex");
+  const expBuf = Buffer.from(expectedSignature, "hex");
 
   if (sigBuf.length !== expBuf.length) return false;
 
@@ -57,9 +49,9 @@ export async function POST(req: NextRequest) {
     }
 
     const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET!;
-    console.log("❌❌ Webhook secret", webhookSecret);
-    console.log("❌❌ Raw body", rawBody);
-    console.log("❌❌ Signature header", signatureHeader);
+    // console.log("❌❌ Webhook secret", webhookSecret);
+    // console.log("❌❌ Raw body", rawBody);
+    // console.log("❌❌ Signature header", signatureHeader);
     if (!webhookSecret) {
       throw new Error("Missing PAYMONGO_WEBHOOK_SECRET env var");
     }
