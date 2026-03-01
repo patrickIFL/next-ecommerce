@@ -6,34 +6,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-////////////////////
-/// ENUMS
-////////////////////
-
-enum ProductType {
-  SIMPLE
-  VARIATION
-}
-
-enum SupplierType {
-  SHOPEE
-  LAZADA
-  TIKTOK
-  OWNED
-}
-
-enum BannerType {
-  CONTENT
-  RESPONSIVE_IMAGE
-}
-
-enum ImageFormat {
-  PNG
-  JPG
-  WEBP
 }
 
 ////////////////////
@@ -57,22 +29,13 @@ model User {
 }
 
 ////////////////////
-/// SUPPLIERS
-////////////////////
-
-model Supplier {
-  id         String       @id @default(cuid())
-  name       String
-  type       SupplierType
-  externalId String?
-  createdAt  DateTime     @default(now())
-
-  products Product[]
-}
-
-////////////////////
 /// PRODUCTS
 ////////////////////
+
+enum ProductType {
+  SIMPLE
+  VARIATION
+}
 
 model Product {
   id          String   @id @default(cuid())
@@ -80,22 +43,22 @@ model Product {
   name        String
   description String?
   specs       String?
-  descImg    String[] @default([])
-  
-  category    String   @default("Uncategorized")
-  brand       String   @default("Generic")
-  image       String[]
+  descImg     String[] @default([])
 
-  price       Int?
-  salePrice   Int?
+  category String   @default("Uncategorized")
+  brand    String   @default("Generic")
+  image    String[]
+
+  price      Int?
+  salePrice  Int?
   searchKeys String[]    @default([])
-  sku         String?
-  stock       Int?
-  type        ProductType @default(SIMPLE)
-  isArchived  Boolean     @default(false)
-  isFeatured  Boolean     @default(false)
-  isOnSale    Boolean?    @default(false)
-  attributes  String[]    @default(["VarA", "VarB"])
+  sku        String?
+  stock      Int?
+  type       ProductType @default(SIMPLE)
+  isArchived Boolean     @default(false)
+  isFeatured Boolean     @default(false)
+  isOnSale   Boolean?    @default(false)
+  attributes String[]    @default(["VarA", "VarB"])
 
   supplierId String?
 
@@ -120,6 +83,27 @@ model Product {
   @@index([searchKeys], type: Gin)
 }
 
+////////////////////
+/// SUPPLIERS
+////////////////////
+
+enum SupplierType {
+  SHOPEE
+  LAZADA
+  TIKTOK
+  OWNED
+}
+
+model Supplier {
+  id         String       @id @default(cuid())
+  name       String
+  type       SupplierType
+  externalId String?
+  createdAt  DateTime     @default(now())
+
+  products Product[]
+}
+
 model ProductVariant {
   id         String  @id @default(cuid())
   productId  String
@@ -140,6 +124,7 @@ model ProductVariant {
 
   @@index([productId])
 }
+
 ////////////////////
 /// CART & WISHLIST
 ////////////////////
@@ -183,11 +168,11 @@ model Wishlist {
 ////////////////////
 
 enum OrderStatus {
-  AWAITING_CONFIRMATION   // Seller has not yet reviewed the paid order // CONFIRMATION
-  CONFIRMED               // Seller confirmed the order // CONFIRMATION
-  SOURCING                // Seller is ordering items from 3rd-party sources // PREPARING
-  IN_PROGRESS             // Items are being shipped / received / fulfilled // IN-PROGRESS
-  COMPLETED               // All items delivered to the customer // ALL ORDERS FULFILLED
+  AWAITING_CONFIRMATION // Seller has not yet reviewed the paid order // CONFIRMATION
+  CONFIRMED // Seller confirmed the order // CONFIRMATION
+  SOURCING // Seller is ordering items from 3rd-party sources // PREPARING
+  IN_PROGRESS // Items are being shipped / received / fulfilled // IN-PROGRESS
+  COMPLETED // All items delivered to the customer // ALL ORDERS FULFILLED
   CANCELLED
   REFUNDED
 }
@@ -216,7 +201,6 @@ model Order {
   orderDate      DateTime    @default(now())
 
   remarks String?
-
 
   user            User             @relation(fields: [userId], references: [id])
   shippingAddress ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
@@ -319,6 +303,7 @@ model ShippingAddress {
 
   @@index([userId])
 }
+
 ////////////////////
 /// STOCK
 ////////////////////
@@ -343,6 +328,17 @@ model StockReservation {
 ////////////////////
 /// BANNERS
 ////////////////////
+
+enum BannerType {
+  CONTENT
+  RESPONSIVE_IMAGE
+}
+
+enum ImageFormat {
+  PNG
+  JPG
+  WEBP
+}
 
 model Banner {
   id Int @id @default(autoincrement())

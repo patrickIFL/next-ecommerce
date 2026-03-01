@@ -363,7 +363,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\src\\generated\\prisma",
+      "value": "C:\\Users\\patri\\Desktop\\next-ecommerce\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -385,7 +385,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Admin\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\patri\\Desktop\\next-ecommerce\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

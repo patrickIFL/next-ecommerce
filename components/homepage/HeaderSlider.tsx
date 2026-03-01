@@ -190,11 +190,19 @@ const HeaderSlider = () => {
                       </h1>
 
                       <div className="flex gap-4 items-center mt-6">
-                        <InteractiveHoverButton buttonLink={`${base_url}/product/${slide.buttonLink1}`}>
+                        <InteractiveHoverButton
+                          buttonLink={`${base_url}/product/${slide.buttonLink1}`}
+                        >
                           <span>{slide.buttonText1}</span>
                         </InteractiveHoverButton>
 
-                        <Button variant="ghost" className="group flex gap-2" onClick={() => {router.push(`${slide.buttonLink2}`)}}>
+                        <Button
+                          variant="ghost"
+                          className="group flex gap-2"
+                          onClick={() => {
+                            router.push(`${base_url}${slide.buttonLink2}`);
+                          }}
+                        >
                           {slide.buttonText2}
                           <MoveRight className="group-hover:translate-x-1 transition" />
                         </Button>

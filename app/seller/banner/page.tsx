@@ -56,7 +56,7 @@ const BannerCreator = () => {
 
       formData.append("buttonLink1", form.buttonLink1);
       formData.append("buttonLink2", form.buttonLink2);
-      
+
       formData.append("sortOrder", String(form.sortOrder));
 
       // append images ONLY ON SUBMIT
@@ -195,6 +195,7 @@ const BannerCreator = () => {
               name="buttonLink1"
               value={form.buttonLink1}
               onChange={handleChange}
+              placeholder="Just the Product ID"
             />
 
             <Field
@@ -202,6 +203,7 @@ const BannerCreator = () => {
               name="buttonLink2"
               value={form.buttonLink2}
               onChange={handleChange}
+              placeholder="eg. /all/products or /school/products"
             />
 
             <div>
@@ -248,7 +250,14 @@ const BannerCreator = () => {
 
 export default BannerCreator;
 
-function Field({ label, name, value, onChange, type = "text" }: any) {
+function Field({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  placeholder = "",
+}: any) {
   return (
     <div className="flex flex-col gap-1">
       <Label className="text-base font-medium">{label}</Label>
@@ -258,6 +267,7 @@ function Field({ label, name, value, onChange, type = "text" }: any) {
         value={value}
         onChange={onChange}
         className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+        placeholder={placeholder}
       />
     </div>
   );
