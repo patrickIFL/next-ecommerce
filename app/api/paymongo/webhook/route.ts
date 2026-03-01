@@ -118,7 +118,28 @@ export async function POST(req: NextRequest) {
           r.product.price,
       }));
 
-      const payer = payment.attributes.billing;
+      if (!payment?.attributes) {
+        return new NextResponse(
+          "Invalid webhook payload: missing payment attributes",
+          { status: 400 },
+        );
+      }
+
+      const billing = payment?.attributes?.billing ?? null;
+      const source = payment?.attributes?.source ?? null;
+
+      // Optional: fallback to metadata if you stored payer info there
+      const payerName =
+        billing?.name ?? payment?.attributes?.metadata?.payerName ?? "Unknown";
+      const payerEmail =
+        billing?.email ?? payment?.attributes?.metadata?.payerEmail ?? null;
+      const payerPhone =
+        billing?.phone ?? payment?.attributes?.metadata?.payerPhone ?? null;
+
+      const method =
+        source?.type ??
+        payment?.attributes?.payment_method_used ?? // if present in your payload
+        "unknown";
 
       await inngest.send({
         name: "order/created",
@@ -130,13 +151,14 @@ export async function POST(req: NextRequest) {
           shippingMethod: "standard",
           items,
 
-          // payment metadata
           paymongoPaymentId: payment.id,
           paymongoIntentId: payment.attributes.payment_intent_id,
-          payerName: payer.name,
-          payerEmail: payer.email,
-          payerPhone: payer.phone,
-          method: payment.attributes.source.type,
+
+          payerName,
+          payerEmail,
+          payerPhone,
+
+          method,
           payment_date: payment.attributes.paid_at,
           currency,
 
